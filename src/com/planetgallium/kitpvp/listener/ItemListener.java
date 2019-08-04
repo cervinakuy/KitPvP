@@ -60,36 +60,12 @@ public class ItemListener implements Listener {
 					
 					if (Toolkit.getMainHandItem(p).getItemMeta().getDisplayName().equals(Config.getS("Items.Kits.Name"))) {
 						
+						Toolkit.runCommands("Items.Kits", p);
+						
 						if (Game.getInstance().getConfig().getBoolean("Items.Kits.Menu")) {
 							
 							KitMenu menu = new KitMenu(resources);
 							menu.create(p);
-							
-						}
-						
-						if (Config.getB("Items.Kits.Commands.Enabled")) { 
-							
-							for (String list : Config.getC().getStringList("Items.Kits.Commands.Commands")) {
-								
-								String[] command = list.split(":");
-								
-								if (command[0].equals("console")) {
-									
-									Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command[1].replace("%player%", p.getName()));
-									
-								} else if (command[0].equals("player")) {
-									
-									p.performCommand(command[1].replace("%player%", p.getName()));
-									
-								} else {
-									
-									Bukkit.getConsoleSender().sendMessage(Config.tr("&7[&b&lKITPVP&7] &cCommand syntax incorrect, you must specify a prefix before a command."));
-									Bukkit.getConsoleSender().sendMessage(Config.tr("&7[&b&lKITPVP&7] &cIn the config, you must put either &7console: &cor &7player:&c."));
-									Bukkit.getConsoleSender().sendMessage(Config.tr("&7[&b&lKITPVP&7] &cOnce the error is fixed, reload or restart your server."));
-									
-								}
-								
-							}
 							
 						}
 						 
@@ -98,32 +74,8 @@ public class ItemListener implements Listener {
 				} else if (Toolkit.getMainHandItem(p).getType() == Material.valueOf(Config.getS("Items.Leave.Item").toUpperCase())) {
 					
 					if (Toolkit.getMainHandItem(p).getItemMeta().getDisplayName().equals(Config.getS(("Items.Leave.Name")))) {
-						
-						if (Config.getB("Items.Leave.Commands.Enabled")) {
 							
-							for (String list : Config.getC().getStringList("Items.Leave.Commands.Commands")) {
-								
-								String[] command = list.split(":");
-								
-								if (command[0].equals("console")) {
-									
-									Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command[1].replace("%player%", p.getName()));
-									
-								} else if (command[0].equals("player")) {
-									
-									p.performCommand(command[1].replace("%player%", p.getName()));
-									
-								} else {
-									
-									Bukkit.getConsoleSender().sendMessage(Config.tr("&7[&b&lKITPVP&7] &cCommand syntax incorrect, you must specify a prefix before a command."));
-									Bukkit.getConsoleSender().sendMessage(Config.tr("&7[&b&lKITPVP&7] &cIn the config, you must put either &7console: &cor &7player:&c."));
-									Bukkit.getConsoleSender().sendMessage(Config.tr("&7[&b&lKITPVP&7] &cOnce the error is fixed, reload or restart your server."));
-									
-								}
-								
-							}
-							
-						}
+						Toolkit.runCommands("Items.Leave", p);
 						
 					}	
 					
