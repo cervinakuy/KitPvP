@@ -69,8 +69,9 @@ public class JoinListener implements Listener {
 			
 			arena.addPlayer(p);
 			
-		} else {
-
+		} else if (Toolkit.inArena(e.getFrom())) {
+			// if they left from the kitpvp arena
+			
 			if (Config.getB("Arena.ClearInventoryOnLeave")) {
 				p.getInventory().clear();
 				p.getInventory().setArmorContents(null);
