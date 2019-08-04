@@ -1,0 +1,281 @@
+# MENU FILE - This is where the menu can be completely customized.
+#
+# Recommendations:
+# 1) When adding your own menu item, please remember to indent using ONLY spaces. It is recommended that you simply copy and modify an item that already exists.
+# 2) Use the "Example" item at the bottom of this file for reference.
+#
+# Please contact Cervinakuy (the developer) on Spigot if you have any problems.
+
+Menu:
+  General:
+    Title: 'Kits'
+    Hide-Items-With-No-Permission: false
+    Size: 54
+  Items:
+    Fighter:
+      Name: '&a&lFighter Kit'
+      Item: IRON_CHESTPLATE
+      Slot: 10
+      Lore:
+      - '&6Ability: &73 Health Packs'
+      - ' '
+      - '&7- Iron Sword'
+      - '&7- Iron Helmet'
+      - '&7- Iron Chestplate'
+      - '&7- Iron Leggings'
+      - '&7- Iron Boots'
+      - ' '
+      - '&eLeft-click to select.'
+      - '&eRight-click to preview.'
+      Commands:
+        Left-Click:
+        - 'player: kp kit Fighter'
+        Right-Click:
+        - 'player: kp preview Fighter'
+        Enabled: true
+    Archer:
+      Name: '&a&lArcher Kit'
+      Item: BOW
+      Slot: 11
+      Lore:
+      - '&6Ability: &710 Fire Arrows'
+      - ' '
+      - '&7- Wooden Sword'
+      - '&7- Bow'
+      - '&7- 32 Arrows'
+      - '&7- Leather Helmet'
+      - '&7- Chain Chestplate'
+      - '&7- Chain Leggings'
+      - '&7- Chain Boots'
+      - ' '
+      - '&eLeft-click to select.'
+      - '&eRight-click to preview.'
+      Commands:
+        Left-Click:
+        - 'player: kp kit Archer'
+        Right-Click:
+        - 'player: kp preview Archer'
+        Enabled: true
+    Tank:
+      Name: '&a&lTank Kit'
+      Item: DIAMOND
+      Slot: 12
+      Lore:
+      - '&6Ability: &73 Speed Boosts'
+      - ' '
+      - '&7- Wooden Sword'
+      - '&7- Diamond Helmet'
+      - '&7- Diamond Chestplate'
+      - '&7- Diamond Leggings'
+      - '&7- Diamond Boots'
+      - ' '
+      - '&eLeft-click to select.'
+      - '&eRight-click to preview.'
+      Commands:
+        Left-Click:
+        - 'player: kp kit Tank'
+        Right-Click:
+        - 'player: kp preview Tank'
+        Enabled: true
+    Soldier:
+      Name: '&a&lSoldier Kit'
+      Item: ARROW
+      Slot: 13
+      Lore:
+      - '&6Ability: &75 Guns'
+      - ' '
+      - '&7- Iron Sword'
+      - '&7- Bow'
+      - '&7- 32 Arrows'
+      - '&7- Fishing Rod'
+      - '&7- Leather Helmet'
+      - '&7- Chain Chestplate'
+      - '&7- Leather Leggings'
+      - '&7- Leather Boots'
+      - ' '
+      - '&eLeft-click to select.'
+      - '&eRight-click to preview.'
+      Commands:
+        Left-Click:
+        - 'player: kp kit Soldier'
+        Right-Click:
+        - 'player: kp preview Soldier'
+        Enabled: true
+    Bomber:
+      Name: '&a&lBomber Kit'
+      Item: TNT
+      Slot: 14
+      Lore:
+      - '&6Ability: &73 TNT Trails'
+      - ' '
+      - '&7- Iron Sword'
+      - '&7- 16 TNT'
+      - '&7- Leather Helmet'
+      - '&7- Leather Chestplate'
+      - '&7- Leather Leggings'
+      - '&7- Leather Boots'
+      - ' '
+      - '&eLeft-click to select.'
+      - '&eRight-click to preview.'
+      Commands:
+        Left-Click:
+        - 'player: kp kit Bomber'
+        Right-Click:
+        - 'player: kp preview Bomber'
+        Enabled: true
+    Kangaroo:
+      Name: '&a&lKangaroo Kit'
+      Item: SADDLE
+      Slot: 15
+      Lore:
+      - '&6Ability: &73 Launchers'
+      - ' '
+      - '&7- Iron Sword'
+      - '&7- Leather Helmet'
+      - '&7- Leather Chestplate'
+      - '&7- Leather Leggings'
+      - '&7- Leather Boots'
+      - ' '
+      - '&eLeft-click to select.'
+      - '&eRight-click to preview.'
+      Commands:
+        Left-Click:
+        - 'player: kp kit Kangaroo'
+        Right-Click:
+        - 'player: kp preview Kangaroo'
+        Enabled: true
+    Warper:
+      Name: '&a&lWarper Kit'    
+      Item: ENDER_PEARL
+      Slot: 16
+      Lore:
+      - '&6Ability: &73 Teleporters'
+      - ' '
+      - '&7- Iron Sword'
+      - '&7- 4 Ender Pearls'
+      - '&7- Leather Helmet'
+      - '&7- Leather Chestplate'
+      - '&7- Leather Leggings'
+      - '&7- Leather Boots'
+      - ' '
+      - '&eLeft-click to select.'
+      - '&eRight-click to preview.'
+      Commands:
+        Left-Click:
+        - 'player: kp kit Warper'
+        Right-Click:
+        - 'player: kp preview Warper'
+        Enabled: true
+    Witch:
+      Name: '&a&lWitch Kit'
+      Item: POTION
+      Slot: 19
+      Lore:
+      - '&6Ability: &7Infinite Potions'
+      - ' '
+      - '&7- Iron Sword'
+      - '&7- Leather Helmet'
+      - '&7- Leather Chestplate'
+      - '&7- Leather Leggings'
+      - '&7- Leather Boots'
+      - ' '
+      - '&eLeft-click to select.'
+      - '&eRight-click to preview.'
+      Commands:
+        Left-Click:
+        - 'player: kp kit Witch'
+        Right-Click:
+        - 'player: kp preview Witch'
+        Enabled: true
+    Ninja:
+      Name: '&a&lNinja Kit'
+      Item: NETHER_STAR
+      Slot: 20
+      Level: 15
+      Lore:
+      - '&6Ability: &73 Vanish Stars'
+      - ' '
+      - '&7- Wooden Sword'
+      - '&7- Leather Helmet'
+      - '&7- Chain Chestplate'
+      - '&7- Chain Leggings'
+      - '&7- Chain Boots'
+      - ' '
+      - '&eLeft-click to select.'
+      - '&eRight-click to preview.'
+      Commands:
+        Left-Click:
+        - 'player: kp kit Ninja'
+        Right-Click:
+        - 'player: kp preview Ninja'
+        Enabled: true
+    Thunderbolt:
+      Name: '&a&lThunderbolt Kit'
+      Item: BLAZE_POWDER
+      Level: 15
+      Slot: 21
+      Lore:
+      - '&6Ability: &73 Lightning Strikes'
+      - ' '
+      - '&7- Golden Sword'
+      - '&7- Leather Helmet'
+      - '&7- Golden Chestplate'
+      - '&7- Leather Leggings'
+      - '&7- Leather Boots'
+      - ' '
+      - '&eLeft-click to select.'
+      - '&eRight-click to preview.'
+      Commands:
+        Left-Click:
+        - 'player: kp kit Thunderbolt'
+        Right-Click:
+        - 'player: kp preview Thunderbolt'
+        Enabled: true
+    Vampire:
+      Name: '&a&lVampire Kit'
+      Item: FERMENTED_SPIDER_EYE
+      Level: 15
+      Slot: 22
+      Lore:
+      - '&6Ability: &73 Blood Suckers'
+      - ' '
+      - '&7- Iron Sword'
+      - '&7- Leather Helmet'
+      - '&7- Leather Chestplate'
+      - '&7- Leather Leggings'
+      - '&7- Leather Boots'
+      - ' '
+      - '&eLeft-click to select.'
+      - '&eRight-click to preview.'
+      Commands:
+        Left-Click:
+        - 'player: kp kit Vampire'
+        Right-Click:
+        - 'player: kp preview Vampire'
+        Enabled: true
+    Example:
+      Name: '&a&lExample Kit'
+      Item: WOOD_SWORD
+      Slot: 23
+      View-Permission: kp.kit.example
+      Lore:
+      - '&7This is the example of a custom'
+      - '&7kit you can create using KitPvP.'
+      - '&7You can make a custom kit using your'
+      - '&7own inventory, potion effects, and enchantments'
+      - '&7using /kp create kitName. Make sure to add it to'
+      - '&7the menu.yml!'
+      Commands:
+        Left-Click:
+        - 'player: kp kit Example'
+        Right-Click:
+        - 'player: kp preview Example'
+        Enabled: true
+    Close:
+      Name: '&c&lClose'
+      Item: BARRIER
+      Slot: 40
+      Lore:
+      - '&7Click to close the Kit Menu.'
+      
+      

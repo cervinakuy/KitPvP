@@ -1,0 +1,34 @@
+# SIGNS FILE - Customize the formatting of the signs, and also the storage for the locations of the signs.
+#
+# Recommendations:
+# 1) When creating kit signs, make sure the kit name is typed EXACTLY the same as shown in the kits.yml. The casing must match or else it won't find it.
+# 2) If you make an error while making a kit sign, remove or modify the Sign data stored at the bottom of this file.
+#
+# Please contact Cervinakuy (the developer) on Spigot if you have any problems.
+
+Signs:
+  Kit:
+    Line-1: '&7[&b&lKIT-PVP&7]'
+    Line-2: '&1Click to select'
+    Line-3: '&1%kit% kit'
+    Line-4: ' '
+  Clear:
+    Line-1: '&7[&b&lKIT-PVP&7]'
+    Line-2: '&1Click to clear'
+    Line-3: '&1your current kit'
+    Line-4: ' '
+  Menu:
+    Line-1: '&7[&b&lKIT-PVP&7]'
+    Line-2: '&1Click to open'
+    Line-3: '&1the kit selector'
+    Line-4: ' '
+  Stats:
+    Line-1: '&7[&b&lKIT-PVP&7]'
+    Line-2: '&1Click to view'
+    Line-3: '&1your stats'
+    Line-4: ' '
+  Refill:
+    Line-1: '&7[&b&lKIT-PVP&7]'
+    Line-2: '&1Click to refill'
+    Line-3: '&1your soups'
+    Line-4: ' '

@@ -1,0 +1,102 @@
+# ABILITIES FILE - Customize nearly every aspect of the pre-made abilities.
+#
+# Please contact Cervinakuy (the developer) on Spigot if you have any problems.
+
+Abilities:
+  Archer:
+    Item:
+      Fire: '&aFire Arrows &eON &7(Right Click)'
+      NoFire: '&aFire Arrows &cOFF &7(Right Click)'
+      Amount: 10
+    Message:
+      Fire: '%prefix% &bFire Arrows &7are now &eON&7.'
+      NoFire: '%prefix% &bFire Arrows &7are now &cOFF&7.'
+      Enabled: true
+    Sound:
+      Sound: GHAST_FIREBALL
+      Pitch: 1
+      Enabled: true
+  Soldier:
+    Item:
+      Name: '&aGun &7(Right Click)'
+      Amount: 5
+    Sound:
+      Sound: EXPLODE
+      Pitch: 1
+      Enabled: true
+  Bomber:
+    Item:
+      Name: '&aTNT Trail &7(Right Click)'
+      Amount: 3
+    Message:
+      Message: '%prefix% &7You have used a &bTNT Trail&7.'
+      Enabled: true
+    Sound:
+      Sound: FIZZ
+      Pitch: 1
+      Enabled: true
+  Kangaroo:
+    Item:
+      Name: '&aLauncher &7(Right Click)'
+      Amount: 3
+    Message:
+      Message: '%prefix% &7You have used a &bLauncher&7.'
+      Enabled: false
+    Sound:
+      Sound: BAT_TAKEOFF
+      Pitch: 1
+      Enabled: true  
+  Warper:
+    Item:
+      Name: '&aNearest Player Teleporter &7(Right Click)'
+      Amount: 3
+    Message:
+      Message: '%prefix% &7You have used a &bNearest Player Teleporter&7.'
+      Enabled: true
+    Sound:
+      Sound: ENDERMAN_TELEPORT
+      Pitch: 1
+      Enabled: true
+  Witch:
+    Item:
+      Name: '&aPotion Switcher &7(Right Click)'
+    Message:
+      Message: '%prefix% &7You now have a new potion.'
+      Enabled: true
+    Sound:
+      Sound: ITEM_PICKUP
+      Pitch: 1
+      Enabled: true
+  Ninja:
+    Item:
+      Name: '&aVanish Stars &7(Right Click)'
+      Amount: 3
+    Message:
+      Message: '%prefix% &7You have used a &bVanish Star&7.'
+      Enabled: true
+    Sound:
+      Sound: CREEPER_HISS
+      Pitch: 1
+      Enabled: true
+  Thunderbolt:
+    Item:
+      Name: '&aLighting Strike &7(Click Player)'
+      Amount: 3
+    Message:
+      Message: '%prefix% &7You have used a &bLighting Strike &7on &b%player%&7.'
+      Enabled: true
+    Sound:
+      Sound: AMBIENCE_THUNDER
+      Pitch: 1
+      Enabled: true
+  Vampire:
+    Item:
+      Name: '&aBlood Suckers &7(Click Player)'
+      Amount: 3
+    Message:
+      Message: '%prefix% &7You have sucked the blood of &b%player%&7. &c+ 3 Health'
+      Enabled: true
+    Sound:
+      Sound: BAT_HURT
+      Pitch: 1
+      Enabled: true

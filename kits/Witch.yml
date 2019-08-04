@@ -1,0 +1,47 @@
+Kit:
+  Permission: kp.kit.witch
+  Level: 0
+  Cooldown: 0
+Inventory:
+  Armor:
+    Helmet:
+      Name: '&7Witch Helmet'
+      Item: LEATHER_HELMET
+      Dye:
+        Red: 139
+        Green: 0
+        Blue: 139
+    Chestplate:
+      Name: '&7Witch Chestplate'
+      Item: LEATHER_CHESTPLATE
+      Dye:
+        Red: 139
+        Green: 0
+        Blue: 139
+    Leggings:
+      Name: '&7Witch Leggings'
+      Item: LEATHER_LEGGINGS
+      Dye:
+        Red: 139
+        Green: 0
+        Blue: 139
+    Boots:
+      Name: '&7Witch Boots'
+      Item: LEATHER_BOOTS
+      Dye:
+        Red: 139
+        Green: 0
+        Blue: 139
+  Items:
+    0:
+      Name: '&aWitch''s Sword'
+      Item: IRON_SWORD
+    1:
+      Name: '&aPotion Switcher &7(Right Click)'
+      Item: GLASS_BOTTLE
+    8:
+      Name: '&aPlayer Tracker &7(Right Click)'
+      Item: COMPASS
+    Fill:
+      Name: '&aRegenerative Soup &7(Right Click)'
+      Item: MUSHROOM_SOUP

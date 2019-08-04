@@ -1,0 +1,52 @@
+Kit:
+  Permission: kp.kit.kangaroo
+  Level: 0
+  Cooldown: 0
+Inventory:
+  Armor:
+    Helmet:
+      Name: '&7Kangaroo Helmet'
+      Item: LEATHER_HELMET
+      Dye:
+        Red: 165
+        Green: 42
+        Blue: 42
+    Chestplate:
+      Name: '&7Kangaroo Chestplate'
+      Item: LEATHER_CHESTPLATE
+      Dye:
+        Red: 165
+        Green: 42
+        Blue: 42
+    Leggings:
+      Name: '&7Kangaroo Leggings'
+      Item: LEATHER_LEGGINGS
+      Dye:
+        Red: 165
+        Green: 42
+        Blue: 42
+    Boots:
+      Name: '&7Kangaroo Boots'
+      Item: LEATHER_BOOTS
+      Dye:
+        Red: 165
+        Green: 42
+        Blue: 42
+  Items:
+    0:
+      Name: '&aKangaroo''s Sword'
+      Item: IRON_SWORD
+    1:
+      Name: '&aLauncher &7(Right Click)'
+      Item: SADDLE
+      Amount: 3
+    8:
+      Name: '&aPlayer Tracker &7(Right Click)'
+      Item: COMPASS
+    Fill:
+      Name: '&aRegenerative Soup &7(Right Click)'
+      Item: MUSHROOM_SOUP
+Potions:
+  JUMP:
+    Level: 2
+    Duration: 100000

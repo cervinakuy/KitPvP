@@ -1,0 +1,9 @@
+# Java
+bin/
+
+# Eclipse
+.settings/
+.classpath
+
+# macOS
+.DS_Store

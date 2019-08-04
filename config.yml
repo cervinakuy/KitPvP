@@ -1,0 +1,122 @@
+Items:
+  Kits:
+    Enabled: true
+    Name: '&aKit Selector &7(Right Click)'
+    Item: CHEST
+    Slot: 0
+    Menu: true
+    Commands:
+      Commands:
+      - 'console: All commands in this plugin have PlaceholderAPI support'
+      - 'console: This command is run from the console, you can use %player%'
+      - 'player: This command is run from the player, you can use %player%'
+      Enabled: false
+  Leave:
+    Enabled: true
+    Name: '&aReturn to Hub &7(Right Click)'
+    Item: WATCH
+    Slot: 8
+    BungeeCord:
+      Server: Hub
+      Enabled: true
+    Commands:
+      Commands:
+      - 'console: All commands in this plugin have PlaceholderAPI support'
+      - 'console: This command is run from the console, you can use %player%'
+      - 'player: This command is run from the player, you can use %player%'
+      Enabled: false
+Combat:
+  HitSound:
+    Sound: BLAZE_HIT
+    Pitch: 1
+    Enabled: true
+  ArrowHit:
+    Message: '%prefix% &b%player% &7is on &c%health%&7.'
+    Enabled: true
+  ArrowReturn:
+    ItemName: '&eReturnable Arrow'
+    NoSpace: '%prefix% &cYou must have at least one slot open in your inventory for you to receive your arrow for your successful shot.'
+    Enabled: true
+Kill:
+  Commands:
+    Commands:
+    - 'console: All commands in this plugin have PlaceholderAPI support'
+    - 'console: These commands are run by the console, you can use the %killer% variable for the killer name'
+    - 'player: These commands are run by the player, you can use the %killer% variable for the killer name'
+    Enabled: false
+Death:
+  Title:
+    Title: '&c&lYOU DIED!'
+    Subtitle: '&7You will respawn in %seconds% seconds.'
+    Time: 5
+    Message: '%prefix% &7Respawning...'
+  Sound:
+    Sound: AMBIENCE_THUNDER
+    Pitch: 1
+    Enabled: false
+  Commands:
+    Commands:
+    - 'console: All commands in this plugin have PlaceholderAPI support'
+    - 'console: These commands are run by the console, you can use the %victim% variable for the player who died'
+    - 'player: These commands are run by the player, you can use the %victim% variable for the player who died'
+    Enabled: false
+  Messages:
+    Player: '%prefix% &b%victim% &7was killed by &b%killer%&7.'
+    Shot: '%prefix% &b%victim% &7was shot by &b%shooter%&7.'
+    Fall: '%prefix% &b%victim% &7fell to their doom.'
+    Void: '%prefix% &b%victim% &7died from the void.'
+    Fire: '%prefix% &b%victim% &7died from fire.'
+    Explosion: '%prefix% &b%victim% &7blew up.'
+    Unknown: '%prefix% &b%victim% &7died.'
+    Enabled: true
+Respawn:
+  Commands:
+    Commands:
+    - 'console: All commands in this plugin have PlaceholderAPI support'
+    - 'console: These commands are run by the console, you can use the %player% variable for the player name'
+    - 'player: These commands are run by the player, you can use the %player% variable for the player name'
+    Enabled: false
+GiveSoupOnKill:
+  Amount: 1
+  NoSpace: '%prefix% &cCould not give you Soup for your kill because your inventory is full.'
+  Enabled: true
+PlayerTracker:
+  Tracker: '&ePlayer Tracker'
+  Message: '&b&lTarget: &3%nearestplayer% &b&lDistance: &3%distance%'
+  NoneOnline: '&cNo Players Online'
+Soups:
+  Name: '&aRegenerative Soups &7(Right Click)'
+  RemoveAfterUse: true
+  Lore:
+  - '&7Use this item to regain health.'
+  Sound: EAT
+  Pitch: 1
+  Enabled: true
+Commands:
+  Alias:
+    Spawn: false
+    Kit: false
+    Kits: false
+    Stats: false
+Arena:
+  ClearPotionEffectsOnJoin: true
+  ClearInventoryOnJoin: true
+  ClearInventoryOnLeave: false
+  ClearInventoryOnRespawn: true
+  ClearInventoryOnKit: true
+  PreventBlockBreaking: true
+  PreventBlockPlacing: true
+  PreventHunger: true
+  PreventItemDropping: true
+  PreventItemDurabilityDamage: true
+  PreventChestOpen: true
+  PreventFallDamage: false
+  PreventDeathDrops: true
+  ForceSurvivalOnJoin: true
+  KeepWeatherAtSunny: true
+  GiveItemsOnClear: true
+  NoKitProtection: true
+  FancyDeath: true
+Spawn:
+  Time: 5
+  Enabled: true

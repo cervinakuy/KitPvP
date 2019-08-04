@@ -1,0 +1,49 @@
+# MESSAGES FILE - Configure nearly every message in the plugin.
+#
+# Please contact Cervinakuy (the developer) on Spigot if you have any problems.
+
+Messages:
+  General:
+    Prefix: '&7[&b&lKIT-PVP&7]'
+    Permission: '%prefix% &cYou do not have permission.'
+    Player: '%prefix% &cYou must be a player to perform this action.'
+  Commands:
+    Create: '%prefix% &7The kit &b%kit% &7has successfully been created.'
+    Delete: '%prefix% &7The kit &b%kit% &7has successfully been deleted.'
+    Kit: '%prefix% &7You have selected kit &b%kit%&7.'
+    Kits: '%prefix% &bKits (case-sensitive): &7%kits%'
+    Teleport: '%prefix% &7Teleported you to the spawn.'
+    Teleporting: '%prefix% &7Teleporting, do not move.'
+    Time: '%prefix% &7Teleporting you in &b%time% seconds&7.'
+    Added: '%prefix% &7Successfully set the spawn in arena &b%arena%&7.'
+    Removed: '%prefix% &7Successfully removed the arena &b%arena%&7.'
+    Reload: '%prefix% &7Successfully reloaded the configurations.'
+    Cleared: '%prefix% &7Your kit has been cleared.'
+  Other:
+    Needed: '%prefix% &cYou must be Level %level% to use that kit.'
+    Level: '%prefix% &7Congratulations! You are now &bLevel %level%&7.'
+    Sign: '%prefix% &7You have successfully created a sign.'
+    Players: '%prefix% &cThere are no other players with a kit online.'
+  Error:
+    Arena: '%prefix% &cYou are not currently an in arena.'
+    ExistsArena: '%prefix% &cThe specified arena does not exist.'
+    Exists: '%prefix% &cThe specified kit already exists.'
+    Lost: '%prefix% &cKit not found! Remember kit names are case-sensitive!'
+    Arguments: '%prefix% Please specify more arguments in the command.'
+    Kit: '%prefix% &cYou must select a kit before hitting players.'
+    Moved: '%prefix% &cYou moved, teleportation cancelled.'
+    Invincible: '%prefix% &cYou cannot hit that player because they have no kit.'
+    Selected: '%prefix% &cYou have already selected a kit.'
+    Location: '%prefix% &cYou are not in the arena to perform this action.'
+    KitInvalid: '%prefix% &cYou cannot perform this action because you have a kit selected.'
+  Stats:
+    Message:
+    - '&7&m                                &r'
+    - ' '
+    - ' &b&lStats for %player%'
+    - ' &aLevel: &7%level%/100'
+    - ' &aExperience: &7%experience%/100'
+    - ' &aKills: &7%kills%'
+    - ' &aDeaths: &7%deaths%'
+    - ' '
+    - '&7&m                                &r'

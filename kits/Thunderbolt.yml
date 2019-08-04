@@ -1,0 +1,44 @@
+Kit:
+  Permission: kp.kit.thunderbolt
+  Level: 0
+  Cooldown: 0
+Inventory:
+  Armor:
+    Helmet:
+      Name: '&7Thunderbolt Helmet'
+      Item: LEATHER_HELMET
+      Dye:
+        Red: 224
+        Green: 249
+        Blue: 0
+    Chestplate:
+      Name: '&7Thunderbolt Chestplate'
+      Item: GOLD_CHESTPLATE
+    Leggings:
+      Name: '&7Thunderbolt Leggings'
+      Item: LEATHER_LEGGINGS
+      Dye:
+        Red: 224
+        Green: 249
+        Blue: 0
+    Boots:
+      Name: '&7Thunderbolt Boots'
+      Item: LEATHER_BOOTS
+      Dye:
+        Red: 224
+        Green: 249
+        Blue: 0
+  Items:
+    0:
+      Name: '&aThunderbolt''s Sword'
+      Item: GOLD_SWORD
+    1:
+      Name: '&aLightning Strikes &7(Right Click)'
+      Item: BLAZE_ROD
+      Amount: 3
+    8:
+      Name: '&aPlayer Tracker &7(Right Click)'
+      Item: COMPASS
+    Fill:
+      Name: '&aRegenerative Soup &7(Right Click)'
+      Item: MUSHROOM_SOUP

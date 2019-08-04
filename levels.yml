@@ -1,0 +1,133 @@
+# LEVELS FILE - Configure the leveling system and its formatting.
+#
+# Recommendations:
+# 1) Any commands in this entire plugin support PlaceholderAPI placeholders.
+# 2) The chat format supports PlaceholderAPI. If you want to include a player rank name in the chat formatting, do the following:
+#    - Install PlaceholderAPI and Vault
+#    - Download the Vault expansion (/papi ecloud download Vault)
+#    - Modify the chat formatting to the following: '{level} {vault_prefix} &e{player} &f{message}'
+#
+# Please contact Cervinakuy (the developer) on Spigot if you have any problems.
+
+Levels:
+  General:
+    Chat:
+      Format: '{level} &e{player} &f{message}'
+      Enabled: true
+    Experience:
+      Levelup: 100
+      Kill: 15
+      Death: 5
+    Level:
+      Minimum: 0
+      Maximum: 100
+  Commands:
+    Commands:
+    - 'console: All commands in this plugin have PlaceholderAPI support'
+    - 'console: This command is run from the console, you can use %player%'
+    - 'player: This command is run from the player, you can use %player%'
+    - 'player: These commands are run when a player levels up'
+    Enabled: false
+  Levels:
+    Level-0: '&7Level %number%' 
+    Level-1: '&7Level %number%'
+    Level-2: '&7Level %number%'
+    Level-3: '&7Level %number%'
+    Level-4: '&7Level %number%'
+    Level-5: '&7Level %number%'
+    Level-6: '&7Level %number%'
+    Level-7: '&7Level %number%'
+    Level-8: '&7Level %number%'
+    Level-9: '&7Level %number%'
+    Level-10: '&7Level %number%'
+    Level-11: '&7Level %number%'
+    Level-12: '&7Level %number%'
+    Level-13: '&7Level %number%'
+    Level-14: '&7Level %number%'
+    Level-15: '&7Level %number%'
+    Level-16: '&7Level %number%'
+    Level-17: '&7Level %number%'
+    Level-18: '&7Level %number%'
+    Level-19: '&7Level %number%'
+    Level-20: '&9Level %number%'
+    Level-21: '&9Level %number%'
+    Level-22: '&9Level %number%'
+    Level-23: '&9Level %number%'
+    Level-24: '&9Level %number%'
+    Level-25: '&9Level %number%'
+    Level-26: '&9Level %number%'
+    Level-27: '&9Level %number%'
+    Level-28: '&9Level %number%'
+    Level-29: '&9Level %number%'
+    Level-30: '&9Level %number%'
+    Level-31: '&9Level %number%'
+    Level-32: '&9Level %number%'
+    Level-33: '&9Level %number%'
+    Level-34: '&9Level %number%'
+    Level-35: '&9Level %number%'
+    Level-36: '&9Level %number%'
+    Level-37: '&9Level %number%'
+    Level-38: '&9Level %number%'
+    Level-39: '&9Level %number%'
+    Level-40: '&eLevel %number%'
+    Level-41: '&eLevel %number%'
+    Level-42: '&eLevel %number%'
+    Level-43: '&eLevel %number%'
+    Level-44: '&eLevel %number%'
+    Level-45: '&eLevel %number%'
+    Level-46: '&eLevel %number%'
+    Level-47: '&eLevel %number%'
+    Level-48: '&eLevel %number%'
+    Level-49: '&eLevel %number%'
+    Level-50: '&eLevel %number%'
+    Level-51: '&eLevel %number%'
+    Level-52: '&eLevel %number%'
+    Level-53: '&eLevel %number%'
+    Level-54: '&eLevel %number%'
+    Level-55: '&eLevel %number%'
+    Level-56: '&eLevel %number%'
+    Level-57: '&eLevel %number%'
+    Level-58: '&eLevel %number%'
+    Level-59: '&eLevel %number%'
+    Level-60: '&eLevel %number%'
+    Level-61: '&eLevel %number%'
+    Level-62: '&eLevel %number%'
+    Level-63: '&eLevel %number%'
+    Level-64: '&eLevel %number%'
+    Level-65: '&eLevel %number%'
+    Level-66: '&eLevel %number%'
+    Level-67: '&eLevel %number%'
+    Level-68: '&eLevel %number%'
+    Level-69: '&eLevel %number%'
+    Level-70: '&6Level %number%'
+    Level-71: '&6Level %number%'
+    Level-72: '&6Level %number%'
+    Level-73: '&6Level %number%'
+    Level-74: '&6Level %number%'
+    Level-75: '&6Level %number%'
+    Level-76: '&6Level %number%'
+    Level-77: '&6Level %number%'
+    Level-78: '&6Level %number%'
+    Level-79: '&6Level %number%'
+    Level-80: '&6Level %number%'
+    Level-81: '&6Level %number%'
+    Level-82: '&6Level %number%'
+    Level-83: '&6Level %number%'
+    Level-84: '&6Level %number%'
+    Level-85: '&6Level %number%'
+    Level-86: '&6Level %number%'
+    Level-87: '&6Level %number%'
+    Level-88: '&6Level %number%'
+    Level-89: '&6Level %number%'
+    Level-90: '&6Level %number%'
+    Level-91: '&6Level %number%'
+    Level-92: '&6Level %number%'
+    Level-93: '&6Level %number%'
+    Level-94: '&6Level %number%'
+    Level-95: '&6Level %number%'
+    Level-96: '&6Level %number%'
+    Level-97: '&6Level %number%'
+    Level-98: '&6Level %number%'
+    Level-99: '&6Level %number%'
+    Level-100: '&cLevel 100'
+    Enabled: true

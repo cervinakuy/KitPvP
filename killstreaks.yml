@@ -1,0 +1,84 @@
+# KILLSTREAKS FILE - Add in custom rewards or modify what events occur when a player reaches a certain streak.
+#
+# Recommendations:
+# 1) The number at the beginning of each streak is the streak number.
+# 2) Any commands in this entire plugin support PlaceholderAPI placeholders.
+# 3) You can change whether a streak is enabled at the bottom of each streak, "Streak-Enabled: "
+# 4) When adding your own streak, please remember to indent using ONLY spaces. It is recommended that you simply copy and modify a streak that already exists.
+#
+# Please contact Cervinakuy (the developer) on Spigot if you have any problems.
+
+KillStreaks:
+  3:
+    Title:
+      Title: '&c&lKill Streak'
+      Subtitle: '&6%player% &7is on a &6%streak% &7kill streak.'
+      Enabled: true
+    Sound:
+      Sound: ENDERDRAGON_GROWL
+      Pitch: 1
+      Enabled: true
+    Message:
+      Message: '%prefix% &b%player% &7is on a killstreak of &b%streak% Kills&7.'
+      Enabled: false
+    Commands:
+      Commands:
+      - 'console:This command is run from the console, you can use %player%'
+      - 'player:This command is run from the player, you can use %player%'
+      Enabled: false
+    Streak-Enabled: true
+  6:
+    Title:
+      Title: '&c&lKill Streak'
+      Subtitle: '&6%player% &7is on a &6%streak% &7kill streak.'
+      Enabled: true
+    Sound:
+      Sound: ENDERDRAGON_GROWL
+      Pitch: 1
+      Enabled: true
+    Message:
+      Message: '%prefix% &b%player% &7is on a killstreak of &b%streak% Kills&7.'
+      Enabled: false
+    Commands:
+      Commands:
+      - 'console:This command is run from the console, you can use %player%'
+      - 'player:This command is run from the player, you can use %player%'
+      Enabled: false
+    Streak-Enabled: true
+EndStreaks:
+  3:
+    Title:
+      Title: '&c&lKill Streak'
+      Subtitle: '&6%player% &7lost their streak of &6%streak%&7.'
+      Enabled: true
+    Sound:
+      Sound: ENDERDRAGON_GROWL
+      Pitch: 1
+      Enabled: true
+    Message:
+      Message: '%prefix% &b%player% &7lost their streak of &b%streak% Kills&7.'
+      Enabled: false
+    Commands:
+      Commands:
+      - 'console:This command is run from the console, you can use %player%'
+      - 'player:This command is run from the player, you can use %player%'
+      Enabled: false
+    Streak-Enabled: true
+  6:
+    Title:
+      Title: '&c&lKill Streak'
+      Subtitle: '&6%player% &7lost their streak of &6%streak%&7.'
+      Enabled: true
+    Sound:
+      Sound: ENDERDRAGON_GROWL
+      Pitch: 1
+      Enabled: true
+    Message:
+      Message: '%prefix% &b%player% &7lost their streak of &b%streak% Kills&7.'
+      Enabled: false
+    Commands:
+      Commands:
+      - 'console:This command is run from the console, you can use %player%'
+      - 'player:This command is run from the player, you can use %player%'
+      Enabled: false
+    Streak-Enabled: true

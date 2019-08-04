@@ -1,0 +1,56 @@
+Kit:
+  Permission: kp.kit.bomber
+  Cooldown: 0
+  Level: 0
+Inventory:
+  Armor:
+    Helmet:
+      Name: '&7Bomber Helmet'
+      Item: LEATHER_HELMET
+      Dye:
+        Red: 252
+        Green: 45
+        Blue: 59
+    Chestplate:
+      Name: '&7Bomber Chestplate'
+      Item: LEATHER_CHESTPLATE
+      Dye:
+        Red: 252
+        Green: 45
+        Blue: 59
+    Leggings:
+      Name: '&7Bomber Leggings'
+      Item: LEATHER_LEGGINGS
+      Dye:
+        Red: 252
+        Green: 45
+        Blue: 59
+    Boots:
+      Name: '&7Bomber Boots'
+      Item: LEATHER_BOOTS
+      Dye:
+        Red: 252
+        Green: 45
+        Blue: 59
+  Items:
+    0:
+      Name: '&aBomber''s Sword'
+      Item: IRON_SWORD
+    1:
+      Name: '&aTNT &7(Right Click)'
+      Item: TNT
+      Amount: 16
+    2:
+      Name: '&aTNT Trail &7(Right Click)'
+      Item: COAL
+      Amount: 3
+    8:
+      Name: '&aPlayer Tracker &7(Right Click)'
+      Item: COMPASS
+    Fill:
+      Name: '&aRegenerative Soup &7(Right Click)'
+      Item: MUSHROOM_SOUP
+Potions:
+  SPEED:
+    Level: 2
+    Duration: 100000
