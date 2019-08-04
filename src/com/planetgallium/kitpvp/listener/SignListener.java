@@ -9,7 +9,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
-import com.planetgallium.kitpvp.addon.KitMenu;
+import com.planetgallium.kitpvp.menu.KitMenu;
 import com.planetgallium.kitpvp.util.Config;
 import com.planetgallium.kitpvp.util.Menu;
 import com.planetgallium.kitpvp.util.Resources;

@@ -201,7 +201,8 @@ public class Kits {
 					skull.setItemMeta(skullMeta);
 					kit.addItem(skull, Integer.valueOf(identifier));
 				} else {
-					kit.addItem(new Item(Material.valueOf(kitResource.getString("Inventory.Items." + identifier + ".Item").toUpperCase()), kitResource.getString("Inventory.Items." + identifier + ".Name"), kitResource.getStringList("Inventory.Items." + identifier + ".Lore"), new Enchant(kit.getName(), "Inventory.Items." + identifier), kitResource.getInt("Inventory.Items." + identifier + ".Amount")), Integer.valueOf(identifier));
+					kit.addItem(new Item(XMaterial.matchXMaterial(kitResource.getString("Inventory.Items." + identifier + ".Item").toUpperCase()).parseMaterial(), kitResource.getString("Inventory.Items." + identifier + ".Name"), kitResource.getStringList("Inventory.Items." + identifier + ".Lore"), new Enchant(kit.getName(), "Inventory.Items." + identifier), kitResource.getInt("Inventory.Items." + identifier + ".Amount")), Integer.valueOf(identifier));
+					//kit.addItem(new Item(Material.valueOf(kitResource.getString("Inventory.Items." + identifier + ".Item").toUpperCase()), kitResource.getString("Inventory.Items." + identifier + ".Name"), kitResource.getStringList("Inventory.Items." + identifier + ".Lore"), new Enchant(kit.getName(), "Inventory.Items." + identifier), kitResource.getInt("Inventory.Items." + identifier + ".Amount")), Integer.valueOf(identifier));
 				}
 				
 			}

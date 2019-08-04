@@ -12,6 +12,7 @@ import com.planetgallium.kitpvp.game.Arena;
 import com.planetgallium.kitpvp.kit.Ability;
 import com.planetgallium.kitpvp.util.Resources;
 import com.planetgallium.kitpvp.util.Toolkit;
+import com.planetgallium.kitpvp.util.XMaterial;
 
 public class EventListener implements Listener {
 
@@ -38,7 +39,7 @@ public class EventListener implements Listener {
 					
 					if (currentItem.hasItemMeta() && currentItem.getItemMeta().hasDisplayName()) {
 						
-						if (currentItem.getType().toString().equals(resources.getKits(arena.getKits().getKit(p.getName())).getString("Ability.Activator.Item"))) {
+						if (currentItem.getType() == XMaterial.matchXMaterial(resources.getKits(arena.getKits().getKit(p.getName())).getString("Ability.Activator.Item")).parseMaterial()) {
 							
 							String kit = arena.getKits().getKit(p.getName());
 							

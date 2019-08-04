@@ -29,8 +29,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import com.planetgallium.kitpvp.Game;
-import com.planetgallium.kitpvp.addon.KitMenu;
 import com.planetgallium.kitpvp.game.Arena;
+import com.planetgallium.kitpvp.menu.KitMenu;
 import com.planetgallium.kitpvp.util.Config;
 import com.planetgallium.kitpvp.util.Resources;
 import com.planetgallium.kitpvp.util.Sounds;

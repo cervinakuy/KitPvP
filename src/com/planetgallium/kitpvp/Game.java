@@ -13,7 +13,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
-import com.planetgallium.kitpvp.addon.KitMenu;
 import com.planetgallium.kitpvp.api.EventListener;
 import com.planetgallium.kitpvp.util.Config;
 import com.planetgallium.kitpvp.util.Metrics;
@@ -25,6 +24,7 @@ import com.planetgallium.kitpvp.command.StatsCommand;
 import com.planetgallium.kitpvp.command.KitsCommand;
 import com.planetgallium.kitpvp.game.Arena;
 import com.planetgallium.kitpvp.listener.*;
+import com.planetgallium.kitpvp.menu.KitMenu;
 import com.planetgallium.kitpvp.util.Placeholders;
 import com.planetgallium.kitpvp.util.Resources;
 import com.planetgallium.kitpvp.util.Toolkit;

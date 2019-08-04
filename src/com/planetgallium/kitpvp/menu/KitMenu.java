@@ -1,4 +1,4 @@
-package com.planetgallium.kitpvp.addon;
+package com.planetgallium.kitpvp.menu;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -14,6 +14,8 @@ import com.planetgallium.kitpvp.Game;
 import com.planetgallium.kitpvp.util.Config;
 import com.planetgallium.kitpvp.util.Menu;
 import com.planetgallium.kitpvp.util.Resources;
+import com.planetgallium.kitpvp.util.XMaterial;
+
 import me.clip.placeholderapi.PlaceholderAPI;
 
 public class KitMenu implements Listener {
@@ -36,7 +38,7 @@ public class KitMenu implements Listener {
 			if (!resources.getMenu().getBoolean("Menu.General.Hide-Items-With-No-Permission")) {
 				
 				menu.addItem(resources.getMenu().getString("Menu.Items." + identifier + ".Name"),
-						Material.valueOf(resources.getMenu().getString("Menu.Items." + identifier + ".Item").toUpperCase()),
+						XMaterial.matchXMaterial(resources.getMenu().getString("Menu.Items." + identifier + ".Item").toUpperCase()).parseMaterial(),
 						resources.getMenu().getStringList("Menu.Items." + identifier + ".Lore"),
 						resources.getMenu().getInt("Menu.Items." + identifier + ".Slot"));
 				
@@ -47,7 +49,7 @@ public class KitMenu implements Listener {
 					if (p.hasPermission(resources.getMenu().getString("Menu.Items." + identifier + ".View-Permission"))) {
 						
 						menu.addItem(resources.getMenu().getString("Menu.Items." + identifier + ".Name"),
-								Material.valueOf(resources.getMenu().getString("Menu.Items." + identifier + ".Item").toUpperCase()),
+								XMaterial.matchXMaterial(resources.getMenu().getString("Menu.Items." + identifier + ".Item").toUpperCase()).parseMaterial(),
 								resources.getMenu().getStringList("Menu.Items." + identifier + ".Lore"),
 								resources.getMenu().getInt("Menu.Items." + identifier + ".Slot"));
 						

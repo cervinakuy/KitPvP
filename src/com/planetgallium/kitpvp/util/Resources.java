@@ -49,6 +49,7 @@ public class Resources {
 		kits.put("Thunderbolt.yml", new Resource(plugin, "kits/Thunderbolt.yml", "Thunderbolt.yml"));
 		kits.put("Vampire.yml", new Resource(plugin, "kits/Vampire.yml", "Vampire.yml"));
 		kits.put("Witch.yml", new Resource(plugin, "kits/Witch.yml", "Witch.yml"));
+		kits.put("Rhino.yml", new Resource(plugin, "kits/Rhino.yml", "Rhino.yml"));
 		kits.put("Example.yml", new Resource(plugin, "kits/Example.yml", "Example.yml"));
 		
 		for (String kit : this.getKitList()) {

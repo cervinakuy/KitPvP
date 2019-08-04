@@ -40,7 +40,7 @@ public class AbilityListener implements Listener {
 			
 			// Sound
 			if (resources.getKits(kit).getBoolean("Ability.Sound.Enabled")) {
-				p.playSound(p.getLocation(), Sounds.valueOf(ability.getSoundName()).bukkitSound(), 1, ability.getSoundPitch());
+				p.playSound(p.getLocation(), Sounds.valueOf(ability.getSoundName()).bukkitSound(), 3, ability.getSoundPitch());
 			}
 			
 			// Potions

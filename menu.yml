@@ -253,6 +253,27 @@ Menu:
         Right-Click:
         - 'player: kp preview Vampire'
         Enabled: true
+    Rhino:
+      Name: '&a&lRhino Kit'
+      Item: DIAMOND_HELMET
+      Slot: 24
+      Lore:
+      - '&6Ability: &73 Rhino Charges'
+      - ' '
+      - '&7- Iron Sword'
+      - '&7- Diamond Helmet'
+      - '&7- Leather Chestplate'
+      - '&7- Leather Leggings'
+      - '&7- Leather Boots'
+      - ' '
+      - '&eLeft-click to select.'
+      - '&eRight-click to preview.'
+      Commands:
+        Left-Click:
+        - 'player: kp kit Rhino'
+        Right-Click:
+        - 'player: kp preview Rhino'
+        Enabled: true
     Example:
       Name: '&a&lExample Kit'
       Item: WOOD_SWORD
