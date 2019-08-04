@@ -55,10 +55,11 @@ public class AbilityListener implements Listener {
 				Toolkit.runCommands(resources.getKits(arena.getKits().getKit(p.getName())), "Ability", p);
 			}
 			
-			if (p.getItemInHand().getAmount() > 1) {
-				p.getItemInHand().setAmount(p.getItemInHand().getAmount() - 1);
+			// Item handling
+			if (Toolkit.getMainHandItem(p).getAmount() > 1) {
+				Toolkit.getMainHandItem(p).setAmount(Toolkit.getMainHandItem(p).getAmount() - 1);
 			} else {
-				p.setItemInHand(new ItemStack(Material.AIR));
+				Toolkit.setMainHandItem(p, new ItemStack(Material.AIR));
 			}
 			
 		} else {

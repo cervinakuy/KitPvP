@@ -24,6 +24,7 @@ import com.planetgallium.kitpvp.game.Arena;
 import com.planetgallium.kitpvp.util.Config;
 import com.planetgallium.kitpvp.util.Resources;
 import com.planetgallium.kitpvp.util.Toolkit;
+import com.planetgallium.kitpvp.util.XMaterial;
 
 public class ArenaListener implements Listener {
 	
@@ -63,7 +64,7 @@ public class ArenaListener implements Listener {
 				
 				e.setCancelled(true);
 				
-			} else if ((p.getItemInHand().hasItemMeta() && p.getItemInHand().getItemMeta().getDisplayName().equals(Config.getS("Items.Kits.Name"))) || p.getItemInHand().getType() == Material.valueOf(Config.getS("Items.Leave.Item"))) {
+			} else if ((Toolkit.getMainHandItem(p).hasItemMeta() && Toolkit.getMainHandItem(p).getItemMeta().getDisplayName().equals(Config.getS("Items.Kits.Name"))) || Toolkit.getMainHandItem(p).getType() == Material.valueOf(Config.getS("Items.Leave.Item"))) {
 				
 				e.setCancelled(true);
 				
@@ -204,7 +205,7 @@ public class ArenaListener implements Listener {
 		
 		if (Toolkit.inArena(p)) {
 			
-			if (p.getItemInHand().getType() == Material.EYE_OF_ENDER) {
+			if (Toolkit.getMainHandItem(p).getType() == XMaterial.ENDER_EYE.parseMaterial()) {
 				
 				e.setCancelled(true);
 				

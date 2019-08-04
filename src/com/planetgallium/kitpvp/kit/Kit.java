@@ -7,7 +7,6 @@ import java.util.Map;
 
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 
 import com.planetgallium.kitpvp.Game;
@@ -126,20 +125,6 @@ public class Kit {
 			if (p.getInventory().getItem(i) == null) {
 				
 				p.getInventory().setItem(i, fill);
-				
-			}
-			
-		}
-		
-		// SET ALL ITEMS UNBREAKABLE
-		
-		for (int i = 0; i < 36; i++) {
-			
-			if (p.getInventory().getItem(i) != null) {
-				
-				ItemMeta meta = p.getInventory().getItem(i).getItemMeta();
-				meta.spigot().setUnbreakable(true);
-				p.getInventory().getItem(i).setItemMeta(meta);
 				
 			}
 			

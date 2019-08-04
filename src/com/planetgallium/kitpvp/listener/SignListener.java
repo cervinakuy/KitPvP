@@ -1,7 +1,6 @@
 package com.planetgallium.kitpvp.listener;
 
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -14,6 +13,7 @@ import com.planetgallium.kitpvp.addon.KitMenu;
 import com.planetgallium.kitpvp.util.Config;
 import com.planetgallium.kitpvp.util.Menu;
 import com.planetgallium.kitpvp.util.Resources;
+import com.planetgallium.kitpvp.util.XMaterial;
 
 public class SignListener implements Listener {
 
@@ -108,7 +108,7 @@ public class SignListener implements Listener {
 						
 						for (int i = 0; i < menu.getSize(); i++) {
 							
-							menu.addItem(Config.getS("Soups.Name"), Material.MUSHROOM_SOUP, Config.getC().getStringList("Soups.Lore"), i);
+							menu.addItem(Config.getS("Soups.Name"), XMaterial.MUSHROOM_STEW.parseMaterial(), Config.getC().getStringList("Soups.Lore"), i);
 							
 						}
 						

@@ -30,7 +30,7 @@ public class InteractListener implements Listener {
 		
 		Player p = e.getPlayer();
 		
-		if (Toolkit.inArena(p) && p.getItemInHand().getType() == Material.BLAZE_ROD && e.getRightClicked().getType() == EntityType.PLAYER) {
+		if (Toolkit.inArena(p) && Toolkit.getMainHandItem(p).getType() == Material.BLAZE_ROD && e.getRightClicked().getType() == EntityType.PLAYER) {
 			
 			if (p.hasPermission("kp.ability.thunderbolt")) {
 				
@@ -38,7 +38,7 @@ public class InteractListener implements Listener {
 				
 				if (Game.getInstance().getArena().getKits().hasKit(damagedPlayer.getName())) {
 					
-					ItemStack strike = new ItemStack(p.getItemInHand().getType(), p.getItemInHand().getAmount());
+					ItemStack strike = new ItemStack(Toolkit.getMainHandItem(p).getType(), Toolkit.getMainHandItem(p).getAmount());
 					ItemMeta strikeMeta = strike.getItemMeta();
 					strikeMeta.setDisplayName(Config.tr(resources.getAbilities().getString("Abilities.Thunderbolt.Item.Name")));
 					strike.setItemMeta(strikeMeta);
@@ -54,13 +54,13 @@ public class InteractListener implements Listener {
 					damagedPlayer.setFireTicks(5 * 20);
 					
 					strike.setAmount(strike.getAmount() - 1);
-					p.getInventory().setItemInHand(strike);
+					Toolkit.setMainHandItem(p, strike);
 					
 				}
 				
 			}
 			
-		} else if (p.getItemInHand().getType() == Material.GHAST_TEAR && e.getRightClicked().getType() == EntityType.PLAYER) {
+		} else if (Toolkit.getMainHandItem(p).getType() == Material.GHAST_TEAR && e.getRightClicked().getType() == EntityType.PLAYER) {
 			
 			if (p.hasPermission("kp.ability.vampire")) {
 				
@@ -68,7 +68,7 @@ public class InteractListener implements Listener {
 				
 				if (Game.getInstance().getArena().getKits().hasKit(damagedPlayer.getName())) {
 					
-					ItemStack suck = new ItemStack(p.getItemInHand().getType(), p.getItemInHand().getAmount());
+					ItemStack suck = new ItemStack(Toolkit.getMainHandItem(p).getType(), Toolkit.getMainHandItem(p).getAmount());
 					ItemMeta suckMeta = suck.getItemMeta();
 					suckMeta.setDisplayName(Config.tr(resources.getAbilities().getString("Abilities.Vampire.Item.Name")));
 					suck.setItemMeta(suckMeta);
@@ -90,7 +90,7 @@ public class InteractListener implements Listener {
 					}
 					
 					suck.setAmount(suck.getAmount() - 1);
-					p.getInventory().setItemInHand(suck);
+					Toolkit.setMainHandItem(p, suck);
 					
 				}
 				

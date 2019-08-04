@@ -6,6 +6,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
 
 import com.planetgallium.kitpvp.game.Arena;
 import com.planetgallium.kitpvp.kit.Ability;
@@ -33,15 +34,17 @@ public class EventListener implements Listener {
 				
 				if (arena.getKits().hasKit(p.getName())) {
 					
-					if (p.getItemInHand().hasItemMeta() && p.getItemInHand().getItemMeta().hasDisplayName()) {
+					ItemStack currentItem = Toolkit.getMainHandItem(p);
+					
+					if (currentItem.hasItemMeta() && currentItem.getItemMeta().hasDisplayName()) {
 						
-						if (p.getItemInHand().getType().toString().equals(resources.getKits(arena.getKits().getKit(p.getName())).getString("Ability.Activator.Item"))) {
+						if (currentItem.getType().toString().equals(resources.getKits(arena.getKits().getKit(p.getName())).getString("Ability.Activator.Item"))) {
 							
 							String kit = arena.getKits().getKit(p.getName());
 							
-							if (p.getItemInHand().getItemMeta().getDisplayName().replace("§", "&").equals(resources.getKits(kit).getString("Ability.Activator.Name"))) {
+							if (currentItem.getItemMeta().getDisplayName().replace("§", "&").equals(resources.getKits(kit).getString("Ability.Activator.Name"))) {
 								
-								Ability ability = new Ability(resources.getKits(kit), p.getItemInHand().getType());
+								Ability ability = new Ability(resources.getKits(kit), currentItem.getType());
 								Bukkit.getPluginManager().callEvent(new PlayerAbilityEvent(p, ability));
 								
 							}

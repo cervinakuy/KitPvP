@@ -1,6 +1,5 @@
 package com.planetgallium.kitpvp.listener;
 
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -10,6 +9,8 @@ import org.bukkit.inventory.ItemStack;
 
 import com.planetgallium.kitpvp.util.Config;
 import com.planetgallium.kitpvp.util.Sounds;
+import com.planetgallium.kitpvp.util.Toolkit;
+import com.planetgallium.kitpvp.util.XMaterial;
 
 public class SoupListener implements Listener {
 
@@ -40,7 +41,7 @@ public class SoupListener implements Listener {
 					}
 					
 					for (int r = 0; r < count; r++) {
-						killer.getInventory().addItem(new ItemStack(Material.MUSHROOM_SOUP));
+						killer.getInventory().addItem(new ItemStack(XMaterial.MUSHROOM_STEW.parseItem()));
 					}
 					
 				}
@@ -56,7 +57,7 @@ public class SoupListener implements Listener {
 	    
 		if (Config.getB("Soups.Enabled")) {
 			
-		    if (e.getItem() != null && e.getItem().getType() == Material.MUSHROOM_SOUP) {
+		    if (e.getItem() != null && e.getItem().getType() == XMaterial.MUSHROOM_STEW.parseMaterial()) {
 		    	
 		        e.setCancelled(true);
 		        
@@ -69,11 +70,11 @@ public class SoupListener implements Listener {
 		            
 		            if (Config.getB("Soups.RemoveAfterUse")) {
 		            	
-		            	p.setItemInHand(new ItemStack(Material.AIR));
+		            	Toolkit.setMainHandItem(p, new ItemStack(XMaterial.AIR.parseItem()));
 		            	
 		            } else {
 		            	
-		            	p.setItemInHand(new ItemStack(Material.BOWL));
+		            	Toolkit.setMainHandItem(p, new ItemStack(XMaterial.BOWL.parseItem()));
 		            	
 		            }
 		            

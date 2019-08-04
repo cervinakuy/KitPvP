@@ -27,6 +27,7 @@ import com.planetgallium.kitpvp.game.Arena;
 import com.planetgallium.kitpvp.listener.*;
 import com.planetgallium.kitpvp.util.Placeholders;
 import com.planetgallium.kitpvp.util.Resources;
+import com.planetgallium.kitpvp.util.Toolkit;
 import com.planetgallium.kitpvp.util.Updater;
 
 import net.md_5.bungee.api.ChatColor;
@@ -156,7 +157,7 @@ public class Game extends JavaPlugin implements Listener {
 		
 		Player p = e.getPlayer();
 		
-		if (p.getItemInHand().getType() == Material.valueOf(Config.getS("Items.Leave.Item"))) {
+		if (Toolkit.getMainHandItem(p).getType() == Material.valueOf(Config.getS("Items.Leave.Item"))) {
 			
 			if (Config.getB("Items.Leave.Enabled")) {
 					

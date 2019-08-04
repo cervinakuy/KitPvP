@@ -24,7 +24,7 @@ import com.planetgallium.kitpvp.kit.Enchant;
 import com.planetgallium.kitpvp.kit.Item;
 import com.planetgallium.kitpvp.kit.Kit;
 import com.planetgallium.kitpvp.util.Config;
-import com.planetgallium.kitpvp.util.Materials;
+import com.planetgallium.kitpvp.util.XMaterial;
 import com.planetgallium.kitpvp.util.Resource;
 import com.planetgallium.kitpvp.util.Resources;
 import com.planetgallium.kitpvp.util.Toolkit;
@@ -90,7 +90,7 @@ public class Kits {
 			
 			if (item != null) {
 				
-				String backupName = (item.getType() == Material.MUSHROOM_SOUP) ? Config.getS("Soups.Name") : "&7Item";
+				String backupName = (item.getType() == XMaterial.MUSHROOM_STEW.parseMaterial()) ? Config.getS("Soups.Name") : "&7Item";
 				saveItem(kitResource, p.getInventory().getItem(i), "Inventory.Items." + i, backupName);
 				
 			}
@@ -160,7 +160,7 @@ public class Kits {
 			
 			if (kitResource.contains("Inventory.Armor.Helmet.Item")) {
 				if (kitResource.getString("Inventory.Armor.Helmet.Item").equals("SKULL_ITEM")) {
-					ItemStack skull = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
+					ItemStack skull = new ItemStack(XMaterial.SKELETON_SKULL.parseMaterial(), 1, (short) 3);
 					SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
 					skullMeta.setOwner(kitResource.getString("Inventory.Armor.Helmet.Skull"));
 					skull.setItemMeta(skullMeta);
@@ -192,7 +192,7 @@ public class Kits {
 			if (!identifier.equals("Fill")) {
 				
 				if (kitResource.getString("Inventory.Items." + identifier + ".Item").equals("SKULL_ITEM")) {
-					ItemStack skull = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
+					ItemStack skull = new ItemStack(XMaterial.SKELETON_SKULL.parseMaterial(), 1, (short) 3);
 					SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
 					skullMeta.setOwner(kitResource.getString("Inventory.Items." + identifier + ".Skull"));
 					skull.setItemMeta(skullMeta);

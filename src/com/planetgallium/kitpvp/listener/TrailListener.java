@@ -35,7 +35,7 @@ public class TrailListener implements Listener {
 	
 		Player p = e.getPlayer();
 		
-		if (Toolkit.inArena(p) && p.getItemInHand().getType() == Material.COAL) {
+		if (Toolkit.inArena(p) && Toolkit.getMainHandItem(p).getType() == Material.COAL) {
 			
 			if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
 			
@@ -49,7 +49,7 @@ public class TrailListener implements Listener {
 					
 					//
 					
-					ItemStack coal = new ItemStack(Material.COAL, p.getItemInHand().getAmount());
+					ItemStack coal = new ItemStack(Material.COAL, Toolkit.getMainHandItem(p).getAmount());
 					ItemMeta coalMeta = coal.getItemMeta();
 					
 					coalMeta.setDisplayName(Config.tr(resources.getAbilities().getString("Abilities.Bomber.Item.Name")));
@@ -57,7 +57,7 @@ public class TrailListener implements Listener {
 					coal.setItemMeta(coalMeta);
 					coal.setAmount(coal.getAmount() - 1);
 					
-					p.setItemInHand(coal);
+					Toolkit.setMainHandItem(p, coal);
 					
 					//
 					

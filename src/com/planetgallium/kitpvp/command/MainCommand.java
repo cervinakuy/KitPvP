@@ -26,6 +26,7 @@ import com.planetgallium.kitpvp.util.Menu;
 import com.planetgallium.kitpvp.util.Resources;
 import com.planetgallium.kitpvp.util.Sounds;
 import com.planetgallium.kitpvp.util.Toolkit;
+import com.planetgallium.kitpvp.util.XMaterial;
 
 import me.clip.placeholderapi.PlaceholderAPI;
 
@@ -498,7 +499,7 @@ public class MainCommand implements CommandExecutor {
 										}
 									}
 									
-									preview.addItem("&cBack to Kits", Material.WOOD_DOOR, new ArrayList<String>(), 8);
+									preview.addItem("&cBack to Kits", XMaterial.OAK_DOOR.parseMaterial(), new ArrayList<String>(), 8);
 									
 									preview.openMenu(p);
 									

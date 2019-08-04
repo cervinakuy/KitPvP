@@ -366,6 +366,8 @@ public class Toolkit {
  			
  		}
  		
+ 		return -1;
+ 		
  	}
  	
  	@SuppressWarnings("deprecation")
@@ -382,6 +384,23 @@ public class Toolkit {
  		}
  		
  		return p.getItemInHand();
+ 		
+ 	}
+ 	
+ 	@SuppressWarnings("deprecation")
+	public static void setMainHandItem(Player p, ItemStack item) {
+ 		
+ 		if (versionToNumber() == 18) {
+ 			
+ 			p.setItemInHand(item);
+ 			
+ 		} else if (versionToNumber() > 18) {
+ 			
+ 			p.getInventory().setItemInMainHand(item);
+ 			
+ 		}
+ 		
+ 		p.setItemInHand(item);
  		
  	}
  	

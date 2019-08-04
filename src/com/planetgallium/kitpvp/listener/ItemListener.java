@@ -34,6 +34,7 @@ import com.planetgallium.kitpvp.util.Config;
 import com.planetgallium.kitpvp.util.Resources;
 import com.planetgallium.kitpvp.util.Sounds;
 import com.planetgallium.kitpvp.util.Toolkit;
+import com.planetgallium.kitpvp.util.XMaterial;
 
 public class ItemListener implements Listener {
 	
@@ -52,9 +53,9 @@ public class ItemListener implements Listener {
 			
 			if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
 				
-				if (p.getItemInHand().hasItemMeta() && p.getItemInHand().getItemMeta().hasDisplayName() && p.getItemInHand().getType() == Material.valueOf(Game.getInstance().getConfig().getString("Items.Kits.Item").toUpperCase())) {
+				if (Toolkit.getMainHandItem(p).hasItemMeta() && Toolkit.getMainHandItem(p).getItemMeta().hasDisplayName() && Toolkit.getMainHandItem(p).getType() == Material.valueOf(Game.getInstance().getConfig().getString("Items.Kits.Item").toUpperCase())) {
 					
-					if (p.getItemInHand().getItemMeta().getDisplayName().equals(Config.getS("Items.Kits.Name"))) {
+					if (Toolkit.getMainHandItem(p).getItemMeta().getDisplayName().equals(Config.getS("Items.Kits.Name"))) {
 						
 						if (Game.getInstance().getConfig().getBoolean("Items.Kits.Menu")) {
 							
@@ -91,9 +92,9 @@ public class ItemListener implements Listener {
 						 
 					}
 					
-				} else if (p.getItemInHand().getType() == Material.valueOf(Config.getS("Items.Leave.Item").toUpperCase())) {
+				} else if (Toolkit.getMainHandItem(p).getType() == Material.valueOf(Config.getS("Items.Leave.Item").toUpperCase())) {
 					
-					if (p.getItemInHand().getItemMeta().getDisplayName().equals(Config.getS(("Items.Leave.Name")))) {
+					if (Toolkit.getMainHandItem(p).getItemMeta().getDisplayName().equals(Config.getS(("Items.Leave.Name")))) {
 						
 						if (Config.getB("Items.Leave.Commands.Enabled")) {
 							
@@ -123,9 +124,9 @@ public class ItemListener implements Listener {
 						
 					}	
 					
-				} else if (p.getItemInHand().getType() == Material.TNT) {
+				} else if (Toolkit.getMainHandItem(p).getType() == Material.TNT) {
 					
-					ItemStack tnt = new ItemStack(p.getItemInHand().getType(), p.getItemInHand().getAmount());
+					ItemStack tnt = new ItemStack(Toolkit.getMainHandItem(p).getType(), Toolkit.getMainHandItem(p).getAmount());
 					
 					Location handLocation = p.getLocation();
 					handLocation.setY(handLocation.getY() + 1.0);
@@ -135,9 +136,9 @@ public class ItemListener implements Listener {
 			        entity.setVelocity(direction.multiply(1.5));
 		            
 			        tnt.setAmount(tnt.getAmount() - 1);
-			        p.setItemInHand(tnt);
+			        Toolkit.setMainHandItem(p, tnt);
 		            
-				} else if (p.getItemInHand().getType() == Material.SLIME_BALL) {
+				} else if (Toolkit.getMainHandItem(p).getType() == Material.SLIME_BALL) {
 					
 					int amount = p.getInventory().getItem(2).getAmount();
 					
@@ -145,7 +146,7 @@ public class ItemListener implements Listener {
 					ItemMeta enabledmeta = enabled.getItemMeta();
 					enabledmeta.setDisplayName(Config.tr(resources.getAbilities().getString("Abilities.Archer.Item.Fire")));
 					enabled.setItemMeta(enabledmeta);
-					p.setItemInHand(enabled);
+					Toolkit.setMainHandItem(p, enabled);
 					
 					if (resources.getAbilities().getBoolean("Abilities.Archer.Message.Enabled")) {
 						p.sendMessage(Config.tr(resources.getAbilities().getString("Abilities.Archer.Message.Fire").replace("%prefix%", resources.getMessages().getString("Messages.General.Prefix"))));
@@ -153,7 +154,7 @@ public class ItemListener implements Listener {
 					
 					p.playSound(p.getLocation(), Sounds.WOOD_CLICK.bukkitSound(), 1, resources.getAbilities().getInt("Abilities.Archer.Sound.Pitch"));
 					
-				} else if (p.getItemInHand().getType() == Material.MAGMA_CREAM) {
+				} else if (Toolkit.getMainHandItem(p).getType() == Material.MAGMA_CREAM) {
 					
 					int amount = p.getInventory().getItem(2).getAmount();
 					
@@ -161,7 +162,7 @@ public class ItemListener implements Listener {
 					ItemMeta enabledmeta = enabled.getItemMeta();
 					enabledmeta.setDisplayName(Config.tr(resources.getAbilities().getString("Abilities.Archer.Item.NoFire")));
 					enabled.setItemMeta(enabledmeta);
-					p.setItemInHand(enabled);
+					Toolkit.setMainHandItem(p, enabled);
 					
 					if (resources.getAbilities().getBoolean("Abilities.Archer.Message.Enabled")) {
 						p.sendMessage(Config.tr(resources.getAbilities().getString("Abilities.Archer.Message.NoFire").replace("%prefix%", resources.getMessages().getString("Messages.General.Prefix"))));
@@ -169,7 +170,7 @@ public class ItemListener implements Listener {
 					
 					p.playSound(p.getLocation(), Sounds.WOOD_CLICK.bukkitSound(), 1, 1);
 					
-				} else if (p.getItemInHand().getType() == Material.SADDLE) {
+				} else if (Toolkit.getMainHandItem(p).getType() == Material.SADDLE) {
 					
 					if (p.hasPermission("kp.ability.kangaroo")) {
 						
@@ -187,13 +188,13 @@ public class ItemListener implements Listener {
 						p.setVelocity(new Vector(0, 2, 0));
 						
 						launcher.setAmount(launcher.getAmount() - 1);
-						p.getInventory().setItemInHand(launcher);
+						Toolkit.setMainHandItem(p, launcher);
 						
 						if (Game.getInstance().getConfig().getBoolean("Arena.PreventFallDamage")) { p.setFallDistance(-1000000); } else { p.setFallDistance(-30); }
 						
 					}
 					
-				} else if (p.getItemInHand().getType() == Material.IRON_HOE) {
+				} else if (Toolkit.getMainHandItem(p).getType() == Material.IRON_HOE) {
 					
 					if (p.hasPermission("kp.ability.soldier")) {
 						
@@ -208,22 +209,22 @@ public class ItemListener implements Listener {
 						p.playSound(p.getLocation(), Sounds.EXPLODE.bukkitSound(), 1, 2);
 						
 						gun.setAmount(gun.getAmount() - 1);
-						p.getInventory().setItemInHand(gun);
+						Toolkit.setMainHandItem(p, gun);
 						
 					}
 					
-				} else if (p.getItemInHand().getType() == Material.GLASS_BOTTLE) {
+				} else if (Toolkit.getMainHandItem(p).getType() == Material.GLASS_BOTTLE) {
 					
 					if (p.hasPermission("kp.ability.witch")) {
 						
 						Potion potion = new Potion(pickPotion(), 1);
 						potion.setSplash(true);
 						
-						p.getInventory().setItemInHand(potion.toItemStack(1));
+						Toolkit.setMainHandItem(p, potion.toItemStack(1));
 						
 					}
 					
-				} else if (p.getItemInHand().getType() == Material.EYE_OF_ENDER) {
+				} else if (Toolkit.getMainHandItem(p).getType() == XMaterial.ENDER_EYE.parseMaterial()) {
 					
 					if (p.hasPermission("kp.ability.warper")) {
 						
@@ -253,7 +254,7 @@ public class ItemListener implements Listener {
 								}
 								
 								tper.setAmount(tper.getAmount() - 1);
-								p.getInventory().setItemInHand(tper);
+								Toolkit.setMainHandItem(p, tper);
 								
 							} else {
 								
@@ -269,7 +270,7 @@ public class ItemListener implements Listener {
 						
 					}	
 					
-				} else if (p.getItemInHand().getType() == Material.NETHER_STAR) {
+				} else if (Toolkit.getMainHandItem(p).getType() == Material.NETHER_STAR) {
 					
 					if (p.hasPermission("kp.ability.ninja")) {
 						
@@ -309,7 +310,7 @@ public class ItemListener implements Listener {
 						}
 						
 						vanish.setAmount(vanish.getAmount() - 1);
-						p.getInventory().setItemInHand(vanish);
+						Toolkit.setMainHandItem(p, vanish);
 						
 						new BukkitRunnable() {
 							
