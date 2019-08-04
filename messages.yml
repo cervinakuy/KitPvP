@@ -25,6 +25,7 @@ Messages:
     Sign: '%prefix% &7You have successfully created a sign.'
     Players: '%prefix% &cThere are no other players with a kit online.'
   Error:
+    Player: '%prefix% &cYou must right-click on a player to activate this ability.'
     Arena: '%prefix% &cYou are not currently an in arena.'
     ExistsArena: '%prefix% &cThe specified arena does not exist.'
     Exists: '%prefix% &cThe specified kit already exists.'

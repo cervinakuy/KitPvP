@@ -30,6 +30,7 @@ import org.bukkit.util.Vector;
 
 import com.planetgallium.kitpvp.Game;
 import com.planetgallium.kitpvp.addon.KitMenu;
+import com.planetgallium.kitpvp.game.Arena;
 import com.planetgallium.kitpvp.util.Config;
 import com.planetgallium.kitpvp.util.Resources;
 import com.planetgallium.kitpvp.util.Sounds;
@@ -38,9 +39,11 @@ import com.planetgallium.kitpvp.util.XMaterial;
 
 public class ItemListener implements Listener {
 	
+	private Arena arena;
 	private Resources resources;
 	
-	public ItemListener(Resources resources) {
+	public ItemListener(Arena arena, Resources resources) {
+		this.arena = arena;
 		this.resources = resources;
 	}
 	
@@ -325,6 +328,22 @@ public class ItemListener implements Listener {
 							}
 							
 						}.runTaskLater(Game.getInstance(), 100L);
+						
+					}
+					
+				} else if (Toolkit.getMainHandItem(p).getType() == XMaterial.BLAZE_ROD.parseMaterial()) {
+					
+					if (arena.getKits().getKit(p.getName()).equals("Thunderbolt") && p.hasPermission("kp.ability.thunderbolt")) {
+						
+						p.sendMessage(Config.tr(resources.getMessages().getString("Messages.Error.Player")));
+						
+					}
+					
+				} else if (Toolkit.getMainHandItem(p).getType() == XMaterial.GHAST_TEAR.parseMaterial()) {
+					
+					if (arena.getKits().getKit(p.getName()).equals("Vampire") && p.hasPermission("kp.ability.vampire")) {
+						
+						p.sendMessage(Config.tr(resources.getMessages().getString("Messages.Error.Player")));
 						
 					}
 					
