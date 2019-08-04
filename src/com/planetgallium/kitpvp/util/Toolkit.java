@@ -407,15 +407,34 @@ public class Toolkit {
  	@SuppressWarnings("deprecation")
 	public static ItemStack getOffhandItem(Player p) {
  		
- 		if (versionToNumber() > 18) {
- 			
- 			return p.getInventory().getItemInOffHand();
- 			
- 		} else {
+ 		if (versionToNumber() == 18) {
  			
  			return p.getItemInHand();
  			
+ 		} else if (versionToNumber() > 18) {
+ 			
+ 			return p.getInventory().getItemInOffHand();
+ 			
  		}
+ 		
+ 		return p.getItemInHand();
+ 		
+ 	}
+ 	
+ 	@SuppressWarnings("deprecation")
+	public static void setOffhandItem(Player p, ItemStack item) {
+ 		
+ 		if (versionToNumber() == 18) {
+ 			
+ 			p.setItemInHand(item);
+ 			
+ 		} else if (versionToNumber() > 18) {
+ 			
+ 			p.getInventory().setItemInOffHand(item);
+ 			
+ 		}
+ 		
+ 		p.setItemInHand(item);
  		
  	}
 	
