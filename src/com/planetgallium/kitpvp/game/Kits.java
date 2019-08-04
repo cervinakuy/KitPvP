@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -20,6 +21,8 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import com.planetgallium.kitpvp.Game;
+import com.planetgallium.kitpvp.api.PlayerAbilityEvent;
+import com.planetgallium.kitpvp.api.PlayerSelectKitEvent;
 import com.planetgallium.kitpvp.kit.Enchant;
 import com.planetgallium.kitpvp.kit.Item;
 import com.planetgallium.kitpvp.kit.Kit;
@@ -226,6 +229,8 @@ public class Kits {
 		}
 		
 		kit.applyKit(p);
+		
+		Bukkit.getPluginManager().callEvent(new PlayerSelectKitEvent(p, kit.getName()));
 		
 	}
 	
