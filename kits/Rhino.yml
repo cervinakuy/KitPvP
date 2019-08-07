@@ -36,7 +36,7 @@ Inventory:
       Name: '&aRhino''s Sword'
       Item: IRON_SWORD
     1:
-      Name: '&aCharge &7(Right Click)'
+      Name: '&aStampede &7(Right Click)'
       Item: FIREWORK_STAR
       Amount: 3
     8:
@@ -47,7 +47,7 @@ Inventory:
       Item: MUSHROOM_SOUP
 Ability:
   Activator:
-    Name: '&aCharge &7(Right Click)'
+    Name: '&aStampede &7(Right Click)'
     Item: FIREWORK_STAR
   Message:
     Message: '%prefix% &7You have used your ability.'
