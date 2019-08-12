@@ -14,12 +14,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
+import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.potion.PotionEffect;
 import com.planetgallium.kitpvp.Game;
 import com.planetgallium.kitpvp.api.PlayerSelectKitEvent;
+import com.planetgallium.kitpvp.item.EffectItem;
 import com.planetgallium.kitpvp.item.KitItem;
-import com.planetgallium.kitpvp.item.PotionItem;
 import com.planetgallium.kitpvp.kit.Kit;
 import com.planetgallium.kitpvp.util.Config;
 import com.planetgallium.kitpvp.util.XMaterial;
@@ -189,7 +190,7 @@ public class Kits {
 						
 						for (String identifier : potions.getKeys(false)) {
 							
-							kit.addEffect(new PotionItem(kitResource, identifier));
+							kit.addEffect(new EffectItem(kitResource, identifier));
 							
 						}
 						
@@ -243,21 +244,37 @@ public class Kits {
 			resource.set(path + ".Dye.Blue", dyedMeta.getColor().getBlue());
 			resource.save();
 			
-		}
-		
-		if (item.getType() == XMaterial.PLAYER_HEAD.parseMaterial()) {
+		} else if (item.getType() == XMaterial.PLAYER_HEAD.parseMaterial()) {
 			
 			SkullMeta skullMeta = (SkullMeta) meta;
 			
 			if (Toolkit.versionToNumber() < 13) {
 				
 				resource.set(path + ".Skull", skullMeta.getOwner());
+				resource.save();
 				
 			} else if (Toolkit.versionToNumber() >= 13) {
 				
 				resource.set(path + ".Skull", skullMeta.getOwningPlayer().getName());
+				resource.save();
 				
 			}
+			
+		} else if (item.getType() == XMaterial.POTION.parseMaterial()) {
+				
+			PotionMeta potionMeta = (PotionMeta) item.getItemMeta();
+			resource.set(path + ".Potion.Splash", false);
+			resource.set(path + ".Potion.Type", potionMeta.getBasePotionData().getType().toString());
+			resource.set(path + ".Potion.Level", potionMeta.getCustomEffects().get(0).getAmplifier());
+			resource.set(path + ".Potion.Duration", potionMeta.getCustomEffects().get(0).getDuration());
+			resource.save();
+			
+//				Potion potion = Potion.fromItemStack(item);
+//				resource.set(path + ".Potion.Splash", potion.isSplash());
+//				resource.set(path + ".Potion.Type", potion.getType().toString());
+//				resource.set(path + ".Potion.Level", potion.getLevel());
+//				resource.set(path + ".Potion.Duration", potion);
+//				resource.save();
 			
 		}
 		

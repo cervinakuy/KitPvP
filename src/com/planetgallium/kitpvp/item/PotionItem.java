@@ -1,38 +1,48 @@
 package com.planetgallium.kitpvp.item;
 
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import com.planetgallium.kitpvp.util.Resource;
+import com.planetgallium.kitpvp.util.XMaterial;
 
 public class PotionItem {
 
 	private PotionEffectType type;
-	private int duration;
 	private int level;
+	private int duration;
+	private boolean isSplash;
 	
-	public PotionItem(Resource resource, String type) {
+	public PotionItem(Resource resource, String path) {
 		
-		if (resource.contains("Potions." + type)) {
-			this.type = PotionEffectType.getByName(type);
-		}
-		
-		if (resource.contains("Potions." + type + ".Duration")) {
-			this.duration = resource.getInt("Potions." + type + ".Duration");
-		}
-		
-		if (resource.contains("Potions." + type + ".Level")) {
-			this.level = resource.getInt("Potions." + type + ".Level");
-		}
+		this.type = PotionEffectType.getByName(resource.getString(path + ".Type"));
+		this.level = resource.getInt(path + ".Level");
+		this.duration = resource.getInt(path + ".Duration");
+		this.isSplash = resource.getBoolean(path + ".Splash");
 		
 	}
 	
-	public PotionEffect toPotionEffect() {
+	public ItemStack toItemStack() {
 		
-		return new PotionEffect(type == null ? PotionEffectType.SPEED : type,
-								duration == 0 ? 10 : duration,
-								level == 0 ? 1 : level);
+		ItemStack item = isSplash ? XMaterial.SPLASH_POTION.parseItem() : XMaterial.POTION.parseItem();
+		PotionMeta potionMeta = (PotionMeta) item.getItemMeta();
+		
+		potionMeta.addCustomEffect(new PotionEffect(type, duration, level), true);
+		
+		item.setItemMeta(potionMeta);
+		
+		return item;
 		
 	}
+	
+	public PotionEffectType getType() { return type; }
+	
+	public int getLevel() { return level; }
+	
+	public int getDuration() { return duration; }
+	
+	public boolean isSplash() { return isSplash; }
 	
 }

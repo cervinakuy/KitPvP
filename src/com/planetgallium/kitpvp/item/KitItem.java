@@ -28,6 +28,7 @@ public class KitItem {
 	private int amount;
 	private Color color;
 	private SkullItem skull;
+	private PotionItem potion;
 	
 	public KitItem(Resource resource, String kit, String path) {
 		
@@ -53,6 +54,10 @@ public class KitItem {
 		
 		if (resource.contains(path + ".Skull")) {
 			this.skull = new SkullItem(resource.getString(path + ".Skull"));
+		}
+		
+		if (resource.contains(path + ".Potion")) {
+			this.potion = new PotionItem(resource, resource.getString(path + ".Potion"));
 		}
 		
 		if (resource.contains(path + ".Enchantments")) {
@@ -95,13 +100,19 @@ public class KitItem {
 				
 			}
 			
-		}
-		
-		if (item.getType() == XMaterial.PLAYER_HEAD.parseMaterial()) {
+		} else if (item.getType() == XMaterial.PLAYER_HEAD.parseMaterial()) {
 			
 			if (skull != null) {
 				
 				item = skull.convertToSkull(item);
+				
+			}
+			
+		} else if (item.getType() == XMaterial.POTION.parseMaterial() || item.getType() == XMaterial.SPLASH_POTION.parseMaterial()) {
+			
+			if (potion != null) {
+				
+				item = potion.toItemStack();
 				
 			}
 			
@@ -121,6 +132,8 @@ public class KitItem {
 	
 	public Color getColor() { return color; }
 	
-	public SkullItem getSkull() { return skull; } 
+	public SkullItem getSkull() { return skull; }
+	
+	public PotionItem getPotion() { return potion; }
 	
 }
