@@ -1,6 +1,10 @@
 package com.planetgallium.kitpvp.util;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
@@ -334,7 +338,7 @@ public class Toolkit {
  		
  	}
  	
- 	private static int versionToNumber() {
+ 	public static int versionToNumber() {
  		
  		if (Bukkit.getVersion().contains("1.8")) {
  			
@@ -435,6 +439,20 @@ public class Toolkit {
  		}
  		
  		p.setItemInHand(item);
+ 		
+ 	}
+ 	
+ 	public static List<String> colorizeList(List<String> list) {
+ 		
+ 		List<String> newList = new ArrayList<String>();
+ 		
+ 		for (String string : list) {
+ 			
+ 			newList.add(ChatColor.translateAlternateColorCodes('&', string));
+ 			
+ 		}
+ 		
+ 		return newList;
  		
  	}
 	

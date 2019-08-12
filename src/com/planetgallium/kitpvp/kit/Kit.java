@@ -10,6 +10,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 
 import com.planetgallium.kitpvp.Game;
+import com.planetgallium.kitpvp.item.KitItem;
+import com.planetgallium.kitpvp.item.PotionItem;
 import com.planetgallium.kitpvp.util.Config;
 import com.planetgallium.kitpvp.util.Sounds;
 
@@ -32,55 +34,43 @@ public class Kit {
 		
 	}
 	
-	public void setHelmet(ItemStack skull) {
-		
-		this.helmet = skull;
-		
-	}
-	
-	public void setHelmet(Item helmet) {
+	public void setHelmet(KitItem helmet) {
 		
 		this.helmet = helmet.toItemStack();
 		
 	}
 	
-	public void setChestplate(Item chestplate) {
+	public void setChestplate(KitItem chestplate) {
 		
 		this.chestplate = chestplate.toItemStack();
 	
 	}
 	
-	public void setLeggings(Item leggings) {
+	public void setLeggings(KitItem leggings) {
 		
 		this.leggings = leggings.toItemStack();
 		
 	}
 	
-	public void setBoots(Item boots) {
+	public void setBoots(KitItem boots) {
 		
 		this.boots = boots.toItemStack();
 		
 	}
 	
-	public void setFill(Item fill) {
+	public void setFill(KitItem fill) {
 		
 		this.fill = fill.toItemStack();
 		
 	}
 	
-	public void addEffect(PotionEffect effect) {
+	public void addEffect(PotionItem effect) {
 		
-		potions.add(effect);
-		
-	}
-	
-	public void addItem(ItemStack item, int slot) {
-		
-		inventory.put(slot, item);
+		potions.add(effect.toPotionEffect());
 		
 	}
 	
-	public void addItem(Item item, int slot) {
+	public void addItem(KitItem item, int slot) {
 		
 		inventory.put(slot, item.toItemStack());
 		
