@@ -16,6 +16,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffect;
 import com.planetgallium.kitpvp.Game;
 import com.planetgallium.kitpvp.api.PlayerSelectKitEvent;
@@ -28,6 +29,7 @@ import com.planetgallium.kitpvp.util.Resource;
 import com.planetgallium.kitpvp.util.Resources;
 import com.planetgallium.kitpvp.util.Toolkit;
 
+@SuppressWarnings("deprecation")
 public class Kits {
 
 	private Game plugin;
@@ -221,12 +223,11 @@ public class Kits {
 		
 	}
 	
-	@SuppressWarnings("deprecation")
 	public void saveItem(Resource resource, String kit, String path, ItemStack item, String backupName) {
 		
 		ItemMeta meta = item.getItemMeta();
 		
-		resource.set(path + ".Name", meta.hasDisplayName() ? meta.getDisplayName() : backupName);
+		resource.set(path + ".Name", meta.hasDisplayName() ? meta.getDisplayName().replace("§", "&") : backupName);
 		resource.set(path + ".Lore", meta.getLore());
 		resource.set(path + ".Item", item.getType().toString());
 		resource.set(path + ".Amount", item.getAmount());
@@ -248,33 +249,40 @@ public class Kits {
 			
 			SkullMeta skullMeta = (SkullMeta) meta;
 			
-			if (Toolkit.versionToNumber() < 13) {
+			if (Toolkit.versionToNumber() < 113) {
 				
 				resource.set(path + ".Skull", skullMeta.getOwner());
 				resource.save();
 				
-			} else if (Toolkit.versionToNumber() >= 13) {
+			} else if (Toolkit.versionToNumber() >= 113) {
 				
 				resource.set(path + ".Skull", skullMeta.getOwningPlayer().getName());
 				resource.save();
 				
 			}
 			
-		} else if (item.getType() == XMaterial.POTION.parseMaterial()) {
+		} else if (item.getType() == XMaterial.POTION.parseMaterial() ||
+					item.getType() == XMaterial.SPLASH_POTION.parseMaterial()) {
 				
-			PotionMeta potionMeta = (PotionMeta) item.getItemMeta();
-			resource.set(path + ".Potion.Splash", false);
-			resource.set(path + ".Potion.Type", potionMeta.getBasePotionData().getType().toString());
-			resource.set(path + ".Potion.Level", potionMeta.getCustomEffects().get(0).getAmplifier());
-			resource.set(path + ".Potion.Duration", potionMeta.getCustomEffects().get(0).getDuration());
-			resource.save();
-			
-//				Potion potion = Potion.fromItemStack(item);
-//				resource.set(path + ".Potion.Splash", potion.isSplash());
-//				resource.set(path + ".Potion.Type", potion.getType().toString());
-//				resource.set(path + ".Potion.Level", potion.getLevel());
-//				resource.set(path + ".Potion.Duration", potion);
-//				resource.save();
+			if (Toolkit.versionToNumber() == 18) {
+				
+		        Potion potion = Potion.fromItemStack(item);
+		        resource.set(path + ".Potion.Splash", potion.isSplash());
+		        resource.set(path + ".Potion.Type", potion.getEffects().iterator().next().getType().getName());
+		        resource.set(path + ".Potion.Level", potion.getLevel());
+		        resource.set(path + ".Potion.Duration", potion.getEffects().iterator().next().getDuration() / 20);
+		        resource.save();
+				
+			} else if (Toolkit.versionToNumber() >= 19) {
+				
+				PotionMeta potionMeta = (PotionMeta) meta;
+		        resource.set(path + ".Potion.Splash", item.getType() == XMaterial.SPLASH_POTION.parseMaterial());
+		        resource.set(path + ".Potion.Type", potionMeta.getCustomEffects().get(0).getType().getName());
+		        resource.set(path + ".Potion.Level", potionMeta.getCustomEffects().get(0).getAmplifier());
+		        resource.set(path + ".Potion.Duration", potionMeta.getCustomEffects().get(0).getDuration() / 20);
+		        resource.save();
+				
+			}
 			
 		}
 		

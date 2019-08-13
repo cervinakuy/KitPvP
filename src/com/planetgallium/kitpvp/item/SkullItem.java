@@ -24,15 +24,17 @@ public class SkullItem {
 		newSkull.setItemMeta(toConvert.getItemMeta());
 		SkullMeta skullMeta = (SkullMeta) newSkull.getItemMeta();
 		
-		if (Toolkit.versionToNumber() < 13) {
+		if (Toolkit.versionToNumber() < 113) {
 			
 			skullMeta.setOwner(owner);
+			newSkull.setItemMeta(skullMeta);
 			
 			return newSkull;
 			
-		} else if (Toolkit.versionToNumber() >= 13) {
+		} else if (Toolkit.versionToNumber() >= 113) {
 			
 			skullMeta.setOwningPlayer(Bukkit.getOfflinePlayer(owner));
+			newSkull.setItemMeta(skullMeta);
 			
 			return newSkull;
 			

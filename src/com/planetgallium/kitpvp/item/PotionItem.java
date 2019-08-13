@@ -24,16 +24,17 @@ public class PotionItem {
 		
 	}
 	
-	public ItemStack toItemStack() {
+	public ItemStack convertToPotion(ItemStack toConvert) {
 		
-		ItemStack item = isSplash ? XMaterial.SPLASH_POTION.parseItem() : XMaterial.POTION.parseItem();
-		PotionMeta potionMeta = (PotionMeta) item.getItemMeta();
+		ItemStack newItem = isSplash ? XMaterial.SPLASH_POTION.parseItem() : XMaterial.POTION.parseItem();
+		newItem.setItemMeta(toConvert.getItemMeta());
+		PotionMeta potionMeta = (PotionMeta) newItem.getItemMeta();
 		
-		potionMeta.addCustomEffect(new PotionEffect(type, duration, level), true);
+		potionMeta.addCustomEffect(new PotionEffect(type, duration * 20, level - 1), true);
 		
-		item.setItemMeta(potionMeta);
+		newItem.setItemMeta(potionMeta);
 		
-		return item;
+		return newItem;
 		
 	}
 	

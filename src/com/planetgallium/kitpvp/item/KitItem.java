@@ -33,7 +33,7 @@ public class KitItem {
 	public KitItem(Resource resource, String kit, String path) {
 		
 		if (resource.contains(path + ".Name")) {
-			this.name = resource.getString(resource.getString(path + ".Name"));
+			this.name = resource.getString(path + ".Name");
 		}
 		
 		if (resource.contains(path + ".Lore")) {
@@ -57,7 +57,7 @@ public class KitItem {
 		}
 		
 		if (resource.contains(path + ".Potion")) {
-			this.potion = new PotionItem(resource, resource.getString(path + ".Potion"));
+			this.potion = new PotionItem(resource, path + ".Potion");
 		}
 		
 		if (resource.contains(path + ".Enchantments")) {
@@ -80,7 +80,7 @@ public class KitItem {
 		ItemMeta meta = item.getItemMeta();
 		
 		item.setAmount(amount != 0 ? amount : 1);
-		item.addUnsafeEnchantments(enchantments);
+		if (enchantments != null) item.addUnsafeEnchantments(enchantments);
 		
 		meta.setDisplayName(Config.tr(name != null ? name : "&7Item"));
 		meta.setLore(lore != null ? lore : new ArrayList<String>());
@@ -112,7 +112,7 @@ public class KitItem {
 			
 			if (potion != null) {
 				
-				item = potion.toItemStack();
+				item = potion.convertToPotion(item);
 				
 			}
 			
