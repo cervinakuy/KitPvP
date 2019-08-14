@@ -77,9 +77,9 @@ public class Game extends JavaPlugin implements Listener {
 		getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 	    getCommand("kitpvp").setExecutor(new MainCommand(this, arena, resources));
 	    getCommand("ckit").setExecutor(new KitCommand(resources));
-	    getCommand("cspawn").setExecutor(new SpawnCommand(resources));
-	    getCommand("ckits").setExecutor(new KitsCommand(resources));
-	    getCommand("cstats").setExecutor(new StatsCommand(resources));
+	    getCommand("cspawn").setExecutor(new SpawnCommand());
+	    getCommand("ckits").setExecutor(new KitsCommand());
+	    getCommand("cstats").setExecutor(new StatsCommand());
 	    
 		Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&7[&b&lKIT-PVP&7] &7Enabling &bKitPvP &7version &b" + this.getDescription().getVersion() + "&7..."));
 		

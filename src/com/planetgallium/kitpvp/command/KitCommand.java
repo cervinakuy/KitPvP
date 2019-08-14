@@ -23,26 +23,18 @@ public class KitCommand implements CommandExecutor {
 			if (sender instanceof Player) {
 					
 				Player p = (Player) sender;
-				
-				if (p.hasPermission("kp.command.kit")) {
 					
-					if (args.length == 0) {
-						
-						p.sendMessage(Config.tr(resources.getMessages().getString("Messages.Error.Arguments")));
-						return true;
-						
-					} else if (args.length == 1) {
-						
-						p.performCommand("kp kit " + args[0]);
-						return true;
-						
-					}
+				if (args.length == 0) {
 					
-				} else {
+					p.sendMessage(Config.tr(resources.getMessages().getString("Messages.Error.Arguments")));
+					return true;
 					
-					p.sendMessage(Config.tr(resources.getMessages().getString("Messages.General.Permission")));
+				} else if (args.length == 1) {
 					
-				}
+					p.performCommand("kp kit " + args[0]);
+					return true;
+					
+				}	
 				
 			}
 			

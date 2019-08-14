@@ -1,15 +1,9 @@
 package com.planetgallium.kitpvp.item;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
 import org.bukkit.Color;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
@@ -23,12 +17,12 @@ public class KitItem {
 
 	private String name;
 	private List<String> lore;
-	private Map<Enchantment, Integer> enchantments;
 	private Material material;
 	private int amount;
 	private Color color;
 	private SkullItem skull;
 	private PotionItem potion;
+	private EnchantedItem enchant;
 	
 	public KitItem(Resource resource, String kit, String path) {
 		
@@ -61,14 +55,7 @@ public class KitItem {
 		}
 		
 		if (resource.contains(path + ".Enchantments")) {
-			this.enchantments = new HashMap<Enchantment, Integer>();
-			
-			ConfigurationSection section = resource.getConfigurationSection(path + ".Enchantments");
-			
-			for (String identifier : section.getKeys(false)) {
-				//enchantments.put(Enchantment.getByKey(NamespacedKey.minecraft(identifier.toUpperCase())), resource.getInt(path + ".Enchantments.Level"));
-				enchantments.put(Enchantment.getByKey(NamespacedKey.minecraft(identifier)), resource.getInt(path + ".Enchantments.Level"));
-			}
+			this.enchant = new EnchantedItem(resource, path + ".Enchantments");
 			
 		}
 		
@@ -80,12 +67,17 @@ public class KitItem {
 		ItemMeta meta = item.getItemMeta();
 		
 		item.setAmount(amount != 0 ? amount : 1);
-		if (enchantments != null) item.addUnsafeEnchantments(enchantments);
 		
 		meta.setDisplayName(Config.tr(name != null ? name : "&7Item"));
 		meta.setLore(lore != null ? lore : new ArrayList<String>());
 		
 		item.setItemMeta(meta);
+		
+		if (enchant != null) {
+			
+			item = enchant.convertToEnchantedItem(item);
+			
+		}
 		
 		if (item.getType() == XMaterial.LEATHER_HELMET.parseMaterial() ||
 			item.getType() == XMaterial.LEATHER_CHESTPLATE.parseMaterial() ||
@@ -135,5 +127,7 @@ public class KitItem {
 	public SkullItem getSkull() { return skull; }
 	
 	public PotionItem getPotion() { return potion; }
+	
+	public EnchantedItem getEnchant() { return enchant; }
 	
 }

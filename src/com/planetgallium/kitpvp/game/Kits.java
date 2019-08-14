@@ -54,8 +54,6 @@ public class Kits {
 			kitResource.set("Kit.Cooldown", 0);
 			kitResource.save();
 			
-			// Armor
-			
 			if (p.getInventory().getHelmet() != null) {
 				
 				saveItem(kitResource, name, "Inventory.Armor.Helmet", p.getInventory().getHelmet(), "&fHelmet");
@@ -80,8 +78,6 @@ public class Kits {
 				
 			}
 			
-			// Inventory Items
-			
 			for (int i = 0; i < 36; i++) {
 				
 				ItemStack item = p.getInventory().getItem(i);
@@ -95,8 +91,6 @@ public class Kits {
 				
 			}
 			
-			// Potion Effects
-			
 			for (PotionEffect effect : p.getActivePotionEffects()) {
 				
 				resources.getKits(name).set("Potions." + effect.getType().getName() + ".Level", effect.getAmplifier() + 1);
@@ -105,7 +99,6 @@ public class Kits {
 				
 			}
 			
-			// Default Ability
 			resources.getKits(name).set("Ability.Activator.Name", "&aDefault Ability &7(Must be modified in kit file)");
 			resources.getKits(name).set("Ability.Activator.Item", "BEDROCK");
 			resources.getKits(name).set("Ability.Message.Message", "%prefix% &7You have used your ability.");
@@ -288,10 +281,23 @@ public class Kits {
 		
 		if (item.getEnchantments().size() > 0) {
 			
-			for (Enchantment enchantment : item.getEnchantments().keySet()) {
-			
-				resource.set(path + ".Enchantments." + enchantment.getKey() + ".Level", item.getEnchantments().get(enchantment));
-				resource.save();
+			if (Toolkit.versionToNumber() < 112) {
+				
+				for (Enchantment enchantment : item.getEnchantments().keySet()) {
+					
+					resource.set(path + ".Enchantments." + enchantment.getName() + ".Level", item.getEnchantments().get(enchantment));
+					resource.save();
+					
+				}
+				
+			} else if (Toolkit.versionToNumber() >= 113) {
+				
+				for (Enchantment enchantment : item.getEnchantments().keySet()) {
+					
+					resource.set(path + ".Enchantments." + enchantment.getKey() + ".Level", item.getEnchantments().get(enchantment));
+					resource.save();
+					
+				}
 				
 			}
 			
