@@ -105,6 +105,13 @@ public class Resources {
 		
 	}
 	
+	public void removeKit(String fileName) {
+		
+		kits.get(fileName + ".yml").getFile().delete();
+		kits.remove(fileName + ".yml");
+		
+	}
+	
 	public Resource getKits(String kit) {
 		
 		return kits.get(kit + ".yml");

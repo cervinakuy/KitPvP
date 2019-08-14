@@ -1,6 +1,5 @@
 package com.planetgallium.kitpvp.command;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -431,8 +430,7 @@ public class MainCommand implements CommandExecutor {
 								
 								if (arena.getKits().getList().contains(args[1] + ".yml")) {
 									
-									File kit = new File(arena.getKits().getPath() + "/" + args[1] + ".yml");
-									kit.delete();
+									resources.removeKit(args[1]);
 									p.sendMessage(Config.tr(resources.getMessages().getString("Messages.Commands.Delete").replace("%kit%", args[1])));
 									
 								} else {
