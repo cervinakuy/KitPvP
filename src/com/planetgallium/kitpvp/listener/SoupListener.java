@@ -68,33 +68,32 @@ public class SoupListener implements Listener {
 		            p.setHealth(p.getHealth() + (double) health >= 20.0 ? 20.0 : p.getHealth() + (double) health);
 		            p.playSound(p.getLocation(), Sounds.valueOf(Config.getS("Soups.Sound")).bukkitSound(), 1, (float) Config.getI("Soups.Pitch"));
 		            
+					if (Toolkit.getMainHandItem(p).getType() == XMaterial.MUSHROOM_STEW.parseMaterial()) {
+						
+			            if (Config.getB("Soups.RemoveAfterUse")) {
+			            	
+			            	Toolkit.setMainHandItem(p, new ItemStack(XMaterial.AIR.parseItem()));
+			            	
+			            } else {
+			            	
+			            	Toolkit.setMainHandItem(p, new ItemStack(XMaterial.BOWL.parseItem()));
+			            	
+			            }
+				        
+				    } else if (Toolkit.getOffhandItem(p).getType() == XMaterial.MUSHROOM_STEW.parseMaterial()) {
+				    	
+			            if (Config.getB("Soups.RemoveAfterUse")) {
+			            	
+			            	Toolkit.setOffhandItem(p, new ItemStack(XMaterial.AIR.parseItem()));
+			            	
+			            } else {
+			            	
+			            	Toolkit.setOffhandItem(p, new ItemStack(XMaterial.BOWL.parseItem()));
+			            	
+			            }
+				    	
+				    }
 		        }
-				
-				if (Toolkit.getMainHandItem(p).getType() == XMaterial.MUSHROOM_STEW.parseMaterial()) {
-					
-		            if (Config.getB("Soups.RemoveAfterUse")) {
-		            	
-		            	Toolkit.setMainHandItem(p, new ItemStack(XMaterial.AIR.parseItem()));
-		            	
-		            } else {
-		            	
-		            	Toolkit.setMainHandItem(p, new ItemStack(XMaterial.BOWL.parseItem()));
-		            	
-		            }
-			        
-			    } else if (Toolkit.getOffhandItem(p).getType() == XMaterial.MUSHROOM_STEW.parseMaterial()) {
-			    	
-		            if (Config.getB("Soups.RemoveAfterUse")) {
-		            	
-		            	Toolkit.setOffhandItem(p, new ItemStack(XMaterial.AIR.parseItem()));
-		            	
-		            } else {
-		            	
-		            	Toolkit.setOffhandItem(p, new ItemStack(XMaterial.BOWL.parseItem()));
-		            	
-		            }
-			    	
-			    }
 				
 			}
 			
