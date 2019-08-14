@@ -256,7 +256,7 @@ public class Kits {
 			
 		} else if (item.getType() == XMaterial.POTION.parseMaterial() ||
 					item.getType() == XMaterial.SPLASH_POTION.parseMaterial()) {
-				
+			
 			if (Toolkit.versionToNumber() == 18) {
 				
 		        Potion potion = Potion.fromItemStack(item);
@@ -269,7 +269,7 @@ public class Kits {
 			} else if (Toolkit.versionToNumber() >= 19) {
 				
 				PotionMeta potionMeta = (PotionMeta) meta;
-		        resource.set(path + ".Potion.Splash", item.getType() == XMaterial.SPLASH_POTION.parseMaterial());
+		        resource.set(path + ".Potion.Splash", item.getType() == XMaterial.SPLASH_POTION.parseMaterial()); // this might not work
 		        resource.set(path + ".Potion.Type", potionMeta.getCustomEffects().get(0).getType().getName());
 		        resource.set(path + ".Potion.Level", potionMeta.getCustomEffects().get(0).getAmplifier());
 		        resource.set(path + ".Potion.Duration", potionMeta.getCustomEffects().get(0).getDuration() / 20);

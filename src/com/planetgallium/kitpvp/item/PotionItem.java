@@ -1,13 +1,17 @@
 package com.planetgallium.kitpvp.item;
 
+import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import com.planetgallium.kitpvp.util.Resource;
+import com.planetgallium.kitpvp.util.Toolkit;
 import com.planetgallium.kitpvp.util.XMaterial;
 
+@SuppressWarnings("deprecation")
 public class PotionItem {
 
 	private PotionEffectType type;
@@ -26,15 +30,36 @@ public class PotionItem {
 	
 	public ItemStack convertToPotion(ItemStack toConvert) {
 		
-		ItemStack newItem = isSplash ? XMaterial.SPLASH_POTION.parseItem() : XMaterial.POTION.parseItem();
-		newItem.setItemMeta(toConvert.getItemMeta());
-		PotionMeta potionMeta = (PotionMeta) newItem.getItemMeta();
+		if (Toolkit.versionToNumber() == 18) {
+			
+			Potion potion = Potion.fromItemStack(toConvert);
+			potion.setSplash(isSplash);
+			
+			ItemStack newItem = potion.toItemStack(toConvert.getAmount());
+			newItem.setItemMeta(toConvert.getItemMeta());
+			PotionMeta potionMeta = (PotionMeta) newItem.getItemMeta();
+			
+			potionMeta.addCustomEffect(new PotionEffect(type, duration * 20, level - 1), true);
+			
+			newItem.setItemMeta(potionMeta);
+			
+			return newItem;
+			
+		} else if (Toolkit.versionToNumber() >= 19) {
+			
+			ItemStack newItem = new ItemStack(isSplash ? XMaterial.POTION.parseMaterial() : Material.SPLASH_POTION);
+			newItem.setItemMeta(toConvert.getItemMeta());
+			PotionMeta potionMeta = (PotionMeta) newItem.getItemMeta();
+			
+			potionMeta.addCustomEffect(new PotionEffect(type, duration * 20, level - 1), true);
+			
+			newItem.setItemMeta(potionMeta);
+			
+			return newItem;
+			
+		}
 		
-		potionMeta.addCustomEffect(new PotionEffect(type, duration * 20, level - 1), true);
-		
-		newItem.setItemMeta(potionMeta);
-		
-		return newItem;
+		return toConvert;
 		
 	}
 	
