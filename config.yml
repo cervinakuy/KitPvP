@@ -104,6 +104,8 @@ Arena:
   ClearInventoryOnLeave: false
   ClearInventoryOnRespawn: true
   ClearInventoryOnKit: true
+  ClearInventoryOnCommandSpawn: true
+  ClearPotionEffectsOnCommandSpawn: true
   PreventBlockBreaking: true
   PreventBlockPlacing: true
   PreventHunger: true

@@ -228,17 +228,31 @@ public class MainCommand implements CommandExecutor {
 												
 												arena.toSpawn(p);
 												
-												p.playSound(p.getLocation(), Sounds.ENDERMAN_TELEPORT.bukkitSound(), 1, 1);
+												if (Config.getB("Arena.ClearPotionEffectsOnCommandSpawn")) {
+													
+													for (PotionEffect effect : p.getActivePotionEffects()) {
+														p.removePotionEffect(effect.getType());
+													}
+													
+												}
 												
-												for (PotionEffect effect : p.getActivePotionEffects()) { p.removePotionEffect(effect.getType()); }
+												if (Config.getB("Arena.ClearInventoryOnCommandSpawn")) {
+													
+													p.getInventory().setArmorContents(null);
+													p.getInventory().clear();
+													
+												}
 												
-												p.getInventory().setArmorContents(null);
-												p.getInventory().clear();
-												
-												if (Config.getB("Arena.GiveItemsOnClear")) { arena.giveItems(p); }
+												if (Config.getB("Arena.GiveItemsOnClear")) {
+													
+													arena.giveItems(p);
+													
+												}
 												
 												arena.getKits().clearKit(p.getName());
 												spawnUsers.remove(p.getName());
+												
+												p.playSound(p.getLocation(), Sounds.ENDERMAN_TELEPORT.bukkitSound(), 1, 1);
 												
 												cancel();
 												
