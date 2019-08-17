@@ -228,28 +228,21 @@ public class MainCommand implements CommandExecutor {
 												
 												arena.toSpawn(p);
 												
-												if (Config.getB("Arena.ClearPotionEffectsOnCommandSpawn")) {
+												if (Config.getB("Arena.ClearKitOnCommandSpawn")) {
 													
 													for (PotionEffect effect : p.getActivePotionEffects()) {
 														p.removePotionEffect(effect.getType());
 													}
 													
-												}
-												
-												if (Config.getB("Arena.ClearInventoryOnCommandSpawn")) {
-													
 													p.getInventory().setArmorContents(null);
 													p.getInventory().clear();
 													
-												}
-												
-												if (Config.getB("Arena.GiveItemsOnClear")) {
-													
 													arena.giveItems(p);
 													
+													arena.getKits().clearKit(p.getName());
+													
 												}
 												
-												arena.getKits().clearKit(p.getName());
 												spawnUsers.remove(p.getName());
 												
 												p.playSound(p.getLocation(), Sounds.ENDERMAN_TELEPORT.bukkitSound(), 1, 1);
