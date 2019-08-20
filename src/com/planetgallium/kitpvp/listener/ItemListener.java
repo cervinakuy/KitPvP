@@ -56,7 +56,7 @@ public class ItemListener implements Listener {
 			
 			if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
 				
-				if (Toolkit.getMainHandItem(p).hasItemMeta() && Toolkit.getMainHandItem(p).getItemMeta().hasDisplayName() && Toolkit.getMainHandItem(p).getType() == Material.valueOf(Game.getInstance().getConfig().getString("Items.Kits.Item").toUpperCase())) {
+				if (Toolkit.getMainHandItem(p).hasItemMeta() && Toolkit.getMainHandItem(p).getItemMeta().hasDisplayName() && Toolkit.getMainHandItem(p).getType() == XMaterial.matchXMaterial(Game.getInstance().getConfig().getString("Items.Kits.Item").toUpperCase()).parseMaterial()) {
 					
 					if (Toolkit.getMainHandItem(p).getItemMeta().getDisplayName().equals(Config.getS("Items.Kits.Name"))) {
 						
@@ -71,15 +71,15 @@ public class ItemListener implements Listener {
 						 
 					}
 					
-				} else if (Toolkit.getMainHandItem(p).getType() == Material.valueOf(Config.getS("Items.Leave.Item").toUpperCase())) {
+				} else if (Toolkit.getMainHandItem(p).getType() == XMaterial.matchXMaterial(Config.getS("Items.Leave.Item")).parseMaterial()) {
 					
 					if (Toolkit.getMainHandItem(p).getItemMeta().getDisplayName().equals(Config.getS(("Items.Leave.Name")))) {
 							
 						Toolkit.runCommands("Items.Leave", p);
 						
-					}	
+					}
 					
-				} else if (Toolkit.getMainHandItem(p).getType() == Material.TNT) {
+				} else if (Toolkit.getMainHandItem(p).getType() == XMaterial.TNT.parseMaterial()) {
 					
 					ItemStack tnt = new ItemStack(Toolkit.getMainHandItem(p).getType(), Toolkit.getMainHandItem(p).getAmount());
 					
@@ -93,7 +93,7 @@ public class ItemListener implements Listener {
 			        tnt.setAmount(tnt.getAmount() - 1);
 			        Toolkit.setMainHandItem(p, tnt);
 		            
-				} else if (Toolkit.getMainHandItem(p).getType() == Material.SLIME_BALL) {
+				} else if (Toolkit.getMainHandItem(p).getType() == XMaterial.SLIME_BALL.parseMaterial()) {
 					
 					int amount = p.getInventory().getItem(2).getAmount();
 					
@@ -109,7 +109,7 @@ public class ItemListener implements Listener {
 					
 					p.playSound(p.getLocation(), Sounds.WOOD_CLICK.bukkitSound(), 1, resources.getAbilities().getInt("Abilities.Archer.Sound.Pitch"));
 					
-				} else if (Toolkit.getMainHandItem(p).getType() == Material.MAGMA_CREAM) {
+				} else if (Toolkit.getMainHandItem(p).getType() == XMaterial.MAGMA_CREAM.parseMaterial()) {
 					
 					int amount = p.getInventory().getItem(2).getAmount();
 					
@@ -125,7 +125,7 @@ public class ItemListener implements Listener {
 					
 					p.playSound(p.getLocation(), Sounds.WOOD_CLICK.bukkitSound(), 1, 1);
 					
-				} else if (Toolkit.getMainHandItem(p).getType() == Material.SADDLE) {
+				} else if (Toolkit.getMainHandItem(p).getType() == XMaterial.SADDLE.parseMaterial()) {
 					
 					if (p.hasPermission("kp.ability.kangaroo")) {
 						
@@ -149,7 +149,7 @@ public class ItemListener implements Listener {
 						
 					}
 					
-				} else if (Toolkit.getMainHandItem(p).getType() == Material.IRON_HOE) {
+				} else if (Toolkit.getMainHandItem(p).getType() == XMaterial.IRON_HOE.parseMaterial()) {
 					
 					if (p.hasPermission("kp.ability.soldier")) {
 						
@@ -168,7 +168,7 @@ public class ItemListener implements Listener {
 						
 					}
 					
-				} else if (Toolkit.getMainHandItem(p).getType() == Material.GLASS_BOTTLE) {
+				} else if (Toolkit.getMainHandItem(p).getType() == XMaterial.GLASS_BOTTLE.parseMaterial()) {
 					
 					if (p.hasPermission("kp.ability.witch")) {
 						
@@ -225,7 +225,7 @@ public class ItemListener implements Listener {
 						
 					}	
 					
-				} else if (Toolkit.getMainHandItem(p).getType() == Material.NETHER_STAR) {
+				} else if (Toolkit.getMainHandItem(p).getType() == XMaterial.NETHER_STAR.parseMaterial()) {
 					
 					if (p.hasPermission("kp.ability.ninja")) {
 						
@@ -363,7 +363,7 @@ public class ItemListener implements Listener {
 			
 			if (item != null) {
 				
-				if (item.getType() == Material.COMPASS) {
+				if (item.getType() == XMaterial.COMPASS.parseMaterial()) {
 					
 					new BukkitRunnable() {
 						

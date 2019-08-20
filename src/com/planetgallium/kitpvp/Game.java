@@ -1,7 +1,6 @@
 package com.planetgallium.kitpvp;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -29,6 +28,7 @@ import com.planetgallium.kitpvp.util.Placeholders;
 import com.planetgallium.kitpvp.util.Resources;
 import com.planetgallium.kitpvp.util.Toolkit;
 import com.planetgallium.kitpvp.util.Updater;
+import com.planetgallium.kitpvp.util.XMaterial;
 
 import net.md_5.bungee.api.ChatColor;
 
@@ -157,7 +157,7 @@ public class Game extends JavaPlugin implements Listener {
 		
 		Player p = e.getPlayer();
 		
-		if (Toolkit.getMainHandItem(p).getType() == Material.valueOf(Config.getS("Items.Leave.Item"))) {
+		if (Toolkit.getMainHandItem(p).getType() == XMaterial.matchXMaterial(Config.getS("Items.Leave.Item")).parseMaterial()) {
 			
 			if (Config.getB("Items.Leave.Enabled")) {
 					

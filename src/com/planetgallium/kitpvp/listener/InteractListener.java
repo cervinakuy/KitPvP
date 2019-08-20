@@ -1,6 +1,5 @@
 package com.planetgallium.kitpvp.listener;
 
-import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -16,6 +15,7 @@ import com.planetgallium.kitpvp.util.Config;
 import com.planetgallium.kitpvp.util.Resources;
 import com.planetgallium.kitpvp.util.Sounds;
 import com.planetgallium.kitpvp.util.Toolkit;
+import com.planetgallium.kitpvp.util.XMaterial;
 
 public class InteractListener implements Listener {
 
@@ -30,7 +30,7 @@ public class InteractListener implements Listener {
 		
 		Player p = e.getPlayer();
 		
-		if (Toolkit.inArena(p) && Toolkit.getMainHandItem(p).getType() == Material.BLAZE_ROD && e.getRightClicked().getType() == EntityType.PLAYER) {
+		if (Toolkit.inArena(p) && Toolkit.getMainHandItem(p).getType() == XMaterial.BLAZE_ROD.parseMaterial() && e.getRightClicked().getType() == EntityType.PLAYER) {
 			
 			if (p.hasPermission("kp.ability.thunderbolt")) {
 				
@@ -60,7 +60,7 @@ public class InteractListener implements Listener {
 				
 			}
 			
-		} else if (Toolkit.getMainHandItem(p).getType() == Material.GHAST_TEAR && e.getRightClicked().getType() == EntityType.PLAYER) {
+		} else if (Toolkit.getMainHandItem(p).getType() == XMaterial.GHAST_TEAR.parseMaterial() && e.getRightClicked().getType() == EntityType.PLAYER) {
 			
 			if (p.hasPermission("kp.ability.vampire")) {
 				

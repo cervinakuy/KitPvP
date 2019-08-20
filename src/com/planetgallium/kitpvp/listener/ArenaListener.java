@@ -1,7 +1,6 @@
 package com.planetgallium.kitpvp.listener;
 
 import org.bukkit.GameMode;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
@@ -56,15 +55,15 @@ public class ArenaListener implements Listener {
 		
 		if (Toolkit.inArena(p)) {
 			
-			if (e.getBlock().getType() == Material.TNT) {
+			if (e.getBlock().getType() == XMaterial.TNT.parseMaterial()) {
 				
 				e.setCancelled(true);
 				
-			} else if (arena.getKits().hasKit(p.getName()) && e.getBlock().getType() == Material.valueOf(resources.getKits(arena.getKits().getKit(p.getName())).getString("Ability.Activator.Item"))) {
+			} else if (arena.getKits().hasKit(p.getName()) && e.getBlock().getType() == XMaterial.matchXMaterial(resources.getKits(arena.getKits().getKit(p.getName())).getString("Ability.Activator.Item")).parseMaterial()) {
 				
 				e.setCancelled(true);
 				
-			} else if ((Toolkit.getMainHandItem(p).hasItemMeta() && Toolkit.getMainHandItem(p).getItemMeta().getDisplayName().equals(Config.getS("Items.Kits.Name"))) || Toolkit.getMainHandItem(p).getType() == Material.valueOf(Config.getS("Items.Leave.Item"))) {
+			} else if ((Toolkit.getMainHandItem(p).hasItemMeta() && Toolkit.getMainHandItem(p).getItemMeta().getDisplayName().equals(Config.getS("Items.Kits.Name"))) || Toolkit.getMainHandItem(p).getType() == XMaterial.matchXMaterial(Config.getS("Items.Leave.Item")).parseMaterial()) {
 				
 				e.setCancelled(true);
 				
@@ -213,7 +212,7 @@ public class ArenaListener implements Listener {
 			
 			if (e.getClickedBlock() != null) {
 				
-				if (e.getClickedBlock().getType() == Material.CHEST) {
+				if (e.getClickedBlock().getType() == XMaterial.CHEST.parseMaterial()) {
 					
 					if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
 						

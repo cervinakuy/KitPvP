@@ -5,7 +5,6 @@ import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -15,6 +14,7 @@ import org.bukkit.scoreboard.Scoreboard;
 import com.planetgallium.kitpvp.Game;
 import com.planetgallium.kitpvp.util.Config;
 import com.planetgallium.kitpvp.util.Resources;
+import com.planetgallium.kitpvp.util.XMaterial;
 
 import me.clip.placeholderapi.PlaceholderAPI;
 
@@ -121,7 +121,7 @@ public class Arena {
 		
 		if (Config.getB("Items.Kits.Enabled")) {
 			
-			ItemStack kits = new ItemStack(Material.valueOf(Config.getS("Items.Kits.Item")));
+			ItemStack kits = XMaterial.matchXMaterial(Config.getS("Items.Kits.Item")).parseItem();
 			ItemMeta kitsmeta = kits.getItemMeta();
 			
 			kitsmeta.setDisplayName(Config.getS("Items.Kits.Name"));
@@ -133,7 +133,7 @@ public class Arena {
 		
 		if (Config.getB("Items.Leave.Enabled")) {
 			
-			ItemStack leave = new ItemStack(Material.valueOf(Config.getS("Items.Leave.Item")));
+			ItemStack leave = XMaterial.matchXMaterial(Config.getS("Items.Leave.Item")).parseItem();
 			ItemMeta leavemeta = leave.getItemMeta();
 			
 			leavemeta.setDisplayName(Config.getS("Items.Leave.Name"));
