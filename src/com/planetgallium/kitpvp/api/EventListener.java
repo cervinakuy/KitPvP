@@ -39,14 +39,18 @@ public class EventListener implements Listener {
 					
 					if (currentItem.hasItemMeta() && currentItem.getItemMeta().hasDisplayName()) {
 						
-						if (currentItem.getType() == XMaterial.matchXMaterial(resources.getKits(arena.getKits().getKit(p.getName())).getString("Ability.Activator.Item")).parseMaterial()) {
-							
-							String kit = arena.getKits().getKit(p.getName());
-							
-							if (currentItem.getItemMeta().getDisplayName().replace("§", "&").equals(resources.getKits(kit).getString("Ability.Activator.Name"))) {
+						if (resources.getKits(arena.getKits().getKit(p.getName())).getString("Ability.Activator.Item") != null) {
+						
+							if (currentItem.getType() == XMaterial.matchXMaterial(resources.getKits(arena.getKits().getKit(p.getName())).getString("Ability.Activator.Item")).parseMaterial()) {
 								
-								Ability ability = new Ability(resources.getKits(kit), currentItem.getType());
-								Bukkit.getPluginManager().callEvent(new PlayerAbilityEvent(p, ability));
+								String kit = arena.getKits().getKit(p.getName());
+								
+								if (currentItem.getItemMeta().getDisplayName().replace("§", "&").equals(resources.getKits(kit).getString("Ability.Activator.Name"))) {
+									
+									Ability ability = new Ability(resources.getKits(kit), currentItem.getType());
+									Bukkit.getPluginManager().callEvent(new PlayerAbilityEvent(p, ability));
+									
+								}
 								
 							}
 							
