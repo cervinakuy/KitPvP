@@ -1,10 +1,8 @@
 package com.planetgallium.kitpvp.listener;
 
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import com.planetgallium.kitpvp.api.PlayerAbilityEvent;
 import com.planetgallium.kitpvp.game.Arena;
@@ -13,6 +11,7 @@ import com.planetgallium.kitpvp.util.Config;
 import com.planetgallium.kitpvp.util.Resources;
 import com.planetgallium.kitpvp.util.Sounds;
 import com.planetgallium.kitpvp.util.Toolkit;
+import com.planetgallium.kitpvp.util.XMaterial;
 
 public class AbilityListener implements Listener {
 	
@@ -56,11 +55,7 @@ public class AbilityListener implements Listener {
 			}
 			
 			// Item handling
-			if (Toolkit.getMainHandItem(p).getAmount() > 1) {
-				Toolkit.getMainHandItem(p).setAmount(Toolkit.getMainHandItem(p).getAmount() - 1);
-			} else {
-				Toolkit.setMainHandItem(p, new ItemStack(Material.AIR));
-			}
+			Toolkit.getMainHandItem(p).setAmount(Toolkit.getMainHandItem(p).getAmount() - 1);
 			
 		} else {
 			
