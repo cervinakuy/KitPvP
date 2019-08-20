@@ -78,7 +78,7 @@ Respawn:
     Enabled: false
 GiveSoupOnKill:
   Amount: 1
-  NoSpace: '%prefix% &cCould not give you Soup for your kill because your inventory is full.'
+  NoSpace: '%prefix% &c%amount% soups could not be added to your full inventory.'
   Enabled: true
 PlayerTracker:
   Tracker: '&ePlayer Tracker'
