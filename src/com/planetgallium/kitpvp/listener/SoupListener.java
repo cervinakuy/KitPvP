@@ -37,7 +37,7 @@ public class SoupListener implements Listener {
 					}
 					
 					if (count < Config.getI("GiveSoupOnKill.Amount")) {
-						killer.sendMessage(Config.getS("GiveSoupOnKill.NoSpace"));
+						killer.sendMessage(Config.getS("GiveSoupOnKill.NoSpace").replace("%amount%", String.valueOf((Config.getI("GiveSoupOnKill.Amount") - count))));
 					}
 					
 					for (int r = 0; r < count; r++) {
