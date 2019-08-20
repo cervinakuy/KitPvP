@@ -35,7 +35,7 @@ public class KitItem {
 		}
 		
 		if (resource.contains(path + ".Item")) {
-			this.material = Material.valueOf(resource.getString(path + ".Item"));
+			this.material = XMaterial.matchXMaterial(resource.getString(path + ".Item")).parseMaterial();
 		}
 		
 		if (resource.contains(path + ".Amount")) {
@@ -63,7 +63,7 @@ public class KitItem {
 	
 	public ItemStack toItemStack() {
 		
-		ItemStack item = new ItemStack(material != null ? material : Material.BEDROCK);
+		ItemStack item = new ItemStack(material != null ? material : XMaterial.BEDROCK.parseMaterial());
 		ItemMeta meta = item.getItemMeta();
 		
 		item.setAmount(amount != 0 ? amount : 1);

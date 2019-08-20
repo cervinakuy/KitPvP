@@ -12,6 +12,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import com.planetgallium.kitpvp.Game;
 import com.planetgallium.kitpvp.util.Config;
 import com.planetgallium.kitpvp.util.Toolkit;
+import com.planetgallium.kitpvp.util.XMaterial;
 
 public class ArrowListener implements Listener {
 	
@@ -62,7 +63,7 @@ public class ArrowListener implements Listener {
 						
 						for (ItemStack items : shooter.getInventory().getContents()) {
 							
-							if (items != null && items.getType() == Material.ARROW && items.getAmount() < 64) {
+							if (items != null && items.getType() == XMaterial.ARROW.parseMaterial() && items.getAmount() < 64) {
 								
 								if (shooter.hasPermission("kp.arrowreturn")) {
 									

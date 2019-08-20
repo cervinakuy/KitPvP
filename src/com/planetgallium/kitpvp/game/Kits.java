@@ -270,7 +270,7 @@ public class Kits {
 				
 				PotionMeta potionMeta = (PotionMeta) meta;
 		        resource.set(path + ".Potion.Splash", item.getType() == XMaterial.SPLASH_POTION.parseMaterial()); // this might not work
-		        resource.set(path + ".Potion.Type", potionMeta.getCustomEffects().get(0).getType().getName());
+		        resource.set(path + ".Potion.Type", potionMeta.getBasePotionData().getType().toString());
 		        resource.set(path + ".Potion.Level", potionMeta.getCustomEffects().get(0).getAmplifier());
 		        resource.set(path + ".Potion.Duration", potionMeta.getCustomEffects().get(0).getDuration() / 20);
 		        resource.save();

@@ -1,6 +1,5 @@
 package com.planetgallium.kitpvp.item;
 
-import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.Potion;
@@ -47,7 +46,7 @@ public class PotionItem {
 			
 		} else if (Toolkit.versionToNumber() >= 19) {
 			
-			ItemStack newItem = new ItemStack(isSplash ? XMaterial.POTION.parseMaterial() : Material.SPLASH_POTION);
+			ItemStack newItem = new ItemStack(isSplash ? XMaterial.POTION.parseMaterial() : XMaterial.SPLASH_POTION.parseMaterial());
 			newItem.setItemMeta(toConvert.getItemMeta());
 			PotionMeta potionMeta = (PotionMeta) newItem.getItemMeta();
 			
