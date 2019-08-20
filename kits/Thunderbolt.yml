@@ -16,18 +16,10 @@ Inventory:
       Item: GOLD_CHESTPLATE
     Leggings:
       Name: '&7Thunderbolt Leggings'
-      Item: LEATHER_LEGGINGS
-      Dye:
-        Red: 224
-        Green: 249
-        Blue: 0
+      Item: GOLD_LEGGINGS
     Boots:
       Name: '&7Thunderbolt Boots'
-      Item: LEATHER_BOOTS
-      Dye:
-        Red: 224
-        Green: 249
-        Blue: 0
+      Item: GOLD_BOOTS
   Items:
     0:
       Name: '&aThunderbolt''s Sword'
