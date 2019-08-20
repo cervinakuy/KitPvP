@@ -402,9 +402,11 @@ public class Toolkit {
  			
  			p.getInventory().setItemInMainHand(item);
  			
+ 		} else {
+ 			
+ 			p.setItemInHand(item);
+ 			
  		}
- 		
- 		p.setItemInHand(item);
  		
  	}
  	
@@ -436,9 +438,11 @@ public class Toolkit {
  			
  			p.getInventory().setItemInOffHand(item);
  			
+ 		} else {
+ 			
+ 			p.setItemInHand(item);
+ 			
  		}
- 		
- 		p.setItemInHand(item);
  		
  	}
  	
