@@ -12,6 +12,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.PotionMeta;
@@ -281,7 +282,7 @@ public class Kits {
 		
 		if (item.getEnchantments().size() > 0) {
 			
-			if (Toolkit.versionToNumber() < 112) {
+			if (Toolkit.versionToNumber() < 112) { // Fix this, there is no handling for 1.12
 				
 				for (Enchantment enchantment : item.getEnchantments().keySet()) {
 					
@@ -298,6 +299,28 @@ public class Kits {
 					resource.save();
 					
 				}
+				
+			}
+			
+		}
+		
+		if (Toolkit.versionToNumber() < 113) {
+			
+			if (item.getDurability() > 0) {
+				
+				resource.set(path + ".Durability", item.getDurability());
+				resource.save();
+				
+			}
+			
+		} else if (Toolkit.versionToNumber() >= 113) {
+			
+			if (meta instanceof Damageable) {
+				
+				Damageable damagedMeta = (Damageable) meta;
+				
+				resource.set(path + ".Durability", damagedMeta.getDamage());
+				resource.save();
 				
 			}
 			

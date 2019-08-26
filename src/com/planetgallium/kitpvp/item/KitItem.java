@@ -23,6 +23,7 @@ public class KitItem {
 	private SkullItem skull;
 	private PotionItem potion;
 	private EnchantedItem enchant;
+	private DamagedItem damaged;
 	
 	public KitItem(Resource resource, String kit, String path) {
 		
@@ -42,6 +43,10 @@ public class KitItem {
 			this.amount = resource.getInt(path + ".Amount");
 		}
 		
+		if (resource.contains(path + ".Durability")) {
+			this.damaged = new DamagedItem(resource.getInt(path + ".Durability"));
+		}
+		
 		if (resource.contains(path + ".Dye")) {
 			this.color = Toolkit.stringToColor(kit, path + ".Dye");
 		}
@@ -56,7 +61,6 @@ public class KitItem {
 		
 		if (resource.contains(path + ".Enchantments")) {
 			this.enchant = new EnchantedItem(resource, path + ".Enchantments");
-			
 		}
 		
 	}
@@ -76,6 +80,12 @@ public class KitItem {
 		if (enchant != null) {
 			
 			item = enchant.convertToEnchantedItem(item);
+			
+		}
+		
+		if (damaged != null) {
+			
+			item = damaged.setDamaged(item);
 			
 		}
 		
