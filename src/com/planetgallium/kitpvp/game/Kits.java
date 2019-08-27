@@ -221,10 +221,10 @@ public class Kits {
 		
 		ItemMeta meta = item.getItemMeta();
 		
-		resource.set(path + ".Name", meta.hasDisplayName() ? meta.getDisplayName().replace("§", "&") : backupName);
+		resource.set(path + ".Name", meta.hasDisplayName() ? meta.getDisplayName().replace("§", "&") : backupName.replace("§", "&"));
 		resource.set(path + ".Lore", meta.getLore());
 		resource.set(path + ".Item", item.getType().toString());
-		resource.set(path + ".Amount", item.getAmount());
+		resource.set(path + ".Amount", item.getAmount() == 1 ? null : item.getAmount());
 		resource.save();
 		
 		if (item.getType() == XMaterial.LEATHER_HELMET.parseMaterial() ||
@@ -282,7 +282,7 @@ public class Kits {
 		
 		if (item.getEnchantments().size() > 0) {
 			
-			if (Toolkit.versionToNumber() < 112) { // Fix this, there is no handling for 1.12
+			if (Toolkit.versionToNumber() < 113) {
 				
 				for (Enchantment enchantment : item.getEnchantments().keySet()) {
 					
@@ -295,7 +295,7 @@ public class Kits {
 				
 				for (Enchantment enchantment : item.getEnchantments().keySet()) {
 					
-					resource.set(path + ".Enchantments." + enchantment.getKey() + ".Level", item.getEnchantments().get(enchantment));
+					resource.set(path + ".Enchantments." + enchantment.getKey().getKey() + ".Level", item.getEnchantments().get(enchantment));
 					resource.save();
 					
 				}
@@ -306,7 +306,7 @@ public class Kits {
 		
 		if (Toolkit.versionToNumber() < 113) {
 			
-			if (item.getDurability() > 0) {
+			if (item.getDurability() > 0 && item.getType() != XMaterial.PLAYER_HEAD.parseMaterial()) {
 				
 				resource.set(path + ".Durability", item.getDurability());
 				resource.save();
@@ -315,12 +315,16 @@ public class Kits {
 			
 		} else if (Toolkit.versionToNumber() >= 113) {
 			
-			if (meta instanceof Damageable) {
+			if (meta instanceof Damageable && item.getType() != XMaterial.PLAYER_HEAD.parseMaterial()) {
 				
 				Damageable damagedMeta = (Damageable) meta;
 				
-				resource.set(path + ".Durability", damagedMeta.getDamage());
-				resource.save();
+				if (damagedMeta.hasDamage()) {
+					
+					resource.set(path + ".Durability", damagedMeta.getDamage());
+					resource.save();
+					
+				}
 				
 			}
 			
