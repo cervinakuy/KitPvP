@@ -1,0 +1,94 @@
+Kit:
+  Permission: kp.kit.allfeatures
+  Level: 0
+  Cooldown: 0
+Inventory:
+  Armor:
+    Helmet:
+      Name: '&aSkull Item'
+      Lore:
+      - '&7This is a player skull'
+      - '&7which can automatically'
+      - '&7be detected and saved'
+      - '&7when using /kp create'
+      Item: SKULL_ITEM
+      Skull: cervinakuy
+    Chestplate:
+      Name: '&aDyed Item'
+      Lore:
+      - '&7This is a dyed item which'
+      - '&7can include over 16 million'
+      - '&7different color combinations'
+      Item: LEATHER_CHESTPLATE
+      Dye:
+        Red: 127
+        Green: 63
+        Blue: 178
+    Leggings:
+      Name: '&aEnchanted Item'
+      Lore:
+      - '&7This is an enchanted'
+      - '&7item which can support'
+      - '&7an unlimited amount of'
+      - '&7enchantments and can bypass'
+      - '&7vanilla enchantment limits.'
+      Item: IRON_LEGGINGS
+      Enchantments:
+        PROTECTION_ENVIRONMENTAL:
+          Level: 10
+    Boots:
+      Name: '&aItem'
+      Lore:
+      - '&7This is just a regular item.'
+      Item: GOLD_BOOTS
+  Items:
+    0:
+      Name: '&aCustomized Item'
+      Lore:
+      - '&3This is an item with a custom'
+      - '&cname and lore.'
+      Item: PAPER
+    1:
+      Name: '&aDamaged Item'
+      Lore:
+      - '&7This is a damaged item'
+      Durability: 10
+      Item: GOLD_PICKAXE
+    8:
+      Name: '&aAbility Item'
+      Lore:
+      - '&7This is an ability item'
+      - '&7which can support messages,'
+      - '&7sounds, potion effects,'
+      - '&7and commands when right-clicked.'
+      - '&7It must be customized in'
+      - '&7the kit file.'
+      Item: EMERALD
+    Fill:
+      Name: '&aFill Item'
+      Lore:
+      - '&7This is a fill item which'
+      - '&7can fill up any blank slots'
+      - '&7in a kit. You must customize'
+      - '&7this in the kit file.'
+      Item: COOKIE
+Ability:
+  Activator:
+    Name: '&aAbility Item'
+    Item: EMERALD
+  Message:
+    Message: '%prefix% &7This is an example ability message.'
+    Enabled: true
+  Sound:
+    Sound: NOTE_PLING
+    Pitch: 1
+    Enabled: true
+  Potions:
+    SPEED:
+      Level: 5
+      Duration: 10
+  Commands:
+    Commands:
+    - 'console: say Hi %player%, this is an example console command that can be run when you use your ability.'
+    - 'player: me This is an example player command that can be run when you use your ability.'
+    Enabled: true
