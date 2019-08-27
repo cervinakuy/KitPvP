@@ -59,9 +59,19 @@ public class ArenaListener implements Listener {
 				
 				e.setCancelled(true);
 				
-			} else if (arena.getKits().hasKit(p.getName()) && e.getBlock().getType() == XMaterial.matchXMaterial(resources.getKits(arena.getKits().getKit(p.getName())).getString("Ability.Activator.Item")).parseMaterial()) {
+			} else if (arena.getKits().hasKit(p.getName())) {
 				
-				e.setCancelled(true);
+				String abilityPath = resources.getKits(arena.getKits().getKit(p.getName())).getString("Ability.Activator.Item");
+				
+				if (abilityPath != null) {
+					
+					if (e.getBlock().getType() == XMaterial.matchXMaterial(abilityPath).parseMaterial()) {
+						
+						e.setCancelled(true);
+						
+					}
+					
+				}
 				
 			} else if ((Toolkit.getMainHandItem(p).hasItemMeta() && Toolkit.getMainHandItem(p).getItemMeta().getDisplayName().equals(Config.getS("Items.Kits.Name"))) || Toolkit.getMainHandItem(p).getType() == XMaterial.matchXMaterial(Config.getS("Items.Leave.Item")).parseMaterial()) {
 				
