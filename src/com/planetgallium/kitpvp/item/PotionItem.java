@@ -3,8 +3,10 @@ package com.planetgallium.kitpvp.item;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.Potion;
+import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.potion.PotionType;
 
 import com.planetgallium.kitpvp.util.Resource;
 import com.planetgallium.kitpvp.util.Toolkit;
@@ -13,17 +15,30 @@ import com.planetgallium.kitpvp.util.XMaterial;
 @SuppressWarnings("deprecation")
 public class PotionItem {
 
-	private PotionEffectType type;
+	private String type;
+	private boolean isSplash;
+	
 	private int level;
 	private int duration;
-	private boolean isSplash;
+	private boolean isExtended;
+	private boolean isUpgraded;
 	
 	public PotionItem(Resource resource, String path) {
 		
-		this.type = PotionEffectType.getByName(resource.getString(path + ".Type"));
-		this.level = resource.getInt(path + ".Level");
-		this.duration = resource.getInt(path + ".Duration");
+		this.type = resource.getString(path + ".Type");
 		this.isSplash = resource.getBoolean(path + ".Splash");
+		
+		if (Toolkit.versionToNumber() == 18) {
+		
+			this.level = resource.getInt(path + ".Level");
+			this.duration = resource.getInt(path + ".Duration");
+			
+		} else if (Toolkit.versionToNumber() >= 19) {
+			
+			this.isExtended = resource.getBoolean(path + ".Extended");
+			this.isUpgraded = resource.getBoolean(path + ".Upgraded");
+			
+		}
 		
 	}
 	
@@ -38,7 +53,7 @@ public class PotionItem {
 			newItem.setItemMeta(toConvert.getItemMeta());
 			PotionMeta potionMeta = (PotionMeta) newItem.getItemMeta();
 			
-			potionMeta.addCustomEffect(new PotionEffect(type, duration * 20, level - 1), true);
+			potionMeta.addCustomEffect(new PotionEffect(PotionEffectType.getByName(type), duration * 20, level - 1), true);
 			
 			newItem.setItemMeta(potionMeta);
 			
@@ -46,11 +61,11 @@ public class PotionItem {
 			
 		} else if (Toolkit.versionToNumber() >= 19) {
 			
-			ItemStack newItem = new ItemStack(isSplash ? XMaterial.POTION.parseMaterial() : XMaterial.SPLASH_POTION.parseMaterial());
+			ItemStack newItem = new ItemStack(isSplash ? XMaterial.SPLASH_POTION.parseMaterial() : XMaterial.POTION.parseMaterial());
 			newItem.setItemMeta(toConvert.getItemMeta());
 			PotionMeta potionMeta = (PotionMeta) newItem.getItemMeta();
 			
-			potionMeta.addCustomEffect(new PotionEffect(type, duration * 20, level - 1), true);
+			potionMeta.setBasePotionData(new PotionData(PotionType.valueOf(type), isExtended, isUpgraded));
 			
 			newItem.setItemMeta(potionMeta);
 			
@@ -62,12 +77,16 @@ public class PotionItem {
 		
 	}
 	
-	public PotionEffectType getType() { return type; }
+	public String getType() { return type; }
+	
+	public boolean isSplash() { return isSplash; }
 	
 	public int getLevel() { return level; }
 	
 	public int getDuration() { return duration; }
 	
-	public boolean isSplash() { return isSplash; }
+	public boolean isExtended() { return isExtended; }
+	
+	public boolean isUpgraded() { return isUpgraded; }
 	
 }
