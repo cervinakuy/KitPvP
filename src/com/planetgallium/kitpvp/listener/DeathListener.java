@@ -10,8 +10,10 @@ import org.bukkit.entity.Arrow;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Snowball;
+import org.bukkit.entity.Trident;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.potion.PotionEffect;
@@ -137,8 +139,10 @@ public class DeathListener implements Listener {
 	}
 	
 	private void setDeathMessage(Player p, PlayerDeathEvent e) {
-		
+
 		DamageCause cause = p.getLastDamageCause().getCause();
+		
+		System.out.println("Death occured with cause  " + cause);
 		
 		if (cause == DamageCause.FALL) {
 			
@@ -186,35 +190,61 @@ public class DeathListener implements Listener {
 					
 		} else if (cause == DamageCause.PROJECTILE) {
 			
-			if (p.getLastDamageCause().getEntityType() == EntityType.ARROW) {
+			if (p.getLastDamageCause().getEntityType() == EntityType.ARROW ||
+					p.getLastDamageCause().getEntityType() == EntityType.SNOWBALL ||
+					Toolkit.versionToNumber() >= 113 && p.getLastDamageCause().getEntityType() == EntityType.TRIDENT ||
+					p.getLastDamageCause().getEntityType() == EntityType.PLAYER) {
 				
-				Arrow arrow = (Arrow) p.getLastDamageCause().getEntity();
-				
-				if (arrow.getShooter() != null) {
+				EntityDamageByEntityEvent shotEvent = (EntityDamageByEntityEvent) p.getLastDamageCause();
 					
-					if (arrow.getShooter() instanceof Player) {
+				if (shotEvent.getDamager().getType() == EntityType.ARROW) {
+					
+					Arrow arrow = (Arrow) shotEvent.getDamager();
+					
+					if (arrow.getShooter() != null) {
 						
-						Player shooter = (Player) arrow.getShooter();
-						broadcast(p.getWorld(), Config.getS("Death.Messages.Shot").replace("%victim%", p.getName()).replace("%shooter%", shooter.getName()));
-						arena.getStats().addKill(shooter.getUniqueId());
-						arena.getLevels().addExperience(shooter, resources.getLevels().getInt("Levels.General.Experience.Kill"));
+						if (arrow.getShooter() instanceof Player) {
+							
+							Player shooter = (Player) arrow.getShooter();
+							broadcast(p.getWorld(), Config.getS("Death.Messages.Shot").replace("%victim%", p.getName()).replace("%shooter%", shooter.getName()));
+							arena.getStats().addKill(shooter.getUniqueId());
+							arena.getLevels().addExperience(shooter, resources.getLevels().getInt("Levels.General.Experience.Kill"));
+							
+						}
 						
 					}
 					
-				}
-				
-			} else if (p.getLastDamageCause().getEntityType() == EntityType.SNOWBALL) {
-				
-				Snowball snowball = (Snowball) p.getLastDamageCause().getEntity();
-				
-				if (snowball.getShooter() != null) {
+				} else if (shotEvent.getDamager().getType() == EntityType.SNOWBALL) {
 					
-					if (snowball.getShooter() instanceof Player) {
+					Snowball snowball = (Snowball) shotEvent.getDamager();
+					
+					if (snowball.getShooter() != null) {
 						
-						Player shooter = (Player) snowball.getShooter();
-						broadcast(p.getWorld(), Config.getS("Death.Messages.Shot").replace("%victim%", p.getName()).replace("%shooter%", shooter.getName()));
-						arena.getStats().addKill(shooter.getUniqueId());
-						arena.getLevels().addExperience(shooter, resources.getLevels().getInt("Levels.General.Experience.Kill"));
+						if (snowball.getShooter() instanceof Player) {
+							
+							Player shooter = (Player) snowball.getShooter();
+							broadcast(p.getWorld(), Config.getS("Death.Messages.Shot").replace("%victim%", p.getName()).replace("%shooter%", shooter.getName()));
+							arena.getStats().addKill(shooter.getUniqueId());
+							arena.getLevels().addExperience(shooter, resources.getLevels().getInt("Levels.General.Experience.Kill"));
+							
+						}
+						
+					}
+					
+				} else if (Toolkit.versionToNumber() >= 113 && shotEvent.getDamager().getType() == EntityType.TRIDENT) {
+					
+					Trident trident = (Trident) shotEvent.getDamager();
+					
+					if (trident.getShooter() != null) {
+						
+						if (trident.getShooter() instanceof Player) {
+							
+							Player shooter = (Player) trident.getShooter();
+							broadcast(p.getWorld(), Config.getS("Death.Messages.Shot").replace("%victim%", p.getName()).replace("%shooter%", shooter.getName()));
+							arena.getStats().addKill(shooter.getUniqueId());
+							arena.getLevels().addExperience(shooter, resources.getLevels().getInt("Levels.General.Experience.Kill"));
+							
+						}
 						
 					}
 					
