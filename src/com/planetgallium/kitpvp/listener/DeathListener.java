@@ -142,8 +142,6 @@ public class DeathListener implements Listener {
 
 		DamageCause cause = p.getLastDamageCause().getCause();
 		
-		System.out.println("Death occured with cause  " + cause);
-		
 		if (cause == DamageCause.FALL) {
 			
 			broadcast(p.getWorld(), Config.getS("Death.Messages.Fall").replace("%victim%", p.getName()));
