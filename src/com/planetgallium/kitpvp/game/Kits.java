@@ -306,7 +306,10 @@ public class Kits {
 		
 		if (Toolkit.versionToNumber() < 113) {
 			
-			if (item.getDurability() > 0 && item.getType() != XMaterial.PLAYER_HEAD.parseMaterial()) {
+			if (item.getDurability() > 0 &&
+					item.getType() != XMaterial.PLAYER_HEAD.parseMaterial() &&
+					item.getType() != XMaterial.POTION.parseMaterial() &&
+					item.getType() != XMaterial.SPLASH_POTION.parseMaterial()) {
 				
 				resource.set(path + ".Durability", item.getDurability());
 				resource.save();
@@ -315,7 +318,10 @@ public class Kits {
 			
 		} else if (Toolkit.versionToNumber() >= 113) {
 			
-			if (meta instanceof Damageable && item.getType() != XMaterial.PLAYER_HEAD.parseMaterial()) {
+			if (meta instanceof Damageable &&
+					item.getType() != XMaterial.PLAYER_HEAD.parseMaterial() &&
+					item.getType() != XMaterial.POTION.parseMaterial() &&
+					item.getType() != XMaterial.SPLASH_POTION.parseMaterial()) {
 				
 				Damageable damagedMeta = (Damageable) meta;
 				
