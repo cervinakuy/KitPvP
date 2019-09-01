@@ -85,7 +85,7 @@ public class Kits {
 				
 				if (item != null) {
 					
-					String backupName = (item.getType() == XMaterial.MUSHROOM_STEW.parseMaterial()) ? Config.getS("Soups.Name") : "&7Item";
+					String backupName = (item.getType() == XMaterial.MUSHROOM_STEW.parseMaterial()) ? Config.getS("Soups.Name") : null;
 					saveItem(kitResource, name, "Inventory.Items." + i, p.getInventory().getItem(i), backupName);
 					
 				}
@@ -221,7 +221,7 @@ public class Kits {
 		
 		ItemMeta meta = item.getItemMeta();
 		
-		resource.set(path + ".Name", meta.hasDisplayName() ? meta.getDisplayName().replace("§", "&") : backupName.replace("§", "&"));
+		resource.set(path + ".Name", meta.hasDisplayName() ? meta.getDisplayName().replace("§", "&") : backupName);
 		resource.set(path + ".Lore", meta.getLore());
 		resource.set(path + ".Item", item.getType().toString());
 		resource.set(path + ".Amount", item.getAmount() == 1 ? null : item.getAmount());
@@ -256,13 +256,14 @@ public class Kits {
 			}
 			
 		} else if (item.getType() == XMaterial.POTION.parseMaterial() ||
-					item.getType() == XMaterial.SPLASH_POTION.parseMaterial()) {
+					item.getType() == XMaterial.SPLASH_POTION.parseMaterial() ||
+					item.getType() == XMaterial.LINGERING_POTION.parseMaterial()) {
 			
 			if (Toolkit.versionToNumber() == 18) {
 				
 		        Potion potion = Potion.fromItemStack(item);
-		        resource.set(path + ".Potion.Type", potion.getEffects().iterator().next().getType().getName());
-		        resource.set(path + ".Potion.Splash", potion.isSplash());
+		        resource.set(path + ".Potion.Type", potion.isSplash() ? "SPLASH_POTION" : "POTION");
+		        resource.set(path + ".Potion.Effect", potion.getEffects().iterator().next().getType().getName());
 		        resource.set(path + ".Potion.Level", potion.getLevel());
 		        resource.set(path + ".Potion.Duration", potion.getEffects().iterator().next().getDuration() / 20);
 		        resource.save();
@@ -270,8 +271,8 @@ public class Kits {
 			} else if (Toolkit.versionToNumber() >= 19) {
 				
 				PotionMeta potionMeta = (PotionMeta) meta;
-				resource.set(path + ".Potion.Type", potionMeta.getBasePotionData().getType().toString());
-		        resource.set(path + ".Potion.Splash", item.getType() == XMaterial.SPLASH_POTION.parseMaterial()); // this might not work
+				resource.set(path + ".Potion.Type", getPotionType(item).parseMaterial().toString());
+				resource.set(path + ".Potion.Effect", potionMeta.getBasePotionData().getType().toString());
 		        resource.set(path + ".Potion.Upgraded", potionMeta.getBasePotionData().isUpgraded());
 		        resource.set(path + ".Potion.Extended", potionMeta.getBasePotionData().isExtended());
 		        resource.save();
@@ -306,7 +307,10 @@ public class Kits {
 		
 		if (Toolkit.versionToNumber() < 113) {
 			
-			if (item.getDurability() > 0 && item.getType() != XMaterial.PLAYER_HEAD.parseMaterial()) {
+			if (item.getDurability() > 0 &&
+					item.getType() != XMaterial.PLAYER_HEAD.parseMaterial() &&
+					item.getType() != XMaterial.POTION.parseMaterial() &&
+					item.getType() != XMaterial.SPLASH_POTION.parseMaterial()) {
 				
 				resource.set(path + ".Durability", item.getDurability());
 				resource.save();
@@ -315,7 +319,10 @@ public class Kits {
 			
 		} else if (Toolkit.versionToNumber() >= 113) {
 			
-			if (meta instanceof Damageable && item.getType() != XMaterial.PLAYER_HEAD.parseMaterial()) {
+			if (meta instanceof Damageable &&
+					item.getType() != XMaterial.PLAYER_HEAD.parseMaterial() &&
+					item.getType() != XMaterial.POTION.parseMaterial() &&
+					item.getType() != XMaterial.SPLASH_POTION.parseMaterial()) {
 				
 				Damageable damagedMeta = (Damageable) meta;
 				
@@ -329,6 +336,26 @@ public class Kits {
 			}
 			
 		}
+		
+	}
+	
+	private XMaterial getPotionType(ItemStack item) {
+		
+		if (item.getType() == XMaterial.POTION.parseMaterial()) {
+			
+			return XMaterial.POTION;
+			
+		} else if (item.getType() == XMaterial.SPLASH_POTION.parseMaterial()) {
+			
+			return XMaterial.SPLASH_POTION;
+			
+		} else if (item.getType() == XMaterial.LINGERING_POTION.parseMaterial()) {
+			
+			return XMaterial.LINGERING_POTION;
+			
+		}
+		
+		return XMaterial.POTION;
 		
 	}
 	
