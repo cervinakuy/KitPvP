@@ -85,7 +85,7 @@ public class Kits {
 				
 				if (item != null) {
 					
-					String backupName = (item.getType() == XMaterial.MUSHROOM_STEW.parseMaterial()) ? Config.getS("Soups.Name") : "&7Item";
+					String backupName = (item.getType() == XMaterial.MUSHROOM_STEW.parseMaterial()) ? Config.getS("Soups.Name") : null;
 					saveItem(kitResource, name, "Inventory.Items." + i, p.getInventory().getItem(i), backupName);
 					
 				}
@@ -221,7 +221,7 @@ public class Kits {
 		
 		ItemMeta meta = item.getItemMeta();
 		
-		resource.set(path + ".Name", meta.hasDisplayName() ? meta.getDisplayName().replace("§", "&") : backupName.replace("§", "&"));
+		resource.set(path + ".Name", meta.hasDisplayName() ? meta.getDisplayName().replace("§", "&") : backupName);
 		resource.set(path + ".Lore", meta.getLore());
 		resource.set(path + ".Item", item.getType().toString());
 		resource.set(path + ".Amount", item.getAmount() == 1 ? null : item.getAmount());
