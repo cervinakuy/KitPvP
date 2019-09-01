@@ -1,8 +1,14 @@
 package com.planetgallium.kitpvp.command;
 
+import java.io.File;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
+import com.planetgallium.kitpvp.game.PlayerData;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -46,8 +52,6 @@ public class MainCommand implements CommandExecutor {
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String alias, String[] args) {
-		
-		if (command.getLabel().equalsIgnoreCase("kitpvp")) {
 			
 			if (sender instanceof Player) {
 				
@@ -84,6 +88,8 @@ public class MainCommand implements CommandExecutor {
 						p.sendMessage(Config.tr("&7- &b/kp clear &7Clears your current kit."));
 						p.sendMessage(Config.tr("&7- &b/kp stats &7View your stats."));
 						p.sendMessage(Config.tr("&7- &b/kp menu &7Displays the kits menu."));
+						p.sendMessage(Config.tr("&7- &b/kp export &7Exports all playerdata into a file."));
+						p.sendMessage(Config.tr("&7- &b/kp import &7Imports all playerdata from file into specified storage type"));
 						p.sendMessage(Config.tr(" "));
 						p.sendMessage(Config.tr("&3&m                                                                               "));
 						return true;
@@ -384,6 +390,87 @@ public class MainCommand implements CommandExecutor {
 							
 						}
 						
+					} else if (args[0].equalsIgnoreCase("export")) {
+
+						if (p.hasPermission("kp.command.export")) {
+
+							if (Game.storageType.equalsIgnoreCase("yaml")) {
+
+								p.sendMessage(Config.tr("%prefix% &7Exporting is unecessary, you can switch your storage type and export."));
+
+							} else {
+								File file = new File(Game.getInstance().getDataFolder(), "stats.yml");
+								if (file.exists()) {
+									file.delete();
+								}
+								try {
+									file.createNewFile();
+								} catch (IOException e) {
+									e.printStackTrace();
+								}
+								for (UUID uuid: Game.playerCache.keySet()) {
+
+									PlayerData playerData = Game.playerCache.get(uuid);
+
+									resources.getStats().set("Stats.Players." + uuid + ".Username", playerData.getUsername());
+									resources.getStats().set("Stats.Players." + uuid + ".Level", playerData.getLevel());
+									resources.getStats().set("Stats.Players." + uuid + ".Experience", playerData.getExperience());
+									resources.getStats().set("Stats.Players." + uuid + ".Kills", playerData.getKills());
+									resources.getStats().set("Stats.Players." + uuid + ".Deaths", playerData.getDeaths());
+
+									resources.save();
+								}
+
+								p.sendMessage(Config.tr("%prefix% &7Stats successfully exported to stats.yml!"));
+
+							}
+
+						} else {
+							p.sendMessage(Config.tr(resources.getMessages().getString("Messages.General.Permission")));
+						}
+					} else if (args[0].equalsIgnoreCase("import")) {
+
+						if (p.hasPermission("kp.command.import")) {
+
+							if (Game.storageType.equalsIgnoreCase("yaml")) {
+
+								p.sendMessage(Config.tr("%prefix% &7As you are using yaml, importing is unneccesary."));
+
+							} else {
+
+								ConfigurationSection stats = resources.getStats().getConfigurationSection("Stats.Players");
+								String tableName = Config.getC().getString("MySQL.table");
+								String deleteTableContents = "DELETE FROM " + tableName;
+								Statement statement = null;
+								try {
+									statement = Game.getConnection().createStatement();
+									statement.executeUpdate(deleteTableContents);
+								} catch (SQLException e) {
+									e.printStackTrace();
+								}
+								for (String uuid: stats.getKeys(false)) {
+									String username = resources.getStats().getString("Stats.Players." + uuid + ".Username");
+									int level = resources.getStats().getInt("Stats.Players." + uuid + ".Level");
+									int experience = resources.getStats().getInt("Stats.Players." + uuid + ".Experience");
+									int kills = resources.getStats().getInt("Stats.Players." + uuid + ".Kills");
+									int deaths = resources.getStats().getInt("Stats.Players." + uuid + ".Deaths");
+
+									String sqlStatement = "INSERT INTO " + tableName + " (UUID, USERNAME, LEVEL, EXPERIENCE, KILLS, DEATHS) VALUES ('" + uuid
+											+ "', '" + username + "', " + level + ", " + experience + ", " + kills + ", " + deaths + ")";
+									try {
+										statement.executeUpdate(sqlStatement);
+									} catch (SQLException e) {
+										e.printStackTrace();
+									}
+
+								}
+								p.sendMessage(Config.tr("%prefix% &7Stats successfully imported to database!"));
+
+							}
+						} else {
+							p.sendMessage(Config.tr(resources.getMessages().getString("Messages.General.Permission")));
+						}
+
 					}
 					
 				} else if (args.length == 2) {
@@ -552,9 +639,7 @@ public class MainCommand implements CommandExecutor {
 					}
 					
 				}
-				
-			}
-			
+
 		}
 		
 		return false;

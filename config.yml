@@ -121,3 +121,12 @@ Arena:
 Spawn:
   Time: 5
   Enabled: true
+#either put MySQl or YAML
+Storage-Type: YAML
+MySQL:
+  host: planetgallium.com
+  database: kitpvp
+  table: kitpvp_userdata
+  port: 3306
+  username: cervinakuy
+  password: supersecretpassword

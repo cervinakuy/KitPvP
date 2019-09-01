@@ -1,5 +1,14 @@
 package com.planetgallium.kitpvp;
 
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.HashMap;
+import java.util.UUID;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -13,17 +22,31 @@ import org.bukkit.scheduler.BukkitRunnable;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import com.planetgallium.kitpvp.api.EventListener;
-import com.planetgallium.kitpvp.util.Config;
-import com.planetgallium.kitpvp.util.Metrics;
 import com.planetgallium.kitpvp.command.AliasCommand;
 import com.planetgallium.kitpvp.command.KitCommand;
+import com.planetgallium.kitpvp.command.KitsCommand;
 import com.planetgallium.kitpvp.command.MainCommand;
 import com.planetgallium.kitpvp.command.SpawnCommand;
 import com.planetgallium.kitpvp.command.StatsCommand;
-import com.planetgallium.kitpvp.command.KitsCommand;
 import com.planetgallium.kitpvp.game.Arena;
-import com.planetgallium.kitpvp.listener.*;
+import com.planetgallium.kitpvp.game.PlayerData;
+import com.planetgallium.kitpvp.listener.AbilityListener;
+import com.planetgallium.kitpvp.listener.ArenaListener;
+import com.planetgallium.kitpvp.listener.ArrowListener;
+import com.planetgallium.kitpvp.listener.AttackListener;
+import com.planetgallium.kitpvp.listener.ChatListener;
+import com.planetgallium.kitpvp.listener.DeathListener;
+import com.planetgallium.kitpvp.listener.HitListener;
+import com.planetgallium.kitpvp.listener.InteractListener;
+import com.planetgallium.kitpvp.listener.ItemListener;
+import com.planetgallium.kitpvp.listener.JoinListener;
+import com.planetgallium.kitpvp.listener.LeaveListener;
+import com.planetgallium.kitpvp.listener.SignListener;
+import com.planetgallium.kitpvp.listener.SoupListener;
+import com.planetgallium.kitpvp.listener.TrailListener;
 import com.planetgallium.kitpvp.menu.KitMenu;
+import com.planetgallium.kitpvp.util.Config;
+import com.planetgallium.kitpvp.util.Metrics;
 import com.planetgallium.kitpvp.util.Placeholders;
 import com.planetgallium.kitpvp.util.Resources;
 import com.planetgallium.kitpvp.util.Toolkit;
@@ -41,6 +64,11 @@ public class Game extends JavaPlugin implements Listener {
 	
 	private Arena arena;
 	private final Resources resources = new Resources(this);
+	
+	private static Connection connection;
+	
+	public static String storageType;
+	public static HashMap<UUID, PlayerData> playerCache = new HashMap<>();
 	
 	@Override
 	public void onEnable() {
@@ -69,11 +97,19 @@ public class Game extends JavaPlugin implements Listener {
 		pm.registerEvents(new SignListener(resources), this);
 		pm.registerEvents(new AliasCommand(), this);
 		pm.registerEvents(new AbilityListener(arena, resources), this);
-		pm.registerEvents(Game.getInstance().getArena().getKillStreaks(), this);
+		pm.registerEvents(getArena().getKillStreaks(), this);
 		
 		getConfig().options().copyDefaults(true);
 		saveConfig();
 		
+		if (Config.getC().getString("Storage-Type").equalsIgnoreCase("mysql")) {
+			storageType = "mysql";
+			MySQLSetup();
+			preventMySQLTimeout();
+			createPlayerData();
+		} else {
+			storageType = "yaml";
+		}
 		getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 	    getCommand("kitpvp").setExecutor(new MainCommand(this, arena, resources));
 	    getCommand("ckit").setExecutor(new KitCommand(resources));
@@ -109,6 +145,60 @@ public class Game extends JavaPlugin implements Listener {
 		
 	}
 	
+    public void MySQLSetup() {
+        String host = getConfig().getString("MySQL.host");
+        String database = getConfig().getString("MySQL.database");
+        int port = getConfig().getInt("MySQL.port");
+        String username = getConfig().getString("MySQL.username");
+        String password = getConfig().getString("MySQL.password");
+
+        try {
+            synchronized (this) {
+                if (getConnection() != null && !getConnection().isClosed()) {
+                    return;
+                }
+                Class.forName("com.mysql.jdbc.Driver");
+                setConnection(DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database + "?autoReconnect=true", username, password));
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+    public void preventMySQLTimeout() {
+        try {
+            getConnection().createStatement().executeQuery("SELECT 1;");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        Bukkit.getScheduler().runTaskLater(this, ()->preventMySQLTimeout(), 24000L);
+    }
+    public void createPlayerData() {
+        boolean isTableCreated = false;
+        try {
+        	String tableName = getConfig().getString("MySQL.table");
+            DatabaseMetaData databaseMetaData = connection.getMetaData();
+            ResultSet rs = databaseMetaData.getTables(null, null, tableName, null);
+            if (rs.next()) {
+                isTableCreated = true;
+            }
+            String playerTable = "CREATE TABLE " + tableName + " (" +
+                    "UUID VARCHAR(255)," +
+                    "USERNAME VARCHAR(255)," +
+                    "LEVEL INT (4)," +
+                    "EXPERIENCE INT(10)," +
+                    "KILLS INT(10)," +
+                    "DEATHS INT(10)" +
+                    ");";
+            if (!isTableCreated) {
+                Statement statement = connection.createStatement();
+                statement.executeUpdate(playerTable);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+    
 	private void checkUpdate() {
 		
 		Updater updater = new Updater(this, 27107, false);
@@ -171,7 +261,7 @@ public class Game extends JavaPlugin implements Listener {
 				        String server = Config.getS("Items.Leave.BungeeCord.Server");
 				        
 				        out.writeUTF(server);
-				        p.sendPluginMessage(Game.getInstance(), "BungeeCord", out.toByteArray());
+				        p.sendPluginMessage(this, "BungeeCord", out.toByteArray());
 				        
 					}
 					
@@ -194,5 +284,14 @@ public class Game extends JavaPlugin implements Listener {
 	public String getPrefix() { return resources.getMessages().getString("Messages.General.Prefix"); }
 	
 	public Resources getResources() { return resources; }
+	
+    public static Connection getConnection() {
+        return connection;
+    }
+
+
+    private static void setConnection(Connection connection) {
+        Game.connection = connection;
+    }
 
 }
