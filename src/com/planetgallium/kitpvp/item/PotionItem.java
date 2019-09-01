@@ -16,7 +16,7 @@ import com.planetgallium.kitpvp.util.XMaterial;
 public class PotionItem {
 
 	private String type;
-	private boolean isSplash;
+	private String effect;
 	
 	private int level;
 	private int duration;
@@ -26,7 +26,7 @@ public class PotionItem {
 	public PotionItem(Resource resource, String path) {
 		
 		this.type = resource.getString(path + ".Type");
-		this.isSplash = resource.getBoolean(path + ".Splash");
+		this.effect = resource.getString(path + ".Effect");
 		
 		if (Toolkit.versionToNumber() == 18) {
 		
@@ -47,13 +47,13 @@ public class PotionItem {
 		if (Toolkit.versionToNumber() == 18) {
 			
 			Potion potion = Potion.fromItemStack(toConvert);
-			potion.setSplash(isSplash);
+			potion.setSplash(type.equals("SPLASH_POTION"));
 			
 			ItemStack newItem = potion.toItemStack(toConvert.getAmount());
 			newItem.setItemMeta(toConvert.getItemMeta());
 			PotionMeta potionMeta = (PotionMeta) newItem.getItemMeta();
 			
-			potionMeta.addCustomEffect(new PotionEffect(PotionEffectType.getByName(type), duration * 20, level - 1), true);
+			potionMeta.addCustomEffect(new PotionEffect(PotionEffectType.getByName(effect), duration * 20, level - 1), true);
 			
 			newItem.setItemMeta(potionMeta);
 			
@@ -61,11 +61,11 @@ public class PotionItem {
 			
 		} else if (Toolkit.versionToNumber() >= 19) {
 			
-			ItemStack newItem = new ItemStack(isSplash ? XMaterial.SPLASH_POTION.parseMaterial() : XMaterial.POTION.parseMaterial());
+			ItemStack newItem = new ItemStack(XMaterial.matchXMaterial(type).parseMaterial());
 			newItem.setItemMeta(toConvert.getItemMeta());
 			PotionMeta potionMeta = (PotionMeta) newItem.getItemMeta();
 			
-			potionMeta.setBasePotionData(new PotionData(PotionType.valueOf(type), isExtended, isUpgraded));
+			potionMeta.setBasePotionData(new PotionData(PotionType.valueOf(effect), isExtended, isUpgraded));
 			
 			newItem.setItemMeta(potionMeta);
 			
@@ -77,9 +77,7 @@ public class PotionItem {
 		
 	}
 	
-	public String getType() { return type; }
-	
-	public boolean isSplash() { return isSplash; }
+	public String getEffect() { return effect; }
 	
 	public int getLevel() { return level; }
 	
