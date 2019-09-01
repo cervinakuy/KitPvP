@@ -98,6 +98,16 @@ Commands:
     Kit: false
     Kits: false
     Stats: false
+#either put MySQl or YAML
+Storage:
+  Type: YAML
+  MySQL:
+    host: planetgallium.com
+    database: kitpvp
+    table: kitpvp_userdata
+    port: 3306
+    username: walrus
+    password: supersecretpassword
 Arena:
   ClearPotionEffectsOnJoin: true
   ClearInventoryOnJoin: true
@@ -121,12 +131,3 @@ Arena:
 Spawn:
   Time: 5
   Enabled: true
-#either put MySQl or YAML
-Storage-Type: YAML
-MySQL:
-  host: planetgallium.com
-  database: kitpvp
-  table: kitpvp_userdata
-  port: 3306
-  username: cervinakuy
-  password: supersecretpassword
