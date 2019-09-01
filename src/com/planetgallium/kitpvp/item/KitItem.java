@@ -72,7 +72,7 @@ public class KitItem {
 		
 		item.setAmount(amount != 0 ? amount : 1);
 		
-		meta.setDisplayName(Config.tr(name != null ? name : "&7Item"));
+		meta.setDisplayName(name != null ? Config.tr(name) : null);
 		meta.setLore(lore != null ? Toolkit.colorizeList(lore) : new ArrayList<String>());
 		
 		item.setItemMeta(meta);
