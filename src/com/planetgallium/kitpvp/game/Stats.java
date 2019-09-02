@@ -8,14 +8,18 @@ import com.planetgallium.kitpvp.util.Toolkit;
 
 public class Stats {
 	
+	private Game game;
 	private Resources resources;
 	
-	public Stats(Resources resources) {
+	public Stats(Game game, Resources resources) {
+		this.game = game;
 		this.resources = resources;
 	}
 	
 	public void createPlayer(String username, UUID uuid) {
-		if (Game.storageType.equalsIgnoreCase("yaml")) {
+		
+		if (!game.getDatabase().isEnabled()) {
+			
 			if (!resources.getStats().contains("Stats.Players." + uuid + ".Username")) {
 				
 				resources.getStats().set("Stats.Players." + uuid + ".Username", username);
@@ -27,67 +31,84 @@ public class Stats {
 				resources.save();
 				
 			}
-		
+			
 		} else {
-			if (Game.playerCache.containsKey(uuid) || Game.playerCache.get(uuid) == null) {
+			
+			if (!game.getDatabase().getCache().containsKey(uuid) || game.getDatabase().getCache().get(uuid) == null) {
+				
 				PlayerData playerData = new PlayerData(username, 0, 0, 0, 0);
-				Game.playerCache.put(uuid, playerData);
+				game.getDatabase().getCache().put(uuid, playerData);
+				
 			}
+			
 		}
 		
 	}
 	
 	public void addKill(UUID uuid) {
 		
-		if (Game.storageType.equalsIgnoreCase("yaml")) {
+		if (!game.getDatabase().isEnabled()) {
+			
 			if (resources.getStats().contains("Stats.Players." + uuid + ".Kills")) {
 				
 				resources.getStats().set("Stats.Players." + uuid + ".Kills", getKills(uuid) + 1);
 				resources.save();
 				
 			}
+			
 		} else {
-			PlayerData playerData = Game.playerCache.get(uuid);
-			playerData.setKills(playerData.getKills() + 1);
+			
+			PlayerData playerData = game.getDatabase().getCache().get(uuid);
+			playerData.addKills(1);
+			
 		}
 		
 	}
 	
 	public void addDeath(UUID uuid) {
 		
-		if (Game.storageType.equalsIgnoreCase("yaml")) {
+		if (!game.getDatabase().isEnabled()) {
+			
 			if (resources.getStats().contains("Stats.Players." + uuid + ".Deaths")) {
 				
 				resources.getStats().set("Stats.Players." + uuid + ".Deaths", getDeaths(uuid) + 1);
 				resources.save();
 				
 			}
+			
 		} else {
-			PlayerData playerData = Game.playerCache.get(uuid);
-			playerData.setDeaths(playerData.getDeaths() + 1);
+			
+			PlayerData playerData = game.getDatabase().getCache().get(uuid);
+			playerData.addDeaths(1);
+			
 		}
 		
 	}
 	
 	public void addExperience(UUID uuid, int experience) {
-		if (Game.storageType.equalsIgnoreCase("yaml")) {
+		
+		if (!game.getDatabase().isEnabled()) {
+			
 			if (resources.getStats().contains("Stats.Players." + uuid + ".Experience")) {
 				
-				resources.getStats().set("Stats.Players." + uuid + ".Experience", getExperience(uuid) + experience);
+				resources.getStats().set("Stats.Players." + uuid + ".Experience", getExperience(uuid) + 1);
 				resources.save();
 				
 			}
-		
+			
 		} else {
-			PlayerData playerData = Game.playerCache.get(uuid);
-			playerData.setExperience(playerData.getExperience() + experience);
+			
+			PlayerData playerData = game.getDatabase().getCache().get(uuid);
+			playerData.setExperience(experience);
+			
 		}
 		
 	}
 	
 	public void removeExperience(UUID uuid, int experience) {
 		
-		if (Game.storageType.equalsIgnoreCase("yaml")) {
+		if (!game.getDatabase().isEnabled()) {
+			
 			if (resources.getStats().contains("Stats.Players." + uuid + ".Experience")) {
 				
 				if (resources.getStats().getInt("Stats.Players." + uuid + ".Experience") > experience) {
@@ -98,77 +119,99 @@ public class Stats {
 				}
 				
 			}
+			
 		} else {
-			PlayerData playerData = Game.playerCache.get(uuid);
+			
+			PlayerData playerData = game.getDatabase().getCache().get(uuid);
 			
 			if (playerData.getExperience() > experience) {
 				
-				playerData.setExperience(playerData.getExperience() - experience);
+				playerData.setExperience(getExperience(uuid) - experience);
+				
 			}
+			
 		}
 		
 	}
 	
 	public void setLevel(UUID uuid, int level) {
 		
-		if (Game.storageType.equalsIgnoreCase("yaml")) {
+		if (!game.getDatabase().isEnabled()) {
+			
 			if (resources.getStats().contains("Stats.Players." + uuid + ".Level")) {
 				
 				resources.getStats().set("Stats.Players." + uuid + ".Level", level);
 				resources.save();
 				
 			}
+			
 		} else {
-			PlayerData playerData = Game.playerCache.get(uuid);
+			
+			PlayerData playerData = game.getDatabase().getCache().get(uuid);
 			playerData.setLevel(level);
+			
 		}
 		
 	}
 	
 	public void setExperience(UUID uuid, int experience) {
 		
-		if (Game.storageType.equalsIgnoreCase("yaml")) {
+		if (!game.getDatabase().isEnabled()) {
+			
 			if (resources.getStats().contains("Stats.Players." + uuid + ".Experience")) {
 				
 				resources.getStats().set("Stats.Players." + uuid + ".Experience", experience);
 				resources.save();
 				
 			}
+			
 		} else {
-			PlayerData playerData = Game.playerCache.get(uuid);
+			
+			PlayerData playerData = game.getDatabase().getCache().get(uuid);
 			playerData.setExperience(experience);
+			
 		}
+		
 	}
-	
 	
 	public int getKills(UUID uuid) {
 		
-		if (Game.storageType.equalsIgnoreCase("yaml")) {
+		if (!game.getDatabase().isEnabled()) {
+			
 			if (resources.getStats().contains("Stats.Players." + uuid + ".Kills")) {
 				
 				return resources.getStats().getInt("Stats.Players." + uuid + ".Kills");
 				
 			}
+			
 		} else {
-			PlayerData playerData = Game.playerCache.get(uuid);
+			
+			PlayerData playerData = game.getDatabase().getCache().get(uuid);
 			return playerData.getKills();
+			
 		}
+		
 		return 0;
 		
 	}
 	
 	public int getDeaths(UUID uuid) {
 		
-		if (Game.storageType.equalsIgnoreCase("yaml")) {
+		if (!game.getDatabase().isEnabled()) {
+			
 			if (resources.getStats().contains("Stats.Players." + uuid + ".Deaths")) {
 				
 				return resources.getStats().getInt("Stats.Players." + uuid + ".Deaths");
 				
 			}
+			
 		} else {
-			PlayerData playerData = Game.playerCache.get(uuid);
+			
+			PlayerData playerData = game.getDatabase().getCache().get(uuid);
 			return playerData.getDeaths();
+			
 		}
+		
 		return 0;
 		
 	}
@@ -188,31 +231,40 @@ public class Stats {
 	
 	public int getExperience(UUID uuid) {
 		
-		if (Game.storageType.equalsIgnoreCase("yaml")) {
+		if (!game.getDatabase().isEnabled()) {
+			
 			if (resources.getStats().contains("Stats.Players." + uuid + ".Experience")) {
 				
 				return resources.getStats().getInt("Stats.Players." + uuid + ".Experience");
 				
 			}
+			
 		} else {
-			PlayerData playerData = Game.playerCache.get(uuid);
+			
+			PlayerData playerData = game.getDatabase().getCache().get(uuid);
 			return playerData.getExperience();
+			
 		}
+		
 		return 0;
 		
 	}
 	
 	public int getLevel(UUID uuid) {
 		
-		if (Game.storageType.equalsIgnoreCase("yaml")) {
+		if (!game.getDatabase().isEnabled()) {
+			
 			if (resources.getStats().contains("Stats.Players." + uuid + ".Level")) {
 				
 				return resources.getStats().getInt("Stats.Players." + uuid + ".Level");
 				
 			}
+			
 		} else {
-			PlayerData playerData = Game.playerCache.get(uuid);
+			
+			PlayerData playerData = game.getDatabase().getCache().get(uuid);
 			return playerData.getLevel();
+			
 		}
 		
 		return 0;

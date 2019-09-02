@@ -1,14 +1,5 @@
 package com.planetgallium.kitpvp;
 
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.HashMap;
-import java.util.UUID;
-
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -22,30 +13,12 @@ import org.bukkit.scheduler.BukkitRunnable;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import com.planetgallium.kitpvp.api.EventListener;
-import com.planetgallium.kitpvp.command.AliasCommand;
-import com.planetgallium.kitpvp.command.KitCommand;
-import com.planetgallium.kitpvp.command.KitsCommand;
-import com.planetgallium.kitpvp.command.MainCommand;
-import com.planetgallium.kitpvp.command.SpawnCommand;
-import com.planetgallium.kitpvp.command.StatsCommand;
+import com.planetgallium.kitpvp.command.*;
 import com.planetgallium.kitpvp.game.Arena;
-import com.planetgallium.kitpvp.game.PlayerData;
-import com.planetgallium.kitpvp.listener.AbilityListener;
-import com.planetgallium.kitpvp.listener.ArenaListener;
-import com.planetgallium.kitpvp.listener.ArrowListener;
-import com.planetgallium.kitpvp.listener.AttackListener;
-import com.planetgallium.kitpvp.listener.ChatListener;
-import com.planetgallium.kitpvp.listener.DeathListener;
-import com.planetgallium.kitpvp.listener.HitListener;
-import com.planetgallium.kitpvp.listener.InteractListener;
-import com.planetgallium.kitpvp.listener.ItemListener;
-import com.planetgallium.kitpvp.listener.JoinListener;
-import com.planetgallium.kitpvp.listener.LeaveListener;
-import com.planetgallium.kitpvp.listener.SignListener;
-import com.planetgallium.kitpvp.listener.SoupListener;
-import com.planetgallium.kitpvp.listener.TrailListener;
+import com.planetgallium.kitpvp.listener.*;
 import com.planetgallium.kitpvp.menu.KitMenu;
 import com.planetgallium.kitpvp.util.Config;
+import com.planetgallium.kitpvp.util.Database;
 import com.planetgallium.kitpvp.util.Metrics;
 import com.planetgallium.kitpvp.util.Placeholders;
 import com.planetgallium.kitpvp.util.Resources;
@@ -57,18 +30,15 @@ import net.md_5.bungee.api.ChatColor;
 
 public class Game extends JavaPlugin implements Listener {
 	
-	private String version = "Error";
-	private boolean needsUpdate = false;
-	
 	private static Game instance;
 	
 	private Arena arena;
-	private final Resources resources = new Resources(this);
+	private Database database;
+	private Resources resources = new Resources(this);
 	
-	private static Connection connection;
-	
-	public static String storageType;
-	public static HashMap<UUID, PlayerData> playerCache = new HashMap<>();
+	private String version = "Error";
+	public String storageType;
+	private boolean needsUpdate = false;
 	
 	@Override
 	public void onEnable() {
@@ -76,14 +46,15 @@ public class Game extends JavaPlugin implements Listener {
 		instance = this;
 		
 		resources.load();
+		database = new Database(this, "Storage.MySQL");
 		arena = new Arena(this, resources);
 		
 		PluginManager pm = Bukkit.getPluginManager();
 		pm.registerEvents(this, this);
 		pm.registerEvents(new EventListener(arena, resources), this);
 		pm.registerEvents(new ArenaListener(arena, resources), this);
-		pm.registerEvents(new JoinListener(arena), this);
-		pm.registerEvents(new LeaveListener(resources), this);
+		pm.registerEvents(new JoinListener(this, arena), this);
+		pm.registerEvents(new LeaveListener(this, arena), this);
 		pm.registerEvents(new ArrowListener(), this);
 		pm.registerEvents(new DeathListener(arena, resources), this);
 		pm.registerEvents(new HitListener(), this);
@@ -102,14 +73,6 @@ public class Game extends JavaPlugin implements Listener {
 		getConfig().options().copyDefaults(true);
 		saveConfig();
 		
-		if (Config.getC().getString("Storage-Type").equalsIgnoreCase("mysql")) {
-			storageType = "mysql";
-			MySQLSetup();
-			preventMySQLTimeout();
-			createPlayerData();
-		} else {
-			storageType = "yaml";
-		}
 		getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 	    getCommand("kitpvp").setExecutor(new MainCommand(this, arena, resources));
 	    getCommand("ckit").setExecutor(new KitCommand(resources));
@@ -119,9 +82,17 @@ public class Game extends JavaPlugin implements Listener {
 	    
 		Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&7[&b&lKIT-PVP&7] &7Enabling &bKitPvP &7version &b" + this.getDescription().getVersion() + "&7..."));
 		
-		new Metrics(this);
+		if (Config.getC().getString("Storage.Type").equalsIgnoreCase("mysql")) {
+			storageType = "mysql";
+			
+			database.setup();
+			database.holdConnection();
+			database.createData();
+		} else {
+			storageType = "yaml";
+		}
 		
-		// UPDATE CHECKER //
+		new Metrics(this);
 		
 		new BukkitRunnable() {
 			
@@ -134,8 +105,6 @@ public class Game extends JavaPlugin implements Listener {
 			
 		}.runTaskAsynchronously(this);
 		
-		// UPDATE CHECKER
-		
 		if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
 			Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "[&b&lKIT-PVP&7] &7Discovered &bPlaceholderAPI&7, now hooking into it."));
 			new Placeholders(arena).register();
@@ -144,60 +113,6 @@ public class Game extends JavaPlugin implements Listener {
 		Bukkit.getConsoleSender().sendMessage(Config.tr("&7[&b&lKIT-PVP&7] &aDone!"));
 		
 	}
-	
-    public void MySQLSetup() {
-        String host = getConfig().getString("MySQL.host");
-        String database = getConfig().getString("MySQL.database");
-        int port = getConfig().getInt("MySQL.port");
-        String username = getConfig().getString("MySQL.username");
-        String password = getConfig().getString("MySQL.password");
-
-        try {
-            synchronized (this) {
-                if (getConnection() != null && !getConnection().isClosed()) {
-                    return;
-                }
-                Class.forName("com.mysql.jdbc.Driver");
-                setConnection(DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database + "?autoReconnect=true", username, password));
-            }
-        } catch (SQLException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
-    public void preventMySQLTimeout() {
-        try {
-            getConnection().createStatement().executeQuery("SELECT 1;");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        Bukkit.getScheduler().runTaskLater(this, ()->preventMySQLTimeout(), 24000L);
-    }
-    public void createPlayerData() {
-        boolean isTableCreated = false;
-        try {
-        	String tableName = getConfig().getString("MySQL.table");
-            DatabaseMetaData databaseMetaData = connection.getMetaData();
-            ResultSet rs = databaseMetaData.getTables(null, null, tableName, null);
-            if (rs.next()) {
-                isTableCreated = true;
-            }
-            String playerTable = "CREATE TABLE " + tableName + " (" +
-                    "UUID VARCHAR(255)," +
-                    "USERNAME VARCHAR(255)," +
-                    "LEVEL INT (4)," +
-                    "EXPERIENCE INT(10)," +
-                    "KILLS INT(10)," +
-                    "DEATHS INT(10)" +
-                    ");";
-            if (!isTableCreated) {
-                Statement statement = connection.createStatement();
-                statement.executeUpdate(playerTable);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-    }
     
 	private void checkUpdate() {
 		
@@ -281,17 +196,10 @@ public class Game extends JavaPlugin implements Listener {
 	
 	public Arena getArena() { return arena; }
 	
+	public Database getDatabase() { return database; }
+	
 	public String getPrefix() { return resources.getMessages().getString("Messages.General.Prefix"); }
 	
 	public Resources getResources() { return resources; }
 	
-    public static Connection getConnection() {
-        return connection;
-    }
-
-
-    private static void setConnection(Connection connection) {
-        Game.connection = connection;
-    }
-
 }
