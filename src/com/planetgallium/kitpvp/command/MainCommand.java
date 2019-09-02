@@ -81,8 +81,8 @@ public class MainCommand implements CommandExecutor {
 					p.sendMessage(Config.tr("&7- &b/kp clear &7Clears your current kit."));
 					p.sendMessage(Config.tr("&7- &b/kp stats &7View your stats."));
 					p.sendMessage(Config.tr("&7- &b/kp menu &7Displays the kits menu."));
-					p.sendMessage(Config.tr("&7- &b/kp export &7Exports all playerdata into a file."));
-					p.sendMessage(Config.tr("&7- &b/kp import &7Imports all playerdata from file into specified storage type"));
+					p.sendMessage(Config.tr("&7- &b/kp import &7Imports all stats from the MySQL database."));
+					p.sendMessage(Config.tr("&7- &b/kp export &7Exports all stats to the MySQL database."));
 					p.sendMessage(Config.tr(" "));
 					p.sendMessage(Config.tr("&3&m                                                                               "));
 					return true;
