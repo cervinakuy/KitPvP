@@ -22,6 +22,7 @@ public class PlayerAbilityEvent extends Event implements Cancellable {
 		this.ability = ability;
 		this.isCancelled = false;
 	}
+	
 	public Player getPlayer() { return player; }
 	
 	public Ability getAbility() { return ability; }

@@ -16,41 +16,39 @@ public class PlayerData {
     	this.deaths = deaths;
     }
 
-    public int getKills() {
-        return kills;
+    public void addKills(int amount) {
+    	
+        this.kills += amount;
+        
     }
 
-    public int getDeaths() {
-        return deaths;
+    public void addDeaths(int amount) {
+    	
+        this.deaths += amount;
+        
     }
 
-    public int getExperience() {
-        return experience;
-    }
-
-    public int getLevel() {
-        return level;
-    }
-
-    public String getUsername() {
-    	return username;
-    }
-    
-    public void setKills(int kills) {
-        this.kills = kills;
-    }
-
-    public void setDeaths(int deaths) {
-        this.deaths = deaths;
-    }
-
-    public void setExperience(int experience) {
-        this.experience = experience;
+    public void setExperience(int amount) {
+    	
+        this.experience = amount;
+        
     }
 
     public void setLevel(int level) {
+    	
         this.level = level;
+        
     }
+    
+    public int getKills() { return kills; }
+
+    public int getDeaths() { return deaths; }
+
+    public int getExperience() { return experience; }
+
+    public int getLevel() { return level; }
+
+    public String getUsername() { return username; }
 }
 
 
