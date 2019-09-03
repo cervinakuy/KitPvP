@@ -170,7 +170,7 @@ public class ItemListener implements Listener {
 					
 				} else if (Toolkit.getMainHandItem(p).getType() == XMaterial.GLASS_BOTTLE.parseMaterial()) {
 					
-					if (p.hasPermission("kp.ability.witch")) {
+					if (p.hasPermission("kp.ability.witch") && arena.getKits().getKit(p.getName()).equals("Witch")) {
 						
 						Potion potion = new Potion(pickPotion(), 1);
 						potion.setSplash(true);
@@ -411,33 +411,37 @@ public class ItemListener implements Listener {
 				Player p = (Player) e.getEntity().getShooter();
 				int slot = p.getInventory().getHeldItemSlot();
 				
-				Potion potion = new Potion(pickPotion(), 1);
-				potion.setSplash(true);
-				
-				new BukkitRunnable() {
+				if (arena.getKits().getKit(p.getName()).equals("Witch")) {
 					
-					@Override
-					public void run() {
+					Potion potion = new Potion(pickPotion(), 1);
+					potion.setSplash(true);
+					
+					new BukkitRunnable() {
 						
-						if (Game.getInstance().getArena().getKits().getKit(p.getName()) != null) {
+						@Override
+						public void run() {
 							
-							if (Game.getInstance().getArena().getKits().getKit(p.getName()).equals("Witch")) {
+							if (Game.getInstance().getArena().getKits().getKit(p.getName()) != null) {
 								
-								p.getInventory().setItem(slot, potion.toItemStack(1));
-								
-								if (resources.getAbilities().getBoolean("Abilities.Witch.Message.Enabled")) {
-									p.sendMessage(Config.tr(resources.getAbilities().getString("Abilities.Witch.Message.Message").replace("%prefix%", resources.getMessages().getString("Messages.General.Prefix"))));
+								if (Game.getInstance().getArena().getKits().getKit(p.getName()).equals("Witch")) {
+									
+									p.getInventory().setItem(slot, potion.toItemStack(1));
+									
+									if (resources.getAbilities().getBoolean("Abilities.Witch.Message.Enabled")) {
+										p.sendMessage(Config.tr(resources.getAbilities().getString("Abilities.Witch.Message.Message").replace("%prefix%", resources.getMessages().getString("Messages.General.Prefix"))));
+									}
+									
+									p.playSound(p.getLocation(), XSound.matchXSound(resources.getAbilities().getString("Abilities.Witch.Sound.Sound")).parseSound(), 1, resources.getAbilities().getInt("Abliities.Witch.Sound.Pitch"));
+									
 								}
-								
-								p.playSound(p.getLocation(), XSound.matchXSound(resources.getAbilities().getString("Abilities.Witch.Sound.Sound")).parseSound(), 1, resources.getAbilities().getInt("Abliities.Witch.Sound.Pitch"));
 								
 							}
 							
 						}
 						
-					}
+					}.runTaskLater(Game.getInstance(), 5 * 20);
 					
-				}.runTaskLater(Game.getInstance(), 5 * 20);
+				}
 				
 			}
 			
