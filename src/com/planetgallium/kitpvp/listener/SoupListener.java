@@ -8,9 +8,9 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
 import com.planetgallium.kitpvp.util.Config;
-import com.planetgallium.kitpvp.util.Sounds;
 import com.planetgallium.kitpvp.util.Toolkit;
 import com.planetgallium.kitpvp.util.XMaterial;
+import com.planetgallium.kitpvp.util.XSound;
 
 public class SoupListener implements Listener {
 
@@ -72,7 +72,7 @@ public class SoupListener implements Listener {
 			        if (p.getHealth() < 20.0) {
 			        	
 			            p.setHealth(p.getHealth() + (double) health >= 20.0 ? 20.0 : p.getHealth() + (double) health);
-			            p.playSound(p.getLocation(), Sounds.valueOf(Config.getS("Soups.Sound")).bukkitSound(), 1, (float) Config.getI("Soups.Pitch"));
+			            p.playSound(p.getLocation(), XSound.matchXSound(Config.getS("Soups.Sound")).parseSound(), 1, (float) Config.getI("Soups.Pitch"));
 			            
 						if (Toolkit.getMainHandItem(p).getType() == XMaterial.MUSHROOM_STEW.parseMaterial()) {
 							

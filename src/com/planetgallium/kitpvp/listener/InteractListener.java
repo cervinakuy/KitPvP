@@ -13,9 +13,9 @@ import org.bukkit.potion.PotionEffectType;
 import com.planetgallium.kitpvp.Game;
 import com.planetgallium.kitpvp.util.Config;
 import com.planetgallium.kitpvp.util.Resources;
-import com.planetgallium.kitpvp.util.Sounds;
 import com.planetgallium.kitpvp.util.Toolkit;
 import com.planetgallium.kitpvp.util.XMaterial;
+import com.planetgallium.kitpvp.util.XSound;
 
 public class InteractListener implements Listener {
 
@@ -43,7 +43,7 @@ public class InteractListener implements Listener {
 					strikeMeta.setDisplayName(Config.tr(resources.getAbilities().getString("Abilities.Thunderbolt.Item.Name")));
 					strike.setItemMeta(strikeMeta);
 					
-					p.playSound(p.getLocation(), Sounds.valueOf(resources.getAbilities().getString("Abilities.Thunderbolt.Sound.Sound")).bukkitSound(), 1, (int) resources.getAbilities().getInt("Abilities.Thunderbolt.Sound.Pitch"));
+					p.playSound(p.getLocation(), XSound.matchXSound(resources.getAbilities().getString("Abilities.Thunderbolt.Sound.Sound")).parseSound(), 1, (int) resources.getAbilities().getInt("Abilities.Thunderbolt.Sound.Pitch"));
 					
 					if (resources.getAbilities().getBoolean("Abilities.Thunderbolt.Message.Enabled")) {
 						p.sendMessage(Config.tr(resources.getAbilities().getString("Abilities.Thunderbolt.Message.Message").replace("%player%", e.getRightClicked().getName()).replace("%prefix%", Game.getInstance().getPrefix())));
@@ -73,14 +73,14 @@ public class InteractListener implements Listener {
 					suckMeta.setDisplayName(Config.tr(resources.getAbilities().getString("Abilities.Vampire.Item.Name")));
 					suck.setItemMeta(suckMeta);
 					
-					p.playSound(p.getLocation(), Sounds.valueOf(resources.getAbilities().getString("Abilities.Vampire.Sound.Sound")).bukkitSound(), 1, (int) resources.getAbilities().getInt("Abilities.Vampire.Sound.Pitch"));
+					p.playSound(p.getLocation(), XSound.matchXSound(resources.getAbilities().getString("Abilities.Vampire.Sound.Sound")).parseSound(), 1, (int) resources.getAbilities().getInt("Abilities.Vampire.Sound.Pitch"));
 					
 					if (resources.getAbilities().getBoolean("Abilities.Vampire.Message.Enabled")) {
 						p.sendMessage(Config.tr(resources.getAbilities().getString("Abilities.Vampire.Message.Message").replace("%player%", e.getRightClicked().getName()).replace("%prefix%", Game.getInstance().getPrefix())));
 					}
 			
 					damagedPlayer.damage(4.0);
-					damagedPlayer.playSound(damagedPlayer.getLocation(), Sounds.DRINK.bukkitSound(), 1, -1);
+					damagedPlayer.playSound(damagedPlayer.getLocation(), XSound.ENTITY_GENERIC_DRINK.parseSound(), 1, -1);
 					
 					if (p.getHealth() <= 16.0) {
 						

@@ -21,9 +21,9 @@ import com.planetgallium.kitpvp.menu.PreviewHolder;
 import com.planetgallium.kitpvp.util.Config;
 import com.planetgallium.kitpvp.util.Menu;
 import com.planetgallium.kitpvp.util.Resources;
-import com.planetgallium.kitpvp.util.Sounds;
 import com.planetgallium.kitpvp.util.Toolkit;
 import com.planetgallium.kitpvp.util.XMaterial;
+import com.planetgallium.kitpvp.util.XSound;
 
 import me.clip.placeholderapi.PlaceholderAPI;
 
@@ -136,7 +136,7 @@ public class MainCommand implements CommandExecutor {
 						game.saveConfig();
 
 						p.sendMessage(Config.tr(resources.getMessages().getString("Messages.Commands.Added")).replace("%arena%", p.getLocation().getWorld().getName()));
-						p.playSound(p.getLocation(), Sounds.ZOMBIE_WOODBREAK.bukkitSound(), 1, 1);
+						p.playSound(p.getLocation(), XSound.ENTITY_ZOMBIE_ATTACK_WOODEN_DOOR.parseSound(), 1, 1);
 						
 					} else {
 						
@@ -161,7 +161,7 @@ public class MainCommand implements CommandExecutor {
 							}
 
 							p.sendMessage(Config.tr(resources.getMessages().getString("Messages.Commands.Removed")).replace("%arena%", p.getLocation().getWorld().getName()));
-							p.playSound(p.getLocation(), Sounds.ZOMBIE_WOODBREAK.bukkitSound(), 1, 1);
+							p.playSound(p.getLocation(), XSound.ENTITY_ZOMBIE_ATTACK_WOODEN_DOOR.parseSound(), 1, 1);
 							
 						} else {
 							
@@ -186,7 +186,7 @@ public class MainCommand implements CommandExecutor {
 								spawnUsers.add(p.getName());
 								
 								p.sendMessage(Config.tr(resources.getMessages().getString("Messages.Commands.Teleporting")));
-								p.playSound(p.getLocation(), Sounds.ITEM_PICKUP.bukkitSound(), 1, -1);
+								p.playSound(p.getLocation(), XSound.ENTITY_ITEM_PICKUP.parseSound(), 1, -1);
 								
 								Location beforeLocation = p.getLocation();
 								
@@ -204,7 +204,7 @@ public class MainCommand implements CommandExecutor {
 											if (p.getGameMode() != GameMode.SPECTATOR) {
 												
 												p.sendMessage(Config.tr(resources.getMessages().getString("Messages.Commands.Time").replace("%time%", String.valueOf(t))));
-												p.playSound(p.getLocation(), Sounds.NOTE_STICKS.bukkitSound(), 1, 1);
+												p.playSound(p.getLocation(), XSound.BLOCK_NOTE_BLOCK_SNARE.parseSound(), 1, 1);
 												
 												if (beforeLocation.getBlockX() != p.getLocation().getBlockX() || beforeLocation.getBlockY() != p.getLocation().getBlockY() || beforeLocation.getBlockZ() != p.getLocation().getBlockZ()) {
 													
@@ -244,7 +244,7 @@ public class MainCommand implements CommandExecutor {
 											
 											spawnUsers.remove(p.getName());
 											
-											p.playSound(p.getLocation(), Sounds.ENDERMAN_TELEPORT.bukkitSound(), 1, 1);
+											p.playSound(p.getLocation(), XSound.ENTITY_ENDERMAN_TELEPORT.parseSound(), 1, 1);
 											
 											cancel();
 											
@@ -362,7 +362,7 @@ public class MainCommand implements CommandExecutor {
 							
 						}
 						
-						p.playSound(p.getLocation(), Sounds.ITEM_PICKUP.bukkitSound(), 1, 1);
+						p.playSound(p.getLocation(), XSound.ENTITY_ITEM_PICKUP.parseSound(), 1, 1);
 						
 					} else {
 						
@@ -446,7 +446,7 @@ public class MainCommand implements CommandExecutor {
 						} else {
 							
 							p.sendMessage(Config.tr(resources.getMessages().getString("Messages.Error.Selected")));
-							p.playSound(p.getLocation(), Sounds.ENDERDRAGON_HIT.bukkitSound(), 1, 1);
+							p.playSound(p.getLocation(), XSound.ENTITY_ENDER_DRAGON_HURT.parseSound(), 1, 1);
 							
 						}
 						

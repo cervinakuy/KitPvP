@@ -13,7 +13,7 @@ import com.planetgallium.kitpvp.Game;
 import com.planetgallium.kitpvp.item.EffectItem;
 import com.planetgallium.kitpvp.item.KitItem;
 import com.planetgallium.kitpvp.util.Config;
-import com.planetgallium.kitpvp.util.Sounds;
+import com.planetgallium.kitpvp.util.XSound;
 
 public class Kit {
 
@@ -115,7 +115,7 @@ public class Kit {
 		}
 
 		p.sendMessage(Config.tr(Game.getInstance().getResources().getMessages().getString("Messages.Commands.Kit").replace("%kit%", getName())));
-		p.playSound(p.getLocation(), Sounds.HORSE_ARMOR.bukkitSound(), 1, 1);
+		p.playSound(p.getLocation(), XSound.ENTITY_HORSE_ARMOR.parseSound(), 1, 1);
 		
 	}
 	

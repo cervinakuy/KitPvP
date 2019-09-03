@@ -19,9 +19,9 @@ import org.bukkit.scheduler.BukkitRunnable;
 import com.planetgallium.kitpvp.Game;
 import com.planetgallium.kitpvp.util.Config;
 import com.planetgallium.kitpvp.util.Resources;
-import com.planetgallium.kitpvp.util.Sounds;
 import com.planetgallium.kitpvp.util.Toolkit;
 import com.planetgallium.kitpvp.util.XMaterial;
+import com.planetgallium.kitpvp.util.XSound;
 
 public class TrailListener implements Listener {
 
@@ -76,7 +76,7 @@ public class TrailListener implements Listener {
 													
 								world.spawn(p.getLocation(), TNTPrimed.class);
 								
-								p.playSound(p.getLocation(), Sounds.valueOf(resources.getAbilities().getString("Abilities.Bomber.Sound.Sound")).bukkitSound(), 1, (int) resources.getAbilities().getInt("Abilities.Bomber.Sound.Pitch"));
+								p.playSound(p.getLocation(), XSound.matchXSound(resources.getAbilities().getString("Abilities.Bomber.Sound.Sound")).parseSound(), 1, (int) resources.getAbilities().getInt("Abilities.Bomber.Sound.Pitch"));
 								
 								t--;
 									

@@ -6,8 +6,8 @@ import org.bukkit.entity.Player;
 
 import com.planetgallium.kitpvp.util.Config;
 import com.planetgallium.kitpvp.util.Resources;
-import com.planetgallium.kitpvp.util.Sounds;
 import com.planetgallium.kitpvp.util.Toolkit;
+import com.planetgallium.kitpvp.util.XSound;
 
 public class Levels {
 	
@@ -59,7 +59,7 @@ public class Levels {
 	        }
 			
 			p.sendMessage(Config.tr(resources.getMessages().getString("Messages.Other.Level").replace("%level%", String.valueOf(arena.getLevels().getLevel(p.getUniqueId())))));
-			p.playSound(p.getLocation(), Sounds.LEVEL_UP.bukkitSound(), 1, 1);
+			p.playSound(p.getLocation(), XSound.ENTITY_PLAYER_LEVELUP.parseSound(), 1, 1);
 			
 		}
 		
