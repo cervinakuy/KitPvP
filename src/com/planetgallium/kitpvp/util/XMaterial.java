@@ -1,5 +1,3 @@
-package com.planetgallium.kitpvp.util;
-
 /*
  * The MIT License (MIT)
  *
@@ -24,6 +22,8 @@ package com.planetgallium.kitpvp.util;
  * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  */
+
+package com.planetgallium.kitpvp.util;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
