@@ -393,7 +393,7 @@ public class MainCommand implements CommandExecutor {
 						
 							game.getDatabase().importData(resources);
 
-							p.sendMessage(Config.tr("%prefix% &aDatabase data has successfully been imported to the stats.yml."));
+							p.sendMessage(Config.tr("%prefix% &aDatabase data has successfully been exported to the stats.yml."));
 
 						} else {
 
@@ -417,7 +417,7 @@ public class MainCommand implements CommandExecutor {
 							
 							game.getDatabase().exportData(resources);
 							
-							p.sendMessage(Config.tr("%prefix% &aStats successfully imported to database."));
+							p.sendMessage(Config.tr("%prefix% &aStats successfully exported to database."));
 
 						} else {
 

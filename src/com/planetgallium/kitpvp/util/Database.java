@@ -2,12 +2,7 @@ package com.planetgallium.kitpvp.util;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -17,6 +12,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import com.planetgallium.kitpvp.Game;
 import com.planetgallium.kitpvp.game.PlayerData;
+
 
 public class Database {
 
@@ -36,7 +32,7 @@ public class Database {
 	public Database(Game game, String path) {
 		this.game = game;
 		
-		this.cache = new HashMap<UUID, PlayerData>();
+		this.cache = new HashMap<>();
 		
 		this.host = game.getConfig().getString(path + ".Host");
 		this.database = game.getConfig().getString(path + ".Database");
@@ -52,20 +48,20 @@ public class Database {
 			
 			synchronized (this) {
 				
-				if (getConnection() != null && !getConnection().isClosed()) {
+				if (connection != null && !connection.isClosed()) {
 					
 					return;
 					
 				}
-				
+
+				Class.forName("com.mysql.jdbc.Driver");
 				this.connection = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database + "?autoReconnect=true", username, password);
-				
 				Bukkit.getConsoleSender().sendMessage(Config.tr("&7[&b&lKIT-PVP&7] &aMySQL was successfully connected on port " + port + "."));
 				isEnabled = true;
 				
 			}
 			
-		} catch (SQLException e) {
+		} catch (SQLException | ClassNotFoundException e) {
 			
 			e.printStackTrace();
 			
@@ -77,7 +73,9 @@ public class Database {
 		
         try {
         	
-            getConnection().createStatement().executeQuery("SELECT 1;");
+            PreparedStatement statement = connection.prepareStatement("SELECT ?");
+            statement.setInt(1, 1);
+            statement.executeQuery();
             
         } catch (SQLException e) {
         	
@@ -95,7 +93,7 @@ public class Database {
 		
 		try {
 			
-			DatabaseMetaData databaseMeta = getConnection().getMetaData();
+			DatabaseMetaData databaseMeta = connection.getMetaData();
 			ResultSet result = databaseMeta.getTables(null, null, table, null);
 			
 			if (result.next()) {
@@ -103,20 +101,19 @@ public class Database {
 				isTableCreated = true;
 				
 			}
-			
 			String playerTable = "CREATE TABLE " + table + " (" +
 					"UUID VARCHAR(255)," +
-                    "USERNAME VARCHAR(255)," +
-                    "LEVEL INT (4)," +
-                    "EXPERIENCE INT(10)," +
-                    "KILLS INT(10)," +
-                    "DEATHS INT(10)" +
-                    ");";
+					"USERNAME VARCHAR(255)," +
+					"LEVEL INT(4)," +
+					"EXPERIENCE INT(10)," +
+					"KILLS INT(10)," +
+					"DEATHS INT(10)" +
+					")";
 			
 			if (!isTableCreated) {
-				
-				Statement statement = getConnection().createStatement();
-				statement.executeUpdate(playerTable);
+
+				PreparedStatement statement = connection.prepareStatement(playerTable);
+				statement.executeUpdate();
 				
 			}
 			
@@ -133,9 +130,10 @@ public class Database {
 		if (this.isEnabled) {
 			
 			try {
-				
-				Statement statement = getConnection().createStatement();
-				ResultSet result = statement.executeQuery("SELECT * FROM " + getTable() + " WHERE UUID='" + p.getUniqueId() + "'");
+
+				PreparedStatement statement = connection.prepareStatement("SELECT * FROM " + table + " WHERE UUID=?");
+				statement.setString(1, p.getUniqueId().toString());
+				ResultSet result = statement.executeQuery();
 				boolean hasPlayerData = false;
 				
 				while (result.next()) {
@@ -149,15 +147,22 @@ public class Database {
 	                int deaths = result.getInt("DEATHS");
 	                PlayerData playerData = new PlayerData(username, level, experience, kills, deaths);
 	                
-	                getCache().put(p.getUniqueId(), playerData);
+	                cache.put(p.getUniqueId(), playerData);
 	                
 				}
 				
 				if (!hasPlayerData) {
 					
 					game.getArena().getStats().createPlayer(p.getName(), p.getUniqueId());
-					String sqlStatement = "INSERT INTO " + getTable() + " (UUID, USERNAME, LEVEL, EXPERIENCE, KILLS, DEATHS) VALUES ('" + p.getUniqueId() + "', '" + p.getName() + "', 0, 0, 0, 0)";
-					statement.executeUpdate(sqlStatement);
+					PreparedStatement stmt = connection.prepareStatement("INSERT INTO " + table +
+							" (UUID, USERNAME, LEVEL, EXPERIENCE, KILLS, DEATHS) VALUES (?, ?, ?, ?, ?, ?)");
+					stmt.setString(1, p.getUniqueId().toString());
+					stmt.setString(2, p.getName());
+					stmt.setInt(3, 0);
+					stmt.setInt(4, 0);
+					stmt.setInt(5, 0);
+					stmt.setInt(6, 0);
+					stmt.executeUpdate();
 					
 				}
 				
@@ -173,26 +178,29 @@ public class Database {
 	
 	public void saveAndRemovePlayer(Player p) {
 		
-		if (this.isEnabled) {
+		if (isEnabled) {
 			
 			PlayerData playerData = getCache().get(p.getUniqueId());
 			
 			try {
-				
-				Statement statement = getConnection().createStatement();
-				String sqlStatement = "UPDATE " + getTable() + " SET USERNAME='" + playerData.getUsername() + "', LEVEL=" + playerData.getLevel() + ", EXPERIENCE="
-	                    + playerData.getExperience()+", KILLS=" + playerData.getKills() + ", DEATHS=" + playerData.getDeaths() + " WHERE UUID='"
-	                    + p.getUniqueId() + "'";
-				
-				statement.executeUpdate(sqlStatement);
-				
+
+				PreparedStatement statement = connection.prepareStatement("UPDATE " + table +
+						" SET USERNAME=?, LEVEL=?, EXPERIENCE=?, KILLS=?, DEATHS=? WHERE UUID=?");
+				statement.setString(1, playerData.getUsername());
+				statement.setInt(2, playerData.getLevel());
+				statement.setInt(3, playerData.getExperience());
+				statement.setInt(4, playerData.getKills());
+				statement.setInt(5, playerData.getDeaths());
+				statement.setString(6, p.getUniqueId().toString());
+				statement.executeUpdate();
+
 			} catch (SQLException e) {
-				
+
 	            e.printStackTrace();
-	            
+
 	        }
 			
-			getCache().remove(p.getUniqueId());
+			cache.remove(p.getUniqueId());
 			
 		}
 		
@@ -235,15 +243,12 @@ public class Database {
 	public void exportData(Resources resources) {
 		
 		ConfigurationSection stats = resources.getStats().getConfigurationSection("Stats.Players");
-		
-		String deleteTableContents = "DELETE FROM " + game.getDatabase().getTable();
-		Statement statement = null;
-		
+
+		PreparedStatement statement = null;
 		try {
 			
-			statement = game.getDatabase().getConnection().createStatement();
-			statement.executeUpdate(deleteTableContents);
-			
+			statement = connection.prepareStatement("DELETE FROM " + table);
+			statement.executeUpdate();
 		} catch (SQLException e) {
 			
 			e.printStackTrace();
@@ -258,11 +263,17 @@ public class Database {
 			int kills = resources.getStats().getInt("Stats.Players." + uuid + ".Kills");
 			int deaths = resources.getStats().getInt("Stats.Players." + uuid + ".Deaths");
 
-			String sqlStatement = "INSERT INTO " + game.getDatabase().getTable() + " (UUID, USERNAME, LEVEL, EXPERIENCE, KILLS, DEATHS) VALUES ('" + uuid
-					+ "', '" + username + "', " + level + ", " + experience + ", " + kills + ", " + deaths + ")";
 			try {
 				
-				statement.executeUpdate(sqlStatement);
+				PreparedStatement stmt = connection.prepareStatement("INSERT INTO " + table + " (UUID, USERNAME, LEVEL, EXPERIENCE, KILLS, DEATHS)" +
+						" VALUES (?, ?, ?, ?, ?, ?)");
+				stmt.setString(1, uuid);
+				stmt.setString(2, username);
+				stmt.setInt(3, level);
+				stmt.setInt(4, experience);
+				stmt.setInt(5, kills);
+				stmt.setInt(6, deaths);
+				stmt.executeUpdate();
 				
 			} catch (SQLException e) {
 				
@@ -275,10 +286,6 @@ public class Database {
 	}
 	
 	public boolean isEnabled() { return isEnabled; }
-	
-	public String getTable() { return table; }
-	
-	public Connection getConnection() { return connection; }
 	
 	public Map<UUID, PlayerData> getCache() { return cache; }
 	

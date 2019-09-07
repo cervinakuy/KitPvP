@@ -17,16 +17,11 @@ import com.planetgallium.kitpvp.command.*;
 import com.planetgallium.kitpvp.game.Arena;
 import com.planetgallium.kitpvp.listener.*;
 import com.planetgallium.kitpvp.menu.KitMenu;
-import com.planetgallium.kitpvp.util.Config;
-import com.planetgallium.kitpvp.util.Database;
-import com.planetgallium.kitpvp.util.Metrics;
-import com.planetgallium.kitpvp.util.Placeholders;
-import com.planetgallium.kitpvp.util.Resources;
-import com.planetgallium.kitpvp.util.Toolkit;
-import com.planetgallium.kitpvp.util.Updater;
-import com.planetgallium.kitpvp.util.XMaterial;
+import com.planetgallium.kitpvp.util.*;
 
 import net.md_5.bungee.api.ChatColor;
+
+import java.util.List;
 
 public class Game extends JavaPlugin implements Listener {
 	
@@ -113,7 +108,16 @@ public class Game extends JavaPlugin implements Listener {
 		Bukkit.getConsoleSender().sendMessage(Config.tr("&7[&b&lKIT-PVP&7] &aDone!"));
 		
 	}
-    
+
+	@Override
+	public void onDisable() {
+		List<Player> players = (List<Player>) Bukkit.getOnlinePlayers();
+
+		for (Player player: players) {
+			database.saveAndRemovePlayer(player);
+		}
+	}
+
 	private void checkUpdate() {
 		
 		Updater updater = new Updater(this, 27107, false);

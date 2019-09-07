@@ -36,6 +36,9 @@ public class JoinListener implements Listener {
 			}
 			
 		}
+
+		game.getDatabase().addPlayer(p);
+		arena.getStats().createPlayer(p.getName(), p.getUniqueId());
 		
 		if (Toolkit.inArena(p)) {
 			
@@ -47,9 +50,7 @@ public class JoinListener implements Listener {
 			arena.addPlayer(p);
 			
 		}
-		
-		game.getDatabase().addPlayer(p);
-		arena.getStats().createPlayer(p.getName(), p.getUniqueId());
+
 		
 		if (p.getName().equals("cervinakuy")) {
 			
