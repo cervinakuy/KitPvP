@@ -5,8 +5,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import com.planetgallium.kitpvp.util.Config;
-import com.planetgallium.kitpvp.util.Sounds;
 import com.planetgallium.kitpvp.util.Toolkit;
+import com.planetgallium.kitpvp.util.XSound;
 
 public class HitListener implements Listener {
 
@@ -22,8 +22,8 @@ public class HitListener implements Listener {
 				
 				if (Toolkit.inArena(damagedPlayer)) {
 						
-					damager.playSound(damager.getLocation(), Sounds.valueOf(Config.getS("Combat.HitSound.Sound")).bukkitSound(), 1, (float) Config.getI("HitSound.Pitch"));
-					damagedPlayer.playSound(damagedPlayer.getLocation(), Sounds.valueOf(Config.getS("HitSound.Sound")).bukkitSound(), 1, (float) Config.getI("HitSound.Pitch"));
+					damager.playSound(damager.getLocation(), XSound.matchXSound(Config.getS("Combat.HitSound.Sound")).parseSound(), 1, (float) Config.getI("HitSound.Pitch"));
+					damagedPlayer.playSound(damagedPlayer.getLocation(), XSound.matchXSound(Config.getS("HitSound.Sound")).parseSound(), 1, (float) Config.getI("HitSound.Pitch"));
 					
 				}
 	        

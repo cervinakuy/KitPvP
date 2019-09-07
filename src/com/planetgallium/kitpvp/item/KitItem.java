@@ -102,7 +102,10 @@ public class KitItem {
 				
 			}
 			
-		} else if (item.getType() == XMaterial.PLAYER_HEAD.parseMaterial()) {
+		} else if (item.getType() == XMaterial.PLAYER_HEAD.parseMaterial() ||
+				item.getType() == XMaterial.CREEPER_HEAD.parseMaterial() ||
+				item.getType() == XMaterial.DRAGON_HEAD.parseMaterial() ||
+				item.getType() == XMaterial.ZOMBIE_HEAD.parseMaterial()) {
 			
 			if (skull != null) {
 				

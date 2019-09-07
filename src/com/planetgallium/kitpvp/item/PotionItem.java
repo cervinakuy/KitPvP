@@ -1,5 +1,8 @@
 package com.planetgallium.kitpvp.item;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.Potion;
@@ -10,33 +13,37 @@ import org.bukkit.potion.PotionType;
 
 import com.planetgallium.kitpvp.util.Resource;
 import com.planetgallium.kitpvp.util.Toolkit;
-import com.planetgallium.kitpvp.util.XMaterial;
 
 @SuppressWarnings("deprecation")
 public class PotionItem {
-
-	private String type;
-	private String effect;
 	
-	private int level;
-	private int duration;
-	private boolean isExtended;
-	private boolean isUpgraded;
+	private List<PotionEffect> effects;
+	private PotionData potionData;
+	
+	private String type;
 	
 	public PotionItem(Resource resource, String path) {
-		
+
+		this.effects = new ArrayList<PotionEffect>();
 		this.type = resource.getString(path + ".Type");
-		this.effect = resource.getString(path + ".Effect");
 		
-		if (Toolkit.versionToNumber() == 18) {
-		
-			this.level = resource.getInt(path + ".Level");
-			this.duration = resource.getInt(path + ".Duration");
-			
-		} else if (Toolkit.versionToNumber() >= 19) {
-			
-			this.isExtended = resource.getBoolean(path + ".Extended");
-			this.isUpgraded = resource.getBoolean(path + ".Upgraded");
+		for (String identifier : resource.getConfigurationSection(path).getKeys(false)) {
+
+			if (!identifier.equals("Type")) {
+				
+				String name = identifier;
+				
+				if (Toolkit.versionToNumber() >= 19 && resource.contains(path + "." + name + ".Upgraded")) {
+					boolean extended = resource.getBoolean(path + "." + name + ".Extended");
+					boolean upgraded = resource.getBoolean(path + "." + name + ".Upgraded");
+					potionData = new PotionData(PotionType.valueOf(name), extended, upgraded);
+				} else {
+					int level = resource.getInt(path + "." + name + ".Level");
+					int duration = resource.getInt(path + "." + name + ".Duration") * 20;
+					effects.add(new PotionEffect(PotionEffectType.getByName(name), duration, level - 1));
+				}
+				
+			}
 			
 		}
 		
@@ -53,7 +60,9 @@ public class PotionItem {
 			newItem.setItemMeta(toConvert.getItemMeta());
 			PotionMeta potionMeta = (PotionMeta) newItem.getItemMeta();
 			
-			potionMeta.addCustomEffect(new PotionEffect(PotionEffectType.getByName(effect), duration * 20, level - 1), true);
+			for (PotionEffect effect : effects) {
+				potionMeta.addCustomEffect(effect, true);
+			}
 			
 			newItem.setItemMeta(potionMeta);
 			
@@ -61,11 +70,17 @@ public class PotionItem {
 			
 		} else if (Toolkit.versionToNumber() >= 19) {
 			
-			ItemStack newItem = new ItemStack(XMaterial.matchXMaterial(type).parseMaterial());
+			ItemStack newItem = new ItemStack(toConvert.getType());
 			newItem.setItemMeta(toConvert.getItemMeta());
 			PotionMeta potionMeta = (PotionMeta) newItem.getItemMeta();
 			
-			potionMeta.setBasePotionData(new PotionData(PotionType.valueOf(effect), isExtended, isUpgraded));
+			if (potionData == null) {
+				for (PotionEffect effect : effects) {
+					potionMeta.addCustomEffect(effect, true);
+				}
+			} else {
+				potionMeta.setBasePotionData(potionData);
+			}
 			
 			newItem.setItemMeta(potionMeta);
 			
@@ -76,15 +91,5 @@ public class PotionItem {
 		return toConvert;
 		
 	}
-	
-	public String getEffect() { return effect; }
-	
-	public int getLevel() { return level; }
-	
-	public int getDuration() { return duration; }
-	
-	public boolean isExtended() { return isExtended; }
-	
-	public boolean isUpgraded() { return isUpgraded; }
 	
 }

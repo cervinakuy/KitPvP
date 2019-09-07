@@ -13,9 +13,9 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 import com.planetgallium.kitpvp.util.Config;
 import com.planetgallium.kitpvp.util.Resources;
-import com.planetgallium.kitpvp.util.Sounds;
 import com.planetgallium.kitpvp.util.Title;
 import com.planetgallium.kitpvp.util.Toolkit;
+import com.planetgallium.kitpvp.util.XSound;
 
 public class KillStreaks implements Listener {
 
@@ -89,7 +89,7 @@ public class KillStreaks implements Listener {
 				
 				for (Player local : world.getPlayers()) {
 					
-					local.playSound(local.getLocation(), Sounds.valueOf(killConfig.getString(streakType + "." + streakNumber + ".Sound.Sound")).bukkitSound(), 1, killConfig.getInt(streakType + "." + streakNumber + ".Sound.Pitch"));
+					local.playSound(local.getLocation(), XSound.matchXSound(killConfig.getString(streakType + "." + streakNumber + ".Sound.Sound")).parseSound(), 1, killConfig.getInt(streakType + "." + streakNumber + ".Sound.Pitch"));
 					
 				}
 				

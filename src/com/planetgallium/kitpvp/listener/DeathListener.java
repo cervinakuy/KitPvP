@@ -24,9 +24,9 @@ import com.planetgallium.kitpvp.Game;
 import com.planetgallium.kitpvp.game.Arena;
 import com.planetgallium.kitpvp.util.Config;
 import com.planetgallium.kitpvp.util.Resources;
-import com.planetgallium.kitpvp.util.Sounds;
 import com.planetgallium.kitpvp.util.Title;
 import com.planetgallium.kitpvp.util.Toolkit;
+import com.planetgallium.kitpvp.util.XSound;
 
 public class DeathListener implements Listener {
 	
@@ -67,7 +67,7 @@ public class DeathListener implements Listener {
 			
 			// Death Sound
 			if (Config.getB("Death.Sound.Enabled")) {
-				broadcast(victim.getWorld(), Sounds.valueOf(Config.getS("Death.Sound.Sound")).bukkitSound(), 1, (int) Config.getI("Death.Sound.Pitch"));
+				broadcast(victim.getWorld(), XSound.matchXSound(Config.getS("Death.Sound.Sound")).parseSound(), 1, (int) Config.getI("Death.Sound.Pitch"));
 			}
 			
 		}
@@ -96,7 +96,7 @@ public class DeathListener implements Listener {
 					if (time != 0) {
 
 						title.sendTitle(p, Config.getS("Death.Title.Title"), Config.getS("Death.Title.Subtitle").replace("%seconds%", String.valueOf(time)), 0, 20, 20);
-						p.playSound(p.getLocation(), Sounds.WOOD_CLICK.bukkitSound(), 1, 1);
+						p.playSound(p.getLocation(), XSound.UI_BUTTON_CLICK.parseSound(), 1, 1);
 						time--;
 						
 					} else {
@@ -110,7 +110,7 @@ public class DeathListener implements Listener {
 						
 						p.sendMessage(Config.getS("Death.Title.Message"));
 						p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 30, 0));
-						p.playSound(p.getLocation(), Sounds.ORB_PICKUP.bukkitSound(), 1, 1);
+						p.playSound(p.getLocation(), XSound.ENTITY_EXPERIENCE_ORB_PICKUP.parseSound(), 1, 1);
 						
 						Toolkit.runCommands("Respawn", p);
 						
@@ -278,7 +278,7 @@ public class DeathListener implements Listener {
 			
 			for (Player all : world.getPlayers()) {
 				
-				all.playSound(all.getLocation(), Sounds.valueOf(sound.toString()).bukkitSound(), volume, pitch);
+				all.playSound(all.getLocation(), XSound.matchXSound(sound.toString()).parseSound(), volume, pitch);
 				
 			}
 			

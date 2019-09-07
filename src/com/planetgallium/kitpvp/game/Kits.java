@@ -245,12 +245,12 @@ public class Kits {
 			
 			if (Toolkit.versionToNumber() < 113) {
 				
-				resource.set(path + ".Skull", skullMeta.getOwner());
+				resource.set(path + ".Skull", Bukkit.getOfflinePlayer(skullMeta.getOwner()).getUniqueId().toString());
 				resource.save();
 				
 			} else if (Toolkit.versionToNumber() >= 113) {
 				
-				resource.set(path + ".Skull", skullMeta.getOwningPlayer().getName());
+				resource.set(path + ".Skull", skullMeta.getOwningPlayer().getUniqueId().toString());
 				resource.save();
 				
 			}
@@ -261,21 +261,55 @@ public class Kits {
 			
 			if (Toolkit.versionToNumber() == 18) {
 				
-		        Potion potion = Potion.fromItemStack(item);
-		        resource.set(path + ".Potion.Type", potion.isSplash() ? "SPLASH_POTION" : "POTION");
-		        resource.set(path + ".Potion.Effect", potion.getEffects().iterator().next().getType().getName());
-		        resource.set(path + ".Potion.Level", potion.getLevel());
-		        resource.set(path + ".Potion.Duration", potion.getEffects().iterator().next().getDuration() / 20);
-		        resource.save();
+				Potion potionStack = Potion.fromItemStack(item);
+				PotionMeta potionMeta = (PotionMeta) meta;
+				
+				if (potionMeta.getCustomEffects().size() > 0) {
+					
+					for (PotionEffect potion : potionMeta.getCustomEffects()) {
+						
+						resource.set(path + ".Potion.Type", potionStack.isSplash() ? "SPLASH_POTION" : "POTION");
+						resource.set(path + ".Potion." + potion.getType().getName() + ".Level", potion.getAmplifier());
+						resource.set(path + ".Potion." + potion.getType().getName() + ".Duration", potion.getDuration() / 20);
+						resource.save();
+
+					}
+					
+				} else {
+					
+			        for (PotionEffect potion : potionStack.getEffects()) {
+			        	
+			        	resource.set(path + ".Potion.Type", potionStack.isSplash() ? "SPLASH_POTION" : "POTION");
+						resource.set(path + ".Potion." + potion.getType().getName() + ".Level", potion.getAmplifier());
+						resource.set(path + ".Potion." + potion.getType().getName() + ".Duration", potion.getDuration() / 20);
+						resource.save();
+			        	
+			        }
+					
+				}
 				
 			} else if (Toolkit.versionToNumber() >= 19) {
-				
+
 				PotionMeta potionMeta = (PotionMeta) meta;
-				resource.set(path + ".Potion.Type", getPotionType(item).parseMaterial().toString());
-				resource.set(path + ".Potion.Effect", potionMeta.getBasePotionData().getType().toString());
-		        resource.set(path + ".Potion.Upgraded", potionMeta.getBasePotionData().isUpgraded());
-		        resource.set(path + ".Potion.Extended", potionMeta.getBasePotionData().isExtended());
-		        resource.save();
+				
+				if (potionMeta.getCustomEffects().size() > 0) {
+					
+					for (PotionEffect potion : potionMeta.getCustomEffects()) {
+						
+						resource.set(path + ".Potion." + potion.getType().getName() + ".Level", potion.getAmplifier());
+						resource.set(path + ".Potion." + potion.getType().getName() + ".Duration", potion.getDuration() / 20);
+						resource.save();
+						
+					}
+					
+				} else {
+					
+					String type = potionMeta.getBasePotionData().getType().toString();
+					resource.set(path + ".Potion." + type + ".Upgraded", potionMeta.getBasePotionData().isUpgraded());
+			        resource.set(path + ".Potion." + type + ".Extended", potionMeta.getBasePotionData().isExtended());
+			        resource.save();
+					
+				}
 				
 			}
 			
@@ -336,26 +370,6 @@ public class Kits {
 			}
 			
 		}
-		
-	}
-	
-	private XMaterial getPotionType(ItemStack item) {
-		
-		if (item.getType() == XMaterial.POTION.parseMaterial()) {
-			
-			return XMaterial.POTION;
-			
-		} else if (item.getType() == XMaterial.SPLASH_POTION.parseMaterial()) {
-			
-			return XMaterial.SPLASH_POTION;
-			
-		} else if (item.getType() == XMaterial.LINGERING_POTION.parseMaterial()) {
-			
-			return XMaterial.LINGERING_POTION;
-			
-		}
-		
-		return XMaterial.POTION;
 		
 	}
 	

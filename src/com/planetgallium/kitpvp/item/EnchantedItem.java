@@ -26,7 +26,7 @@ public class EnchantedItem {
 			
 			for (String identifier : section.getKeys(false)) {
 				
-				enchantments.put(Enchantment.getByName(identifier), resource.getInt(path + "." + identifier + ".Level"));
+				enchantments.put(Enchantment.getByName(identifier.toUpperCase()), resource.getInt(path + "." + identifier + ".Level"));
 				
 			}
 			
@@ -34,7 +34,7 @@ public class EnchantedItem {
 			
 			for (String identifier : section.getKeys(false)) {
 				
-				enchantments.put(Enchantment.getByKey(NamespacedKey.minecraft(identifier)), resource.getInt(path + "." + identifier + ".Level"));
+				enchantments.put(Enchantment.getByKey(NamespacedKey.minecraft(identifier.toLowerCase())), resource.getInt(path + "." + identifier + ".Level"));
 				
 			}
 			

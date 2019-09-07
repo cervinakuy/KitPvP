@@ -26,13 +26,15 @@ public class SkullItem {
 		
 		if (Toolkit.versionToNumber() < 113) {
 			
-			skullMeta.setOwner(owner);
+			skullMeta.setOwner(Bukkit.getOfflinePlayer(owner).getName());
 			newSkull.setItemMeta(skullMeta);
 			
 			return newSkull;
 			
 		} else if (Toolkit.versionToNumber() >= 113) {
 			
+			System.out.println("reg owner: " + owner);
+			System.out.println("Owner: " + Bukkit.getOfflinePlayer(owner).getName());
 			skullMeta.setOwningPlayer(Bukkit.getOfflinePlayer(owner));
 			newSkull.setItemMeta(skullMeta);
 			
