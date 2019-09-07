@@ -21,8 +21,6 @@ import com.planetgallium.kitpvp.util.*;
 
 import net.md_5.bungee.api.ChatColor;
 
-import java.util.List;
-
 public class Game extends JavaPlugin implements Listener {
 	
 	private static Game instance;
@@ -111,10 +109,8 @@ public class Game extends JavaPlugin implements Listener {
 
 	@Override
 	public void onDisable() {
-		List<Player> players = (List<Player>) Bukkit.getOnlinePlayers();
-
-		for (Player player: players) {
-			database.saveAndRemovePlayer(player);
+		for (Player all : Bukkit.getOnlinePlayers()) {
+			database.saveAndRemovePlayer(all);
 		}
 	}
 

@@ -32,7 +32,7 @@ public class Database {
 	public Database(Game game, String path) {
 		this.game = game;
 		
-		this.cache = new HashMap<>();
+		this.cache = new HashMap<UUID, PlayerData>();
 		
 		this.host = game.getConfig().getString(path + ".Host");
 		this.database = game.getConfig().getString(path + ".Database");
