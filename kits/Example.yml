@@ -12,7 +12,7 @@ Inventory:
       - '&7be detected and saved'
       - '&7when using /kp create'
       Item: SKULL_ITEM
-      Skull: cervinakuy
+      Skull: 9d0a15ca-55fd-4fe0-8f73-28512b23d9f1
     Chestplate:
       Name: '&aDyed Item'
       Lore:
@@ -34,7 +34,7 @@ Inventory:
       - '&7vanilla enchantment limits.'
       Item: IRON_LEGGINGS
       Enchantments:
-        PROTECTION_ENVIRONMENTAL:
+        DEPTH_STRIDER:
           Level: 10
     Boots:
       Name: '&aItem'
@@ -62,11 +62,11 @@ Inventory:
       Item: POTION
       Potion:
         Type: POTION
-        Effect: REGENERATION
-        Level: 1
-        Duration: 45
-        Upgraded: false
-        Extended: false
+        JUMP:
+          Level: 1
+          Duration: 45
+          Upgraded: false
+          Extended: false
     8:
       Name: '&aAbility Item'
       Lore:

@@ -2,28 +2,44 @@ package com.planetgallium.kitpvp.game;
 
 import java.util.UUID;
 
+import com.planetgallium.kitpvp.Game;
 import com.planetgallium.kitpvp.util.Resources;
 import com.planetgallium.kitpvp.util.Toolkit;
 
 public class Stats {
 	
+	private Game game;
 	private Resources resources;
 	
-	public Stats(Resources resources) {
+	public Stats(Game game, Resources resources) {
+		this.game = game;
 		this.resources = resources;
 	}
 	
 	public void createPlayer(String username, UUID uuid) {
 		
-		if (!resources.getStats().contains("Stats.Players." + uuid + ".Username")) {
+		if (!game.getDatabase().isEnabled()) {
 			
-			resources.getStats().set("Stats.Players." + uuid + ".Username", username);
-			resources.getStats().set("Stats.Players." + uuid + ".Level", 0);
-			resources.getStats().set("Stats.Players." + uuid + ".Experience", 0);
-			resources.getStats().set("Stats.Players." + uuid + ".Kills", 0);
-			resources.getStats().set("Stats.Players." + uuid + ".Deaths", 0);
+			if (!resources.getStats().contains("Stats.Players." + uuid + ".Username")) {
+				
+				resources.getStats().set("Stats.Players." + uuid + ".Username", username);
+				resources.getStats().set("Stats.Players." + uuid + ".Level", 0);
+				resources.getStats().set("Stats.Players." + uuid + ".Experience", 0);
+				resources.getStats().set("Stats.Players." + uuid + ".Kills", 0);
+				resources.getStats().set("Stats.Players." + uuid + ".Deaths", 0);
+				
+				resources.save();
+				
+			}
 			
-			resources.save();
+		} else {
+			
+			if (!game.getDatabase().getCache().containsKey(uuid) || game.getDatabase().getCache().get(uuid) == null) {
+				
+				PlayerData playerData = new PlayerData(username, 0, 0, 0, 0);
+				game.getDatabase().getCache().put(uuid, playerData);
+				
+			}
 			
 		}
 		
@@ -31,10 +47,19 @@ public class Stats {
 	
 	public void addKill(UUID uuid) {
 		
-		if (resources.getStats().contains("Stats.Players." + uuid + ".Kills")) {
+		if (!game.getDatabase().isEnabled()) {
 			
-			resources.getStats().set("Stats.Players." + uuid + ".Kills", getKills(uuid) + 1);
-			resources.save();
+			if (resources.getStats().contains("Stats.Players." + uuid + ".Kills")) {
+				
+				resources.getStats().set("Stats.Players." + uuid + ".Kills", getKills(uuid) + 1);
+				resources.save();
+				
+			}
+			
+		} else {
+			
+			PlayerData playerData = game.getDatabase().getCache().get(uuid);
+			playerData.addKills(1);
 			
 		}
 		
@@ -42,10 +67,19 @@ public class Stats {
 	
 	public void addDeath(UUID uuid) {
 		
-		if (resources.getStats().contains("Stats.Players." + uuid + ".Deaths")) {
+		if (!game.getDatabase().isEnabled()) {
 			
-			resources.getStats().set("Stats.Players." + uuid + ".Deaths", getDeaths(uuid) + 1);
-			resources.save();
+			if (resources.getStats().contains("Stats.Players." + uuid + ".Deaths")) {
+				
+				resources.getStats().set("Stats.Players." + uuid + ".Deaths", getDeaths(uuid) + 1);
+				resources.save();
+				
+			}
+			
+		} else {
+			
+			PlayerData playerData = game.getDatabase().getCache().get(uuid);
+			playerData.addDeaths(1);
 			
 		}
 		
@@ -53,10 +87,19 @@ public class Stats {
 	
 	public void addExperience(UUID uuid, int experience) {
 		
-		if (resources.getStats().contains("Stats.Players." + uuid + ".Experience")) {
+		if (!game.getDatabase().isEnabled()) {
 			
-			resources.getStats().set("Stats.Players." + uuid + ".Experience", getExperience(uuid) + experience);
-			resources.save();
+			if (resources.getStats().contains("Stats.Players." + uuid + ".Experience")) {
+				
+				resources.getStats().set("Stats.Players." + uuid + ".Experience", getExperience(uuid) + 1);
+				resources.save();
+				
+			}
+			
+		} else {
+			
+			PlayerData playerData = game.getDatabase().getCache().get(uuid);
+			playerData.setExperience(experience);
 			
 		}
 		
@@ -64,12 +107,26 @@ public class Stats {
 	
 	public void removeExperience(UUID uuid, int experience) {
 		
-		if (resources.getStats().contains("Stats.Players." + uuid + ".Experience")) {
+		if (!game.getDatabase().isEnabled()) {
 			
-			if (resources.getStats().getInt("Stats.Players." + uuid + ".Experience") > experience) {
+			if (resources.getStats().contains("Stats.Players." + uuid + ".Experience")) {
 				
-				resources.getStats().set("Stats.Players." + uuid + ".Experience", getExperience(uuid) - experience);
-				resources.save();
+				if (resources.getStats().getInt("Stats.Players." + uuid + ".Experience") > experience) {
+					
+					resources.getStats().set("Stats.Players." + uuid + ".Experience", getExperience(uuid) - experience);
+					resources.save();
+					
+				}
+				
+			}
+			
+		} else {
+			
+			PlayerData playerData = game.getDatabase().getCache().get(uuid);
+			
+			if (playerData.getExperience() > experience) {
+				
+				playerData.setExperience(getExperience(uuid) - experience);
 				
 			}
 			
@@ -79,10 +136,19 @@ public class Stats {
 	
 	public void setLevel(UUID uuid, int level) {
 		
-		if (resources.getStats().contains("Stats.Players." + uuid + ".Level")) {
+		if (!game.getDatabase().isEnabled()) {
 			
-			resources.getStats().set("Stats.Players." + uuid + ".Level", level);
-			resources.save();
+			if (resources.getStats().contains("Stats.Players." + uuid + ".Level")) {
+				
+				resources.getStats().set("Stats.Players." + uuid + ".Level", level);
+				resources.save();
+				
+			}
+			
+		} else {
+			
+			PlayerData playerData = game.getDatabase().getCache().get(uuid);
+			playerData.setLevel(level);
 			
 		}
 		
@@ -90,21 +156,38 @@ public class Stats {
 	
 	public void setExperience(UUID uuid, int experience) {
 		
-		if (resources.getStats().contains("Stats.Players." + uuid + ".Experience")) {
+		if (!game.getDatabase().isEnabled()) {
 			
-			resources.getStats().set("Stats.Players." + uuid + ".Experience", experience);
-			resources.save();
+			if (resources.getStats().contains("Stats.Players." + uuid + ".Experience")) {
+				
+				resources.getStats().set("Stats.Players." + uuid + ".Experience", experience);
+				resources.save();
+				
+			}
+			
+		} else {
+			
+			PlayerData playerData = game.getDatabase().getCache().get(uuid);
+			playerData.setExperience(experience);
 			
 		}
 		
 	}
 	
-	
 	public int getKills(UUID uuid) {
 		
-		if (resources.getStats().contains("Stats.Players." + uuid + ".Kills")) {
+		if (!game.getDatabase().isEnabled()) {
 			
-			return resources.getStats().getInt("Stats.Players." + uuid + ".Kills");
+			if (resources.getStats().contains("Stats.Players." + uuid + ".Kills")) {
+				
+				return resources.getStats().getInt("Stats.Players." + uuid + ".Kills");
+				
+			}
+			
+		} else {
+			
+			PlayerData playerData = game.getDatabase().getCache().get(uuid);
+			return playerData.getKills();
 			
 		}
 		
@@ -114,9 +197,18 @@ public class Stats {
 	
 	public int getDeaths(UUID uuid) {
 		
-		if (resources.getStats().contains("Stats.Players." + uuid + ".Deaths")) {
+		if (!game.getDatabase().isEnabled()) {
 			
-			return resources.getStats().getInt("Stats.Players." + uuid + ".Deaths");
+			if (resources.getStats().contains("Stats.Players." + uuid + ".Deaths")) {
+				
+				return resources.getStats().getInt("Stats.Players." + uuid + ".Deaths");
+				
+			}
+			
+		} else {
+			
+			PlayerData playerData = game.getDatabase().getCache().get(uuid);
+			return playerData.getDeaths();
 			
 		}
 		
@@ -127,7 +219,7 @@ public class Stats {
 	public double getKDRatio(UUID uuid) {
 		
 		if (getDeaths(uuid) != 0) {
-
+			
 			double divided = (double) getKills(uuid) / getDeaths(uuid);
 			return Toolkit.round(divided, 2);
 			
@@ -139,9 +231,18 @@ public class Stats {
 	
 	public int getExperience(UUID uuid) {
 		
-		if (resources.getStats().contains("Stats.Players." + uuid + ".Experience")) {
+		if (!game.getDatabase().isEnabled()) {
 			
-			return resources.getStats().getInt("Stats.Players." + uuid + ".Experience");
+			if (resources.getStats().contains("Stats.Players." + uuid + ".Experience")) {
+				
+				return resources.getStats().getInt("Stats.Players." + uuid + ".Experience");
+				
+			}
+			
+		} else {
+			
+			PlayerData playerData = game.getDatabase().getCache().get(uuid);
+			return playerData.getExperience();
 			
 		}
 		
@@ -151,9 +252,18 @@ public class Stats {
 	
 	public int getLevel(UUID uuid) {
 		
-		if (resources.getStats().contains("Stats.Players." + uuid + ".Level")) {
+		if (!game.getDatabase().isEnabled()) {
 			
-			return resources.getStats().getInt("Stats.Players." + uuid + ".Level");
+			if (resources.getStats().contains("Stats.Players." + uuid + ".Level")) {
+				
+				return resources.getStats().getInt("Stats.Players." + uuid + ".Level");
+				
+			}
+			
+		} else {
+			
+			PlayerData playerData = game.getDatabase().getCache().get(uuid);
+			return playerData.getLevel();
 			
 		}
 		

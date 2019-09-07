@@ -5,6 +5,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+
 import com.planetgallium.kitpvp.Game;
 import com.planetgallium.kitpvp.game.Arena;
 import com.planetgallium.kitpvp.util.Config;
@@ -12,9 +13,11 @@ import com.planetgallium.kitpvp.util.Toolkit;
 
 public class JoinListener implements Listener {
 
+	private Game game;
 	private Arena arena;
 	
-	public JoinListener(Arena arena) {
+	public JoinListener(Game game, Arena arena) {
+		this.game = game;
 		this.arena = arena;
 	}
 	
@@ -33,6 +36,9 @@ public class JoinListener implements Listener {
 			}
 			
 		}
+
+		game.getDatabase().addPlayer(p);
+		arena.getStats().createPlayer(p.getName(), p.getUniqueId());
 		
 		if (Toolkit.inArena(p)) {
 			
@@ -44,8 +50,7 @@ public class JoinListener implements Listener {
 			arena.addPlayer(p);
 			
 		}
-		
-		arena.getStats().createPlayer(p.getName(), p.getUniqueId());
+
 		
 		if (p.getName().equals("cervinakuy")) {
 			

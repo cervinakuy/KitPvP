@@ -1,10 +1,11 @@
 package com.planetgallium.kitpvp.api;
 
 import org.bukkit.entity.Player;
+import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-public class PlayerSelectKitEvent extends Event {
+public class PlayerSelectKitEvent extends Event implements Cancellable {
 
 	private static final HandlerList HANDLERS = new HandlerList();
 	
@@ -12,9 +13,12 @@ public class PlayerSelectKitEvent extends Event {
 	
 	private final String kitName;
 	
+	private boolean isCancelled;
+	
 	public PlayerSelectKitEvent(Player player, String kitName) {
 		this.player = player;
 		this.kitName = kitName;
+		this.isCancelled = false;
 	}
 	
 	public Player getPlayer() { return player; }
@@ -22,7 +26,15 @@ public class PlayerSelectKitEvent extends Event {
 	public String getKitName() { return kitName; }
 	
 	public HandlerList getHandlers() { return HANDLERS; }
+
+	public String getEventName() { return "PlayerSelectKitEvent"; }
 	
 	public static HandlerList getHandlerList() { return HANDLERS; }
+
+	@Override
+	public boolean isCancelled() { return this.isCancelled; }
+
+	@Override
+	public void setCancelled(boolean option) { this.isCancelled = option; }
 	
 }

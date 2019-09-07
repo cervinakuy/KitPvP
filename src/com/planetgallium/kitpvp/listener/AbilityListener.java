@@ -10,8 +10,8 @@ import com.planetgallium.kitpvp.game.Arena;
 import com.planetgallium.kitpvp.kit.Ability;
 import com.planetgallium.kitpvp.util.Config;
 import com.planetgallium.kitpvp.util.Resources;
-import com.planetgallium.kitpvp.util.Sounds;
 import com.planetgallium.kitpvp.util.Toolkit;
+import com.planetgallium.kitpvp.util.XSound;
 
 public class AbilityListener implements Listener {
 	
@@ -37,7 +37,7 @@ public class AbilityListener implements Listener {
 			}
 			
 			if (resources.getKits(kit).getBoolean("Ability.Sound.Enabled")) {
-				p.playSound(p.getLocation(), Sounds.valueOf(ability.getSoundName()).bukkitSound(), 3, ability.getSoundPitch());
+				p.playSound(p.getLocation(), XSound.matchXSound(ability.getSoundName()).parseSound(), 3, ability.getSoundPitch());
 			}
 			
 			if (resources.getKits(kit).contains("Ability.Potions")) {

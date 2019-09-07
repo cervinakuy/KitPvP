@@ -39,7 +39,7 @@ public class Arena {
 		this.spectators = new ArrayList<String>();
 		this.users = new ArrayList<String>();
 		
-		this.stats = new Stats(resources);
+		this.stats = new Stats(plugin, resources);
 		this.kits = new Kits(plugin, resources);
 		this.killstreaks = new KillStreaks(resources);
 		this.levels = new Levels(this, resources);

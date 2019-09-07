@@ -241,7 +241,7 @@ public class SignListener implements Listener {
 		
 		for (int i = 0; i < 3; i++) {
 			
-			if (sign[i].length() > 0) {
+			if (sign[i] != null && sign[i].length() > 0) {
 				
 				if (!sign[i].replace("§", "&").equals(resources.getSigns().getString(path + ".Line-" + (i + 1)).replace("%kit%", kit))) {
 					

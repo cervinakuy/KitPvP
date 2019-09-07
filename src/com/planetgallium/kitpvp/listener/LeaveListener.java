@@ -6,15 +6,16 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import com.planetgallium.kitpvp.Game;
-import com.planetgallium.kitpvp.util.Resources;
+import com.planetgallium.kitpvp.game.Arena;
 
 public class LeaveListener implements Listener {
 
-	@SuppressWarnings("unused")
-	private Resources resources;
+	private Game game;
+	private Arena arena;
 	
-	public LeaveListener(Resources resources) {
-		this.resources = resources;
+	public LeaveListener(Game game, Arena arena) {
+		this.game = game;
+		this.arena = arena;
 	}
 	
 	@EventHandler
@@ -22,13 +23,14 @@ public class LeaveListener implements Listener {
 		
 		Player p = e.getPlayer();
 		
-		if (Game.getInstance().getArena().isPlayer(p.getName()) || Game.getInstance().getArena().isSpectator(p.getName())) {
+		if (arena.isPlayer(p.getName()) || arena.isSpectator(p.getName())) {
 			
 			Game.getInstance().getArena().deletePlayer(p);
 			
 		}
 		
-		Game.getInstance().getArena().removeUser(p.getName());
+		arena.removeUser(p.getName());
+		game.getDatabase().saveAndRemovePlayer(p);
 		
 	}
 	

@@ -33,9 +33,9 @@ import com.planetgallium.kitpvp.game.Arena;
 import com.planetgallium.kitpvp.menu.KitMenu;
 import com.planetgallium.kitpvp.util.Config;
 import com.planetgallium.kitpvp.util.Resources;
-import com.planetgallium.kitpvp.util.Sounds;
 import com.planetgallium.kitpvp.util.Toolkit;
 import com.planetgallium.kitpvp.util.XMaterial;
+import com.planetgallium.kitpvp.util.XSound;
 
 public class ItemListener implements Listener {
 	
@@ -107,7 +107,7 @@ public class ItemListener implements Listener {
 						p.sendMessage(Config.tr(resources.getAbilities().getString("Abilities.Archer.Message.Fire").replace("%prefix%", resources.getMessages().getString("Messages.General.Prefix"))));
 					}
 					
-					p.playSound(p.getLocation(), Sounds.WOOD_CLICK.bukkitSound(), 1, resources.getAbilities().getInt("Abilities.Archer.Sound.Pitch"));
+					p.playSound(p.getLocation(), XSound.UI_BUTTON_CLICK.parseSound(), 1, resources.getAbilities().getInt("Abilities.Archer.Sound.Pitch"));
 					
 				} else if (Toolkit.getMainHandItem(p).getType() == XMaterial.MAGMA_CREAM.parseMaterial()) {
 					
@@ -123,7 +123,7 @@ public class ItemListener implements Listener {
 						p.sendMessage(Config.tr(resources.getAbilities().getString("Abilities.Archer.Message.NoFire").replace("%prefix%", resources.getMessages().getString("Messages.General.Prefix"))));
 					}
 					
-					p.playSound(p.getLocation(), Sounds.WOOD_CLICK.bukkitSound(), 1, 1);
+					p.playSound(p.getLocation(), XSound.UI_BUTTON_CLICK.parseSound(), 1, 1);
 					
 				} else if (Toolkit.getMainHandItem(p).getType() == XMaterial.SADDLE.parseMaterial()) {
 					
@@ -134,7 +134,7 @@ public class ItemListener implements Listener {
 						launchermeta.setDisplayName(Config.tr(resources.getAbilities().getString("Abilities.Kangaroo.Item.Name")));
 						launcher.setItemMeta(launchermeta);
 						
-						p.playSound(p.getLocation(), Sounds.valueOf(resources.getAbilities().getString("Abilities.Kangaroo.Sound.Sound")).bukkitSound(), 1, (int) resources.getAbilities().getInt("Abilities.Kangaroo.Sound.Pitch"));
+						p.playSound(p.getLocation(), XSound.matchXSound(resources.getAbilities().getString("Abilities.Kangaroo.Sound.Sound")).parseSound(), 1, (int) resources.getAbilities().getInt("Abilities.Kangaroo.Sound.Pitch"));
 						
 						if (resources.getAbilities().getBoolean("Abilities.Kangaroo.Message.Enabled")) {
 							p.sendMessage(Config.tr(resources.getAbilities().getString("Abilities.Kangaroo.Message.Message").replace("%prefix%", resources.getMessages().getString("Messages.General.Prefix"))));
@@ -161,7 +161,7 @@ public class ItemListener implements Listener {
 						Snowball ammo = (Snowball) p.launchProjectile(Snowball.class);
 						ammo.setVelocity(p.getLocation().getDirection().multiply(2.5));
 
-						p.playSound(p.getLocation(), Sounds.EXPLODE.bukkitSound(), 1, 2);
+						p.playSound(p.getLocation(), XSound.ENTITY_GENERIC_EXPLODE.parseSound(), 1, 2);
 						
 						gun.setAmount(gun.getAmount() - 1);
 						Toolkit.setMainHandItem(p, gun);
@@ -170,7 +170,7 @@ public class ItemListener implements Listener {
 					
 				} else if (Toolkit.getMainHandItem(p).getType() == XMaterial.GLASS_BOTTLE.parseMaterial()) {
 					
-					if (p.hasPermission("kp.ability.witch")) {
+					if (p.hasPermission("kp.ability.witch") && arena.getKits().getKit(p.getName()).equals("Witch")) {
 						
 						Potion potion = new Potion(pickPotion(), 1);
 						potion.setSplash(true);
@@ -202,7 +202,7 @@ public class ItemListener implements Listener {
 								p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 60, 5));
 								p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 80, 5));
 								
-								p.playSound(p.getLocation(), Sounds.valueOf(resources.getAbilities().getString("Abilities.Warper.Sound.Sound")).bukkitSound(), 1, (int) resources.getAbilities().getInt("Abilities.Warper.Sound.Pitch"));
+								p.playSound(p.getLocation(), XSound.matchXSound(resources.getAbilities().getString("Abilities.Warper.Sound.Sound")).parseSound(), 1, (int) resources.getAbilities().getInt("Abilities.Warper.Sound.Pitch"));
 								
 								if (resources.getAbilities().getBoolean("Abilities.Warper.Message.Enabled")) {
 									p.sendMessage(Config.tr(resources.getAbilities().getString("Abilities.Warper.Message.Message").replace("%prefix%", resources.getMessages().getString("Messages.General.Prefix"))));
@@ -258,7 +258,7 @@ public class ItemListener implements Listener {
 						p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 100, 2));
 						p.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 100, 0));
 						
-						p.playSound(p.getLocation(), Sounds.valueOf(resources.getAbilities().getString("Abilities.Ninja.Sound.Sound")).bukkitSound(), 1, resources.getAbilities().getInt("Abilities.Ninja.Sound.Pitch"));
+						p.playSound(p.getLocation(), XSound.matchXSound(resources.getAbilities().getString("Abilities.Ninja.Sound.Sound")).parseSound(), 1, resources.getAbilities().getInt("Abilities.Ninja.Sound.Pitch"));
 						
 						if (resources.getAbilities().getBoolean("Abilities.Ninja.Messaage.Enabled")) {
 							p.sendMessage(Config.tr(resources.getAbilities().getString("Abilities.Ninja.Message.Message").replace("%prefix%", resources.getMessages().getString("Messages.General.Prefix"))));
@@ -331,7 +331,7 @@ public class ItemListener implements Listener {
 						
 							e.getProjectile().setFireTicks(1000);
 									
-							p.playSound(p.getLocation(), Sounds.valueOf(resources.getAbilities().getString("Abilities.Archer.Sound.Sound")).bukkitSound(), 1, (int) resources.getAbilities().getInt("Abilities.Archer.Sound.Pitch"));
+							p.playSound(p.getLocation(), XSound.matchXSound(resources.getAbilities().getString("Abilities.Archer.Sound.Sound")).parseSound(), 1, (int) resources.getAbilities().getInt("Abilities.Archer.Sound.Pitch"));
 										
 							ItemStack magma = new ItemStack(Material.MAGMA_CREAM);
 							ItemMeta magmameta = ammo.getItemMeta();
@@ -411,33 +411,37 @@ public class ItemListener implements Listener {
 				Player p = (Player) e.getEntity().getShooter();
 				int slot = p.getInventory().getHeldItemSlot();
 				
-				Potion potion = new Potion(pickPotion(), 1);
-				potion.setSplash(true);
-				
-				new BukkitRunnable() {
+				if (arena.getKits().getKit(p.getName()).equals("Witch")) {
 					
-					@Override
-					public void run() {
+					Potion potion = new Potion(pickPotion(), 1);
+					potion.setSplash(true);
+					
+					new BukkitRunnable() {
 						
-						if (Game.getInstance().getArena().getKits().getKit(p.getName()) != null) {
+						@Override
+						public void run() {
 							
-							if (Game.getInstance().getArena().getKits().getKit(p.getName()).equals("Witch")) {
+							if (Game.getInstance().getArena().getKits().getKit(p.getName()) != null) {
 								
-								p.getInventory().setItem(slot, potion.toItemStack(1));
-								
-								if (resources.getAbilities().getBoolean("Abilities.Witch.Message.Enabled")) {
-									p.sendMessage(Config.tr(resources.getAbilities().getString("Abilities.Witch.Message.Message").replace("%prefix%", resources.getMessages().getString("Messages.General.Prefix"))));
+								if (Game.getInstance().getArena().getKits().getKit(p.getName()).equals("Witch")) {
+									
+									p.getInventory().setItem(slot, potion.toItemStack(1));
+									
+									if (resources.getAbilities().getBoolean("Abilities.Witch.Message.Enabled")) {
+										p.sendMessage(Config.tr(resources.getAbilities().getString("Abilities.Witch.Message.Message").replace("%prefix%", resources.getMessages().getString("Messages.General.Prefix"))));
+									}
+									
+									p.playSound(p.getLocation(), XSound.matchXSound(resources.getAbilities().getString("Abilities.Witch.Sound.Sound")).parseSound(), 1, resources.getAbilities().getInt("Abliities.Witch.Sound.Pitch"));
+									
 								}
-								
-								p.playSound(p.getLocation(), Sounds.valueOf(resources.getAbilities().getString("Abilities.Witch.Sound.Sound")).bukkitSound(), 1, resources.getAbilities().getInt("Abliities.Witch.Sound.Pitch"));
 								
 							}
 							
 						}
 						
-					}
+					}.runTaskLater(Game.getInstance(), 5 * 20);
 					
-				}.runTaskLater(Game.getInstance(), 5 * 20);
+				}
 				
 			}
 			
