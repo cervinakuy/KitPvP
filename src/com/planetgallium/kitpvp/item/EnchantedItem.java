@@ -3,19 +3,18 @@ package com.planetgallium.kitpvp.item;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 
 import com.planetgallium.kitpvp.util.Resource;
 import com.planetgallium.kitpvp.util.Toolkit;
+import com.planetgallium.kitpvp.util.XEnchantment;
 
 public class EnchantedItem {
 	
 	private Map<Enchantment, Integer> enchantments;
 	
-	@SuppressWarnings("deprecation")
 	public EnchantedItem(Resource resource, String path) {
 		
 		this.enchantments = new HashMap<Enchantment, Integer>();
@@ -25,8 +24,7 @@ public class EnchantedItem {
 		if (Toolkit.versionToNumber() < 112) {
 			
 			for (String identifier : section.getKeys(false)) {
-				
-				enchantments.put(Enchantment.getByName(identifier.toUpperCase()), resource.getInt(path + "." + identifier + ".Level"));
+				enchantments.put(XEnchantment.matchEnchantment(identifier), resource.getInt(path + "." + identifier + ".Level"));
 				
 			}
 			
@@ -34,7 +32,7 @@ public class EnchantedItem {
 			
 			for (String identifier : section.getKeys(false)) {
 				
-				enchantments.put(Enchantment.getByKey(NamespacedKey.minecraft(identifier.toLowerCase())), resource.getInt(path + "." + identifier + ".Level"));
+				enchantments.put(XEnchantment.matchEnchantment(identifier), resource.getInt(path + "." + identifier + ".Level"));
 				
 			}
 			

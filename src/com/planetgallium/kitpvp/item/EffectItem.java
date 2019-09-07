@@ -4,6 +4,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import com.planetgallium.kitpvp.util.Resource;
+import com.planetgallium.kitpvp.util.XPotion;
 
 public class EffectItem {
 
@@ -14,7 +15,7 @@ public class EffectItem {
 	public EffectItem(Resource resource, String type) {
 		
 		if (resource.contains("Potions." + type)) {
-			this.type = PotionEffectType.getByName(type);
+			this.type = XPotion.matchPotionType(type);
 		}
 		
 		if (resource.contains("Potions." + type + ".Duration")) {
