@@ -256,7 +256,7 @@ Menu:
     Rhino:
       Name: '&a&lRhino Kit'
       Item: DIAMOND_HELMET
-      Slot: 24
+      Slot: 23
       Lore:
       - '&6Ability: &73 Rhino Charges'
       - ' '
@@ -277,7 +277,7 @@ Menu:
     Example:
       Name: '&a&lExample Kit'
       Item: WOOD_SWORD
-      Slot: 23
+      Slot: 24
       View-Permission: kp.kit.example
       Lore:
       - '&7This is the example of a custom'
