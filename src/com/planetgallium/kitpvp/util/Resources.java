@@ -1,6 +1,7 @@
 package com.planetgallium.kitpvp.util;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -28,6 +29,23 @@ public class Resources {
 		this.plugin = plugin;
 		this.kits = new HashMap<String, Resource>();
 		
+		if (!plugin.getDataFolder().exists()) {
+			kits.put("Fighter.yml", new Resource(plugin, "kits/Fighter.yml", "Fighter.yml"));
+			kits.put("Archer.yml", new Resource(plugin, "kits/Archer.yml", "Archer.yml"));
+			kits.put("Tank.yml", new Resource(plugin, "kits/Tank.yml", "Tank.yml"));
+			kits.put("Soldier.yml", new Resource(plugin, "kits/Soldier.yml", "Soldier.yml"));
+			kits.put("Bomber.yml", new Resource(plugin, "kits/Bomber.yml", "Bomber.yml"));
+			kits.put("Kangaroo.yml", new Resource(plugin, "kits/Kangaroo.yml", "Kangaroo.yml"));
+			kits.put("Warper.yml", new Resource(plugin, "kits/Warper.yml", "Warper.yml"));
+			kits.put("Witch.yml", new Resource(plugin, "kits/Witch.yml", "Witch.yml"));
+			kits.put("Ninja.yml", new Resource(plugin, "kits/Ninja.yml", "Ninja.yml"));
+			kits.put("Thunderbolt.yml", new Resource(plugin, "kits/Thunderbolt.yml", "Thunderbolt.yml"));
+			kits.put("Vampire.yml", new Resource(plugin, "kits/Vampire.yml", "Vampire.yml"));
+			kits.put("Witch.yml", new Resource(plugin, "kits/Witch.yml", "Witch.yml"));
+			kits.put("Rhino.yml", new Resource(plugin, "kits/Rhino.yml", "Rhino.yml"));
+			kits.put("Example.yml", new Resource(plugin, "kits/Example.yml", "Example.yml"));
+		}
+		
 		abilities = new Resource(plugin, "abilities.yml");
 		killstreaks = new Resource(plugin, "killstreaks.yml");
 		levels = new Resource(plugin, "levels.yml");
@@ -36,21 +54,6 @@ public class Resources {
 		scoreboard = new Resource(plugin, "scoreboard.yml");
 		stats = new Resource(plugin, "stats.yml");
 		signs = new Resource(plugin, "signs.yml");
-		
-		kits.put("Fighter.yml", new Resource(plugin, "kits/Fighter.yml", "Fighter.yml"));
-		kits.put("Archer.yml", new Resource(plugin, "kits/Archer.yml", "Archer.yml"));
-		kits.put("Tank.yml", new Resource(plugin, "kits/Tank.yml", "Tank.yml"));
-		kits.put("Soldier.yml", new Resource(plugin, "kits/Soldier.yml", "Soldier.yml"));
-		kits.put("Bomber.yml", new Resource(plugin, "kits/Bomber.yml", "Bomber.yml"));
-		kits.put("Kangaroo.yml", new Resource(plugin, "kits/Kangaroo.yml", "Kangaroo.yml"));
-		kits.put("Warper.yml", new Resource(plugin, "kits/Warper.yml", "Warper.yml"));
-		kits.put("Witch.yml", new Resource(plugin, "kits/Witch.yml", "Witch.yml"));
-		kits.put("Ninja.yml", new Resource(plugin, "kits/Ninja.yml", "Ninja.yml"));
-		kits.put("Thunderbolt.yml", new Resource(plugin, "kits/Thunderbolt.yml", "Thunderbolt.yml"));
-		kits.put("Vampire.yml", new Resource(plugin, "kits/Vampire.yml", "Vampire.yml"));
-		kits.put("Witch.yml", new Resource(plugin, "kits/Witch.yml", "Witch.yml"));
-		kits.put("Rhino.yml", new Resource(plugin, "kits/Rhino.yml", "Rhino.yml"));
-		kits.put("Example.yml", new Resource(plugin, "kits/Example.yml", "Example.yml"));
 		
 		for (String kit : this.getKitList()) {
 			kits.put(kit, new Resource(plugin, "kits/" + kit, kit));
@@ -122,7 +125,10 @@ public class Resources {
 		
 		File folder = new File(plugin.getDataFolder().getAbsolutePath() + "/kits");
 		
-		return new ArrayList<String>(Arrays.asList(folder.list()));
+		if (folder.exists()) {
+			return new ArrayList<String>(Arrays.asList(folder.list()));
+		}
+		return new ArrayList<String>();
 		
 	}
 	
