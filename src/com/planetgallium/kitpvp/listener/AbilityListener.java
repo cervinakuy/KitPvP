@@ -5,7 +5,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
-import com.planetgallium.kitpvp.api.PlayerAbilityEvent;
+import com.planetgallium.kitpvp.api.Events.PlayerAbilityEvent;
 import com.planetgallium.kitpvp.game.Arena;
 import com.planetgallium.kitpvp.kit.Ability;
 import com.planetgallium.kitpvp.util.Config;

@@ -22,10 +22,31 @@ public class PlayerData {
         
     }
 
+    public void removeKills(int amount) {
+
+        this.kills -= amount;
+
+    }
+
+    public void setKills(int amount) {
+
+        this.kills = amount;
+    }
+
     public void addDeaths(int amount) {
     	
         this.deaths += amount;
         
+    }
+
+    public void removeDeaths(int amount) {
+
+        this.deaths -= amount;
+
+    }
+
+    public void setDeaths(int amount) {
+        this.deaths = amount;
     }
 
     public void setExperience(int amount) {

@@ -20,7 +20,7 @@ import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffect;
 import com.planetgallium.kitpvp.Game;
-import com.planetgallium.kitpvp.api.PlayerSelectKitEvent;
+import com.planetgallium.kitpvp.api.Events.PlayerSelectKitEvent;
 import com.planetgallium.kitpvp.item.EffectItem;
 import com.planetgallium.kitpvp.item.KitItem;
 import com.planetgallium.kitpvp.kit.Kit;

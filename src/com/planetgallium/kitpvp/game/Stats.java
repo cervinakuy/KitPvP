@@ -3,8 +3,11 @@ package com.planetgallium.kitpvp.game;
 import java.util.UUID;
 
 import com.planetgallium.kitpvp.Game;
+import com.planetgallium.kitpvp.api.Events.KitPvPExperienceChangeEvent;
+import com.planetgallium.kitpvp.api.Events.KitPvPLevelChangeEvent;
 import com.planetgallium.kitpvp.util.Resources;
 import com.planetgallium.kitpvp.util.Toolkit;
+import org.bukkit.Bukkit;
 
 public class Stats {
 	
@@ -64,6 +67,26 @@ public class Stats {
 		}
 		
 	}
+
+	public void removeKill(UUID uuid) {
+
+		if (!game.getDatabase().isEnabled()) {
+
+			if (resources.getStats().contains("Stats.Players." + uuid + ".Kills")) {
+
+				resources.getStats().set("Stats.Players." + uuid + ".Kills", getKills(uuid) - 1);
+				resources.save();
+
+			}
+
+		} else {
+
+			PlayerData playerData = game.getDatabase().getCache().get(uuid);
+			playerData.removeKills(1);
+
+		}
+
+	}
 	
 	public void addDeath(UUID uuid) {
 		
@@ -84,14 +107,37 @@ public class Stats {
 		}
 		
 	}
-	
+
+	public void removeDeath(UUID uuid) {
+
+		if (!game.getDatabase().isEnabled()) {
+
+			if (resources.getStats().contains("Stats.Players." + uuid + ".Deaths")) {
+
+				resources.getStats().set("Stats.Players." + uuid + ".Deaths", getDeaths(uuid) - 1);
+				resources.save();
+
+			}
+
+		} else {
+
+			PlayerData playerData = game.getDatabase().getCache().get(uuid);
+			playerData.removeDeaths(1);
+
+		}
+
+	}
+
 	public void addExperience(UUID uuid, int experience) {
-		
+
+		KitPvPExperienceChangeEvent event = new KitPvPExperienceChangeEvent(Bukkit.getPlayer(uuid), getExperience(uuid),
+				getExperience(uuid) + experience);
+		Bukkit.getPluginManager().callEvent(event);
 		if (!game.getDatabase().isEnabled()) {
 			
 			if (resources.getStats().contains("Stats.Players." + uuid + ".Experience")) {
 				
-				resources.getStats().set("Stats.Players." + uuid + ".Experience", getExperience(uuid) + 1);
+				resources.getStats().set("Stats.Players." + uuid + ".Experience", getExperience(uuid) + experience);
 				resources.save();
 				
 			}
@@ -99,23 +145,29 @@ public class Stats {
 		} else {
 			
 			PlayerData playerData = game.getDatabase().getCache().get(uuid);
-			playerData.setExperience(experience);
+			playerData.setExperience(getExperience(uuid) + experience);
 			
 		}
 		
 	}
 	
 	public void removeExperience(UUID uuid, int experience) {
-		
+		KitPvPExperienceChangeEvent event = new KitPvPExperienceChangeEvent(Bukkit.getPlayer(uuid), getExperience(uuid),
+				getExperience(uuid) - experience);
+		Bukkit.getPluginManager().callEvent(event);
+
 		if (!game.getDatabase().isEnabled()) {
 			
 			if (resources.getStats().contains("Stats.Players." + uuid + ".Experience")) {
 				
-				if (resources.getStats().getInt("Stats.Players." + uuid + ".Experience") > experience) {
+				if (resources.getStats().getInt("Stats.Players." + uuid + ".Experience") >= experience) {
 					
 					resources.getStats().set("Stats.Players." + uuid + ".Experience", getExperience(uuid) - experience);
 					resources.save();
 					
+				} else {
+					resources.getStats().set("Stats.Players." + uuid + ".Experience", 0);
+					resources.save();
 				}
 				
 			}
@@ -128,6 +180,9 @@ public class Stats {
 				
 				playerData.setExperience(getExperience(uuid) - experience);
 				
+			} else {
+				resources.getStats().set("Stats.Players." + uuid + ".Experience", 0);
+				resources.save();
 			}
 			
 		}
@@ -135,7 +190,10 @@ public class Stats {
 	}
 	
 	public void setLevel(UUID uuid, int level) {
-		
+
+		KitPvPLevelChangeEvent event = new KitPvPLevelChangeEvent(Bukkit.getPlayer(uuid), getLevel(uuid), level);
+		Bukkit.getPluginManager().callEvent(event);
+
 		if (!game.getDatabase().isEnabled()) {
 			
 			if (resources.getStats().contains("Stats.Players." + uuid + ".Level")) {
@@ -155,7 +213,9 @@ public class Stats {
 	}
 	
 	public void setExperience(UUID uuid, int experience) {
-		
+
+		KitPvPExperienceChangeEvent event = new KitPvPExperienceChangeEvent(Bukkit.getPlayer(uuid), getExperience(uuid), experience);
+		Bukkit.getPluginManager().callEvent(event);
 		if (!game.getDatabase().isEnabled()) {
 			
 			if (resources.getStats().contains("Stats.Players." + uuid + ".Experience")) {
@@ -173,7 +233,20 @@ public class Stats {
 		}
 		
 	}
-	
+
+	public String getUsername(UUID uuid) {
+
+		if (!game.getDatabase().isEnabled()) {
+			if (resources.getStats().contains("Stats.Players." + uuid + ".Username")) {
+				return resources.getStats().getString("Stats.Players." + uuid + ".Username");
+			}
+		} else {
+			PlayerData playerData = game.getDatabase().getCache().get(uuid);
+			return playerData.getUsername();
+		}
+		return null;
+	}
+
 	public int getKills(UUID uuid) {
 		
 		if (!game.getDatabase().isEnabled()) {

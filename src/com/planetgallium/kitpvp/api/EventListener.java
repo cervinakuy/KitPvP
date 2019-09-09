@@ -1,5 +1,6 @@
 package com.planetgallium.kitpvp.api;
 
+import com.planetgallium.kitpvp.api.Events.PlayerAbilityEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

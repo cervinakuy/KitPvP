@@ -2,6 +2,7 @@ package com.planetgallium.kitpvp.game;
 
 import java.util.UUID;
 
+import com.planetgallium.kitpvp.api.Events.KitPvPLevelUpEvent;
 import org.bukkit.entity.Player;
 
 import com.planetgallium.kitpvp.util.Config;
@@ -48,7 +49,9 @@ public class Levels {
 	public void levelUp(Player p) {
 		
 		if (arena.getStats().getLevel(p.getUniqueId()) != resources.getLevels().getInt("Levels.General.Level.Maximum")) {
-			
+
+			KitPvPLevelUpEvent event = new KitPvPLevelUpEvent(p, arena.getLevels().getLevel(p.getUniqueId()),
+					arena.getLevels().getLevel(p.getUniqueId()) + 1);
 			arena.getStats().setLevel(p.getUniqueId(), arena.getLevels().getLevel(p.getUniqueId()) + 1);
 			arena.getStats().setExperience(p.getUniqueId(), 0);
 			

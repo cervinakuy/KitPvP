@@ -1,4 +1,4 @@
-package com.planetgallium.kitpvp.api;
+package com.planetgallium.kitpvp.api.Events;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
@@ -25,10 +25,6 @@ public class PlayerSelectKitEvent extends Event implements Cancellable {
 	
 	public String getKitName() { return kitName; }
 	
-	public HandlerList getHandlers() { return HANDLERS; }
-
-	public String getEventName() { return "PlayerSelectKitEvent"; }
-	
 	public static HandlerList getHandlerList() { return HANDLERS; }
 
 	@Override
@@ -36,5 +32,11 @@ public class PlayerSelectKitEvent extends Event implements Cancellable {
 
 	@Override
 	public void setCancelled(boolean option) { this.isCancelled = option; }
+
+	@Override
+	public HandlerList getHandlers() { return HANDLERS; }
+
+	@Override
+	public String getEventName() { return "PlayerSelectKitEvent"; }
 	
 }

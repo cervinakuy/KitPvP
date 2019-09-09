@@ -1,5 +1,7 @@
 package com.planetgallium.kitpvp.listener;
 
+import com.planetgallium.kitpvp.api.Enums.KitPvPDeathReason;
+import com.planetgallium.kitpvp.api.Events.KitPvPPlayerDeathEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.GameMode;
@@ -33,6 +35,8 @@ public class DeathListener implements Listener {
 	private Title title = new Title();
 	private Arena arena;
 	private Resources resources;
+
+	private KitPvPDeathReason deathReason;
 	
 	public DeathListener(Arena arena, Resources resources) {
 		this.arena = arena;
@@ -69,7 +73,9 @@ public class DeathListener implements Listener {
 			if (Config.getB("Death.Sound.Enabled")) {
 				broadcast(victim.getWorld(), XSound.matchXSound(Config.getS("Death.Sound.Sound")).parseSound(), 1, (int) Config.getI("Death.Sound.Pitch"));
 			}
-			
+
+			KitPvPPlayerDeathEvent event = new KitPvPPlayerDeathEvent(arena, e.getEntity().getKiller(), e.getEntity(), deathReason);
+			Bukkit.getPluginManager().callEvent(event);
 		}
 	
 	}
@@ -145,14 +151,16 @@ public class DeathListener implements Listener {
 		if (cause == DamageCause.FALL) {
 			
 			broadcast(p.getWorld(), Config.getS("Death.Messages.Fall").replace("%victim%", p.getName()));
-			
+			deathReason = KitPvPDeathReason.FALL;
 		} else if (cause == DamageCause.FIRE || cause == DamageCause.FIRE_TICK || cause == DamageCause.LAVA) {
 			
 			broadcast(p.getWorld(), Config.getS("Death.Messages.Fire").replace("%victim%", p.getName()));
-			
+			deathReason = KitPvPDeathReason.FIRE;
+
 		} else if (cause == DamageCause.BLOCK_EXPLOSION || cause == DamageCause.ENTITY_EXPLOSION) {
 			
 			broadcast(p.getWorld(), Config.getS("Death.Messages.Explosion").replace("%victim%", p.getName()));
+			deathReason = KitPvPDeathReason.EXPLOSION;
 			
 		} else if (cause == DamageCause.ENTITY_ATTACK || cause == DamageCause.VOID) {
 			
@@ -179,11 +187,12 @@ public class DeathListener implements Listener {
 					}.runTaskLater(Game.getInstance(), 20L);
 					
 				}
-				
+
+				deathReason = KitPvPDeathReason.KILL;
 			} else {
 				
 				broadcast(p.getWorld(), Config.getS("Death.Messages.Void").replace("%victim%", p.getName()));
-				
+				deathReason = KitPvPDeathReason.VOID;
 			}
 					
 		} else if (cause == DamageCause.PROJECTILE) {
@@ -207,7 +216,7 @@ public class DeathListener implements Listener {
 							broadcast(p.getWorld(), Config.getS("Death.Messages.Shot").replace("%victim%", p.getName()).replace("%shooter%", shooter.getName()));
 							arena.getStats().addKill(shooter.getUniqueId());
 							arena.getLevels().addExperience(shooter, resources.getLevels().getInt("Levels.General.Experience.Kill"));
-							
+							deathReason = KitPvPDeathReason.ARROW;
 						}
 						
 					}
@@ -224,7 +233,7 @@ public class DeathListener implements Listener {
 							broadcast(p.getWorld(), Config.getS("Death.Messages.Shot").replace("%victim%", p.getName()).replace("%shooter%", shooter.getName()));
 							arena.getStats().addKill(shooter.getUniqueId());
 							arena.getLevels().addExperience(shooter, resources.getLevels().getInt("Levels.General.Experience.Kill"));
-							
+							deathReason = KitPvPDeathReason.SNOWBALL;
 						}
 						
 					}
@@ -241,7 +250,7 @@ public class DeathListener implements Listener {
 							broadcast(p.getWorld(), Config.getS("Death.Messages.Shot").replace("%victim%", p.getName()).replace("%shooter%", shooter.getName()));
 							arena.getStats().addKill(shooter.getUniqueId());
 							arena.getLevels().addExperience(shooter, resources.getLevels().getInt("Levels.General.Experience.Kill"));
-							
+							deathReason = KitPvPDeathReason.TRIDENT;
 						}
 						
 					}
@@ -253,6 +262,7 @@ public class DeathListener implements Listener {
 		} else {
 			
 			broadcast(p.getWorld(), Config.getS("Death.Messages.Unknown").replace("%victim%", p.getName()));
+			deathReason = KitPvPDeathReason.UNKNOWN;
 			
 		}
 		
