@@ -1,6 +1,6 @@
 package com.planetgallium.kitpvp.api.Enums;
 
-public enum KitPvPDeathReason {
+public enum DeathReason {
     FALL,
     FIRE,
     EXPLOSION,

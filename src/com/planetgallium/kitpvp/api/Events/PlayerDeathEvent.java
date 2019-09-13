@@ -1,13 +1,13 @@
 package com.planetgallium.kitpvp.api.Events;
 
-import com.planetgallium.kitpvp.api.Enums.KitPvPDeathReason;
+import com.planetgallium.kitpvp.api.Enums.DeathReason;
 import com.planetgallium.kitpvp.game.Arena;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-public class KitPvPPlayerDeathEvent extends Event implements Cancellable {
+public class PlayerDeathEvent extends Event implements Cancellable {
 
     private static final HandlerList HANDLERS = new HandlerList();
 
@@ -17,11 +17,11 @@ public class KitPvPPlayerDeathEvent extends Event implements Cancellable {
 
     private final Player victim;
 
-    private KitPvPDeathReason deathReason;
+    private DeathReason deathReason;
 
     private boolean isCancelled;
 
-    public KitPvPPlayerDeathEvent(Arena arena, Player killer, Player victim, KitPvPDeathReason deathReason) {
+    public PlayerDeathEvent(Arena arena, Player killer, Player victim, DeathReason deathReason) {
         this.arena = arena;
         this.killer = killer;
         this.victim = victim;
@@ -39,7 +39,7 @@ public class KitPvPPlayerDeathEvent extends Event implements Cancellable {
     public HandlerList getHandlers() { return HANDLERS; }
 
     @Override
-    public String getEventName() { return "KitPvPPlayerDeathEvent"; }
+    public String getEventName() { return "PlayerDeathEvent"; }
 
     public static HandlerList getHandlerList() { return HANDLERS; }
 
@@ -47,13 +47,13 @@ public class KitPvPPlayerDeathEvent extends Event implements Cancellable {
 
     public Player getKiller() { return killer; }
 
-    public KitPvPDeathReason getDeathReason() { return deathReason; }
+    public DeathReason getDeathReason() { return deathReason; }
 
     public int getVictimDeaths() { return arena.getStats().getDeaths(victim.getUniqueId()); }
 
     public int getVictimKills() { return arena.getStats().getKills(victim.getUniqueId()); }
 
-    public double getVicitimKDRatio() { return arena.getStats().getKDRatio(victim.getUniqueId()); }
+    public double getVictimKDRatio() { return arena.getStats().getKDRatio(victim.getUniqueId()); }
 
     public double getKillerKDRatio() { return arena.getStats().getKDRatio(killer.getUniqueId()); }
 

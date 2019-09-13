@@ -5,8 +5,7 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-public class KitPvPLevelUpEvent extends Event implements Cancellable {
-
+public class LevelChangeEvent extends Event implements Cancellable {
     private static final HandlerList HANDLERS = new HandlerList();
 
     private boolean isCancelled;
@@ -17,7 +16,7 @@ public class KitPvPLevelUpEvent extends Event implements Cancellable {
 
     private final int newLevel;
 
-    public KitPvPLevelUpEvent(Player player, int oldLevel, int newLevel) {
+    public LevelChangeEvent(Player player, int oldLevel, int newLevel) {
         this.isCancelled = false;
         this.player = player;
         this.oldLevel = oldLevel;
@@ -34,7 +33,7 @@ public class KitPvPLevelUpEvent extends Event implements Cancellable {
     public HandlerList getHandlers() { return HANDLERS; }
 
     @Override
-    public String getEventName() { return "KitPvPLevelUpEvent"; }
+    public String getEventName() { return "LevelChangeEvent"; }
 
     public static HandlerList getHandlerList() { return HANDLERS; }
 
@@ -43,5 +42,4 @@ public class KitPvPLevelUpEvent extends Event implements Cancellable {
     public int getOldLevel() { return oldLevel; }
 
     public int getNewLevel() { return newLevel; }
-
 }

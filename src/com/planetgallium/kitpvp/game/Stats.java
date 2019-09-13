@@ -3,8 +3,8 @@ package com.planetgallium.kitpvp.game;
 import java.util.UUID;
 
 import com.planetgallium.kitpvp.Game;
-import com.planetgallium.kitpvp.api.Events.KitPvPExperienceChangeEvent;
-import com.planetgallium.kitpvp.api.Events.KitPvPLevelChangeEvent;
+import com.planetgallium.kitpvp.api.Events.ExperienceChangeEvent;
+import com.planetgallium.kitpvp.api.Events.LevelChangeEvent;
 import com.planetgallium.kitpvp.util.Resources;
 import com.planetgallium.kitpvp.util.Toolkit;
 import org.bukkit.Bukkit;
@@ -130,7 +130,7 @@ public class Stats {
 
 	public void addExperience(UUID uuid, int experience) {
 
-		KitPvPExperienceChangeEvent event = new KitPvPExperienceChangeEvent(Bukkit.getPlayer(uuid), getExperience(uuid),
+		ExperienceChangeEvent event = new ExperienceChangeEvent(Bukkit.getPlayer(uuid), getExperience(uuid),
 				getExperience(uuid) + experience);
 		Bukkit.getPluginManager().callEvent(event);
 		if (!game.getDatabase().isEnabled()) {
@@ -152,7 +152,7 @@ public class Stats {
 	}
 	
 	public void removeExperience(UUID uuid, int experience) {
-		KitPvPExperienceChangeEvent event = new KitPvPExperienceChangeEvent(Bukkit.getPlayer(uuid), getExperience(uuid),
+		ExperienceChangeEvent event = new ExperienceChangeEvent(Bukkit.getPlayer(uuid), getExperience(uuid),
 				getExperience(uuid) - experience);
 		Bukkit.getPluginManager().callEvent(event);
 
@@ -191,7 +191,7 @@ public class Stats {
 	
 	public void setLevel(UUID uuid, int level) {
 
-		KitPvPLevelChangeEvent event = new KitPvPLevelChangeEvent(Bukkit.getPlayer(uuid), getLevel(uuid), level);
+		LevelChangeEvent event = new LevelChangeEvent(Bukkit.getPlayer(uuid), getLevel(uuid), level);
 		Bukkit.getPluginManager().callEvent(event);
 
 		if (!game.getDatabase().isEnabled()) {
@@ -214,7 +214,7 @@ public class Stats {
 	
 	public void setExperience(UUID uuid, int experience) {
 
-		KitPvPExperienceChangeEvent event = new KitPvPExperienceChangeEvent(Bukkit.getPlayer(uuid), getExperience(uuid), experience);
+		ExperienceChangeEvent event = new ExperienceChangeEvent(Bukkit.getPlayer(uuid), getExperience(uuid), experience);
 		Bukkit.getPluginManager().callEvent(event);
 		if (!game.getDatabase().isEnabled()) {
 			

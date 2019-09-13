@@ -44,7 +44,6 @@ public class Kits {
 	private Map<String, String> kits = new HashMap<String, String>();
 	
 	public void createKit(String name, Player p) {
-		
 		if (!isKit(name)) {
 			
 			resources.addKit(name);
@@ -198,7 +197,6 @@ public class Kits {
 					Bukkit.getPluginManager().callEvent(new PlayerSelectKitEvent(p, kit.getName()));
 					
 				} else {
-					
 					p.sendMessage(Config.tr(resources.getMessages().getString("Messages.Other.Needed").replace("%level%", String.valueOf(resources.getKits(name).getInt("Kit.Level")))));
 					
 				}
