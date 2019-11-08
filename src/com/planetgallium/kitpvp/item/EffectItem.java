@@ -32,7 +32,7 @@ public class EffectItem {
 		
 		return new PotionEffect(type == null ? PotionEffectType.SPEED : type,
 								duration == 0 ? 10 : duration,
-								level == 0 ? 1 : level);
+								level == 0 ? 1 : level - 1);
 		
 	}
 	
