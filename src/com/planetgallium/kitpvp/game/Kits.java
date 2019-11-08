@@ -243,17 +243,8 @@ public class Kits {
 			
 			SkullMeta skullMeta = (SkullMeta) meta;
 			
-			if (Toolkit.versionToNumber() < 113) {
-				
-				resource.set(path + ".Skull", Bukkit.getOfflinePlayer(skullMeta.getOwner()).getUniqueId().toString());
-				resource.save();
-				
-			} else if (Toolkit.versionToNumber() >= 113) {
-				
-				resource.set(path + ".Skull", skullMeta.getOwningPlayer().getUniqueId().toString());
-				resource.save();
-				
-			}
+			resource.set(path + ".Skull", skullMeta.getOwner());
+			resource.save();
 			
 		} else if (item.getType() == XMaterial.POTION.parseMaterial() ||
 					item.getType() == XMaterial.SPLASH_POTION.parseMaterial() ||

@@ -12,7 +12,7 @@ Inventory:
       - '&7be detected and saved'
       - '&7when using /kp create'
       Item: SKULL_ITEM
-      Skull: 9d0a15ca-55fd-4fe0-8f73-28512b23d9f1
+      Skull: cervinakuy
     Chestplate:
       Name: '&aDyed Item'
       Lore:
