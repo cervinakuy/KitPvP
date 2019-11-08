@@ -191,7 +191,6 @@ Menu:
       Name: '&a&lNinja Kit'
       Item: NETHER_STAR
       Slot: 20
-      Level: 15
       Lore:
       - '&6Ability: &73 Vanish Stars'
       - ' '
@@ -212,7 +211,6 @@ Menu:
     Thunderbolt:
       Name: '&a&lThunderbolt Kit'
       Item: BLAZE_POWDER
-      Level: 15
       Slot: 21
       Lore:
       - '&6Ability: &73 Lightning Strikes'
@@ -234,7 +232,6 @@ Menu:
     Vampire:
       Name: '&a&lVampire Kit'
       Item: FERMENTED_SPIDER_EYE
-      Level: 15
       Slot: 22
       Lore:
       - '&6Ability: &73 Blood Suckers'
