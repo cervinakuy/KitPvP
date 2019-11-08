@@ -91,7 +91,7 @@ public class Stats {
 			
 			if (resources.getStats().contains("Stats.Players." + uuid + ".Experience")) {
 				
-				resources.getStats().set("Stats.Players." + uuid + ".Experience", getExperience(uuid) + 1);
+				resources.getStats().set("Stats.Players." + uuid + ".Experience", getExperience(uuid) + experience);
 				resources.save();
 				
 			}
@@ -99,7 +99,7 @@ public class Stats {
 		} else {
 			
 			PlayerData playerData = game.getDatabase().getCache().get(uuid);
-			playerData.setExperience(experience);
+			playerData.setExperience(getExperience(uuid) + experience);
 			
 		}
 		
