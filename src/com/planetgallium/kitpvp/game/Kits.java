@@ -401,7 +401,7 @@ public class Kits {
 			
 		}
 		
-		return "None";
+		return resources.getMessages().getString("Messages.Other.NoKit");
 		
 	}
 	

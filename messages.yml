@@ -24,6 +24,7 @@ Messages:
     Level: '%prefix% &7Congratulations! You are now &bLevel %level%&7.'
     Sign: '%prefix% &7You have successfully created a sign.'
     Players: '%prefix% &cThere are no other players with a kit online.'
+    NoKit: 'None'
   Error:
     Player: '%prefix% &cYou must right-click on a player to activate this ability.'
     Arena: '%prefix% &cYou are not currently an in arena.'
