@@ -126,12 +126,8 @@ public class DeathListener implements Listener {
 			
 			arena.removePlayer(p);
 			
-			if (Config.getB("Arena.ClearInventoryOnRespawn")) {
-				p.getInventory().clear();
-				p.getInventory().setArmorContents(null);
-			}
+			Bukkit.getScheduler().scheduleSyncDelayedTask(Game.getInstance(), () -> arena.addPlayer(p), 1);
 			
-			arena.addPlayer(p);
 			Toolkit.runCommands("Respawn", p);
 			
 		}

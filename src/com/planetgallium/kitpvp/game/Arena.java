@@ -56,8 +56,8 @@ public class Arena {
 		
 		if (Config.getB("Arena.ClearPotionEffectsOnJoin")) {
 			for (PotionEffect effect : p.getActivePotionEffects()) {
-				p.removePotionEffect(effect.getType());	
-			}	
+				p.removePotionEffect(effect.getType());
+			}
 		}
 		
 		if (p.getFireTicks() > 0) {
