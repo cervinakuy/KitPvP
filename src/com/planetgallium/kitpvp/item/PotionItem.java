@@ -13,7 +13,6 @@ import org.bukkit.potion.PotionType;
 
 import com.planetgallium.kitpvp.util.Resource;
 import com.planetgallium.kitpvp.util.Toolkit;
-import com.planetgallium.kitpvp.util.XPotion;
 
 @SuppressWarnings("deprecation")
 public class PotionItem {
