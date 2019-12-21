@@ -8,6 +8,7 @@ import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
 
 import com.planetgallium.kitpvp.util.Resource;
@@ -40,7 +41,7 @@ public class PotionItem {
 				} else {
 					int level = resource.getInt(path + "." + name + ".Level");
 					int duration = resource.getInt(path + "." + name + ".Duration") * 20;
-					effects.add(new PotionEffect(XPotion.matchPotionType(name), duration, level - 1));
+					effects.add(new PotionEffect(PotionEffectType.getByName(name), duration, level - 1));
 				}
 				
 			}
