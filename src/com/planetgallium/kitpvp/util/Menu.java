@@ -11,6 +11,8 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import com.planetgallium.kitpvp.item.KitItem;
+
 public class Menu {
 
 	private String title;
@@ -64,6 +66,12 @@ public class Menu {
 		
 		ItemStack item = new ItemStack(material);
 		menu.setItem(slot, item);
+		
+	}
+	
+	public void addItem(KitItem item, int slot) {
+		
+		menu.setItem(slot, item.toItemStack());
 		
 	}
 	

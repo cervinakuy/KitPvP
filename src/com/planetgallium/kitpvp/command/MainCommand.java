@@ -16,10 +16,12 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import com.planetgallium.kitpvp.Game;
 import com.planetgallium.kitpvp.game.Arena;
+import com.planetgallium.kitpvp.item.KitItem;
 import com.planetgallium.kitpvp.menu.KitMenu;
 import com.planetgallium.kitpvp.menu.PreviewHolder;
 import com.planetgallium.kitpvp.util.Config;
 import com.planetgallium.kitpvp.util.Menu;
+import com.planetgallium.kitpvp.util.Resource;
 import com.planetgallium.kitpvp.util.Resources;
 import com.planetgallium.kitpvp.util.Toolkit;
 import com.planetgallium.kitpvp.util.XMaterial;
@@ -510,26 +512,30 @@ public class MainCommand implements CommandExecutor {
 							if (arena.getKits().isKit(args[1])) {
 								
 								Menu preview = new Menu("Previewing: " + args[1], new PreviewHolder(), 54);
-								if (resources.getKits(args[1]).contains("Inventory.Armor.Helmet")) {
-									preview.addItem(resources.getKits(args[1]).getString("Inventory.Armor.Helmet.Name"), XMaterial.matchXMaterial(resources.getKits(args[1]).getString("Inventory.Armor.Helmet.Item")).parseMaterial(), resources.getKits(args[1]).getStringList("Inventory.Armor.Helmet.Lore"), 0);
+								Resource kitResource = resources.getKits(args[1]);
+								
+								// Armor
+								if (kitResource.contains("Inventory.Armor.Helmet")) {
+									preview.addItem(new KitItem(kitResource, args[1], "Inventory.Armor.Helmet"), 0);
 								}
 								
-								if (resources.getKits(args[1]).contains("Inventory.Armor.Chestplate")) {
-									preview.addItem(resources.getKits(args[1]).getString("Inventory.Armor.Chestplate.Name"), XMaterial.matchXMaterial(resources.getKits(args[1]).getString("Inventory.Armor.Chestplate.Item")).parseMaterial(), resources.getKits(args[1]).getStringList("Inventory.Armor.Chestplate.Lore"), 1);
+								if (kitResource.contains("Inventory.Armor.Chestplate")) {
+									preview.addItem(new KitItem(kitResource, args[1], "Inventory.Armor.Chestplate"), 1);
 								}
 								
-								if (resources.getKits(args[1]).contains("Inventory.Armor.Leggings")) {
-									preview.addItem(resources.getKits(args[1]).getString("Inventory.Armor.Leggings.Name"), XMaterial.matchXMaterial(resources.getKits(args[1]).getString("Inventory.Armor.Leggings.Item")).parseMaterial(), resources.getKits(args[1]).getStringList("Inventory.Armor.Leggings.Lore"), 2);
+								if (kitResource.contains("Inventory.Armor.Leggings")) {
+									preview.addItem(new KitItem(kitResource, args[1], "Inventory.Armor.Leggings"), 2);
 								}
 								
-								if (resources.getKits(args[1]).contains("Inventory.Armor.Boots")) {
-									preview.addItem(resources.getKits(args[1]).getString("Inventory.Armor.Boots.Name"), XMaterial.matchXMaterial(resources.getKits(args[1]).getString("Inventory.Armor.Boots.Item")).parseMaterial(), resources.getKits(args[1]).getStringList("Inventory.Armor.Boots.Lore"), 3);										
+								if (kitResource.contains("Inventory.Armor.Boots")) {
+									preview.addItem(new KitItem(kitResource, args[1], "Inventory.Armor.Boots"), 3);
 								}
+								
 
 								// Hotbar
 								for (int i = 0; i < 9; i++) {
-									if (resources.getKits(args[1]).contains("Inventory.Items." + i + ".Name")) {
-										preview.addItem(resources.getKits(args[1]).getString("Inventory.Items." + i + ".Name"), XMaterial.matchXMaterial(resources.getKits(args[1]).getString("Inventory.Items." + i + ".Item")).parseMaterial(), resources.getKits(args[1]).getStringList("Inventory.Items." + i + ".Lore"), resources.getKits(args[1]).getInt("Inventory.Items." + i + ".Amount"), (45 + i));
+									if (kitResource.contains("Inventory.Items." + i + ".Name")) {
+										preview.addItem(new KitItem(kitResource, args[1], "Inventory.Items." + i), (45 + i));
 									}
 									
 								}
@@ -537,7 +543,7 @@ public class MainCommand implements CommandExecutor {
 								// Items
 								for (int i = 9; i < 36; i++) {
 									if (resources.getKits(args[1]).contains("Inventory.Items." + i + ".Name")) {
-										preview.addItem(resources.getKits(args[1]).getString("Inventory.Items." + i + ".Name"), XMaterial.matchXMaterial(resources.getKits(args[1]).getString("Inventory.Items." + i + ".Item")).parseMaterial(), resources.getKits(args[1]).getStringList("Inventory.Items." + i + ".Lore"), resources.getKits(args[1]).getInt("Inventory.Items." + i + ".Amount"), i + 9);
+										preview.addItem(new KitItem(kitResource, args[1], "Inventory.Items." + i), (i + 9));
 									}
 								}
 								
@@ -545,7 +551,7 @@ public class MainCommand implements CommandExecutor {
 								if (resources.getKits(args[1]).contains("Inventory.Items.Fill")) {
 									for (int i = 18; i < 54; i++) {
 										if (preview.getSlot(i) == null) {
-											preview.addItem(resources.getKits(args[1]).getString("Inventory.Items.Fill.Name"), XMaterial.matchXMaterial(resources.getKits(args[1]).getString("Inventory.Items.Fill.Item")).parseMaterial(), resources.getKits(args[1]).getStringList("Inventory.Items.Fill.List"), resources.getKits(args[1]).getInt("Inventory.Items.Fill.Amount"), i);
+											preview.addItem(new KitItem(kitResource, args[1], "Inventory.Items.Fill"), i);
 										}
 									}
 								}
