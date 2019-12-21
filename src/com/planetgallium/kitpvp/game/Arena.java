@@ -68,8 +68,11 @@ public class Arena {
 			p.setGameMode(GameMode.SURVIVAL);
 		}
 		
+		if (Config.getB("Arena.FancyDeath")) {
+			p.setHealth(20.0);
+		}
+		
 		p.setExp(0f);
-		p.setHealth(20.0);
 		p.setFoodLevel(20);
 		
 		giveItems(p);
@@ -95,8 +98,11 @@ public class Arena {
 		getKits().clearKit(p.getName());
 		getKillStreaks().resetStreak(p);
 		
+		if (Config.getB("Arena.FancyDeath")) {
+			p.setHealth(20.0);
+		}
+		
 		p.setExp(0f);
-		p.setHealth(20.0);
 		p.setFoodLevel(20);
 		
 		if (resources.getScoreboard().getBoolean("Scoreboard.General.Enabled")) {
