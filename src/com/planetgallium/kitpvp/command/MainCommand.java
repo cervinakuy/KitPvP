@@ -16,15 +16,11 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import com.planetgallium.kitpvp.Game;
 import com.planetgallium.kitpvp.game.Arena;
-import com.planetgallium.kitpvp.item.KitItem;
 import com.planetgallium.kitpvp.menu.KitMenu;
-import com.planetgallium.kitpvp.menu.PreviewHolder;
+import com.planetgallium.kitpvp.menu.PreviewMenu;
 import com.planetgallium.kitpvp.util.Config;
-import com.planetgallium.kitpvp.util.Menu;
-import com.planetgallium.kitpvp.util.Resource;
 import com.planetgallium.kitpvp.util.Resources;
 import com.planetgallium.kitpvp.util.Toolkit;
-import com.planetgallium.kitpvp.util.XMaterial;
 import com.planetgallium.kitpvp.util.XSound;
 
 import me.clip.placeholderapi.PlaceholderAPI;
@@ -510,55 +506,9 @@ public class MainCommand implements CommandExecutor {
 						if (Toolkit.inArena(p)) {
 							
 							if (arena.getKits().isKit(args[1])) {
-								
-								Menu preview = new Menu("Previewing: " + args[1], new PreviewHolder(), 54);
-								Resource kitResource = resources.getKits(args[1]);
-								
-								// Armor
-								if (kitResource.contains("Inventory.Armor.Helmet")) {
-									preview.addItem(new KitItem(kitResource, args[1], "Inventory.Armor.Helmet"), 0);
-								}
-								
-								if (kitResource.contains("Inventory.Armor.Chestplate")) {
-									preview.addItem(new KitItem(kitResource, args[1], "Inventory.Armor.Chestplate"), 1);
-								}
-								
-								if (kitResource.contains("Inventory.Armor.Leggings")) {
-									preview.addItem(new KitItem(kitResource, args[1], "Inventory.Armor.Leggings"), 2);
-								}
-								
-								if (kitResource.contains("Inventory.Armor.Boots")) {
-									preview.addItem(new KitItem(kitResource, args[1], "Inventory.Armor.Boots"), 3);
-								}
-								
 
-								// Hotbar
-								for (int i = 0; i < 9; i++) {
-									if (kitResource.contains("Inventory.Items." + i + ".Name")) {
-										preview.addItem(new KitItem(kitResource, args[1], "Inventory.Items." + i), (45 + i));
-									}
-									
-								}
-								
-								// Items
-								for (int i = 9; i < 36; i++) {
-									if (resources.getKits(args[1]).contains("Inventory.Items." + i + ".Name")) {
-										preview.addItem(new KitItem(kitResource, args[1], "Inventory.Items." + i), (i + 9));
-									}
-								}
-								
-								// Fill
-								if (resources.getKits(args[1]).contains("Inventory.Items.Fill")) {
-									for (int i = 18; i < 54; i++) {
-										if (preview.getSlot(i) == null) {
-											preview.addItem(new KitItem(kitResource, args[1], "Inventory.Items.Fill"), i);
-										}
-									}
-								}
-								
-								preview.addItem("&cBack to Kits", XMaterial.ARROW.parseMaterial(), new ArrayList<String>(), 8);
-								
-								preview.openMenu(p);
+								PreviewMenu preview = new PreviewMenu(args[1], resources.getKits(args[1]));
+								preview.open(p);
 								
 							} else {
 								
