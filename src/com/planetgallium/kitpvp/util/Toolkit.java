@@ -368,6 +368,10 @@ public class Toolkit {
  			
  			return 114;
  			
+ 		} else if (Bukkit.getVersion().contains("1.15")) {
+ 			
+ 			return 115;
+ 			
  		}
  		
  		return -1;
