@@ -8,7 +8,6 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 
 import com.planetgallium.kitpvp.util.Resource;
-import com.planetgallium.kitpvp.util.Toolkit;
 import com.planetgallium.kitpvp.util.XEnchantment;
 
 public class EnchantedItem {
@@ -21,20 +20,9 @@ public class EnchantedItem {
 		
 		ConfigurationSection section = resource.getConfigurationSection(path);
 		
-		if (Toolkit.versionToNumber() < 112) {
+		for (String identifier : section.getKeys(false)) {
 			
-			for (String identifier : section.getKeys(false)) {
-				enchantments.put(XEnchantment.matchEnchantment(identifier), resource.getInt(path + "." + identifier + ".Level"));
-				
-			}
-			
-		} else if (Toolkit.versionToNumber() >= 113) {
-			
-			for (String identifier : section.getKeys(false)) {
-				
-				enchantments.put(XEnchantment.matchEnchantment(identifier), resource.getInt(path + "." + identifier + ".Level"));
-				
-			}
+			enchantments.put(XEnchantment.matchEnchantment(identifier), resource.getInt(path + "." + identifier + ".Level"));
 			
 		}
 		
