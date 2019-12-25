@@ -22,7 +22,7 @@ public class EnchantedItem {
 		
 		for (String identifier : section.getKeys(false)) {
 			
-			enchantments.put(XEnchantment.matchEnchantment(identifier), resource.getInt(path + "." + identifier + ".Level"));
+			enchantments.put(XEnchantment.matchXEnchantment(identifier).get().parseEnchantment(), resource.getInt(path + "." + identifier + ".Level"));
 			
 		}
 		
