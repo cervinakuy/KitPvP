@@ -1225,7 +1225,7 @@ public enum XSound {
     * @since 1.0.0
     */
    @Nullable
-   @SuppressWarnings({"Guava", "OptionalAssignedToNull"})
+   @SuppressWarnings({})
    public Sound parseSound() {
        com.google.common.base.Optional<Sound> cachedSound = CACHE.getIfPresent(this);
        if (cachedSound != null) return cachedSound.orNull();
