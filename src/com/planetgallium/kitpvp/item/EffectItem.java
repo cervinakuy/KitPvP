@@ -30,7 +30,7 @@ public class EffectItem {
 	
 	public PotionEffect toPotionEffect() {
 		
-		return new PotionEffect(type == null ? PotionEffectType.SPEED : type,
+		return new PotionEffect(type == null ? PotionEffectType.CONFUSION : type,
 								duration == 0 ? 10 : duration,
 								level == 0 ? 1 : level - 1);
 		
