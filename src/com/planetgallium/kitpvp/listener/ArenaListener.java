@@ -193,7 +193,11 @@ public class ArenaListener implements Listener {
 				
 				} else if (e.getCause() == DamageCause.FALL) {
 						
-					e.setCancelled(Config.getB("Arena.PreventFallDamage"));
+					if (Config.getB("Arena.PreventFallDamage")) {
+						
+						e.setCancelled(true); // only canceling if preventing fall damage is enabled, this allows for WorldGuard to step in
+						
+					}
 					
 				} else if (damagedPlayer.getGameMode() == GameMode.SPECTATOR) {
 					

@@ -22,8 +22,8 @@ public class HitListener implements Listener {
 				
 				if (Toolkit.inArena(damagedPlayer)) {
 						
-					damager.playSound(damager.getLocation(), XSound.matchXSound(Config.getS("Combat.HitSound.Sound")).parseSound(), 1, (float) Config.getI("HitSound.Pitch"));
-					damagedPlayer.playSound(damagedPlayer.getLocation(), XSound.matchXSound(Config.getS("HitSound.Sound")).parseSound(), 1, (float) Config.getI("HitSound.Pitch"));
+					damager.playSound(damager.getLocation(), XSound.matchXSound(Config.getS("Combat.HitSound.Sound")).get().parseSound(), 1, (float) Config.getI("HitSound.Pitch"));
+					damagedPlayer.playSound(damagedPlayer.getLocation(), XSound.matchXSound(Config.getS("HitSound.Sound")).get().parseSound(), 1, (float) Config.getI("HitSound.Pitch"));
 					
 				}
 	        

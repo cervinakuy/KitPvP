@@ -72,7 +72,7 @@ public class SoupListener implements Listener {
 			        if (p.getHealth() < 20.0) {
 			        	
 			            p.setHealth(p.getHealth() + (double) health >= 20.0 ? 20.0 : p.getHealth() + (double) health);
-			            p.playSound(p.getLocation(), XSound.matchXSound(Config.getS("Soups.Sound")).parseSound(), 1, (float) Config.getI("Soups.Pitch"));
+			            p.playSound(p.getLocation(), XSound.matchXSound(Config.getS("Soups.Sound")).get().parseSound(), 1, (float) Config.getI("Soups.Pitch"));
 			            
 						if (Toolkit.getMainHandItem(p).getType() == XMaterial.MUSHROOM_STEW.parseMaterial()) {
 							

@@ -3,6 +3,7 @@ package com.planetgallium.kitpvp.listener;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.TNTPrimed;
@@ -76,7 +77,7 @@ public class TrailListener implements Listener {
 													
 								world.spawn(p.getLocation(), TNTPrimed.class);
 								
-								p.playSound(p.getLocation(), XSound.matchXSound(resources.getAbilities().getString("Abilities.Bomber.Sound.Sound")).parseSound(), 1, (int) resources.getAbilities().getInt("Abilities.Bomber.Sound.Pitch"));
+								p.playSound(p.getLocation(), XSound.matchXSound(resources.getAbilities().getString("Abilities.Bomber.Sound.Sound")).get().parseSound(), 1, (int) resources.getAbilities().getInt("Abilities.Bomber.Sound.Pitch"));
 								
 								t--;
 									

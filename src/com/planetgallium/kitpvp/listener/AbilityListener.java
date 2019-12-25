@@ -37,7 +37,7 @@ public class AbilityListener implements Listener {
 			}
 			
 			if (resources.getKits(kit).getBoolean("Ability.Sound.Enabled")) {
-				p.playSound(p.getLocation(), XSound.matchXSound(ability.getSoundName()).parseSound(), 3, ability.getSoundPitch());
+				p.playSound(p.getLocation(), XSound.matchXSound(ability.getSoundName()).get().parseSound(), 3, ability.getSoundPitch());
 			}
 			
 			if (resources.getKits(kit).contains("Ability.Potions")) {

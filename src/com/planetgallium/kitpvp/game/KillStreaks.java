@@ -89,7 +89,7 @@ public class KillStreaks implements Listener {
 				
 				for (Player local : world.getPlayers()) {
 					
-					local.playSound(local.getLocation(), XSound.matchXSound(killConfig.getString(streakType + "." + streakNumber + ".Sound.Sound")).parseSound(), 1, killConfig.getInt(streakType + "." + streakNumber + ".Sound.Pitch"));
+					local.playSound(local.getLocation(), XSound.matchXSound(killConfig.getString(streakType + "." + streakNumber + ".Sound.Sound")).get().parseSound(), 1, killConfig.getInt(streakType + "." + streakNumber + ".Sound.Pitch"));
 					
 				}
 				

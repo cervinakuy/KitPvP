@@ -134,7 +134,7 @@ public class ItemListener implements Listener {
 						launchermeta.setDisplayName(Config.tr(resources.getAbilities().getString("Abilities.Kangaroo.Item.Name")));
 						launcher.setItemMeta(launchermeta);
 						
-						p.playSound(p.getLocation(), XSound.matchXSound(resources.getAbilities().getString("Abilities.Kangaroo.Sound.Sound")).parseSound(), 1, (int) resources.getAbilities().getInt("Abilities.Kangaroo.Sound.Pitch"));
+						p.playSound(p.getLocation(), XSound.matchXSound(resources.getAbilities().getString("Abilities.Kangaroo.Sound.Sound")).get().parseSound(), 1, (int) resources.getAbilities().getInt("Abilities.Kangaroo.Sound.Pitch"));
 						
 						if (resources.getAbilities().getBoolean("Abilities.Kangaroo.Message.Enabled")) {
 							p.sendMessage(Config.tr(resources.getAbilities().getString("Abilities.Kangaroo.Message.Message").replace("%prefix%", resources.getMessages().getString("Messages.General.Prefix"))));
@@ -202,7 +202,7 @@ public class ItemListener implements Listener {
 								p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 60, 5));
 								p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 80, 5));
 								
-								p.playSound(p.getLocation(), XSound.matchXSound(resources.getAbilities().getString("Abilities.Warper.Sound.Sound")).parseSound(), 1, (int) resources.getAbilities().getInt("Abilities.Warper.Sound.Pitch"));
+								p.playSound(p.getLocation(), XSound.matchXSound(resources.getAbilities().getString("Abilities.Warper.Sound.Sound")).get().parseSound(), 1, (int) resources.getAbilities().getInt("Abilities.Warper.Sound.Pitch"));
 								
 								if (resources.getAbilities().getBoolean("Abilities.Warper.Message.Enabled")) {
 									p.sendMessage(Config.tr(resources.getAbilities().getString("Abilities.Warper.Message.Message").replace("%prefix%", resources.getMessages().getString("Messages.General.Prefix"))));
@@ -258,7 +258,7 @@ public class ItemListener implements Listener {
 						p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 100, 2));
 						p.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 100, 0));
 						
-						p.playSound(p.getLocation(), XSound.matchXSound(resources.getAbilities().getString("Abilities.Ninja.Sound.Sound")).parseSound(), 1, resources.getAbilities().getInt("Abilities.Ninja.Sound.Pitch"));
+						p.playSound(p.getLocation(), XSound.matchXSound(resources.getAbilities().getString("Abilities.Ninja.Sound.Sound")).get().parseSound(), 1, resources.getAbilities().getInt("Abilities.Ninja.Sound.Pitch"));
 						
 						if (resources.getAbilities().getBoolean("Abilities.Ninja.Messaage.Enabled")) {
 							p.sendMessage(Config.tr(resources.getAbilities().getString("Abilities.Ninja.Message.Message").replace("%prefix%", resources.getMessages().getString("Messages.General.Prefix"))));
@@ -331,7 +331,7 @@ public class ItemListener implements Listener {
 						
 							e.getProjectile().setFireTicks(1000);
 									
-							p.playSound(p.getLocation(), XSound.matchXSound(resources.getAbilities().getString("Abilities.Archer.Sound.Sound")).parseSound(), 1, (int) resources.getAbilities().getInt("Abilities.Archer.Sound.Pitch"));
+							p.playSound(p.getLocation(), XSound.matchXSound(resources.getAbilities().getString("Abilities.Archer.Sound.Sound")).get().parseSound(), 1, (int) resources.getAbilities().getInt("Abilities.Archer.Sound.Pitch"));
 										
 							ItemStack magma = new ItemStack(Material.MAGMA_CREAM);
 							ItemMeta magmameta = ammo.getItemMeta();
@@ -431,7 +431,7 @@ public class ItemListener implements Listener {
 										p.sendMessage(Config.tr(resources.getAbilities().getString("Abilities.Witch.Message.Message").replace("%prefix%", resources.getMessages().getString("Messages.General.Prefix"))));
 									}
 									
-									p.playSound(p.getLocation(), XSound.matchXSound(resources.getAbilities().getString("Abilities.Witch.Sound.Sound")).parseSound(), 1, resources.getAbilities().getInt("Abliities.Witch.Sound.Pitch"));
+									p.playSound(p.getLocation(), XSound.matchXSound(resources.getAbilities().getString("Abilities.Witch.Sound.Sound")).get().parseSound(), 1, resources.getAbilities().getInt("Abliities.Witch.Sound.Pitch"));
 									
 								}
 								

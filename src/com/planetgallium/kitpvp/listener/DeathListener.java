@@ -67,7 +67,7 @@ public class DeathListener implements Listener {
 			
 			// Death Sound
 			if (Config.getB("Death.Sound.Enabled")) {
-				broadcast(victim.getWorld(), XSound.matchXSound(Config.getS("Death.Sound.Sound")).parseSound(), 1, (int) Config.getI("Death.Sound.Pitch"));
+				broadcast(victim.getWorld(), XSound.matchXSound(Config.getS("Death.Sound.Sound")).get().parseSound(), 1, (int) Config.getI("Death.Sound.Pitch"));
 			}
 			
 		}
@@ -279,7 +279,7 @@ public class DeathListener implements Listener {
 			
 			for (Player all : world.getPlayers()) {
 				
-				all.playSound(all.getLocation(), XSound.matchXSound(sound.toString()).parseSound(), volume, pitch);
+				all.playSound(all.getLocation(), XSound.matchXSound(sound.toString()).get().parseSound(), volume, pitch);
 				
 			}
 			
