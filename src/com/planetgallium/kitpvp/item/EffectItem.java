@@ -15,7 +15,7 @@ public class EffectItem {
 	public EffectItem(Resource resource, String type) {
 		
 		if (resource.contains("Potions." + type)) {
-			this.type = XPotion.matchPotionType(type);
+			this.type = XPotion.matchXPotion(type).get().parsePotionEffectType();
 		}
 		
 		if (resource.contains("Potions." + type + ".Duration")) {
