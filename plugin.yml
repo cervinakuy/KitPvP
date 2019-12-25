@@ -1,11 +1,11 @@
 name: KitPvP
 author: Cervinakuy
 main: com.planetgallium.kitpvp.Game
-version: 2.0.8
+version: 2.0.9
 description: The plugin you need to manage your KitPvP server.
 website: https://www.spigotmc.org/resources/27107/
 softdepend: [PlaceholderAPI]
-api-version: 1.14
+api-version: 1.15
 
 commands:
    kitpvp:
