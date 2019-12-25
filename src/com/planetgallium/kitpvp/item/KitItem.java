@@ -36,7 +36,7 @@ public class KitItem {
 		}
 		
 		if (resource.contains(path + ".Item")) {
-			this.material = XMaterial.matchXMaterial(resource.getString(path + ".Item")).parseMaterial();
+			this.material = XMaterial.matchXMaterial(resource.getString(path + ".Item")).get().parseMaterial();
 		}
 		
 		if (resource.contains(path + ".Amount")) {

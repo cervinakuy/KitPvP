@@ -56,7 +56,7 @@ public class ItemListener implements Listener {
 			
 			if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
 				
-				if (Toolkit.getMainHandItem(p).hasItemMeta() && Toolkit.getMainHandItem(p).getItemMeta().hasDisplayName() && Toolkit.getMainHandItem(p).getType() == XMaterial.matchXMaterial(Game.getInstance().getConfig().getString("Items.Kits.Item").toUpperCase()).parseMaterial()) {
+				if (Toolkit.getMainHandItem(p).hasItemMeta() && Toolkit.getMainHandItem(p).getItemMeta().hasDisplayName() && Toolkit.getMainHandItem(p).getType() == XMaterial.matchXMaterial(Game.getInstance().getConfig().getString("Items.Kits.Item").toUpperCase()).get().parseMaterial()) {
 					
 					if (Toolkit.getMainHandItem(p).getItemMeta().getDisplayName().equals(Config.getS("Items.Kits.Name"))) {
 						
@@ -71,7 +71,7 @@ public class ItemListener implements Listener {
 						 
 					}
 					
-				} else if (Toolkit.getMainHandItem(p).getType() == XMaterial.matchXMaterial(Config.getS("Items.Leave.Item")).parseMaterial()) {
+				} else if (Toolkit.getMainHandItem(p).getType() == XMaterial.matchXMaterial(Config.getS("Items.Leave.Item")).get().parseMaterial()) {
 					
 					if (Toolkit.getMainHandItem(p).getItemMeta().getDisplayName().equals(Config.getS(("Items.Leave.Name")))) {
 							

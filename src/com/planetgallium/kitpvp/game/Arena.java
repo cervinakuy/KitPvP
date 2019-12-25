@@ -127,7 +127,7 @@ public class Arena {
 		
 		if (Config.getB("Items.Kits.Enabled")) {
 			
-			ItemStack kits = XMaterial.matchXMaterial(Config.getS("Items.Kits.Item")).parseItem();
+			ItemStack kits = XMaterial.matchXMaterial(Config.getS("Items.Kits.Item")).get().parseItem();
 			ItemMeta kitsmeta = kits.getItemMeta();
 			
 			kitsmeta.setDisplayName(Config.getS("Items.Kits.Name"));
@@ -139,7 +139,7 @@ public class Arena {
 		
 		if (Config.getB("Items.Leave.Enabled")) {
 			
-			ItemStack leave = XMaterial.matchXMaterial(Config.getS("Items.Leave.Item")).parseItem();
+			ItemStack leave = XMaterial.matchXMaterial(Config.getS("Items.Leave.Item")).get().parseItem();
 			ItemMeta leavemeta = leave.getItemMeta();
 			
 			leavemeta.setDisplayName(Config.getS("Items.Leave.Name"));

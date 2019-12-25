@@ -41,7 +41,7 @@ public class EventListener implements Listener {
 						
 						if (resources.getKits(arena.getKits().getKit(p.getName())).getString("Ability.Activator.Item") != null) {
 						
-							if (currentItem.getType() == XMaterial.matchXMaterial(resources.getKits(arena.getKits().getKit(p.getName())).getString("Ability.Activator.Item")).parseMaterial()) {
+							if (currentItem.getType() == XMaterial.matchXMaterial(resources.getKits(arena.getKits().getKit(p.getName())).getString("Ability.Activator.Item")).get().parseMaterial()) {
 								
 								String kit = arena.getKits().getKit(p.getName());
 								

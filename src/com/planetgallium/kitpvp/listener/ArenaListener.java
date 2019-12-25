@@ -65,7 +65,7 @@ public class ArenaListener implements Listener {
 				
 				if (abilityPath != null) {
 					
-					if (e.getBlock().getType() == XMaterial.matchXMaterial(abilityPath).parseMaterial()) {
+					if (e.getBlock().getType() == XMaterial.matchXMaterial(abilityPath).get().parseMaterial()) {
 						
 						e.setCancelled(true);
 						
@@ -73,7 +73,7 @@ public class ArenaListener implements Listener {
 					
 				}
 				
-			} else if ((Toolkit.getMainHandItem(p).hasItemMeta() && Toolkit.getMainHandItem(p).getItemMeta().getDisplayName().equals(Config.getS("Items.Kits.Name"))) || Toolkit.getMainHandItem(p).getType() == XMaterial.matchXMaterial(Config.getS("Items.Leave.Item")).parseMaterial()) {
+			} else if ((Toolkit.getMainHandItem(p).hasItemMeta() && Toolkit.getMainHandItem(p).getItemMeta().getDisplayName().equals(Config.getS("Items.Kits.Name"))) || Toolkit.getMainHandItem(p).getType() == XMaterial.matchXMaterial(Config.getS("Items.Leave.Item")).get().parseMaterial()) {
 				
 				e.setCancelled(true);
 				
