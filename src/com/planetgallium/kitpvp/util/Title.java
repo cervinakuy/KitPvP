@@ -21,7 +21,7 @@ public class Title {
 			title1.setTimingsToTicks();
 			title1.send(p);
 			
-		} else if (version.contains("1.10") || version.contains("1.11") || version.contains("1.12") || version.contains("1.13") || version.contains("1.14")) {
+		} else if (version.contains("1.10") || version.contains("1.11") || version.contains("1.12") || version.contains("1.13") || version.contains("1.14") || version.contains("1.15")) {
 			
 			Title2 title2 = new Title2(title, subtitle, fadeIn, stay, fadeOut);
 			title2.setTimingsToTicks();
