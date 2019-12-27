@@ -428,15 +428,6 @@ public class MainCommand implements CommandExecutor {
 						p.sendMessage(Config.tr(resources.getMessages().getString("Messages.General.Permission")));
 						
 					}
-
-				} else if (args[0].equalsIgnoreCase("spectate")) {
-					
-					if (p.hasPermission("kp.command.spectate")) {
-						
-						
-						
-						
-					}
 					
 				}
 				
