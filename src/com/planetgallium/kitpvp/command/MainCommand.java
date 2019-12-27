@@ -429,6 +429,15 @@ public class MainCommand implements CommandExecutor {
 						
 					}
 
+				} else if (args[0].equalsIgnoreCase("spectate")) {
+					
+					if (p.hasPermission("kp.command.spectate")) {
+						
+						
+						
+						
+					}
+					
 				}
 				
 			} else if (args.length == 2) {
