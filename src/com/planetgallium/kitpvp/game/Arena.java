@@ -30,6 +30,7 @@ public class Arena {
 	private Kits kits;
 	private KillStreaks killstreaks;
 	private Levels levels;
+	private Cooldowns cooldowns;
 	
 	public Arena(Game plugin, Resources resources) {
 		
@@ -43,6 +44,7 @@ public class Arena {
 		this.kits = new Kits(plugin, resources);
 		this.killstreaks = new KillStreaks(resources);
 		this.levels = new Levels(this, resources);
+		this.cooldowns = new Cooldowns(this, resources);
 		
 	}
 	
@@ -241,6 +243,8 @@ public class Arena {
 	public KillStreaks getKillStreaks() { return killstreaks; }
 	
 	public Levels getLevels() { return levels; }
+	
+	public Cooldowns getCooldowns() { return cooldowns; }
 	
 	public boolean isPlayer(String username) { return players.contains(username); }
 	

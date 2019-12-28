@@ -6,7 +6,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
@@ -131,71 +130,85 @@ public class Kits {
 				
 				if (Game.getInstance().getArena().getLevels().getLevel(p.getUniqueId()) >= resources.getKits(name).getInt("Kit.Level")) {
 					
-					Kit kit = new Kit();
-					kit.setName(name);
+					if (!plugin.getArena().getCooldowns().isOnCooldown(p.getUniqueId(), name)) {
 					
-					Resource kitResource = resources.getKits(kit.getName());
-					
-					if (kitResource.contains("Inventory.Armor")) {
+						Kit kit = new Kit();
+						kit.setName(name);
 						
-						if (kitResource.contains("Inventory.Armor.Helmet")) {
+						Resource kitResource = resources.getKits(kit.getName());
+						
+						if (kitResource.contains("Inventory.Armor")) {
 							
-							kit.setHelmet(new KitItem(kitResource, kit.getName(), "Inventory.Armor.Helmet"));
+							if (kitResource.contains("Inventory.Armor.Helmet")) {
+								
+								kit.setHelmet(new KitItem(kitResource, kit.getName(), "Inventory.Armor.Helmet"));
+								
+							}
+							
+							if (kitResource.contains("Inventory.Armor.Chestplate")) {
+								
+								kit.setChestplate(new KitItem(kitResource, kit.getName(), "Inventory.Armor.Chestplate"));
+								
+							}
+							
+							if (kitResource.contains("Inventory.Armor.Leggings")) {
+								
+								kit.setLeggings(new KitItem(kitResource, kit.getName(), "Inventory.Armor.Leggings"));
+								
+							}
+							
+							if (kitResource.contains("Inventory.Armor.Boots")) {
+								
+								kit.setBoots(new KitItem(kitResource, kit.getName(), "Inventory.Armor.Boots"));
+								
+							}
 							
 						}
 						
-						if (kitResource.contains("Inventory.Armor.Chestplate")) {
+						ConfigurationSection items = kitResource.getConfigurationSection("Inventory.Items");
+						
+						for (String identifier : items.getKeys(false)) {
 							
-							kit.setChestplate(new KitItem(kitResource, kit.getName(), "Inventory.Armor.Chestplate"));
+							if (!identifier.equals("Fill")) {
+	
+								kit.addItem(new KitItem(kitResource, kit.getName(), "Inventory.Items." + identifier), Integer.valueOf(identifier));
+								
+							} else {
+								
+								kit.setFill(new KitItem(kitResource, kit.getName(), "Inventory.Items.Fill"));
+								
+							}
 							
 						}
 						
-						if (kitResource.contains("Inventory.Armor.Leggings")) {
+						if (kitResource.contains("Potions")) {
 							
-							kit.setLeggings(new KitItem(kitResource, kit.getName(), "Inventory.Armor.Leggings"));
+							ConfigurationSection potions = kitResource.getConfigurationSection("Potions");
+							
+							for (String identifier : potions.getKeys(false)) {
+								
+								kit.addEffect(new EffectItem(kitResource, identifier));
+								
+							}
 							
 						}
 						
-						if (kitResource.contains("Inventory.Armor.Boots")) {
+						kit.applyKit(p);
+						setKit(p.getName(), name);
+						
+						if (resources.getKits(name).getInt("Kit.Cooldown") > 0) {
 							
-							kit.setBoots(new KitItem(kitResource, kit.getName(), "Inventory.Armor.Boots"));
+							plugin.getArena().getCooldowns().setCooldown(p.getUniqueId(), name);
 							
 						}
+						
+						Bukkit.getPluginManager().callEvent(new PlayerSelectKitEvent(p, kit.getName()));
+						
+					} else {
+						
+						p.sendMessage(Config.tr(resources.getMessages().getString("Messages.Error.Cooldown").replace("%cooldown%", plugin.getArena().getCooldowns().getFormattedCooldown(p.getUniqueId(), name))));
 						
 					}
-					
-					ConfigurationSection items = kitResource.getConfigurationSection("Inventory.Items");
-					
-					for (String identifier : items.getKeys(false)) {
-						
-						if (!identifier.equals("Fill")) {
-
-							kit.addItem(new KitItem(kitResource, kit.getName(), "Inventory.Items." + identifier), Integer.valueOf(identifier));
-							
-						} else {
-							
-							kit.setFill(new KitItem(kitResource, kit.getName(), "Inventory.Items.Fill"));
-							
-						}
-						
-					}
-					
-					if (kitResource.contains("Potions")) {
-						
-						ConfigurationSection potions = kitResource.getConfigurationSection("Potions");
-						
-						for (String identifier : potions.getKeys(false)) {
-							
-							kit.addEffect(new EffectItem(kitResource, identifier));
-							
-						}
-						
-					}
-					
-					kit.applyKit(p);
-					setKit(p.getName(), name);
-					
-					Bukkit.getPluginManager().callEvent(new PlayerSelectKitEvent(p, kit.getName()));
 					
 				} else {
 					
