@@ -21,10 +21,10 @@ public class Cooldown {
 		
 		String result = "";
 		
-		if (getDays() != 0) result = result + (getDays() + " days ");
-		if (getHours() != 0) result = result + (getHours() + " hours ");
-		if (getMinutes() != 0) result = result + (getMinutes() + " minutes ");
-		if (getSeconds() != 0) result = result + (getSeconds() + " seconds");
+		if (getDays() != 0) result += (getDays() + " days ");
+		if (getHours() != 0) result += (getHours() + " hours ");
+		if (getMinutes() != 0) result += (getMinutes() + " minutes ");
+		if (getSeconds() != 0) result += (getSeconds() + " seconds");
 		
 		if (result.length() > 0 && result.charAt(result.length() - 1) == ' ') {
 			

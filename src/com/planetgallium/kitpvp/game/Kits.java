@@ -196,7 +196,7 @@ public class Kits {
 						kit.applyKit(p);
 						setKit(p.getName(), name);
 						
-						if (resources.getKits(name).getInt("Kit.Cooldown") > 0) {
+						if (resources.getKits(name).getString("Kit.Cooldown") != "0") {
 							
 							plugin.getArena().getCooldowns().setCooldown(p.getUniqueId(), name);
 							
