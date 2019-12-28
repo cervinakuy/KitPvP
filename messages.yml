@@ -38,6 +38,7 @@ Messages:
     Selected: '%prefix% &cYou have already selected a kit.'
     Location: '%prefix% &cYou are not in the arena to perform this action.'
     KitInvalid: '%prefix% &cYou cannot perform this action because you have a kit selected.'
+    Cooldown: '%prefix% &cYou cannot select this kit for another %cooldown%.'
   Stats:
     Message:
     - '&7&m                                &r'
