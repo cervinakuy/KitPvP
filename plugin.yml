@@ -5,7 +5,7 @@ version: 2.0.9
 description: The plugin you need to manage your KitPvP server.
 website: https://www.spigotmc.org/resources/27107/
 softdepend: [PlaceholderAPI]
-api-version: 1.15
+api-version: 1.13
 
 commands:
    kitpvp:
