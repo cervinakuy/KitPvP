@@ -6,7 +6,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 
+import com.planetgallium.kitpvp.Game;
 import com.planetgallium.kitpvp.util.Config;
 import com.planetgallium.kitpvp.util.Toolkit;
 import com.planetgallium.kitpvp.util.XMaterial;
@@ -14,6 +16,12 @@ import com.planetgallium.kitpvp.util.XSound;
 
 public class SoupListener implements Listener {
 
+	private Game plugin;
+	
+	public SoupListener(Game plugin) {
+		this.plugin = plugin;
+	}
+	
 	private int health = 6;
 	
 	@EventHandler
@@ -31,20 +39,33 @@ public class SoupListener implements Listener {
 					
 					if (killer.hasPermission("kp.soupreturn")) {
 					
-						int count = 0;
-						for (int i = 0; i < 36; i++) {
-							if (killer.getInventory().getItem(i) == null) {
-								count++;
+						new BukkitRunnable() {
+							
+							@Override
+							public void run() {
+								
+								if (killer != null) { // incase they logged off
+									
+									int count = 0;
+									for (int i = 0; i < 36; i++) {
+										if (killer.getInventory().getItem(i) == null) {
+											count++;
+										}
+									}
+									
+									if (count < Config.getI("GiveSoupOnKill.Amount")) {
+										killer.sendMessage(Config.getS("GiveSoupOnKill.NoSpace").replace("%amount%", String.valueOf((Config.getI("GiveSoupOnKill.Amount") - count))));
+									}
+									
+									for (int r = 0; r < count; r++) {
+										killer.getInventory().addItem(new ItemStack(XMaterial.MUSHROOM_STEW.parseItem()));
+									}
+									
+								}
+								
 							}
-						}
-						
-						if (count < Config.getI("GiveSoupOnKill.Amount")) {
-							killer.sendMessage(Config.getS("GiveSoupOnKill.NoSpace").replace("%amount%", String.valueOf((Config.getI("GiveSoupOnKill.Amount") - count))));
-						}
-						
-						for (int r = 0; r < count; r++) {
-							killer.getInventory().addItem(new ItemStack(XMaterial.MUSHROOM_STEW.parseItem()));
-						}
+							
+						}.runTaskLater(plugin, Config.getI("GiveSoupOnKill.Delay") * 20);
 						
 					}
 					
