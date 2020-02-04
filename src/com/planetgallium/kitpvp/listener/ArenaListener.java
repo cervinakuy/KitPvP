@@ -189,7 +189,11 @@ public class ArenaListener implements Listener {
 				
 				if (e.getCause() == DamageCause.BLOCK_EXPLOSION || e.getCause() == DamageCause.ENTITY_EXPLOSION || e.getCause() == DamageCause.FIRE || e.getCause() == DamageCause.FIRE_TICK) {
 					
-					e.setCancelled(!arena.getKits().hasKit(damagedPlayer.getName()));
+					if (Config.getB("Arena.NoKitProtection")) {
+						
+						e.setCancelled(!arena.getKits().hasKit(damagedPlayer.getName()));
+						
+					}
 				
 				} else if (e.getCause() == DamageCause.FALL) {
 						
