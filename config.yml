@@ -79,6 +79,7 @@ Respawn:
 GiveSoupOnKill:
   Amount: 1
   NoSpace: '%prefix% &c%amount% soups could not be added to your full inventory.'
+  Delay: 0
   Enabled: true
 PlayerTracker:
   Tracker: '&ePlayer Tracker'
