@@ -370,7 +370,7 @@ public class ItemListener implements Listener {
 						@Override
 						public void run() {
 							
-	            			if (p.getWorld().getPlayers().size() > 1) {
+	            			if ((p.getWorld().getPlayers().size() > 1) && (Bukkit.getServer().getPlayer(Toolkit.getNearestPlayer(p)[0]).getLocation().getY() < Game.getInstance().getConfig().getInt("PlayerTracker.TrackBelowY"))) {
 		                		
 	            				Double distance = Double.parseDouble(Toolkit.getNearestPlayer(p)[1]);
 	            				distance = Math.round(distance * 10.0) / 10.0;
