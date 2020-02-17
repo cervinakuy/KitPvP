@@ -61,6 +61,7 @@ public class Game extends JavaPlugin implements Listener {
 		pm.registerEvents(new SignListener(resources), this);
 		pm.registerEvents(new AliasCommand(), this);
 		pm.registerEvents(new AbilityListener(arena, resources), this);
+		pm.registerEvents(new TrackerListener(this), this);
 		pm.registerEvents(getArena().getKillStreaks(), this);
 		
 		getConfig().options().copyDefaults(true);
