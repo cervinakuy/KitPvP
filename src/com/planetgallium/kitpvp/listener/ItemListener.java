@@ -18,7 +18,6 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.Potion;
@@ -342,56 +341,6 @@ public class ItemListener implements Listener {
 						}
 							
 					}
-					
-				}
-				
-			}
-			
-		}
-		
-	}
-	
-	@EventHandler
-	public void onItemHeld(PlayerItemHeldEvent e) {
-		
-		Player p = e.getPlayer();
-		
-		if (Toolkit.inArena(p)) {
-			
-			int i = e.getNewSlot();
-			ItemStack item = p.getInventory().getItem(i);
-			
-			if (item != null) {
-				
-				if (item.getType() == XMaterial.COMPASS.parseMaterial()) {
-					
-					new BukkitRunnable() {
-						
-						@Override
-						public void run() {
-							
-	            			if ((p.getWorld().getPlayers().size() > 1) && (Bukkit.getServer().getPlayer(Toolkit.getNearestPlayer(p)[0]).getLocation().getY() < Game.getInstance().getConfig().getInt("PlayerTracker.TrackBelowY"))) {
-		                		
-	            				Double distance = Double.parseDouble(Toolkit.getNearestPlayer(p)[1]);
-	            				distance = Math.round(distance * 10.0) / 10.0;
-		            			
-	            				ItemMeta meta = item.getItemMeta();
-		            			meta.setDisplayName(Config.getS("PlayerTracker.Message").replace("%nearestplayer%", Toolkit.getNearestPlayer(p)[0]).replace("%distance%", String.valueOf(distance)));
-		            			item.setItemMeta(meta);
-		            			p.setCompassTarget(Bukkit.getServer().getPlayer(Toolkit.getNearestPlayer(p)[0]).getLocation());
-		            			
-		                	} else {
-		                		
-		                		ItemMeta meta = item.getItemMeta();
-		                		meta.setDisplayName(Game.getInstance().getConfig().getString("PlayerTracker.NoneOnline").replaceAll("&", "§"));
-		                		item.setItemMeta(meta);
-		                		cancel();
-		                		
-		                	}
-							
-						}
-						
-					}.runTaskTimer(Game.getInstance(), 0L, 20L);		
 					
 				}
 				
