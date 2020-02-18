@@ -2,8 +2,10 @@ package com.planetgallium.kitpvp.game;
 
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import com.planetgallium.kitpvp.api.PlayerLevelUpEvent;
 import com.planetgallium.kitpvp.util.Config;
 import com.planetgallium.kitpvp.util.Resources;
 import com.planetgallium.kitpvp.util.Toolkit;
@@ -28,6 +30,7 @@ public class Levels {
 			if (arena.getLevels().getExperience(p.getUniqueId()) >= resources.getLevels().getInt("Levels.General.Experience.Levelup")) {
 				
 				arena.getLevels().levelUp(p);
+				Bukkit.getPluginManager().callEvent(new PlayerLevelUpEvent(p, this.getLevel(p.getUniqueId())));
 				
 			}
 			
