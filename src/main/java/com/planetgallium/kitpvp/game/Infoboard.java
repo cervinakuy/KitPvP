@@ -14,7 +14,7 @@ import org.bukkit.scoreboard.Team;
 import com.google.common.base.Preconditions;
 
 public class Infoboard {
-	
+
     private List<ScoreboardText> list;
     private Scoreboard scoreBoard;
     private Objective objective;
@@ -22,7 +22,7 @@ public class Infoboard {
     private int lastSentCount;
 
     public Infoboard(final Scoreboard scoreboard2, final String title) {
-    	
+
         this.list = new ArrayList<ScoreboardText>();
         this.tag = "PlaceHolder";
         this.lastSentCount = -1;
@@ -30,13 +30,13 @@ public class Infoboard {
         this.tag = ChatColor.translateAlternateColorCodes('&', title);
         this.scoreBoard = scoreboard2;
         (this.objective = this.getOrCreateObjective(this.tag)).setDisplaySlot(DisplaySlot.SIDEBAR);
-        
+
     }
 
     public void add(String input) {
-    	
+
         input = ChatColor.translateAlternateColorCodes('&', input);
-        
+
         ScoreboardText text = null;
         if (input.length() <= 16) {
             text = new ScoreboardText(input, "");
@@ -44,9 +44,9 @@ public class Infoboard {
         else {
             String first = input.substring(0, 16);
             String second = input.substring(16, input.length());
-            if (first.endsWith(String.valueOf('§'))) {
+            if (first.endsWith(String.valueOf('ï¿½'))) {
                 first = first.substring(0, first.length() - 1);
-                second = String.valueOf(String.valueOf('§')) + second;
+                second = String.valueOf(String.valueOf('ï¿½')) + second;
             }
             final String lastColors = ChatColor.getLastColors(first);
             second = String.valueOf(String.valueOf(lastColors)) + second;
@@ -123,15 +123,15 @@ public class Infoboard {
             return this.right;
         }
     }
-    
+
     /**
      * Added for testing purposes, not part of original class
      */
-    
+
     public void hide() {
-    	
-    	objective.setDisplaySlot(null);
-    	
+
+        objective.setDisplaySlot(null);
+
     }
-    
+
 }
