@@ -5,11 +5,11 @@ import org.bukkit.inventory.InventoryHolder;
 
 public class PreviewHolder implements InventoryHolder {
 
-	@Override
-	public Inventory getInventory() {
-		
-		return null;
-		
-	}
-	
+    @Override
+    public Inventory getInventory() {
+
+        return null;
+
+    }
+
 }

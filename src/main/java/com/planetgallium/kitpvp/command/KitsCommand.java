@@ -6,25 +6,25 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class KitsCommand implements CommandExecutor {
-	
-	@Override
-	public boolean onCommand(CommandSender sender, Command command, String alias, String[] args) {
-		
-		if (command.getName().equalsIgnoreCase("ckits")) {
-			
-			if (sender instanceof Player) {
-					
-				Player p = (Player) sender;
-					
-				p.performCommand("kp kits");
-				return true;
-				
-			}
-			
-		}
-		
-		return false;
-		
-	}
-	
+
+    @Override
+    public boolean onCommand(CommandSender sender, Command command, String alias, String[] args) {
+
+        if (command.getName().equalsIgnoreCase("ckits")) {
+
+            if (sender instanceof Player) {
+
+                Player p = (Player) sender;
+
+                p.performCommand("kp kits");
+                return true;
+
+            }
+
+        }
+
+        return false;
+
+    }
+
 }

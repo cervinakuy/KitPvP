@@ -1620,7 +1620,8 @@ public enum XMaterial {
         Validate.notEmpty(version, "Cannot get exact major minecraft version for null or empty version");
 
         // getBukkitVersion()
-        if (version.contains("-R") || version.endsWith("SNAPSHOT")) version = version.substring(0, version.indexOf('-'));
+        if (version.contains("-R") || version.endsWith("SNAPSHOT"))
+            version = version.substring(0, version.indexOf('-'));
 
         // getVersion()
         int index = version.indexOf("MC:");

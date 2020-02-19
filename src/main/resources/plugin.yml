@@ -8,14 +8,14 @@ softdepend: [PlaceholderAPI]
 api-version: 1.13
 
 commands:
-   kitpvp:
-     description: Main command.
-     aliases: [kp, kit-pvp]
-   ckit:
-     description: Select a kit.
-   cspawn:
-     description: Teleports you to the spawn.
-   ckits:
-     description: View all available kits.
-   cstats:
-     description: View your stats.
+  kitpvp:
+    description: Main command.
+    aliases: [kp, kit-pvp]
+  ckit:
+    description: Select a kit.
+  cspawn:
+    description: Teleports you to the spawn.
+  ckits:
+    description: View all available kits.
+  cstats:
+    description: View your stats.

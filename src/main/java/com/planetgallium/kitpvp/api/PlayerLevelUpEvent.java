@@ -7,33 +7,47 @@ import org.bukkit.event.HandlerList;
 
 public class PlayerLevelUpEvent extends Event implements Cancellable {
 
-	private static final HandlerList HANDLERS = new HandlerList();
-	
-	private final Player player;
-	private final int level;
-	
-	private boolean isCancelled;
-	
-	public PlayerLevelUpEvent(Player player, int level) {
-		this.player = player;
-		this.level = level;
-		this.isCancelled = false;
-	}
-	
-	public Player getPlayer() { return player; }
-	
-	public int getLevel() { return level; }
-	
-	public HandlerList getHandlers() { return HANDLERS; }
+    private static final HandlerList HANDLERS = new HandlerList();
 
-	public String getEventName() { return "PlayerLevelUpEvent"; }
-	
-	public static HandlerList getHandlerList() { return HANDLERS; }
+    private final Player player;
+    private final int level;
 
-	@Override
-	public boolean isCancelled() { return this.isCancelled; }
+    private boolean isCancelled;
 
-	@Override
-	public void setCancelled(boolean option) { this.isCancelled = option; }
-	
+    public PlayerLevelUpEvent(Player player, int level) {
+        this.player = player;
+        this.level = level;
+        this.isCancelled = false;
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public HandlerList getHandlers() {
+        return HANDLERS;
+    }
+
+    public String getEventName() {
+        return "PlayerLevelUpEvent";
+    }
+
+    public static HandlerList getHandlerList() {
+        return HANDLERS;
+    }
+
+    @Override
+    public boolean isCancelled() {
+        return this.isCancelled;
+    }
+
+    @Override
+    public void setCancelled(boolean option) {
+        this.isCancelled = option;
+    }
+
 }

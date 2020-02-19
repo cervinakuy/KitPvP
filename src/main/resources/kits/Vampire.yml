@@ -31,7 +31,7 @@ Inventory:
       Dye:
         Red: 252
         Green: 45
-        Blue: 59 
+        Blue: 59
   Items:
     0:
       Name: '&aVampire''s Sword'

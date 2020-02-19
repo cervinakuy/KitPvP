@@ -45,7 +45,7 @@ Abilities:
     Sound:
       Sound: BAT_TAKEOFF
       Pitch: 1
-      Enabled: true  
+      Enabled: true
   Warper:
     Item:
       Name: '&aNearest Player Teleporter &7(Right Click)'

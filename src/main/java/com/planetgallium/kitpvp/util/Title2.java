@@ -1,12 +1,13 @@
 package com.planetgallium.kitpvp.util;
 
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
 
 public class Title2 {
 
@@ -35,9 +36,11 @@ public class Title2 {
     private int fadeOutTime = -1;
     private boolean ticks = false;
     private static final Map<Class<?>, Class<?>> CORRESPONDING_TYPES = new HashMap<Class<?>, Class<?>>();
+
     public Title2() {
         loadClasses();
     }
+
     /**
      * Create a new 1.8 title
      *
@@ -47,6 +50,7 @@ public class Title2 {
         this.title = title;
         loadClasses();
     }
+
     /**
      * Create a new 1.8 title
      *
@@ -58,6 +62,7 @@ public class Title2 {
         this.subtitle = subtitle;
         loadClasses();
     }
+
     /**
      * Copy 1.8 title
      *
@@ -75,6 +80,7 @@ public class Title2 {
         this.ticks = title.isTicks();
         loadClasses();
     }
+
     /**
      * Create a new 1.8 title
      *
@@ -85,7 +91,7 @@ public class Title2 {
      * @param fadeOutTime Fade out time
      */
     public Title2(String title, String subtitle, int fadeInTime, int stayTime,
-                 int fadeOutTime) {
+                  int fadeOutTime) {
         this.title = title;
         this.subtitle = subtitle;
         this.fadeInTime = fadeInTime;
@@ -93,6 +99,7 @@ public class Title2 {
         this.fadeOutTime = fadeOutTime;
         loadClasses();
     }
+
     /**
      * Load spigot and NMS classes
      */
@@ -111,6 +118,7 @@ public class Title2 {
             methodPlayerGetHandle = getMethod("getHandle", obcPlayer);
         }
     }
+
     /**
      * Set title text
      *
@@ -119,6 +127,7 @@ public class Title2 {
     public void setTitle(String title) {
         this.title = title;
     }
+
     /**
      * Get title text
      *
@@ -127,6 +136,7 @@ public class Title2 {
     public String getTitle() {
         return this.title;
     }
+
     /**
      * Set subtitle text
      *
@@ -135,6 +145,7 @@ public class Title2 {
     public void setSubtitle(String subtitle) {
         this.subtitle = subtitle;
     }
+
     /**
      * Get subtitle text
      *
@@ -143,6 +154,7 @@ public class Title2 {
     public String getSubtitle() {
         return this.subtitle;
     }
+
     /**
      * Set the title color
      *
@@ -151,6 +163,7 @@ public class Title2 {
     public void setTitleColor(ChatColor color) {
         this.titleColor = color;
     }
+
     /**
      * Set the subtitle color
      *
@@ -159,6 +172,7 @@ public class Title2 {
     public void setSubtitleColor(ChatColor color) {
         this.subtitleColor = color;
     }
+
     /**
      * Set title fade in time
      *
@@ -167,6 +181,7 @@ public class Title2 {
     public void setFadeInTime(int time) {
         this.fadeInTime = time;
     }
+
     /**
      * Set title fade out time
      *
@@ -175,6 +190,7 @@ public class Title2 {
     public void setFadeOutTime(int time) {
         this.fadeOutTime = time;
     }
+
     /**
      * Set title stay time
      *
@@ -183,18 +199,21 @@ public class Title2 {
     public void setStayTime(int time) {
         this.stayTime = time;
     }
+
     /**
      * Set timings to ticks
      */
     public void setTimingsToTicks() {
         ticks = true;
     }
+
     /**
      * Set timings to seconds
      */
     public void setTimingsToSeconds() {
         ticks = false;
     }
+
     /**
      * Send the title to a player
      *
@@ -242,6 +261,7 @@ public class Title2 {
             }
         }
     }
+
     public void updateTimes(Player player) {
         if (Title2.packetTitle != null) {
             try {
@@ -269,6 +289,7 @@ public class Title2 {
             }
         }
     }
+
     public void updateTitle(Player player) {
         if (Title2.packetTitle != null) {
             try {
@@ -294,6 +315,7 @@ public class Title2 {
             }
         }
     }
+
     public void updateSubtitle(Player player) {
         if (Title2.packetTitle != null) {
             try {
@@ -316,6 +338,7 @@ public class Title2 {
             }
         }
     }
+
     /**
      * Broadcast the title to all players
      */
@@ -324,6 +347,7 @@ public class Title2 {
             send(p);
         }
     }
+
     /**
      * Clear the title
      *
@@ -342,6 +366,7 @@ public class Title2 {
             e.printStackTrace();
         }
     }
+
     /**
      * Reset the title settings
      *
@@ -360,10 +385,12 @@ public class Title2 {
             e.printStackTrace();
         }
     }
+
     private Class<?> getPrimitiveType(Class<?> clazz) {
         return CORRESPONDING_TYPES.containsKey(clazz) ? CORRESPONDING_TYPES
                 .get(clazz) : clazz;
     }
+
     private Class<?>[] toPrimitiveTypeArray(Class<?>[] classes) {
         int a = classes != null ? classes.length : 0;
         Class<?>[] types = new Class<?>[a];
@@ -371,6 +398,7 @@ public class Title2 {
             types[i] = getPrimitiveType(classes[i]);
         return types;
     }
+
     private static boolean equalsTypeArray(Class<?>[] a, Class<?>[] o) {
         if (a.length != o.length)
             return false;
@@ -379,6 +407,7 @@ public class Title2 {
                 return false;
         return true;
     }
+
     private Object getHandle(Player player) {
         try {
             return methodPlayerGetHandle.invoke(player);
@@ -387,6 +416,7 @@ public class Title2 {
             return null;
         }
     }
+
     private Method getMethod(String name, Class<?> clazz,
                              Class<?>... paramTypes) {
         Class<?>[] t = toPrimitiveTypeArray(paramTypes);
@@ -397,11 +427,13 @@ public class Title2 {
         }
         return null;
     }
+
     private String getVersion() {
         String name = Bukkit.getServer().getClass().getPackage().getName();
         String version = name.substring(name.lastIndexOf('.') + 1) + ".";
         return version;
     }
+
     private Class<?> getNMSClass(String className) {
         String fullName = "net.minecraft.server." + getVersion() + className;
         Class<?> clazz = null;
@@ -412,6 +444,7 @@ public class Title2 {
         }
         return clazz;
     }
+
     private Class<?> getOBCClass(String className) {
         String fullName = "org.bukkit.craftbukkit." + getVersion() + className;
         Class<?> clazz = null;
@@ -422,6 +455,7 @@ public class Title2 {
         }
         return clazz;
     }
+
     private Field getField(Class<?> clazz, String name) {
         try {
             Field field = clazz.getDeclaredField(name);
@@ -432,6 +466,7 @@ public class Title2 {
             return null;
         }
     }
+
     private Method getMethod(Class<?> clazz, String name, Class<?>... args) {
         for (Method m : clazz.getMethods())
             if (m.getName().equals(name)
@@ -442,6 +477,7 @@ public class Title2 {
             }
         return null;
     }
+
     private boolean ClassListEqual(Class<?>[] l1, Class<?>[] l2) {
         boolean equal = true;
         if (l1.length != l2.length)
@@ -453,23 +489,29 @@ public class Title2 {
             }
         return equal;
     }
+
     public ChatColor getTitleColor() {
         return titleColor;
     }
+
     public ChatColor getSubtitleColor() {
         return subtitleColor;
     }
+
     public int getFadeInTime() {
         return fadeInTime;
     }
+
     public int getFadeOutTime() {
         return fadeOutTime;
     }
+
     public int getStayTime() {
         return stayTime;
     }
+
     public boolean isTicks() {
         return ticks;
     }
-	
+
 }

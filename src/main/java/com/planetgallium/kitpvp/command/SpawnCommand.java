@@ -6,25 +6,25 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class SpawnCommand implements CommandExecutor {
-	
-	@Override
-	public boolean onCommand(CommandSender sender, Command command, String alias, String[] args) {
-		
-		if (command.getName().equalsIgnoreCase("cspawn")) {
-			
-			if (sender instanceof Player) {
-					
-				Player p = (Player) sender;
-				
-				p.performCommand("kp spawn");
-				return true;
-				
-			}
-			
-		}
-		
-		return false;
-		
-	}
-	
+
+    @Override
+    public boolean onCommand(CommandSender sender, Command command, String alias, String[] args) {
+
+        if (command.getName().equalsIgnoreCase("cspawn")) {
+
+            if (sender instanceof Player) {
+
+                Player p = (Player) sender;
+
+                p.performCommand("kp spawn");
+                return true;
+
+            }
+
+        }
+
+        return false;
+
+    }
+
 }

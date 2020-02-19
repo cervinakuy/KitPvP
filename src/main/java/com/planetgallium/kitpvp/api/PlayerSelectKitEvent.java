@@ -7,34 +7,48 @@ import org.bukkit.event.HandlerList;
 
 public class PlayerSelectKitEvent extends Event implements Cancellable {
 
-	private static final HandlerList HANDLERS = new HandlerList();
-	
-	private final Player player;
-	
-	private final String kitName;
-	
-	private boolean isCancelled;
-	
-	public PlayerSelectKitEvent(Player player, String kitName) {
-		this.player = player;
-		this.kitName = kitName;
-		this.isCancelled = false;
-	}
-	
-	public Player getPlayer() { return player; }
-	
-	public String getKitName() { return kitName; }
-	
-	public HandlerList getHandlers() { return HANDLERS; }
+    private static final HandlerList HANDLERS = new HandlerList();
 
-	public String getEventName() { return "PlayerSelectKitEvent"; }
-	
-	public static HandlerList getHandlerList() { return HANDLERS; }
+    private final Player player;
 
-	@Override
-	public boolean isCancelled() { return this.isCancelled; }
+    private final String kitName;
 
-	@Override
-	public void setCancelled(boolean option) { this.isCancelled = option; }
-	
+    private boolean isCancelled;
+
+    public PlayerSelectKitEvent(Player player, String kitName) {
+        this.player = player;
+        this.kitName = kitName;
+        this.isCancelled = false;
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public String getKitName() {
+        return kitName;
+    }
+
+    public HandlerList getHandlers() {
+        return HANDLERS;
+    }
+
+    public String getEventName() {
+        return "PlayerSelectKitEvent";
+    }
+
+    public static HandlerList getHandlerList() {
+        return HANDLERS;
+    }
+
+    @Override
+    public boolean isCancelled() {
+        return this.isCancelled;
+    }
+
+    @Override
+    public void setCancelled(boolean option) {
+        this.isCancelled = option;
+    }
+
 }

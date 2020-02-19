@@ -7,9 +7,9 @@ Items:
     Menu: true
     Commands:
       Commands:
-      - 'console: All commands in this plugin have PlaceholderAPI support'
-      - 'console: This command is run from the console, you can use %player%'
-      - 'player: This command is run from the player, you can use %player%'
+        - 'console: All commands in this plugin have PlaceholderAPI support'
+        - 'console: This command is run from the console, you can use %player%'
+        - 'player: This command is run from the player, you can use %player%'
       Enabled: false
   Leave:
     Enabled: true
@@ -21,9 +21,9 @@ Items:
       Enabled: true
     Commands:
       Commands:
-      - 'console: All commands in this plugin have PlaceholderAPI support'
-      - 'console: This command is run from the console, you can use %player%'
-      - 'player: This command is run from the player, you can use %player%'
+        - 'console: All commands in this plugin have PlaceholderAPI support'
+        - 'console: This command is run from the console, you can use %player%'
+        - 'player: This command is run from the player, you can use %player%'
       Enabled: false
 Combat:
   HitSound:
@@ -40,9 +40,9 @@ Combat:
 Kill:
   Commands:
     Commands:
-    - 'console: All commands in this plugin have PlaceholderAPI support'
-    - 'console: These commands are run by the console, you can use the %killer% variable for the killer name'
-    - 'player: These commands are run by the player, you can use the %killer% variable for the killer name'
+      - 'console: All commands in this plugin have PlaceholderAPI support'
+      - 'console: These commands are run by the console, you can use the %killer% variable for the killer name'
+      - 'player: These commands are run by the player, you can use the %killer% variable for the killer name'
     Enabled: false
 Death:
   Title:
@@ -56,9 +56,9 @@ Death:
     Enabled: false
   Commands:
     Commands:
-    - 'console: All commands in this plugin have PlaceholderAPI support'
-    - 'console: These commands are run by the console, you can use the %victim% variable for the player who died'
-    - 'player: These commands are run by the player, you can use the %victim% variable for the player who died'
+      - 'console: All commands in this plugin have PlaceholderAPI support'
+      - 'console: These commands are run by the console, you can use the %victim% variable for the player who died'
+      - 'player: These commands are run by the player, you can use the %victim% variable for the player who died'
     Enabled: false
   Messages:
     Player: '%prefix% &b%victim% &7was killed by &b%killer%&7.'
@@ -72,9 +72,9 @@ Death:
 Respawn:
   Commands:
     Commands:
-    - 'console: All commands in this plugin have PlaceholderAPI support'
-    - 'console: These commands are run by the console, you can use the %player% variable for the player name'
-    - 'player: These commands are run by the player, you can use the %player% variable for the player name'
+      - 'console: All commands in this plugin have PlaceholderAPI support'
+      - 'console: These commands are run by the console, you can use the %player% variable for the player name'
+      - 'player: These commands are run by the player, you can use the %player% variable for the player name'
     Enabled: false
 GiveSoupOnKill:
   Amount: 1
@@ -90,7 +90,7 @@ Soups:
   Name: '&aRegenerative Soups &7(Right Click)'
   RemoveAfterUse: true
   Lore:
-  - '&7Use this item to regain health.'
+    - '&7Use this item to regain health.'
   Sound: EAT
   Pitch: 1
   Enabled: true

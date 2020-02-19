@@ -1,8 +1,6 @@
 package com.planetgallium.kitpvp.game;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.google.common.base.Preconditions;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -11,7 +9,8 @@ import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
-import com.google.common.base.Preconditions;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Infoboard {
 
@@ -40,8 +39,7 @@ public class Infoboard {
         ScoreboardText text = null;
         if (input.length() <= 16) {
             text = new ScoreboardText(input, "");
-        }
-        else {
+        } else {
             String first = input.substring(0, 16);
             String second = input.substring(16, input.length());
             if (first.endsWith(String.valueOf('�'))) {
@@ -105,8 +103,7 @@ public class Infoboard {
         return String.valueOf(String.valueOf(ChatColor.values()[index].toString())) + ChatColor.RESET;
     }
 
-    private static class ScoreboardText
-    {
+    private static class ScoreboardText {
         private String left;
         private String right;
 

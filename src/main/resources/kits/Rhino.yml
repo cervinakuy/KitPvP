@@ -71,6 +71,6 @@ Ability:
       Duration: 5
   Commands:
     Commands:
-    - 'console: This command is run from the console, you can use %player%'
-    - 'player: This command is run from the player, you can use %player%'
+      - 'console: This command is run from the console, you can use %player%'
+      - 'player: This command is run from the player, you can use %player%'
     Enabled: false
