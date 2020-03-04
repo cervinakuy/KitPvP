@@ -44,9 +44,9 @@ public class Infoboard {
         else {
             String first = input.substring(0, 16);
             String second = input.substring(16, input.length());
-            if (first.endsWith(String.valueOf('ง'))) {
+            if (first.endsWith(String.valueOf('ยง'))) {
                 first = first.substring(0, first.length() - 1);
-                second = String.valueOf(String.valueOf('ง')) + second;
+                second = String.valueOf(String.valueOf('ยง')) + second;
             }
             final String lastColors = ChatColor.getLastColors(first);
             second = String.valueOf(String.valueOf(lastColors)) + second;
