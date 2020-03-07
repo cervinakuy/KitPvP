@@ -37,7 +37,7 @@ Inventory:
       Name: '&aBomber''s Sword'
       Item: IRON_SWORD
     1:
-      Name: '&aTNT &7(Right Click)'
+      Name: '&aThrowable TNT &7(Right Click)'
       Item: TNT
       Amount: 16
     2:

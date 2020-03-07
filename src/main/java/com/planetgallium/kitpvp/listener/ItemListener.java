@@ -79,18 +79,26 @@ public class ItemListener implements Listener {
 					}
 					
 				} else if (Toolkit.getMainHandItem(p).getType() == XMaterial.TNT.parseMaterial()) {
-					
-					ItemStack tnt = new ItemStack(Toolkit.getMainHandItem(p).getType(), Toolkit.getMainHandItem(p).getAmount());
-					
-					Location handLocation = p.getLocation();
-					handLocation.setY(handLocation.getY() + 1.0);
-			        Vector direction = handLocation.getDirection();
-			        
-			        Entity entity = p.getWorld().spawn(handLocation, TNTPrimed.class);
-			        entity.setVelocity(direction.multiply(1.5));
-		            
-			        tnt.setAmount(tnt.getAmount() - 1);
-			        Toolkit.setMainHandItem(p, tnt);
+
+					ItemStack tnt = Toolkit.getMainHandItem(p);
+
+					if (Config.getB("TNT.Enabled")) {
+
+						if (tnt.getItemMeta().getDisplayName().equals(Config.getS("TNT.Name"))) {
+
+							Location handLocation = p.getLocation();
+							handLocation.setY(handLocation.getY() + 1.0);
+							Vector direction = handLocation.getDirection();
+
+							Entity entity = p.getWorld().spawn(handLocation, TNTPrimed.class);
+							entity.setVelocity(direction.multiply(1.5));
+
+							tnt.setAmount(tnt.getAmount() - 1);
+							Toolkit.setMainHandItem(p, tnt);
+
+						}
+
+					}
 		            
 				} else if (Toolkit.getMainHandItem(p).getType() == XMaterial.SLIME_BALL.parseMaterial()) {
 					
