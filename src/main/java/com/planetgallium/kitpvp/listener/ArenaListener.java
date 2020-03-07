@@ -131,8 +131,8 @@ public class ArenaListener implements Listener {
     @EventHandler
     public void onExplode(EntityExplodeEvent e) {
 	
-    	if (Toolkit.inArena(e.getEntity())) {
-			
+    	if (Toolkit.inArena(e.getEntity()) && Config.getB("Arena.PreventBlockBreaking")) {
+
 			e.setCancelled(true);
 			
 		}
