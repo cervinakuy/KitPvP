@@ -76,6 +76,8 @@ public class Game extends JavaPlugin implements Listener {
 	    
 		Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&7[&b&lKIT-PVP&7] &7Enabling &bKitPvP &7version &b" + this.getDescription().getVersion() + "&7..."));
 		
+		getLogger().info("Some features added by Tekcno");
+		
 		if (Config.getC().getString("Storage.Type").equalsIgnoreCase("mysql")) {
 			storageType = "mysql";
 			

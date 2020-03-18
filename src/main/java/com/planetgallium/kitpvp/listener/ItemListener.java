@@ -5,6 +5,7 @@ import java.util.Random;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.entity.Egg;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -15,6 +16,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.entity.EntityEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -82,23 +84,19 @@ public class ItemListener implements Listener {
 
 					ItemStack tnt = Toolkit.getMainHandItem(p);
 
-					if (Config.getB("TNT.Enabled")) {
+					Location handLocation = p.getLocation();
+					handLocation.setY(handLocation.getY() + 1.0);
+					Vector direction = handLocation.getDirection();
 
-						if (tnt.getItemMeta().getDisplayName().equals(Config.getS("TNT.Name"))) {
-
-							Location handLocation = p.getLocation();
-							handLocation.setY(handLocation.getY() + 1.0);
-							Vector direction = handLocation.getDirection();
-
-							Entity entity = p.getWorld().spawn(handLocation, TNTPrimed.class);
-							entity.setVelocity(direction.multiply(1.5));
-
-							tnt.setAmount(tnt.getAmount() - 1);
-							Toolkit.setMainHandItem(p, tnt);
-
-						}
-
-					}
+					Entity entity = p.getWorld().spawn(handLocation, TNTPrimed.class);
+					entity.setVelocity(direction.multiply(1.5));
+					
+					
+					((TNTPrimed)entity).setFuseTicks(Config.getI("TNT.Fuse")); // Code by Tekcno (AKA Limabean2091)
+					
+					tnt.setAmount(tnt.getAmount() - 1);
+					Toolkit.setMainHandItem(p, tnt);
+					
 		            
 				} else if (Toolkit.getMainHandItem(p).getType() == XMaterial.SLIME_BALL.parseMaterial()) {
 					
@@ -166,6 +164,25 @@ public class ItemListener implements Listener {
 						gun.setItemMeta(gunmeta);
 						
 						Snowball ammo = (Snowball) p.launchProjectile(Snowball.class);
+						ammo.setVelocity(p.getLocation().getDirection().multiply(2.5));
+
+						p.playSound(p.getLocation(), XSound.ENTITY_GENERIC_EXPLODE.parseSound(), 1, 2);
+						
+						gun.setAmount(gun.getAmount() - 1);
+						Toolkit.setMainHandItem(p, gun);
+						
+					}
+					
+				} else if (Toolkit.getMainHandItem(p).getType() == XMaterial.DIAMOND_HOE.parseMaterial()) {
+					
+					if (p.hasPermission("kp.ability.soldier")) {
+						
+						ItemStack gun = new ItemStack(e.getItem().getType(), e.getItem().getAmount());
+						ItemMeta gunmeta = gun.getItemMeta();
+						gunmeta.setDisplayName(resources.getAbilities().getString("Abilities.Soldier.Item.Name").replaceAll("&", "§"));
+						gun.setItemMeta(gunmeta);
+						
+						Egg ammo = (Egg) p.launchProjectile(Egg.class);
 						ammo.setVelocity(p.getLocation().getDirection().multiply(2.5));
 
 						p.playSound(p.getLocation(), XSound.ENTITY_GENERIC_EXPLODE.parseSound(), 1, 2);
@@ -418,7 +435,17 @@ public class ItemListener implements Listener {
 				if (Toolkit.inArena(damagedPlayer) && Game.getInstance().getArena().getKits().hasKit(damagedPlayer.getName())) {
 					
 					damagedPlayer.damage(4.5);
-						
+				}
+				
+			}
+			
+			if (e.getDamager() instanceof Egg) {
+				
+				Player damagedPlayer = (Player) e.getEntity();
+				
+				if (Toolkit.inArena(damagedPlayer) && Game.getInstance().getArena().getKits().hasKit(damagedPlayer.getName())) {
+					
+					damagedPlayer.damage(19);
 				}
 				
 			}

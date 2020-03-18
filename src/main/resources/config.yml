@@ -97,6 +97,7 @@ Soups:
 TNT:
   Name: '&aThrowable TNT &7(Right Click)'
   Enabled: true
+  Fuse: 80
 Commands:
   Alias:
     Spawn: false

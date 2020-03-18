@@ -1,14 +1,7 @@
 # MENU FILE - This is where the menu can be completely customized.
-#
-# Recommendations:
-# 1) When adding your own menu item, please remember to indent using ONLY spaces. It is recommended that you simply copy and modify an item that already exists.
-# 2) Use the "Example" item at the bottom of this file for reference.
-#
-# Please contact Cervinakuy (the developer) on Spigot if you have any problems.
-
 Menu:
   General:
-    Title: 'Kits'
+    Title: Kits
     Hide-Items-With-No-Permission: false
     Size: 54
   Items:
@@ -145,7 +138,7 @@ Menu:
         - 'player: kp preview Kangaroo'
         Enabled: true
     Warper:
-      Name: '&a&lWarper Kit'    
+      Name: '&a&lWarper Kit'
       Item: ENDER_PEARL
       Slot: 16
       Lore:
@@ -271,23 +264,23 @@ Menu:
         Right-Click:
         - 'player: kp preview Rhino'
         Enabled: true
-    Example:
-      Name: '&a&lExample Kit'
-      Item: WOOD_SWORD
+    Sniper:
+      Name: '&a&lSniper Kit'
+      Item: ARROW
       Slot: 24
-      View-Permission: kp.kit.example
       Lore:
-      - '&7This is the example of a custom'
-      - '&7kit you can create using KitPvP.'
-      - '&7You can make a custom kit using your'
-      - '&7own inventory, potion effects, and enchantments'
-      - '&7using /kp create kitName. Make sure to add it to'
-      - '&7the menu.yml!'
+      - '&6Ability: &71 Sniper'
+      - ' '
+      - '&7- Wooden Sword'
+      - '&7- Leather Boots'
+      - ' '
+      - '&eLeft-click to select.'
+      - '&eRight-click to preview.'
       Commands:
         Left-Click:
-        - 'player: kp kit Example'
+        - 'player: kp kit Sniper'
         Right-Click:
-        - 'player: kp preview Example'
+        - 'player: kp preview Sniper'
         Enabled: true
     Close:
       Name: '&c&lClose'
@@ -295,5 +288,3 @@ Menu:
       Slot: 40
       Lore:
       - '&7Click to close the Kit Menu.'
-      
-      
