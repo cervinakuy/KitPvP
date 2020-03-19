@@ -266,7 +266,7 @@ Menu:
         Enabled: true
     Sniper:
       Name: '&a&lSniper Kit'
-      Item: ARROW
+      Item: DIAMOND_HOE
       Slot: 24
       Lore:
       - '&6Ability: &71 Sniper'
@@ -281,6 +281,24 @@ Menu:
         - 'player: kp kit Sniper'
         Right-Click:
         - 'player: kp preview Sniper'
+        Enabled: true
+    Shotgun:
+      Name: '&a&lShotgun Kit'
+      Item: DIAMOND_HORSE_ARMOR
+      Slot: 25
+      Lore:
+      - '&6Ability: &71 Shotgun'
+      - ' '
+      - '&7- Wooden Sword'
+      - '&7- Leather Boots'
+      - ' '
+      - '&eLeft-click to select.'
+      - '&eRight-click to preview.'
+      Commands:
+        Left-Click:
+        - 'player: kp kit Shotgun'
+        Right-Click:
+        - 'player: kp preview Shotgun'
         Enabled: true
     Close:
       Name: '&c&lClose'

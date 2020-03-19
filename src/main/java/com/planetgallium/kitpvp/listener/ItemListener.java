@@ -1,5 +1,6 @@
 package com.planetgallium.kitpvp.listener;
 
+import java.util.List;
 import java.util.Random;
 
 import org.bukkit.Bukkit;
@@ -22,6 +23,8 @@ import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.metadata.MetadataValue;
 import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -37,6 +40,8 @@ import com.planetgallium.kitpvp.util.Resources;
 import com.planetgallium.kitpvp.util.Toolkit;
 import com.planetgallium.kitpvp.util.XMaterial;
 import com.planetgallium.kitpvp.util.XSound;
+
+import net.md_5.bungee.api.ChatColor;
 
 public class ItemListener implements Listener {
 	
@@ -164,7 +169,6 @@ public class ItemListener implements Listener {
 						gun.setItemMeta(gunmeta);
 						
 						Snowball ammo = (Snowball) p.launchProjectile(Snowball.class);
-						ammo.setVelocity(p.getLocation().getDirection().multiply(2.5));
 
 						p.playSound(p.getLocation(), XSound.ENTITY_GENERIC_EXPLODE.parseSound(), 1, 2);
 						
@@ -175,7 +179,7 @@ public class ItemListener implements Listener {
 					
 				} else if (Toolkit.getMainHandItem(p).getType() == XMaterial.DIAMOND_HOE.parseMaterial()) {
 					
-					if (p.hasPermission("kp.ability.soldier")) {
+					if (p.hasPermission("kp.ability.sniper")) {
 						
 						ItemStack gun = new ItemStack(e.getItem().getType(), e.getItem().getAmount());
 						ItemMeta gunmeta = gun.getItemMeta();
@@ -183,7 +187,42 @@ public class ItemListener implements Listener {
 						gun.setItemMeta(gunmeta);
 						
 						Egg ammo = (Egg) p.launchProjectile(Egg.class);
-						ammo.setVelocity(p.getLocation().getDirection().multiply(2.5));
+						ammo.setVelocity(p.getLocation().getDirection().multiply(10));
+
+						p.playSound(p.getLocation(), XSound.ENTITY_GENERIC_EXPLODE.parseSound(), 1, 2);
+						
+						gun.setAmount(gun.getAmount() - 1);
+						Toolkit.setMainHandItem(p, gun);
+						
+					}
+					
+				} else if (Toolkit.getMainHandItem(p).getType() == XMaterial.DIAMOND_HORSE_ARMOR.parseMaterial()) {
+					
+					if (p.hasPermission("kp.ability.shotgun")) {
+						
+						ItemStack gun = new ItemStack(e.getItem().getType(), e.getItem().getAmount());
+						ItemMeta gunmeta = gun.getItemMeta();
+						gunmeta.setDisplayName(resources.getAbilities().getString("Abilities.Soldier.Item.Name").replaceAll("&", "§"));
+						gun.setItemMeta(gunmeta);
+						
+						int level = Game.getInstance().getArena().getLevels().getLevel(p.getUniqueId());
+						
+						for (int i = 0; i < 5+level; i++) { // TODO Add a bullet for each added level.
+							Snowball ammo = (Snowball) p.launchProjectile(Snowball.class);
+							Vector direction = p.getLocation().getDirection();
+							
+							Vector spread = new Vector();
+                            spread.setX(0.0D + Math.random() - Math.random());
+                            spread.setY(Math.random());
+                            spread.setZ(0.0D + Math.random() - Math.random());
+                            spread = spread.multiply(0.1);
+                            
+                            direction = direction.add(spread);
+							direction = direction.multiply(2.5);
+							
+							ammo.setVelocity(direction);
+						}
+						
 
 						p.playSound(p.getLocation(), XSound.ENTITY_GENERIC_EXPLODE.parseSound(), 1, 2);
 						

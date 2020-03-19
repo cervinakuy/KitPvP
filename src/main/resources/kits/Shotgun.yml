@@ -1,0 +1,48 @@
+Kit:
+  Permission: kp.kit.shotgun
+  Level: 0
+  Cooldown: 0
+Inventory:
+  Armor:
+    Helmet:
+      Name: '&7Sniper Helmet'
+      Item: LEATHER_HELMET
+      Dye:
+        Red: 77
+        Green: 175
+        Blue: 123
+    Chestplate:
+      Name: '&7Sniper Chestplate'
+      Item: CHAINMAIL_CHESTPLATE
+      Dye:
+        Red: 77
+        Green: 175
+        Blue: 123
+    Leggings:
+      Name: '&7Sniper Leggings'
+      Item: LEATHER_LEGGINGS
+      Dye:
+        Red: 77
+        Green: 175
+        Blue: 123
+    Boots:
+      Name: '&7Sniper Boots'
+      Item: LEATHER_BOOTS
+      Dye:
+        Red: 77
+        Green: 175
+        Blue: 123
+  Items:
+    '0':
+      Name: '&aSniper''s Sword'
+      Item: STONE_SWORD
+    '1':
+      Name: '&aShotgun &7(Right Click)'
+      Item: DIAMOND_HORSE_ARMOR
+      Amount: 5
+    '8':
+      Name: '&aPlayer Tracker &7(Right Click)'
+      Item: COMPASS
+    Fill:
+      Name: '&aRegenerative Soup &7(Right Click)'
+      Item: MUSHROOM_SOUP
