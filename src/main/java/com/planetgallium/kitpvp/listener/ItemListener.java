@@ -169,6 +169,7 @@ public class ItemListener implements Listener {
 						gun.setItemMeta(gunmeta);
 						
 						Snowball ammo = (Snowball) p.launchProjectile(Snowball.class);
+						ammo.setVelocity(p.getLocation().getDirection().multiply(2.5));
 
 						p.playSound(p.getLocation(), XSound.ENTITY_GENERIC_EXPLODE.parseSound(), 1, 2);
 						
@@ -187,7 +188,7 @@ public class ItemListener implements Listener {
 						gun.setItemMeta(gunmeta);
 						
 						Egg ammo = (Egg) p.launchProjectile(Egg.class);
-						ammo.setVelocity(p.getLocation().getDirection().multiply(10));
+						ammo.setVelocity(p.getLocation().getDirection().multiply(2.5));
 
 						p.playSound(p.getLocation(), XSound.ENTITY_GENERIC_EXPLODE.parseSound(), 1, 2);
 						
