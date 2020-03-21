@@ -77,7 +77,7 @@ public class Toolkit {
 		
 	}
 	
- 	public static String[] getNearestPlayer(Player player) {
+ 	public static String[] getNearestPlayer(Player player, int maxY) {
 		
 		String nearest = "player:100000.0";
 		
@@ -87,8 +87,12 @@ public class Toolkit {
 			double cal = player.getLocation().distance(all.getLocation());
 			
 			if (cal <= Double.parseDouble(list[1]) && all != player) {
-				
-				nearest = all.getName() + ":" + cal;
+
+				if (all.getLocation().getBlockY() < maxY) {
+
+					nearest = all.getName() + ":" + cal;
+
+				}
 				
 			}
 			

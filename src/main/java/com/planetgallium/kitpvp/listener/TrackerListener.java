@@ -42,21 +42,17 @@ public class TrackerListener implements Listener {
 							
 							if (player.getWorld().getPlayers().size() > 1) {
 								
-								String[] nearestData = Toolkit.getNearestPlayer(player);
+								String[] nearestData = Toolkit.getNearestPlayer(player, plugin.getConfig().getInt("PlayerTracker.TrackBelowY"));
 								Player nearestPlayer = Bukkit.getPlayer(nearestData[0]);
 								double nearestDistance = Double.parseDouble(nearestData[1]);
-								
-								if (nearestPlayer.getLocation().getY() < plugin.getConfig().getInt("PlayerTracker.TrackBelowY")) {
-									
-									nearestDistance = Math.round(nearestDistance * 10.0) / 10.0;
-									
-		            				ItemMeta meta = item.getItemMeta();
-			            			meta.setDisplayName(Config.getS("PlayerTracker.Message").replace("%nearestplayer%", nearestPlayer.getName()).replace("%distance%", String.valueOf(nearestDistance)));
-			            			item.setItemMeta(meta);
-			            			
-			            			player.setCompassTarget(nearestPlayer.getLocation());
-									
-								}
+
+								nearestDistance = Math.round(nearestDistance * 10.0) / 10.0;
+
+								ItemMeta meta = item.getItemMeta();
+								meta.setDisplayName(Config.getS("PlayerTracker.Message").replace("%nearestplayer%", nearestPlayer.getName()).replace("%distance%", String.valueOf(nearestDistance)));
+								item.setItemMeta(meta);
+
+								player.setCompassTarget(nearestPlayer.getLocation());
 								
 							} else {
 								
