@@ -3,10 +3,7 @@ package com.planetgallium.kitpvp.util;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Color;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -90,7 +87,11 @@ public class Toolkit {
 
 				if (all.getLocation().getBlockY() < maxY) {
 
-					nearest = all.getName() + ":" + cal;
+					if (all.getGameMode() != GameMode.SPECTATOR) {
+
+						nearest = all.getName() + ":" + cal;
+
+					}
 
 				}
 				
