@@ -29,7 +29,7 @@ public class Game extends JavaPlugin implements Listener {
 	private Database database;
 	private Resources resources = new Resources(this);
 	
-	private String version = "Error";
+	private String updateVersion = "Error";
 	public String storageType;
 	private boolean needsUpdate = false;
 	
@@ -116,45 +116,22 @@ public class Game extends JavaPlugin implements Listener {
 	}
 
 	private void checkUpdate() {
-		
-		Updater updater = new Updater(this, 27107, false);
-		Updater.UpdateResult result = updater.getResult();
-		
-		switch (result) {
-		
-		case UPDATE_AVAILABLE:
-			
-			needsUpdate = true;
-			version = updater.getVersion();
-			Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&7[&b&lKIT-PVP&7] &aNew version found! Please update to v" + updater.getVersion() + " on the Spigot page."));
-			break;
-		
-		case NO_UPDATE:
-			
-			Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&7[&b&lKIT-PVP&7] &7No new update found. You are on the latest version."));
-			break;
-			
-		case DISABLED:
-			
-			Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&7[&b&lKIT-PVP&7] &cChecking for updates is currently disabled."));
-			break;
-			
-		case FAIL_SPIGOT:
-			
-			Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&7[&b&lKIT-PVP&7] &cThere was a problem reaching Spigot to check for updates."));
-			break;
-			
-		case FAIL_NOVERSION:
-			
-			Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&7[&b&lKIT-PVP&7] &cThe version could not be fetched from Spigot."));
-			break;
-			
-		case BAD_RESOURCEID:
-			
-			Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&7[&b&lKIT-PVP&7] &cThe updater resource ID is invalid."));
-			break;
-		
-		}
+
+		Updater.of(this).resourceId(22105).handleResponse((versionResponse, version) -> {
+			switch (versionResponse) {
+				case FOUND_NEW:
+					Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&7[&b&lKIT-PVP&7] &aNew version found! Please update to v" + version + " on the Spigot page."));
+					needsUpdate = true;
+					updateVersion = version;
+					break;
+				case LATEST:
+					Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&7[&b&lKIT-PVP&7] &7No new update found. You are on the latest version."));
+					break;
+				case UNAVAILABLE:
+					Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&7[&b&lKIT-PVP&7] &cUnable to perform an update check."));
+					break;
+			}
+		}).check();
 		
 	}
 	
@@ -191,7 +168,7 @@ public class Game extends JavaPlugin implements Listener {
 	
 	public boolean needsUpdate() { return needsUpdate; }
 	
-	public String getUpdateVersion() { return version; }
+	public String getUpdateVersion() { return updateVersion; }
 	
 	public static Game getInstance() { return instance; }
 	

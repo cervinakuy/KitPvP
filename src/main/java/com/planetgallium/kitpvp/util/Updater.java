@@ -1,108 +1,81 @@
 package com.planetgallium.kitpvp.util;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.net.ProtocolException;
-import java.net.URL;
-
+import com.google.common.base.Preconditions;
+import com.google.common.io.Resources;
+import com.google.common.net.HttpHeaders;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import javax.annotation.Nonnull;
+import javax.net.ssl.HttpsURLConnection;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.charset.Charset;
+import java.util.Objects;
+import java.util.function.BiConsumer;
+
 public class Updater {
-   
-    private JavaPlugin plugin;
-    private final String API_KEY = "98BE0FE67F88AB82B4C197FAF1DC3B69206EFDCC4D3B80FC83A00037510B99B4";
-    private final String REQUEST_METHOD = "POST";
-    private String RESOURCE_ID = "";
-    private final String HOST = "https://www.spigotmc.org";
-    private final String QUERY = "/api/general.php";
-    private String WRITE_STRING;
-   
-    private String version;
-    private String oldVersion;
-   
-    private Updater.UpdateResult result = Updater.UpdateResult.DISABLED;
-   
-    private HttpURLConnection connection;
-   
-    public enum UpdateResult {
-        NO_UPDATE,
-        DISABLED,
-        FAIL_SPIGOT,
-        FAIL_NOVERSION,
-        BAD_RESOURCEID,
-        UPDATE_AVAILABLE
-    }
-   
-    public Updater(JavaPlugin plugin, Integer resourceId, boolean disabled) {
-        RESOURCE_ID = resourceId + "";
-        this.plugin = plugin;
-        oldVersion = this.plugin.getDescription().getVersion();
-       
-        if (disabled) {
-            result = UpdateResult.DISABLED;
-            return;
-        }
 
-        try {
-            connection = (HttpURLConnection) new URL(HOST + QUERY).openConnection();
-        } catch (IOException e) {
-            result = UpdateResult.FAIL_SPIGOT;
-            return;
-        }
-
-        WRITE_STRING = "key=" + API_KEY + "&resource=" + RESOURCE_ID;
-        run();
-    }
-   
-    private void run() {
-        connection.setDoOutput(true);
-        try {
-            connection.setRequestMethod(REQUEST_METHOD);
-            connection.getOutputStream().write(WRITE_STRING.getBytes("UTF-8"));
-        } catch (ProtocolException e1) {
-            result = UpdateResult.FAIL_SPIGOT;
-        } catch (UnsupportedEncodingException e) {
-            result = UpdateResult.FAIL_SPIGOT;
-        } catch (IOException e) {
-            result = UpdateResult.FAIL_SPIGOT;
-        }
-        String version;
-        try {
-            version = new BufferedReader(new InputStreamReader(connection.getInputStream())).readLine();
-        } catch (Exception e) {
-            result = UpdateResult.BAD_RESOURCEID;
-            return;
-        }
-        if (version.length() <= 7) {
-            this.version = version;
-            version.replace("[^A-Za-z]", "").replace("|", "");
-            versionCheck();
-            return;
-        }
-        result = UpdateResult.BAD_RESOURCEID;
-    }
-   
-    private void versionCheck() {
-        if(shouldUpdate(oldVersion, version)) {
-            result = UpdateResult.UPDATE_AVAILABLE;
-        } else {
-            result = UpdateResult.NO_UPDATE;
-        }
+    public enum VersionResponse {
+        LATEST,
+        FOUND_NEW,
+        UNAVAILABLE
     }
 
-    public boolean shouldUpdate(String localVersion, String remoteVersion) {
-        return !localVersion.equalsIgnoreCase(remoteVersion);
-    }
-   
-    public UpdateResult getResult() {
-        return result;
-    }
-   
-    public String getVersion() {
-        return version;
+    private static final String SPIGOT_URL = "https://api.spigotmc.org/legacy/update.php?resource=%d";
+
+    private final JavaPlugin javaPlugin;
+
+    private String currentVersion;
+    private int resourceId = -1;
+    private BiConsumer<VersionResponse, String> versionResponse;
+
+    private Updater(@Nonnull JavaPlugin javaPlugin) {
+        this.javaPlugin = Objects.requireNonNull(javaPlugin, "javaPlugin");
+        this.currentVersion = javaPlugin.getDescription().getVersion();
     }
 
+    public static Updater of(@Nonnull JavaPlugin javaPlugin) {
+        return new Updater(javaPlugin);
+    }
+
+    public Updater currentVersion(@Nonnull String currentVersion) {
+        this.currentVersion = currentVersion;
+        return this;
+    }
+
+    public Updater resourceId(int resourceId) {
+        this.resourceId = resourceId;
+        return this;
+    }
+
+    public Updater handleResponse(@Nonnull BiConsumer<VersionResponse, String> versionResponse) {
+        this.versionResponse = versionResponse;
+        return this;
+    }
+
+    public void check() {
+        Objects.requireNonNull(this.javaPlugin, "javaPlugin");
+        Objects.requireNonNull(this.currentVersion, "currentVersion");
+        Preconditions.checkState(this.resourceId != -1, "resource id not set");
+        Objects.requireNonNull(this.versionResponse, "versionResponse");
+
+        Bukkit.getScheduler().runTaskAsynchronously(this.javaPlugin, () -> {
+            try {
+                HttpURLConnection httpURLConnection = (HttpsURLConnection) new URL(String.format(SPIGOT_URL, this.resourceId)).openConnection();
+                httpURLConnection.setRequestMethod("GET");
+                httpURLConnection.setRequestProperty(HttpHeaders.USER_AGENT, "Mozilla/5.0");
+
+                String fetchedVersion = Resources.toString(httpURLConnection.getURL(), Charset.defaultCharset());
+
+                boolean latestVersion = fetchedVersion.equalsIgnoreCase(this.currentVersion);
+
+                Bukkit.getScheduler().runTask(this.javaPlugin, () -> this.versionResponse.accept(latestVersion ? VersionResponse.LATEST : VersionResponse.FOUND_NEW, latestVersion ? this.currentVersion : fetchedVersion));
+            } catch (IOException exception) {
+                exception.printStackTrace();
+                Bukkit.getScheduler().runTask(this.javaPlugin, () -> this.versionResponse.accept(VersionResponse.UNAVAILABLE, null));
+            }
+        });
+    }
 }
