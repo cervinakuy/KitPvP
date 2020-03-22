@@ -189,8 +189,10 @@ public class ItemListener implements Listener {
 				} else if (Toolkit.getMainHandItem(p).getType() == XMaterial.ENDER_EYE.parseMaterial()) {
 					
 					if (p.hasPermission("kp.ability.warper")) {
-						
-						if (Bukkit.getServer().getOnlinePlayers().size() > 1) {
+
+						String[] nearestData = Toolkit.getNearestPlayer(p, Config.getI("PlayerTracker.TrackBelowY"));
+
+						if (Bukkit.getServer().getOnlinePlayers().size() > 1 && nearestData != null) {
 							
 							e.setCancelled(true);
 							
@@ -198,8 +200,8 @@ public class ItemListener implements Listener {
 							ItemMeta tpermeta = tper.getItemMeta();
 							tpermeta.setDisplayName(Config.tr(resources.getAbilities().getString("Abilities.Warper.Item.Name")));
 							tper.setItemMeta(tpermeta);
-							
-							String username = Toolkit.getNearestPlayer(p)[0];
+
+							String username = nearestData[0];
 							Location loc = Bukkit.getPlayer(username).getLocation();
 							
 							if (Game.getInstance().getArena().getKits().hasKit(username)) {
