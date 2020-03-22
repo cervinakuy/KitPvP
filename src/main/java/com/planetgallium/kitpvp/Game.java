@@ -117,7 +117,7 @@ public class Game extends JavaPlugin implements Listener {
 
 	private void checkUpdate() {
 
-		Updater.of(this).resourceId(22105).handleResponse((versionResponse, version) -> {
+		Updater.of(this).resourceId(27107).handleResponse((versionResponse, version) -> {
 			switch (versionResponse) {
 				case FOUND_NEW:
 					Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&7[&b&lKIT-PVP&7] &aNew version found! Please update to v" + version + " on the Spigot page."));
