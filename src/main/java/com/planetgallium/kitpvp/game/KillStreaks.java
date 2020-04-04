@@ -57,8 +57,10 @@ public class KillStreaks implements Listener {
 	
 	@EventHandler
 	public void createStreak(PlayerJoinEvent e) {
-		
-		kills.put(e.getPlayer().getName(), 0);
+
+		if (Config.getB("Arena.ResetKillStreakOnLeave")) {
+			kills.put(e.getPlayer().getName(), 0);
+		}
 		
 	}
 	
