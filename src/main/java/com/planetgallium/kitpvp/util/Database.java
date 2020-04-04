@@ -136,7 +136,7 @@ public class Database {
 				ResultSet result = statement.executeQuery();
 				boolean hasPlayerData = false;
 				
-				while (result.next()) {
+				if (result.next()) {
 					
 					hasPlayerData = true;
 					
