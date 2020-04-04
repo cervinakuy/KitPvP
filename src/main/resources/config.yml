@@ -133,6 +133,7 @@ Arena:
   GiveItemsOnClear: true
   NoKitProtection: true
   FancyDeath: true
+  ResetKillStreakOnLeave: true
 Spawn:
   Time: 5
   Enabled: true

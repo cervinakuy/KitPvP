@@ -98,7 +98,10 @@ public class Arena {
 		}
 		
 		getKits().clearKit(p.getName());
-		getKillStreaks().resetStreak(p);
+
+		if (Config.getB("Arena.ResetKillStreakOnLeave")) {
+			getKillStreaks().resetStreak(p);
+		}
 		
 		if (Config.getB("Arena.FancyDeath")) {
 			p.setHealth(20.0);
