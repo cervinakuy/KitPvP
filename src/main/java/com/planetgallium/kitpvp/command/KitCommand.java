@@ -34,7 +34,12 @@ public class KitCommand implements CommandExecutor {
 					p.performCommand("kp kit " + args[0]);
 					return true;
 					
-				}	
+				} else if (args.length == 2) {
+
+					p.performCommand("kp kit " + args[0] + " " + args[1]);
+					return true;
+
+				}
 				
 			}
 			

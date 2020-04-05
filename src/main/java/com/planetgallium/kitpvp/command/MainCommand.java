@@ -75,8 +75,10 @@ public class MainCommand implements CommandExecutor {
 					p.sendMessage(Config.tr("&7- &b/kp delete [kitname] &7Deletes an existing kit."));
 					p.sendMessage(Config.tr("&7- &b/kp preview [kitname] &7Preview the contents of a kit."));
 					p.sendMessage(Config.tr("&7- &b/kp kit [kitname] &7Select a kit."));
+					p.sendMessage(Config.tr("&7- &b/kp kit [kitname] [player] &7Attempts to select a kit for a player."));
 					p.sendMessage(Config.tr("&7- &b/kp kits &7Lists all available kits."));
 					p.sendMessage(Config.tr("&7- &b/kp clear &7Clears your current kit."));
+					p.sendMessage(Config.tr("&7- &b/kp clear [player] &7Clears a kit for a player."));
 					p.sendMessage(Config.tr("&7- &b/kp stats &7View your stats."));
 					p.sendMessage(Config.tr("&7- &b/kp menu &7Displays the kits menu."));
 					p.sendMessage(Config.tr("&7- &b/kp import &7Imports all stats from the MySQL database."));
@@ -307,18 +309,7 @@ public class MainCommand implements CommandExecutor {
 					
 					if (p.hasPermission("kp.command.clear")) {
 						
-						p.getInventory().setArmorContents(null);
-						p.getInventory().clear();
-						
-						for (PotionEffect effect : p.getActivePotionEffects()) {
-							p.removePotionEffect(effect.getType());
-						}
-						
-						if (Config.getB("Arena.GiveItemsOnClear")) {
-							arena.giveItems(p);
-						}
-						
-						arena.getKits().clearKit(p.getName());
+						clearKit(p);
 						
 						p.sendMessage(Config.tr(resources.getMessages().getString("Messages.Commands.Cleared")));
 						
@@ -525,41 +516,124 @@ public class MainCommand implements CommandExecutor {
 					}
 					
 				} else if (args[0].equalsIgnoreCase("spawn")) {
-					
-					String arena = args[1];
-					
-					if (Config.getC().contains("Arenas.Spawn." + arena)) {
-						
-						if (!game.getArena().getKits().hasKit(p.getName())) {
-							
-							Location spawn = new Location(Bukkit.getWorld(Config.getS("Arenas.Spawn." + arena + ".World")),
-									Config.getI("Arenas.Spawn." + arena + ".X"),
-									Config.getI("Arenas.Spawn." + arena + ".Y"),
-									Config.getI("Arenas.Spawn." + arena + ".Z"));
-							
-							p.teleport(spawn);
-							p.sendMessage(Config.tr(resources.getMessages().getString("Messages.Commands.Teleport")));
-							
+
+					if (p.hasPermission("kp.command.spawn")) {
+
+						String arena = args[1];
+
+						if (Config.getC().contains("Arenas.Spawn." + arena)) {
+
+							if (!game.getArena().getKits().hasKit(p.getName())) {
+
+								Location spawn = new Location(Bukkit.getWorld(Config.getS("Arenas.Spawn." + arena + ".World")),
+										Config.getI("Arenas.Spawn." + arena + ".X"),
+										Config.getI("Arenas.Spawn." + arena + ".Y"),
+										Config.getI("Arenas.Spawn." + arena + ".Z"));
+
+								p.teleport(spawn);
+								p.sendMessage(Config.tr(resources.getMessages().getString("Messages.Commands.Teleport")));
+
+							} else {
+
+								p.sendMessage(Config.tr(resources.getMessages().getString("Messages.Error.KitInvalid")));
+
+							}
+
 						} else {
-							
-							p.sendMessage(Config.tr(resources.getMessages().getString("Messages.Error.KitInvalid")));
-							
+
+							p.sendMessage(Config.tr(resources.getMessages().getString("Messages.Error.ExistsArena")));
+
 						}
-						
+
 					} else {
-						
-						p.sendMessage(Config.tr(resources.getMessages().getString("Messages.Error.ExistsArena")));
-						
+
+						p.sendMessage(Config.tr(resources.getMessages().getString("Messages.General.Permission")));
+
 					}
 					
+				} else if (args[0].equalsIgnoreCase("clear")) {
+
+					if (p.hasPermission("kp.command.clear")) {
+
+						String playerName = args[1];
+
+						Player target = Bukkit.getPlayer(playerName);
+
+						if (target != null && Toolkit.inArena(target)) {
+
+							clearKit(target);
+
+							target.sendMessage(Config.tr(resources.getMessages().getString("Messages.Commands.Cleared")));
+							p.sendMessage(Config.tr(resources.getMessages().getString("Messages.Commands.ClearedOther").replace("%player%", target.getName())));
+
+						} else {
+
+							p.sendMessage(Config.tr(resources.getMessages().getString("Messages.Error.Offline")));
+
+						}
+
+					} else {
+
+						p.sendMessage(Config.tr(resources.getMessages().getString("Messages.General.Permission")));
+
+					}
+
 				}
 				
+			} else if (args.length == 3) {
+
+				if (args[0].equalsIgnoreCase("kit")) {
+
+					String kitName = args[1];
+					String playerName = args[2];
+
+					Player target = Bukkit.getPlayer(playerName);
+
+					if (target != null && Toolkit.inArena(target)) {
+
+						if (!arena.getKits().hasKit(target.getName())) {
+
+							arena.getKits().giveKit(kitName, target);
+							p.sendMessage(Config.tr(resources.getMessages().getString("Messages.Commands.KitOther").replace("%player%", playerName).replace("%kit%", kitName)));
+
+						} else {
+
+							p.sendMessage(Config.tr(resources.getMessages().getString("Messages.Error.SelectedOther")));
+							p.playSound(p.getLocation(), XSound.ENTITY_ENDER_DRAGON_HURT.parseSound(), 1, 1);
+
+						}
+
+					} else {
+
+						p.sendMessage(Config.tr(resources.getMessages().getString("Messages.Error.Offline")));
+
+					}
+
+				}
+
 			}
 
 		}
 		
 		return false;
 		
+	}
+
+	private void clearKit(Player p) {
+
+		p.getInventory().setArmorContents(null);
+		p.getInventory().clear();
+
+		for (PotionEffect effect : p.getActivePotionEffects()) {
+			p.removePotionEffect(effect.getType());
+		}
+
+		if (Config.getB("Arena.GiveItemsOnClear")) {
+			arena.giveItems(p);
+		}
+
+		arena.getKits().clearKit(p.getName());
+
 	}
 	
 }
