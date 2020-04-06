@@ -172,9 +172,13 @@ public class DeathListener implements Listener {
 						
 						@Override
 		            	public void run() {
-							
-							arena.updateScoreboards(p.getKiller().getPlayer(), false);
-							
+
+							if (p.getKiller() instanceof Player) {
+
+								arena.updateScoreboards(p.getKiller().getPlayer(), false);
+
+							}
+
 						}
 						
 					}.runTaskLater(Game.getInstance(), 20L);
