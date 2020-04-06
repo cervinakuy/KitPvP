@@ -598,7 +598,7 @@ public class MainCommand implements CommandExecutor {
 
 						} else {
 
-							p.sendMessage(Config.tr(resources.getMessages().getString("Messages.Error.SelectedOther")));
+							p.sendMessage(Config.tr(resources.getMessages().getString("Messages.Error.SelectedOther").replace("%kit%", kitName)));
 							p.playSound(p.getLocation(), XSound.ENTITY_ENDER_DRAGON_HURT.parseSound(), 1, 1);
 
 						}
