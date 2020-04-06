@@ -11,7 +11,7 @@ Messages:
     Create: '%prefix% &7The kit &b%kit% &7has successfully been created.'
     Delete: '%prefix% &7The kit &b%kit% &7has successfully been deleted.'
     Kit: '%prefix% &7You have selected kit &b%kit%&7.'
-    KitOther: '%prefix% &7Attempting to give &b%player% &7kit &b%kit&7.'
+    KitOther: '%prefix% &7Attempting to give &b%player% &7kit &b%kit%&7.'
     Kits: '%prefix% &bKits (case-sensitive): &7%kits%'
     Teleport: '%prefix% &7Teleported you to the spawn.'
     Teleporting: '%prefix% &7Teleporting, do not move.'
@@ -20,7 +20,7 @@ Messages:
     Removed: '%prefix% &7Successfully removed the arena &b%arena%&7.'
     Reload: '%prefix% &7Successfully reloaded the configurations.'
     Cleared: '%prefix% &7Your kit has been cleared.'
-    ClearedOther: '%prefix% &7You cleared &b%player%'s &7kit.'
+    ClearedOther: '%prefix% &7You cleared &b%player%''s &7kit.'
   Other:
     Needed: '%prefix% &cYou must be Level %level% to use that kit.'
     Level: '%prefix% &7Congratulations! You are now &bLevel %level%&7.'
