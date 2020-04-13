@@ -157,14 +157,14 @@ public class Arena {
 	
 	public void toSpawn(Player p) {
 		
-		if (Config.getC().contains("Arenas.Spawn." + p.getWorld().getName())) {
+		if (config.contains("Arenas.Spawn." + p.getWorld().getName())) {
 			
-			Location spawn = new Location(Bukkit.getWorld(Config.getS("Arenas.Spawn." + p.getWorld().getName() + ".World")),
-					Config.getI("Arenas.Spawn." + p.getWorld().getName() + ".X") + 0.5,
-					Config.getI("Arenas.Spawn." + p.getWorld().getName() + ".Y"),
-					Config.getI("Arenas.Spawn." + p.getWorld().getName() + ".Z") + 0.5,
-					(float) Config.getC().getDouble("Arenas.Spawn." + p.getWorld().getName() + ".Yaw"),
-					(float) Config.getC().getDouble("Arenas.Spawn." + p.getWorld().getName() + ".Pitch"));
+			Location spawn = new Location(Bukkit.getWorld(config.getString("Arenas.Spawn." + p.getWorld().getName() + ".World")),
+					config.getInt("Arenas.Spawn." + p.getWorld().getName() + ".X") + 0.5,
+					config.getInt("Arenas.Spawn." + p.getWorld().getName() + ".Y"),
+					config.getInt("Arenas.Spawn." + p.getWorld().getName() + ".Z") + 0.5,
+					(float) config.getDouble("Arenas.Spawn." + p.getWorld().getName() + ".Yaw"),
+					(float) config.getDouble("Arenas.Spawn." + p.getWorld().getName() + ".Pitch"));
 			
 			p.teleport(spawn);
 			

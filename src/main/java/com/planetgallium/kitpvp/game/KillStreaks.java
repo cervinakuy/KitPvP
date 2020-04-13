@@ -85,7 +85,7 @@ public class KillStreaks implements Listener {
 				
 				for (Player local : world.getPlayers()) {
 					
-					title.sendTitle(local, killConfig.getString(streakType + "." + streakNumber +".Title.Title"), killConfig.getString(streakType + "." + streakNumber +".Title.Subtitle").replace("%player%", username).replace("%streak%", String.valueOf(streakNumber)), 20, 60, 20);
+					title.sendTitle(local, killConfig.getString(streakType + "." + streakNumber + ".Title.Title"), killConfig.getString(streakType + "." + streakNumber + ".Title.Subtitle").replace("%player%", username).replace("%streak%", String.valueOf(streakNumber)), 20, 60, 20);
 					
 				}
 				
