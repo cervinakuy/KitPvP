@@ -45,7 +45,7 @@ public class Game extends JavaPlugin implements Listener {
 		PluginManager pm = Bukkit.getPluginManager();
 		pm.registerEvents(this, this);
 		pm.registerEvents(new EventListener(arena, resources), this);
-		pm.registerEvents(new ArenaListener(arena, resources), this);
+		pm.registerEvents(new ArenaListener(this, arena, resources), this);
 		pm.registerEvents(new JoinListener(this, arena), this);
 		pm.registerEvents(new LeaveListener(this, arena), this);
 		pm.registerEvents(new ArrowListener(), this);

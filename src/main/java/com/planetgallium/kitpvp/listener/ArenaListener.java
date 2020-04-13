@@ -1,6 +1,9 @@
 package com.planetgallium.kitpvp.listener;
 
+import com.planetgallium.kitpvp.Game;
 import org.bukkit.GameMode;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
@@ -13,6 +16,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
+import org.bukkit.event.inventory.InventoryEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemDamageEvent;
@@ -29,10 +33,12 @@ public class ArenaListener implements Listener {
 	
 	private Arena arena;
 	private Resources resources;
+	private FileConfiguration config;
 	
-	public ArenaListener(Arena arena, Resources resources) {
+	public ArenaListener(Game plugin, Arena arena, Resources resources) {
 		this.arena = arena;
 		this.resources = resources;
+		this.config = plugin.getConfig();
 	}
 	
 	@EventHandler
@@ -54,37 +60,55 @@ public class ArenaListener implements Listener {
 		Player p = e.getPlayer();
 		
 		if (Toolkit.inArena(p)) {
-			
-			if (e.getBlock().getType() == XMaterial.TNT.parseMaterial()) {
-				
-				e.setCancelled(true);
-				
-			} else if (arena.getKits().hasKit(p.getName())) {
-				
-				String abilityPath = resources.getKits(arena.getKits().getKit(p.getName())).getString("Ability.Activator.Item");
-				
-				if (abilityPath != null) {
-					
-					if (e.getBlock().getType() == XMaterial.matchXMaterial(abilityPath).get().parseMaterial()) {
-						
-						e.setCancelled(true);
-						
-					}
-					
+
+			if (Config.getB("TNT.Enabled")) {
+
+				if (e.getBlock().getType() == XMaterial.TNT.parseMaterial()) {
+
+					e.setCancelled(true);
+
 				}
-				
-			} else if ((Toolkit.getMainHandItem(p).hasItemMeta() && Toolkit.getMainHandItem(p).getItemMeta().getDisplayName().equals(Config.getS("Items.Kits.Name"))) || Toolkit.getMainHandItem(p).getType() == XMaterial.matchXMaterial(Config.getS("Items.Leave.Item")).get().parseMaterial()) {
-				
-				e.setCancelled(true);
+
+			} else if (arena.getKits().hasKit(p.getName())) {
+
+				String abilityPath = resources.getKits(arena.getKits().getKit(p.getName())).getString("Ability.Activator.Item");
+
+				if (abilityPath != null) {
+
+					if (e.getBlock().getType() == XMaterial.matchXMaterial(abilityPath).get().parseMaterial()) {
+
+						e.setCancelled(true);
+
+					}
+
+				}
 				
 			} else {
-				
+
 				if (Config.getB("Arena.PreventBlockPlacing")) {
-					
+
 					e.setCancelled(!p.hasPermission("kp.arena.blockplacing"));
-					
+
 				}
-				
+
+			}
+
+			ConfigurationSection items = config.getConfigurationSection("Items");
+
+			for (String identifier : items.getKeys(false)) {
+
+				String itemPath = "Items." + identifier;
+
+				if (e.getBlock().getType() == XMaterial.matchXMaterial(config.getString(itemPath + ".Item")).get().parseMaterial()) {
+
+					if (e.getItemInHand().hasItemMeta() && e.getItemInHand().getItemMeta().getDisplayName().equals(Config.tr(config.getString(itemPath + ".Name")))) {
+
+						e.setCancelled(true);
+
+					}
+
+				}
+
 			}
 			
 		}
@@ -92,10 +116,10 @@ public class ArenaListener implements Listener {
 	}
 	
 	@EventHandler
-	public void onDamage(PlayerItemDamageEvent e) {
-		
+	public void onItemDamage(PlayerItemDamageEvent e) {
+
 		if (Toolkit.inArena(e.getPlayer()) && Config.getB("Arena.PreventItemDurabilityDamage")) {
-			
+
 			e.setCancelled(true);
 		
 		}
@@ -149,9 +173,13 @@ public class ArenaListener implements Listener {
     		if (Toolkit.inArena(damagedPlayer)) {
     			
     			if (Config.getB("Arena.NoKitProtection")) {
-    				
-    				e.setCancelled(!arena.getKits().hasKit(damagedPlayer.getName()));
-    				
+
+    				if (!arena.getKits().hasKit(damagedPlayer.getName())) {
+
+						e.setCancelled(true);
+
+					}
+
     			}
     		
     		}
@@ -190,8 +218,12 @@ public class ArenaListener implements Listener {
 				if (e.getCause() == DamageCause.BLOCK_EXPLOSION || e.getCause() == DamageCause.ENTITY_EXPLOSION || e.getCause() == DamageCause.FIRE || e.getCause() == DamageCause.FIRE_TICK) {
 					
 					if (Config.getB("Arena.NoKitProtection")) {
-						
-						e.setCancelled(!arena.getKits().hasKit(damagedPlayer.getName()));
+
+						if (!arena.getKits().hasKit(damagedPlayer.getName())) {
+
+							e.setCancelled(true);
+
+						}
 						
 					}
 				
