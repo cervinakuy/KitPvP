@@ -5,6 +5,8 @@ import java.util.Random;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -40,8 +42,10 @@ public class ItemListener implements Listener {
 	
 	private Arena arena;
 	private Resources resources;
+	private FileConfiguration config;
 	
-	public ItemListener(Arena arena, Resources resources) {
+	public ItemListener(Game plugin, Arena arena, Resources resources) {
+		this.config = plugin.getConfig();
 		this.arena = arena;
 		this.resources = resources;
 	}
@@ -58,9 +62,9 @@ public class ItemListener implements Listener {
 				if (Toolkit.getMainHandItem(p).hasItemMeta() && Toolkit.getMainHandItem(p).getItemMeta().hasDisplayName() && Toolkit.getMainHandItem(p).getType() == XMaterial.matchXMaterial(Game.getInstance().getConfig().getString("Items.Kits.Item").toUpperCase()).get().parseMaterial()) {
 					
 					if (Toolkit.getMainHandItem(p).getItemMeta().getDisplayName().equals(Config.getS("Items.Kits.Name"))) {
-						
+
 						Toolkit.runCommands("Items.Kits", p);
-						
+
 						if (Game.getInstance().getConfig().getBoolean("Items.Kits.Menu")) {
 							
 							KitMenu menu = new KitMenu(resources);
@@ -68,14 +72,6 @@ public class ItemListener implements Listener {
 							
 						}
 						 
-					}
-					
-				} else if (Toolkit.getMainHandItem(p).getType() == XMaterial.matchXMaterial(Config.getS("Items.Leave.Item")).get().parseMaterial()) {
-					
-					if (Toolkit.getMainHandItem(p).getItemMeta().getDisplayName().equals(Config.getS(("Items.Leave.Name")))) {
-							
-						Toolkit.runCommands("Items.Leave", p);
-						
 					}
 					
 				} else if (Toolkit.getMainHandItem(p).getType() == XMaterial.TNT.parseMaterial()) {
@@ -308,6 +304,32 @@ public class ItemListener implements Listener {
 						
 					}
 					
+				} else if (Toolkit.getMainHandItem(p).hasItemMeta()) {
+
+					ConfigurationSection items = config.getConfigurationSection("Items");
+
+					for (String identifier : items.getKeys(false)) {
+
+						String itemPath = "Items." + identifier;
+
+						if (config.getBoolean(itemPath + ".Enabled")) {
+
+							ItemStack mainHand = Toolkit.getMainHandItem(p);
+
+							if (mainHand.getType() == XMaterial.matchXMaterial(config.getString(itemPath + ".Item")).get().parseMaterial()) {
+
+								if (mainHand.getItemMeta().getDisplayName().equals(Config.tr(config.getString(itemPath + ".Name")))) {
+
+									Toolkit.runCommands(itemPath, p);
+
+								}
+
+							}
+
+						}
+
+					}
+
 				}
 				
 			} 

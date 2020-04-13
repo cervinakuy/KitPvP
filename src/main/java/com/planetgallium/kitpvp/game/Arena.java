@@ -5,6 +5,9 @@ import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -21,6 +24,7 @@ import me.clip.placeholderapi.PlaceholderAPI;
 public class Arena {
 	
 	private Resources resources;
+	private FileConfiguration config;
 	
 	private List<String> players;
 	private List<String> spectators;
@@ -35,6 +39,7 @@ public class Arena {
 	public Arena(Game plugin, Resources resources) {
 		
 		this.resources = resources;
+		this.config = plugin.getConfig();
 		
 		this.players = new ArrayList<String>();
 		this.spectators = new ArrayList<String>();
@@ -129,29 +134,25 @@ public class Arena {
 	}
 	
 	public void giveItems(Player p) {
-		
-		if (Config.getB("Items.Kits.Enabled")) {
-			
-			ItemStack kits = XMaterial.matchXMaterial(Config.getS("Items.Kits.Item")).get().parseItem();
-			ItemMeta kitsmeta = kits.getItemMeta();
-			
-			kitsmeta.setDisplayName(Config.getS("Items.Kits.Name"));
-			kits.setItemMeta(kitsmeta);
-			
-			p.getInventory().setItem(Config.getI("Items.Kits.Slot"), kits);
-			
-		}
-		
-		if (Config.getB("Items.Leave.Enabled")) {
-			
-			ItemStack leave = XMaterial.matchXMaterial(Config.getS("Items.Leave.Item")).get().parseItem();
-			ItemMeta leavemeta = leave.getItemMeta();
-			
-			leavemeta.setDisplayName(Config.getS("Items.Leave.Name"));
-			leave.setItemMeta(leavemeta);
-			
-			p.getInventory().setItem(Config.getI("Items.Leave.Slot"), leave);
-			
+
+		ConfigurationSection items = config.getConfigurationSection("Items");
+
+		for (String identifier : items.getKeys(false)) {
+
+			String itemPath = "Items." + identifier;
+
+			if (config.getBoolean(itemPath + ".Enabled")) {
+
+				ItemStack item = XMaterial.matchXMaterial(config.getString(itemPath + ".Item")).get().parseItem();
+				ItemMeta meta = item.getItemMeta();
+
+				meta.setDisplayName(Config.tr(config.getString(itemPath + ".Name")));
+				item.setItemMeta(meta);
+
+				p.getInventory().setItem(config.getInt(itemPath + ".Slot"), item);
+
+			}
+
 		}
 		
 	}
