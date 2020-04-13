@@ -70,10 +70,8 @@ public class Arena {
 		if (p.getFireTicks() > 0) {
 			p.setFireTicks(0);
 		}
-		
-		if (Config.getB("Arena.ForceSurvivalOnJoin")) {
-			p.setGameMode(GameMode.SURVIVAL);
-		}
+
+		p.setGameMode(GameMode.SURVIVAL);
 		
 		if (Config.getB("Arena.FancyDeath")) {
 			p.setHealth(20.0);
