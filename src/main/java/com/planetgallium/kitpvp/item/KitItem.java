@@ -24,6 +24,7 @@ public class KitItem {
 	private PotionItem potion;
 	private EnchantedItem enchant;
 	private DamagedItem damaged;
+	private UnbreakableItem unbreakable;
 	
 	public KitItem(Resource resource, String kit, String path) {
 		
@@ -61,6 +62,10 @@ public class KitItem {
 		
 		if (resource.contains(path + ".Enchantments")) {
 			this.enchant = new EnchantedItem(resource, path + ".Enchantments");
+		}
+
+		if (Config.getB("Arena.PreventItemDurabilityDamage")) {
+			this.unbreakable = new UnbreakableItem();
 		}
 		
 	}
@@ -121,6 +126,12 @@ public class KitItem {
 				
 			}
 			
+		}
+
+		if (unbreakable != null) {
+
+			item = unbreakable.convertToUnbreakable(item);
+
 		}
 		
 		return item;
