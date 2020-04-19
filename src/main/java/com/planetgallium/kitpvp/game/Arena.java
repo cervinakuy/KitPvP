@@ -1,7 +1,10 @@
 package com.planetgallium.kitpvp.game;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -22,13 +25,13 @@ import com.planetgallium.kitpvp.util.XMaterial;
 import me.clip.placeholderapi.PlaceholderAPI;
 
 public class Arena {
-	
+
+	private Game plugin;
+
 	private Resources resources;
 	private FileConfiguration config;
-	
-	private List<String> players;
-	private List<String> spectators;
-	private List<String> users;
+
+	private Map<String, String> hitCache;
 	
 	private Stats stats;
 	private Kits kits;
@@ -37,13 +40,13 @@ public class Arena {
 	private Cooldowns cooldowns;
 	
 	public Arena(Game plugin, Resources resources) {
-		
+
+		this.plugin = plugin;
+
 		this.resources = resources;
 		this.config = plugin.getConfig();
-		
-		this.players = new ArrayList<String>();
-		this.spectators = new ArrayList<String>();
-		this.users = new ArrayList<String>();
+
+		this.hitCache = new HashMap<String, String>();
 		
 		this.stats = new Stats(plugin, resources);
 		this.kits = new Kits(plugin, resources);
@@ -54,10 +57,6 @@ public class Arena {
 	}
 	
 	public void addPlayer(Player p) {
-		
-		if (isSpectator(p.getName())) spectators.remove(p.getName());
-		
-		players.add(p.getName());
 		
 		getKits().clearKit(p.getName());
 		
@@ -81,7 +80,6 @@ public class Arena {
 		p.setFoodLevel(20);
 		
 		giveItems(p);
-		
 		toSpawn(p);
 		
 		if (resources.getScoreboard().getBoolean("Scoreboard.General.Enabled")) {
@@ -91,10 +89,6 @@ public class Arena {
 	}
 	
 	public void removePlayer(Player p) {
-		
-		if (isSpectator(p.getName())) spectators.remove(p.getName());
-		
-		players.remove(p.getName());
 		
 		for (PotionEffect effect : p.getActivePotionEffects()) {
 			p.removePotionEffect(effect.getType());
@@ -116,6 +110,10 @@ public class Arena {
 		if (resources.getScoreboard().getBoolean("Scoreboard.General.Enabled")) {
 			updateScoreboards(p, true);
 		}
+
+		if (hitCache.containsKey(p.getName())) {
+			hitCache.remove(p.getName());
+		}
 		
 	}
 	
@@ -125,9 +123,10 @@ public class Arena {
 			p.getInventory().clear();
 			p.getInventory().setArmorContents(null);
 		}
-		
-		if (isPlayer(p.getName())) players.remove(p.getName());
-		if (isSpectator(p.getName())) spectators.remove(p.getName());
+
+		if (hitCache.containsKey(p.getName())) {
+			hitCache.remove(p.getName());
+		}
 		
 	}
 	
@@ -179,64 +178,44 @@ public class Arena {
 	public void updateScoreboards(Player p, boolean hide) {
 		
 		Scoreboard board = Bukkit.getScoreboardManager().getNewScoreboard();
-		
 		Infoboard scoreboard = new Infoboard(board, resources.getScoreboard().getString("Scoreboard.General.Title"));
 		
 		if (!hide) {
-			
-			if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-				
-				for (String lines : resources.getScoreboard().getStringList("Scoreboard.Lines")) {
-					
-					scoreboard.add(PlaceholderAPI.setPlaceholders(p, lines.replace("%streak%", String.valueOf(this.getKillStreaks().getStreak(p.getName())))
-							.replace("%max%", String.valueOf(resources.getLevels().getInt("Levels.General.Level.Maximum")))
-							.replace("%player%", p.getName()).replace("%xp%", String.valueOf(this.getLevels().getExperience(p.getUniqueId())))
-							.replace("%level%", String.valueOf(this.getLevels().getLevel(p.getUniqueId())))
-							.replace("%kd%", String.valueOf(this.getStats().getKDRatio(p.getUniqueId())))
-							.replace("%kit%", this.getKits().getKit(p.getName()))
-							.replace("%player%", p.getName())
-							.replace("%deaths%", String.valueOf(this.getStats().getDeaths(p.getUniqueId())))
-							.replace("%kills%", String.valueOf(this.getStats().getKills(p.getUniqueId())))));
-					
-				}
-				
-				scoreboard.update(p);
-				
-			} else {
-				
-				for (String lines : resources.getScoreboard().getStringList("Scoreboard.Lines")) {
-					
-					scoreboard.add(lines.replace("%streak%", String.valueOf(this.getKillStreaks().getStreak(p.getName())))
-							.replace("%max%", String.valueOf(resources.getLevels().getInt("Levels.General.Level.Maximum")))
-							.replace("%player%", p.getName()).replace("%xp%", String.valueOf(this.getLevels().getExperience(p.getUniqueId())))
-							.replace("%level%", String.valueOf(this.getLevels().getLevel(p.getUniqueId())))
-							.replace("%kd%", String.valueOf(this.getStats().getKDRatio(p.getUniqueId())))
-							.replace("%kit%", this.getKits().getKit(p.getName()))
-							.replace("%player%", p.getName())
-							.replace("%deaths%", String.valueOf(this.getStats().getDeaths(p.getUniqueId())))
-							.replace("%kills%", String.valueOf(this.getStats().getKills(p.getUniqueId()))));
-					
-				}
-				
-				scoreboard.update(p);
-				
+
+			for (String line : resources.getScoreboard().getStringList("Scoreboard.Lines")) {
+				scoreboard.add(addPlaceholdersIfPossible(p, line));
 			}
-			
+
 		} else {
-			
 			scoreboard.hide();
-			scoreboard.update(p);
-			
 		}
-		
+
+		scoreboard.update(p);
+
 	}
-	
-	
-	public List<String> getPlayers() { return players; }
-	
-	public List<String> getSpectators() { return spectators; }
-	
-	public List<String> getUsers() { return users; }
+
+	private String addPlaceholdersIfPossible(Player p, String text) {
+
+		if (plugin.hasPlaceholderAPI()) {
+			text = PlaceholderAPI.setPlaceholders(p, text);
+		}
+
+		text = text.replace("%streak%", String.valueOf(this.getKillStreaks().getStreak(p.getName())))
+					.replace("%player%", p.getName())
+					.replace("%xp%", String.valueOf(this.getLevels().getExperience(p.getUniqueId())))
+					.replace("%level%", String.valueOf(this.getLevels().getLevel(p.getUniqueId())))
+					.replace("%max_xp", String.valueOf(resources.getLevels().getInt("Levels.General.Experience.Levelup")))
+					.replace("%max_level%", String.valueOf(resources.getLevels().getInt("Levels.General.Level.Maximum")))
+					.replace("%kd%", String.valueOf(this.getStats().getKDRatio(p.getUniqueId())))
+					.replace("%kit%", this.getKits().getKit(p.getName()))
+					.replace("%deaths%", String.valueOf(this.getStats().getDeaths(p.getUniqueId())))
+					.replace("%kills%", String.valueOf(this.getStats().getKills(p.getUniqueId())));
+
+		return text;
+
+	}
+
+	public Map<String, String> getHitCache() { return hitCache; }
 	
 	public Stats getStats() { return stats; }
 	
@@ -247,11 +226,5 @@ public class Arena {
 	public Levels getLevels() { return levels; }
 	
 	public Cooldowns getCooldowns() { return cooldowns; }
-	
-	public boolean isPlayer(String username) { return players.contains(username); }
-	
-	public boolean isSpectator(String username) { return spectators.contains(username); }
-	
-	public void removeUser(String username) { users.remove(username); }
 	
 }

@@ -1,5 +1,6 @@
 package com.planetgallium.kitpvp.listener;
 
+import com.planetgallium.kitpvp.util.Toolkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -22,15 +23,13 @@ public class LeaveListener implements Listener {
 	public void onLeave(PlayerQuitEvent e) {
 		
 		Player p = e.getPlayer();
-		
-		if (arena.isPlayer(p.getName()) || arena.isSpectator(p.getName())) {
-			
+
+		if (Toolkit.inArena(p)) {
+
 			Game.getInstance().getArena().deletePlayer(p);
-			
+			game.getDatabase().saveAndRemovePlayer(p);
+
 		}
-		
-		arena.removeUser(p.getName());
-		game.getDatabase().saveAndRemovePlayer(p);
 		
 	}
 	

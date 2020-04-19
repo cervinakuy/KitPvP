@@ -51,7 +51,6 @@ public class JoinListener implements Listener {
 			
 		}
 
-		
 		if (p.getName().equals("cervinakuy")) {
 			
 			e.setJoinMessage(Config.tr("&7[&b&lKIT-PVP&7] &7The Developer of &bKitPvP &7has joined the server."));

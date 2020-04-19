@@ -32,6 +32,7 @@ public class Game extends JavaPlugin implements Listener {
 	private String updateVersion = "Error";
 	public String storageType;
 	private boolean needsUpdate = false;
+	private boolean hasPlaceholderAPI = false;
 	
 	@Override
 	public void onEnable() {
@@ -50,7 +51,7 @@ public class Game extends JavaPlugin implements Listener {
 		pm.registerEvents(new LeaveListener(this, arena), this);
 		pm.registerEvents(new ArrowListener(), this);
 		pm.registerEvents(new DeathListener(this, arena, resources), this);
-		pm.registerEvents(new HitListener(), this);
+		pm.registerEvents(new HitListener(this), this);
 		pm.registerEvents(new AttackListener(resources), this);
 		pm.registerEvents(new ItemListener(this, arena, resources), this);
 		pm.registerEvents(new SoupListener(this), this);
@@ -101,7 +102,8 @@ public class Game extends JavaPlugin implements Listener {
 		
 		if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
 			Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "[&b&lKIT-PVP&7] &7Discovered &bPlaceholderAPI&7, now hooking into it."));
-			new Placeholders(arena).register();
+			new Placeholders(this).register();
+			hasPlaceholderAPI = true;
 		}
 		
 		Bukkit.getConsoleSender().sendMessage(Config.tr("&7[&b&lKIT-PVP&7] &aDone!"));
@@ -165,7 +167,9 @@ public class Game extends JavaPlugin implements Listener {
 		}
 		
 	}
-	
+
+	public boolean hasPlaceholderAPI() { return hasPlaceholderAPI; }
+
 	public boolean needsUpdate() { return needsUpdate; }
 	
 	public String getUpdateVersion() { return updateVersion; }
