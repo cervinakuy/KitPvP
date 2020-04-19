@@ -16,7 +16,6 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import com.planetgallium.kitpvp.Game;
@@ -139,20 +138,32 @@ public class DeathListener implements Listener {
 
 		DamageCause cause = victim.getLastDamageCause().getCause();
 
+		Bukkit.getConsoleSender().sendMessage("Player died, hit cache occupied: " + (arena.getHitCache().get(victim.getName()) != null));
+
+		if (arena.getHitCache().get(victim.getName()) != null) {
+			Bukkit.getConsoleSender().sendMessage("Hit cache  result: " + arena.getHitCache().get(victim.getName()));
+		}
+
 		if (cause == DamageCause.PROJECTILE) {
 
 			broadcast(victim.getWorld(), Config.getS("Death.Messages.Shot").replace("%victim%", victim.getName()).replace("%shooter%", getShooter(victim.getLastDamageCause()).getName()));
-			creditKiller(victim);
+			creditWithKill(victim, victim.getKiller());
 
 		} else if (cause == DamageCause.ENTITY_ATTACK) {
 
 			broadcast(victim.getWorld(), Config.getS("Death.Messages.Player").replace("%victim%", victim.getName()).replace("%killer%", victim.getKiller().getName()));
-			creditKiller(victim);
+			creditWithKill(victim, victim.getKiller());
 
 		} else if (victim.getKiller() != null) {
 
 			broadcast(victim.getWorld(), Config.getS("Death.Messages.Player").replace("%victim%", victim.getName()).replace("%killer%", victim.getKiller().getName()));
-			creditKiller(victim);
+			creditWithKill(victim, victim.getKiller());
+
+		} else if (arena.getHitCache().get(victim.getName()) != null) {
+
+			String killerName = arena.getHitCache().get(victim.getName());
+			broadcast(victim.getWorld(), Config.getS("Death.Messages.Player").replace("%victim%", victim.getName()).replace("%killer%", killerName));
+			creditWithKill(victim, getPlayer(victim, killerName));
 
 		} else if (cause == DamageCause.VOID) {
 
@@ -189,12 +200,12 @@ public class DeathListener implements Listener {
 
 	}
 
-	private void creditKiller(Player victim) {
+	private void creditWithKill(Player victim, Player killer) {
 
-		arena.getStats().addKill(victim.getKiller().getUniqueId());
-		arena.getLevels().addExperience(victim.getKiller(), resources.getLevels().getInt("Levels.General.Experience.Kill"));
+		arena.getStats().addKill(killer.getUniqueId());
+		arena.getLevels().addExperience(killer, resources.getLevels().getInt("Levels.General.Experience.Kill"));
 
-		Toolkit.runKillCommands(victim, victim.getKiller());
+		Toolkit.runKillCommands(victim, killer);
 
 		if (resources.getScoreboard().getBoolean("Scoreboard.General.Enabled")) {
 
@@ -203,9 +214,9 @@ public class DeathListener implements Listener {
 				@Override
 				public void run() {
 
-					if (victim.getKiller() instanceof Player) {
+					if (killer instanceof Player) {
 
-						arena.updateScoreboards(victim.getKiller().getPlayer(), false);
+						arena.updateScoreboards(killer, false);
 
 					}
 
@@ -243,6 +254,22 @@ public class DeathListener implements Listener {
 			
 		}
 		
+	}
+
+	private Player getPlayer(Player origin, String name) {
+
+		for (Player player : origin.getWorld().getPlayers()) {
+
+			if (player.getName().equals(name)) {
+
+				return player;
+
+			}
+
+		}
+
+		return null;
+
 	}
 
 }

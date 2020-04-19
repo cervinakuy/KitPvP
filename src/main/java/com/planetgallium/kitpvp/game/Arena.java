@@ -204,7 +204,7 @@ public class Arena {
 					.replace("%player%", p.getName())
 					.replace("%xp%", String.valueOf(this.getLevels().getExperience(p.getUniqueId())))
 					.replace("%level%", String.valueOf(this.getLevels().getLevel(p.getUniqueId())))
-					.replace("%max_xp", String.valueOf(resources.getLevels().getInt("Levels.General.Experience.Levelup")))
+					.replace("%max_xp%", String.valueOf(resources.getLevels().getInt("Levels.General.Experience.Levelup")))
 					.replace("%max_level%", String.valueOf(resources.getLevels().getInt("Levels.General.Level.Maximum")))
 					.replace("%kd%", String.valueOf(this.getStats().getKDRatio(p.getUniqueId())))
 					.replace("%kit%", this.getKits().getKit(p.getName()))
