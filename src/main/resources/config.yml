@@ -124,7 +124,7 @@ Arena:
   PreventBlockPlacing: true
   PreventHunger: true
   PreventItemDropping: true
-  PreventItemDurabilityDamage: true
+  PreventItemDurabilityDamage: false
   PreventChestOpen: true
   PreventFallDamage: false
   PreventDeathDrops: true
