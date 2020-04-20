@@ -61,9 +61,9 @@ public class JoinListener implements Listener {
 	
 	@EventHandler
 	public void onWorldChange(PlayerChangedWorldEvent e) {
-		
+
 		Player p = e.getPlayer();
-			
+
 		if (Toolkit.inArena(p)) {
 
 			if (Config.getB("Arena.ClearInventoryOnJoin")) {
@@ -74,6 +74,7 @@ public class JoinListener implements Listener {
 			arena.addPlayer(p);
 			
 		} else if (Toolkit.inArena(e.getFrom())) {
+
 			// if they left from the kitpvp arena
 			
 			if (Config.getB("Arena.ClearInventoryOnLeave")) {
