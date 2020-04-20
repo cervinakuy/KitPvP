@@ -2,15 +2,30 @@ package com.planetgallium.kitpvp.item;
 
 import com.planetgallium.kitpvp.util.Toolkit;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 public class UnbreakableItem {
 
-    public ItemStack convertToUnbreakable(ItemStack original) {
+    public ItemStack convertToUnbreakable(ItemStack original) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
 
-        // versionToNumber converts server version to number (ex. 1.14 -> 114)
         if (Toolkit.versionToNumber() <= 114) {
 
-//            original.getItemMeta().spigot().setUnbreakable(true);
+            ItemMeta meta = original.getItemMeta();
+
+            Method spigotMethod = meta.getClass().getDeclaredMethod("spigot");
+            spigotMethod.setAccessible(true);
+
+            Object spigotInstance = spigotMethod.invoke(meta);
+            Class spigotClass = spigotInstance.getClass();
+
+            Method setUnbreakableMethod = spigotClass.getDeclaredMethod("setUnbreakable", boolean.class);
+            setUnbreakableMethod.setAccessible(true);
+
+            setUnbreakableMethod.invoke(spigotInstance, true);
+
             return original;
 
         } else if (Toolkit.versionToNumber() > 114) {

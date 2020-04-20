@@ -1,5 +1,6 @@
 package com.planetgallium.kitpvp.item;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import org.bukkit.Color;
@@ -130,7 +131,11 @@ public class KitItem {
 
 		if (unbreakable != null) {
 
-			item = unbreakable.convertToUnbreakable(item);
+			try {
+				item = unbreakable.convertToUnbreakable(item);
+			} catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+				e.printStackTrace();
+			}
 
 		}
 		
