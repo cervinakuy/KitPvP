@@ -17,27 +17,26 @@ public class DamagedItem {
 	}
 	
 	@SuppressWarnings("deprecation")
-	public ItemStack setDamaged(ItemStack toConvert) {
-		
-		ItemStack newItem = toConvert;
-		ItemMeta meta = toConvert.getItemMeta();
+	public ItemStack setDamaged(ItemStack original) {
+
+		ItemMeta meta = original.getItemMeta();
 		
 		if (Toolkit.versionToNumber() < 113) {
 			
-			newItem.setDurability((short) damageAmount);
+			original.setDurability((short) damageAmount);
 			
 		} else if (Toolkit.versionToNumber() >= 113) {
 			
 			if (meta instanceof Damageable) {
 				
 				((Damageable) meta).setDamage(damageAmount);
-				newItem.setItemMeta(meta);
+				original.setItemMeta(meta);
 				
 			}
 			
 		}
 		
-		return newItem;
+		return original;
 		
 	}
 	
