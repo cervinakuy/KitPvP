@@ -90,7 +90,7 @@ public class Resource extends YamlConfiguration {
         String string = super.getString(path);
 
         if (file.getName().equalsIgnoreCase("messages.yml") || file.getName().equalsIgnoreCase("messages")) {
-            string.replace("%prefix%", super.getString("Messages.General.Prefix"));
+            string = string.replace("%prefix%", super.getString("Messages.General.Prefix"));
         }
 
         return ChatColor.translateAlternateColorCodes('&', string);
