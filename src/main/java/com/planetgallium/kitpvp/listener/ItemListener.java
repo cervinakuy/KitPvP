@@ -19,6 +19,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -43,287 +44,213 @@ public class ItemListener implements Listener {
 	private Arena arena;
 	private Resources resources;
 	private FileConfiguration config;
+	private FileConfiguration abilConfig;
 	
 	public ItemListener(Game plugin, Arena arena, Resources resources) {
-		this.config = plugin.getConfig();
 		this.arena = arena;
 		this.resources = resources;
+		this.config = plugin.getConfig();
+		this.abilConfig = resources.getAbilities();
 	}
 	
 	@EventHandler
 	public void onInteract(PlayerInteractEvent e) {
-		
+
 		Player p = e.getPlayer();
 		
-		if (Toolkit.inArena(p)) {
-			
-			if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
-				
-				if (Toolkit.getMainHandItem(p).hasItemMeta() && Toolkit.getMainHandItem(p).getItemMeta().hasDisplayName() && Toolkit.getMainHandItem(p).getType() == XMaterial.matchXMaterial(Game.getInstance().getConfig().getString("Items.Kits.Item").toUpperCase()).get().parseMaterial()) {
-					
-					if (Toolkit.getMainHandItem(p).getItemMeta().getDisplayName().equals(Config.getS("Items.Kits.Name"))) {
+		if (Toolkit.inArena(p) && e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
 
-						Toolkit.runCommands("Items.Kits", p);
+			ItemStack item = e.getItem();
+			ItemMeta meta = item.getItemMeta();
 
-						if (Game.getInstance().getConfig().getBoolean("Items.Kits.Menu")) {
-							
-							KitMenu menu = new KitMenu(resources);
-							menu.create(p);
-							
-						}
-						 
-					}
-					
-				} else if (Toolkit.getMainHandItem(p).getType() == XMaterial.TNT.parseMaterial()) {
+			if (item.getType() == XMaterial.SADDLE.parseMaterial()) {
 
-					ItemStack tnt = Toolkit.getMainHandItem(p);
+				if (isAbilityItem(p, "Kangaroo", item)) {
 
-					if (Config.getB("TNT.Enabled")) {
+					p.setVelocity(new Vector(0, 2, 0));
+					p.setFallDistance(config.getBoolean("Arena.PreventFallDamage") ? -1000000 : -30);
 
-						if (tnt.getItemMeta().getDisplayName().equals(Config.getS("TNT.Name"))) {
+					useAbilityItem(p, p, item, "Kangaroo");
 
-							Location handLocation = p.getLocation();
-							handLocation.setY(handLocation.getY() + 1.0);
-							Vector direction = handLocation.getDirection();
+				}
 
-							Entity entity = p.getWorld().spawn(handLocation, TNTPrimed.class);
-							entity.setVelocity(direction.multiply(1.5));
+			} else if (item.getType() == XMaterial.IRON_HOE.parseMaterial()) {
 
-							tnt.setAmount(tnt.getAmount() - 1);
-							Toolkit.setMainHandItem(p, tnt);
+				if (isAbilityItem(p, "Soldier", item)) {
 
-						}
+					Snowball ammo = p.launchProjectile(Snowball.class);
+					ammo.setCustomName("bullet");
+					ammo.setVelocity(p.getLocation().getDirection().multiply(2.5));
 
-					}
-		            
-				} else if (Toolkit.getMainHandItem(p).getType() == XMaterial.SLIME_BALL.parseMaterial()) {
-					
-					int amount = p.getInventory().getItem(2).getAmount();
-					
-					ItemStack enabled = new ItemStack(Material.MAGMA_CREAM, amount);
-					ItemMeta enabledmeta = enabled.getItemMeta();
-					enabledmeta.setDisplayName(Config.tr(resources.getAbilities().getString("Abilities.Archer.Item.Fire")));
-					enabled.setItemMeta(enabledmeta);
-					Toolkit.setMainHandItem(p, enabled);
-					
-					if (resources.getAbilities().getBoolean("Abilities.Archer.Message.Enabled")) {
-						p.sendMessage(Config.tr(resources.getAbilities().getString("Abilities.Archer.Message.Fire").replace("%prefix%", resources.getMessages().getString("Messages.General.Prefix"))));
-					}
-					
-					p.playSound(p.getLocation(), XSound.UI_BUTTON_CLICK.parseSound(), 1, resources.getAbilities().getInt("Abilities.Archer.Sound.Pitch"));
-					
-				} else if (Toolkit.getMainHandItem(p).getType() == XMaterial.MAGMA_CREAM.parseMaterial()) {
-					
-					int amount = p.getInventory().getItem(2).getAmount();
-					
-					ItemStack enabled = new ItemStack(Material.SLIME_BALL, amount);
-					ItemMeta enabledmeta = enabled.getItemMeta();
-					enabledmeta.setDisplayName(Config.tr(resources.getAbilities().getString("Abilities.Archer.Item.NoFire")));
-					enabled.setItemMeta(enabledmeta);
-					Toolkit.setMainHandItem(p, enabled);
-					
-					if (resources.getAbilities().getBoolean("Abilities.Archer.Message.Enabled")) {
-						p.sendMessage(Config.tr(resources.getAbilities().getString("Abilities.Archer.Message.NoFire").replace("%prefix%", resources.getMessages().getString("Messages.General.Prefix"))));
-					}
-					
-					p.playSound(p.getLocation(), XSound.UI_BUTTON_CLICK.parseSound(), 1, 1);
-					
-				} else if (Toolkit.getMainHandItem(p).getType() == XMaterial.SADDLE.parseMaterial()) {
-					
-					if (p.hasPermission("kp.ability.kangaroo")) {
-						
-						ItemStack launcher = new ItemStack(e.getItem().getType(), e.getItem().getAmount());
-						ItemMeta launchermeta = launcher.getItemMeta();
-						launchermeta.setDisplayName(Config.tr(resources.getAbilities().getString("Abilities.Kangaroo.Item.Name")));
-						launcher.setItemMeta(launchermeta);
-						
-						p.playSound(p.getLocation(), XSound.matchXSound(resources.getAbilities().getString("Abilities.Kangaroo.Sound.Sound")).get().parseSound(), 1, (int) resources.getAbilities().getInt("Abilities.Kangaroo.Sound.Pitch"));
-						
-						if (resources.getAbilities().getBoolean("Abilities.Kangaroo.Message.Enabled")) {
-							p.sendMessage(Config.tr(resources.getAbilities().getString("Abilities.Kangaroo.Message.Message").replace("%prefix%", resources.getMessages().getString("Messages.General.Prefix"))));
-						}
-						
-						p.setVelocity(new Vector(0, 2, 0));
-						
-						launcher.setAmount(launcher.getAmount() - 1);
-						Toolkit.setMainHandItem(p, launcher);
-						
-						if (Game.getInstance().getConfig().getBoolean("Arena.PreventFallDamage")) { p.setFallDistance(-1000000); } else { p.setFallDistance(-30); }
-						
-					}
-					
-				} else if (Toolkit.getMainHandItem(p).getType() == XMaterial.IRON_HOE.parseMaterial()) {
-					
-					if (p.hasPermission("kp.ability.soldier")) {
-						
-						ItemStack gun = new ItemStack(e.getItem().getType(), e.getItem().getAmount());
-						ItemMeta gunmeta = gun.getItemMeta();
-						gunmeta.setDisplayName(resources.getAbilities().getString("Abilities.Soldier.Item.Name").replaceAll("&", "§"));
-						gun.setItemMeta(gunmeta);
-						
-						Snowball ammo = (Snowball) p.launchProjectile(Snowball.class);
-						ammo.setCustomName("bullet");
-						ammo.setVelocity(p.getLocation().getDirection().multiply(2.5));
+					useAbilityItem(p, p, item, "Soldier");
 
-						p.playSound(p.getLocation(), XSound.ENTITY_GENERIC_EXPLODE.parseSound(), 1, 2);
-						
-						gun.setAmount(gun.getAmount() - 1);
-						Toolkit.setMainHandItem(p, gun);
-						
-					}
-					
-				} else if (Toolkit.getMainHandItem(p).getType() == XMaterial.GLASS_BOTTLE.parseMaterial()) {
-					
-					if (p.hasPermission("kp.ability.witch") && arena.getKits().getKit(p.getName()).equals("Witch")) {
-						
-						Potion potion = new Potion(pickPotion(), 1);
-						potion.setSplash(true);
-						
-						Toolkit.setMainHandItem(p, potion.toItemStack(1));
-						
-					}
-					
-				} else if (Toolkit.getMainHandItem(p).getType() == XMaterial.ENDER_EYE.parseMaterial()) {
-					
-					if (p.hasPermission("kp.ability.warper")) {
+				}
 
-						String[] nearestData = Toolkit.getNearestPlayer(p, Config.getI("PlayerTracker.TrackBelowY"));
+			} else if (item.getType() == XMaterial.GLASS_BOTTLE.parseMaterial()) {
 
-						if (Bukkit.getServer().getOnlinePlayers().size() > 1 && nearestData != null) {
-							
-							e.setCancelled(true);
-							
-							ItemStack tper = new ItemStack(e.getItem().getType(), e.getItem().getAmount());
-							ItemMeta tpermeta = tper.getItemMeta();
-							tpermeta.setDisplayName(Config.tr(resources.getAbilities().getString("Abilities.Warper.Item.Name")));
-							tper.setItemMeta(tpermeta);
+				if (isAbilityItem(p, "Witch", item)) {
 
-							String username = nearestData[0];
-							Location loc = Bukkit.getPlayer(username).getLocation();
-							
-							if (Game.getInstance().getArena().getKits().hasKit(username)) {
-								
-								p.teleport(loc);
-								
-								p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 60, 5));
-								p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 80, 5));
-								
-								p.playSound(p.getLocation(), XSound.matchXSound(resources.getAbilities().getString("Abilities.Warper.Sound.Sound")).get().parseSound(), 1, (int) resources.getAbilities().getInt("Abilities.Warper.Sound.Pitch"));
-								
-								if (resources.getAbilities().getBoolean("Abilities.Warper.Message.Enabled")) {
-									p.sendMessage(Config.tr(resources.getAbilities().getString("Abilities.Warper.Message.Message").replace("%prefix%", resources.getMessages().getString("Messages.General.Prefix"))));
-								}
-								
-								tper.setAmount(tper.getAmount() - 1);
-								Toolkit.setMainHandItem(p, tper);
-								
-							} else {
-								
-								p.sendMessage(Config.tr(resources.getMessages().getString("Messages.Other.Players")));
-								
-							}
-							
+					Potion potion = new Potion(pickPotion(), 1);
+					potion.setSplash(true);
+
+					Toolkit.setMainHandItem(p, potion.toItemStack(1));
+
+				}
+
+			} else if (item.getType() == XMaterial.TNT.parseMaterial()) {
+
+				if (Config.getB("TNT.Enabled") && item.hasItemMeta() && item.getItemMeta().getDisplayName().equals(Config.getS("TNT.Name"))) {
+
+					Location handLocation = p.getLocation();
+					handLocation.setY(handLocation.getY() + 1.0);
+					Vector direction = handLocation.getDirection();
+
+					Entity entity = p.getWorld().spawn(handLocation, TNTPrimed.class);
+					entity.setVelocity(direction.multiply(1.5));
+
+					useAbilityItem(p, p, item, "none");
+
+				}
+
+			} else if (item.getType() == XMaterial.ENDER_EYE.parseMaterial()) {
+
+				if (isAbilityItem(p, "Warper", item)) {
+
+					String[] nearestData = Toolkit.getNearestPlayer(p, Config.getI("PlayerTracker.TrackBelowY"));
+
+					if (Bukkit.getServer().getOnlinePlayers().size() > 1 && nearestData != null) {
+
+						e.setCancelled(true);
+
+						String username = nearestData[0];
+						Location loc = Bukkit.getPlayer(username).getLocation();
+
+						if (arena.getKits().hasKit(username)) {
+
+							p.teleport(loc);
+
+							p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 60, 5));
+							p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 80, 5));
+
+							useAbilityItem(p, p, item, "Warper");
+
 						} else {
-							
 							p.sendMessage(Config.tr(resources.getMessages().getString("Messages.Other.Players")));
-							
 						}
-						
-					}	
-					
-				} else if (Toolkit.getMainHandItem(p).getType() == XMaterial.NETHER_STAR.parseMaterial()) {
-					
-					if (p.hasPermission("kp.ability.ninja")) {
-						
-						ItemStack previousHelmet = p.getInventory().getHelmet();
-						ItemStack previousChestplate = p.getInventory().getChestplate();
-						ItemStack previousLeggings = p.getInventory().getLeggings();
-						ItemStack previousBoots = p.getInventory().getBoots();
-						
-						p.getInventory().setArmorContents(null);
-						
-						ItemStack vanish = new ItemStack(e.getItem().getType(), e.getItem().getAmount());
-						ItemMeta vanishMeta = vanish.getItemMeta();
-						
-						vanishMeta.setDisplayName(Config.tr(resources.getAbilities().getString("Abilities.Ninja.Item.Name")));
-						vanish.setItemMeta(vanishMeta);
-						
-						for (Entity entity : p.getNearbyEntities(3, 3, 3)) {
-							
-							if (entity instanceof Player) {
-								
-								Player nearby = (Player) entity;
-								
-								nearby.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 100, 0));
-								nearby.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 100, 0));
-								
-							}
-							
+
+					} else {
+						p.sendMessage(Config.tr(resources.getMessages().getString("Messages.Other.Players")));
+					}
+
+				}
+
+			} else if (item.getType() == XMaterial.NETHER_STAR.parseMaterial()) {
+
+				if (isAbilityItem(p, "Ninja", item)) {
+
+					ItemStack previousHelmet = p.getInventory().getHelmet();
+					ItemStack previousChestplate = p.getInventory().getChestplate();
+					ItemStack previousLeggings = p.getInventory().getLeggings();
+					ItemStack previousBoots = p.getInventory().getBoots();
+
+					p.getInventory().setArmorContents(null);
+
+					for (Entity entity : p.getNearbyEntities(3, 3, 3)) {
+
+						if (entity instanceof Player) {
+
+							Player nearby = (Player) entity;
+
+							nearby.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 100, 0));
+							nearby.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 100, 0));
+
 						}
-						
-						p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 100, 2));
-						p.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 100, 0));
-						
-						p.playSound(p.getLocation(), XSound.matchXSound(resources.getAbilities().getString("Abilities.Ninja.Sound.Sound")).get().parseSound(), 1, resources.getAbilities().getInt("Abilities.Ninja.Sound.Pitch"));
-						
-						if (resources.getAbilities().getBoolean("Abilities.Ninja.Messaage.Enabled")) {
-							p.sendMessage(Config.tr(resources.getAbilities().getString("Abilities.Ninja.Message.Message").replace("%prefix%", resources.getMessages().getString("Messages.General.Prefix"))));
+
+					}
+
+					p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 100, 2));
+					p.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 100, 0));
+
+					useAbilityItem(p, p, item, "Ninja");
+
+					new BukkitRunnable() {
+
+						@Override
+						public void run() {
+
+							p.getInventory().setHelmet(previousHelmet);
+							p.getInventory().setChestplate(previousChestplate);
+							p.getInventory().setLeggings(previousLeggings);
+							p.getInventory().setBoots(previousBoots);
+
 						}
-						
-						vanish.setAmount(vanish.getAmount() - 1);
-						Toolkit.setMainHandItem(p, vanish);
-						
-						new BukkitRunnable() {
-							
-							@Override
-							public void run() {
-								
-								p.getInventory().setHelmet(previousHelmet);
-								p.getInventory().setChestplate(previousChestplate);
-								p.getInventory().setLeggings(previousLeggings);
-								p.getInventory().setBoots(previousBoots);
-								
-							}
-							
-						}.runTaskLater(Game.getInstance(), 100L);
-						
+
+					}.runTaskLater(Game.getInstance(), 100L);
+
+				}
+
+			} else if (item.getType() == XMaterial.SLIME_BALL.parseMaterial()) {
+
+				item.setType(XMaterial.MAGMA_CREAM.parseMaterial());
+				meta.setDisplayName(Config.tr(resources.getAbilities().getString("Abilities.Archer.Item.Fire")));
+				item.setItemMeta(meta);
+
+				Toolkit.setMainHandItem(p, item);
+
+				if (resources.getAbilities().getBoolean("Abilities.Archer.Message.Enabled")) {
+					p.sendMessage(Config.tr(resources.getAbilities().getString("Abilities.Archer.Message.Fire")));
+				}
+
+				XSound.playSoundFromString(p, "UI_BUTTON_CLICK, 1, 1");
+
+			} else if (item.getType() == XMaterial.MAGMA_CREAM.parseMaterial()) {
+
+				item.setType(XMaterial.SLIME_BALL.parseMaterial());
+				meta.setDisplayName(Config.tr(resources.getAbilities().getString("Abilities.Archer.Item.NoFire")));
+				item.setItemMeta(meta);
+
+				Toolkit.setMainHandItem(p, item);
+
+				if (resources.getAbilities().getBoolean("Abilities.Archer.Message.Enabled")) {
+					p.sendMessage(Config.tr(resources.getAbilities().getString("Abilities.Archer.Message.NoFire")));
+				}
+
+				XSound.playSoundFromString(p, "UI_BUTTON_CLICK, 1, 1");
+
+			} else if (item.getType() == XMaterial.BLAZE_ROD.parseMaterial() || item.getType() == XMaterial.GHAST_TEAR.parseMaterial()) {
+
+				p.sendMessage(resources.getMessages().getString("Messages.Error.Player"));
+
+			} else if (item.getType() == XMaterial.matchXMaterial(config.getString("Items.Kits.Item")).get().parseMaterial()) {
+
+				if (meta.getDisplayName().equals(Config.getS("Items.Kits.Name"))) {
+
+					Toolkit.runCommands("Items.Kits", p);
+
+					if (Game.getInstance().getConfig().getBoolean("Items.Kits.Menu")) {
+
+						KitMenu menu = new KitMenu(resources);
+						menu.create(p);
+
 					}
-					
-				} else if (Toolkit.getMainHandItem(p).getType() == XMaterial.BLAZE_ROD.parseMaterial()) {
-					
-					if (arena.getKits().getKit(p.getName()).equals("Thunderbolt") && p.hasPermission("kp.ability.thunderbolt")) {
-						
-						p.sendMessage(Config.tr(resources.getMessages().getString("Messages.Error.Player")));
-						
-					}
-					
-				} else if (Toolkit.getMainHandItem(p).getType() == XMaterial.GHAST_TEAR.parseMaterial()) {
-					
-					if (arena.getKits().getKit(p.getName()).equals("Vampire") && p.hasPermission("kp.ability.vampire")) {
-						
-						p.sendMessage(Config.tr(resources.getMessages().getString("Messages.Error.Player")));
-						
-					}
-					
-				} else if (Toolkit.getMainHandItem(p).hasItemMeta()) {
 
-					ConfigurationSection items = config.getConfigurationSection("Items");
+				}
 
-					for (String identifier : items.getKeys(false)) {
+			} else if (item.hasItemMeta()) {
 
-						String itemPath = "Items." + identifier;
+				ConfigurationSection items = config.getConfigurationSection("Items");
 
-						if (config.getBoolean(itemPath + ".Enabled")) {
+				for (String identifier : items.getKeys(false)) {
 
-							ItemStack mainHand = Toolkit.getMainHandItem(p);
+					String itemPath = "Items." + identifier;
 
-							if (mainHand.getType() == XMaterial.matchXMaterial(config.getString(itemPath + ".Item")).get().parseMaterial()) {
+					if (config.getBoolean(itemPath + ".Enabled")) {
 
-								if (mainHand.getItemMeta().getDisplayName().equals(Config.tr(config.getString(itemPath + ".Name")))) {
+						if (item.getType() == XMaterial.matchXMaterial(config.getString(itemPath + ".Item")).get().parseMaterial()) {
 
-									Toolkit.runCommands(itemPath, p);
+							if (item.getItemMeta().getDisplayName().equals(Config.tr(config.getString(itemPath + ".Name")))) {
 
-								}
+								Toolkit.runCommands(itemPath, p);
 
 							}
 
@@ -332,11 +259,112 @@ public class ItemListener implements Listener {
 					}
 
 				}
-				
-			} 
+
+			}
 			
 		}
 		
+	}
+
+	@EventHandler
+	public void onInteract(PlayerInteractEntityEvent e) {
+
+		Player p = e.getPlayer();
+
+		if (Toolkit.inArena(p) && e.getRightClicked().getType() == EntityType.PLAYER) {
+
+			ItemStack item = Toolkit.getMainHandItem(p);
+			Player damagedPlayer = (Player) e.getRightClicked();
+
+			if (Config.getB("Arena.NoKitProtection")) {
+
+				if (!arena.getKits().hasKit(damagedPlayer.getName())) {
+					return;
+				}
+
+			}
+
+			if (item.getType() == XMaterial.BLAZE_ROD.parseMaterial()) {
+
+				if (isAbilityItem(p, "Thunderbolt", item)) {
+
+					p.getWorld().strikeLightningEffect(e.getRightClicked().getLocation());
+					damagedPlayer.damage(4.0);
+					damagedPlayer.setFireTicks(5 * 20);
+
+					useAbilityItem(p, damagedPlayer, item, "Thunderbolt");
+
+				}
+
+			} else if (item.getType() == XMaterial.GHAST_TEAR.parseMaterial()) {
+
+				if (isAbilityItem(p, "Vampire", item)) {
+
+					damagedPlayer.damage(4.0);
+					damagedPlayer.playSound(damagedPlayer.getLocation(), XSound.ENTITY_GENERIC_DRINK.parseSound(), 1, -1);
+
+					if (p.getHealth() <= 16.0) {
+
+						p.setHealth(p.getHealth() + 4.0);
+						p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 20 * 2, 1));
+
+					}
+
+					useAbilityItem(p, damagedPlayer, item, "Vampire");
+
+				}
+
+			}
+
+		}
+
+	}
+
+	private boolean isAbilityItem(Player p, String kitName, ItemStack interactedItem) {
+
+		if (arena.getKits().hasKit(p.getName())) {
+
+			if (interactedItem.hasItemMeta()) {
+
+				ItemMeta meta = interactedItem.getItemMeta();
+
+				if (meta.getDisplayName().equals(abilConfig.getString("Abilities." + kitName + ".Item.Name"))) {
+
+					if (p.hasPermission("kp.ability." + kitName.toLowerCase())) {
+
+						return true;
+
+					} else {
+
+						p.sendMessage(resources.getMessages().getString("Messages.General.Permission"));
+
+					}
+
+				}
+
+			}
+
+		}
+
+		return false;
+
+	}
+
+	private void useAbilityItem(Player p, Player clicked, ItemStack abilityItem, String kitName) {
+
+		String abilityPrefix = "Abilities." + kitName;
+
+		if (abilConfig.getBoolean(abilityPrefix + ".Message.Enabled")) {
+			p.sendMessage(Config.tr(abilConfig.getString(abilityPrefix + ".Message.Message").replace("%player%", clicked.getName())));
+		}
+
+		abilityItem.setAmount(abilityItem.getAmount() - 1);
+		Toolkit.setMainHandItem(p, abilityItem);
+
+		if (abilConfig.getBoolean(abilityPrefix + ".Sound.Enabled")) {
+			XSound.playSoundFromString(p, abilConfig.getString(abilityPrefix + ".Sound.Sound") + ", 1, " + abilConfig.getInt(abilityPrefix + ".Sound.Pitch"));
+		}
+
 	}
 	
 	@EventHandler
@@ -403,9 +431,9 @@ public class ItemListener implements Listener {
 						@Override
 						public void run() {
 							
-							if (Game.getInstance().getArena().getKits().getKit(p.getName()) != null) {
+							if (arena.getKits().getKit(p.getName()) != null) {
 								
-								if (Game.getInstance().getArena().getKits().getKit(p.getName()).equals("Witch")) {
+								if (arena.getKits().getKit(p.getName()).equals("Witch")) {
 									
 									p.getInventory().setItem(slot, potion.toItemStack(1));
 									
