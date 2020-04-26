@@ -35,7 +35,7 @@ Ability:
     Name: '&aHealth Pack &7(Right Click)'
     Item: ENDER_CHEST
   Message:
-    Message: '%prefix% &7You have used a &aHealth Pack&7.'
+    Message: '%prefix% &7You have used a &bHealth Pack&7.'
     Enabled: true
   Sound:
     Sound: ANVIL_USE
