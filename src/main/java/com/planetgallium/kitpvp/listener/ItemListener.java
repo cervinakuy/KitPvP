@@ -162,6 +162,7 @@ public class ItemListener implements Listener {
 						gun.setItemMeta(gunmeta);
 						
 						Snowball ammo = (Snowball) p.launchProjectile(Snowball.class);
+						ammo.setCustomName("bullet");
 						ammo.setVelocity(p.getLocation().getDirection().multiply(2.5));
 
 						p.playSound(p.getLocation(), XSound.ENTITY_GENERIC_EXPLODE.parseSound(), 1, 2);
@@ -438,11 +439,16 @@ public class ItemListener implements Listener {
 			if (e.getDamager() instanceof Snowball) {
 				
 				Player damagedPlayer = (Player) e.getEntity();
-				
-				if (Toolkit.inArena(damagedPlayer) && Game.getInstance().getArena().getKits().hasKit(damagedPlayer.getName())) {
-					
-					damagedPlayer.damage(4.5);
-						
+				Snowball snowball = (Snowball) e.getDamager();
+
+				if (snowball.getCustomName() != null && snowball.getCustomName().equals("bullet")) {
+
+					if (Toolkit.inArena(damagedPlayer) && arena.getKits().hasKit(damagedPlayer.getName())) {
+
+						damagedPlayer.damage(4.5);
+
+					}
+
 				}
 				
 			}
