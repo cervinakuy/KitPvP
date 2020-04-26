@@ -29,71 +29,75 @@ public class InteractListener implements Listener {
 	public void onInteract(PlayerInteractEntityEvent e) {
 		
 		Player p = e.getPlayer();
-		
-		if (Toolkit.inArena(p) && Toolkit.getMainHandItem(p).getType() == XMaterial.BLAZE_ROD.parseMaterial() && e.getRightClicked().getType() == EntityType.PLAYER) {
-			
-			if (p.hasPermission("kp.ability.thunderbolt")) {
-				
-				Player damagedPlayer = (Player) e.getRightClicked();
-				
-				if (Game.getInstance().getArena().getKits().hasKit(damagedPlayer.getName())) {
-					
-					ItemStack strike = new ItemStack(Toolkit.getMainHandItem(p).getType(), Toolkit.getMainHandItem(p).getAmount());
-					ItemMeta strikeMeta = strike.getItemMeta();
-					strikeMeta.setDisplayName(Config.tr(resources.getAbilities().getString("Abilities.Thunderbolt.Item.Name")));
-					strike.setItemMeta(strikeMeta);
-					
-					p.playSound(p.getLocation(), XSound.matchXSound(resources.getAbilities().getString("Abilities.Thunderbolt.Sound.Sound")).get().parseSound(), 1, (int) resources.getAbilities().getInt("Abilities.Thunderbolt.Sound.Pitch"));
-					
-					if (resources.getAbilities().getBoolean("Abilities.Thunderbolt.Message.Enabled")) {
-						p.sendMessage(Config.tr(resources.getAbilities().getString("Abilities.Thunderbolt.Message.Message").replace("%player%", e.getRightClicked().getName()).replace("%prefix%", Game.getInstance().getPrefix())));
+
+		if (Toolkit.inArena(p) && e.getRightClicked().getType() == EntityType.PLAYER) {
+
+			if (Toolkit.getMainHandItem(p).getType() == XMaterial.BLAZE_ROD.parseMaterial()) {
+
+				if (p.hasPermission("kp.ability.thunderbolt")) {
+
+					Player damagedPlayer = (Player) e.getRightClicked();
+
+					if (Game.getInstance().getArena().getKits().hasKit(damagedPlayer.getName())) {
+
+						ItemStack strike = new ItemStack(Toolkit.getMainHandItem(p).getType(), Toolkit.getMainHandItem(p).getAmount());
+						ItemMeta strikeMeta = strike.getItemMeta();
+						strikeMeta.setDisplayName(Config.tr(resources.getAbilities().getString("Abilities.Thunderbolt.Item.Name")));
+						strike.setItemMeta(strikeMeta);
+
+						p.playSound(p.getLocation(), XSound.matchXSound(resources.getAbilities().getString("Abilities.Thunderbolt.Sound.Sound")).get().parseSound(), 1, (int) resources.getAbilities().getInt("Abilities.Thunderbolt.Sound.Pitch"));
+
+						if (resources.getAbilities().getBoolean("Abilities.Thunderbolt.Message.Enabled")) {
+							p.sendMessage(Config.tr(resources.getAbilities().getString("Abilities.Thunderbolt.Message.Message").replace("%player%", e.getRightClicked().getName()).replace("%prefix%", Game.getInstance().getPrefix())));
+						}
+
+						p.getWorld().strikeLightningEffect(e.getRightClicked().getLocation());
+						damagedPlayer.damage(4.0);
+						damagedPlayer.setFireTicks(5 * 20);
+
+						strike.setAmount(strike.getAmount() - 1);
+						Toolkit.setMainHandItem(p, strike);
+
 					}
-					
-					p.getWorld().strikeLightningEffect(e.getRightClicked().getLocation());
-					damagedPlayer.damage(4.0);
-					damagedPlayer.setFireTicks(5 * 20);
-					
-					strike.setAmount(strike.getAmount() - 1);
-					Toolkit.setMainHandItem(p, strike);
-					
+
 				}
-				
-			}
-			
-		} else if (Toolkit.getMainHandItem(p).getType() == XMaterial.GHAST_TEAR.parseMaterial() && e.getRightClicked().getType() == EntityType.PLAYER) {
-			
-			if (p.hasPermission("kp.ability.vampire")) {
-				
-				Player damagedPlayer = (Player) e.getRightClicked();
-				
-				if (Game.getInstance().getArena().getKits().hasKit(damagedPlayer.getName())) {
-					
-					ItemStack suck = new ItemStack(Toolkit.getMainHandItem(p).getType(), Toolkit.getMainHandItem(p).getAmount());
-					ItemMeta suckMeta = suck.getItemMeta();
-					suckMeta.setDisplayName(Config.tr(resources.getAbilities().getString("Abilities.Vampire.Item.Name")));
-					suck.setItemMeta(suckMeta);
-					
-					p.playSound(p.getLocation(), XSound.matchXSound(resources.getAbilities().getString("Abilities.Vampire.Sound.Sound")).get().parseSound(), 1, (int) resources.getAbilities().getInt("Abilities.Vampire.Sound.Pitch"));
-					
-					if (resources.getAbilities().getBoolean("Abilities.Vampire.Message.Enabled")) {
-						p.sendMessage(Config.tr(resources.getAbilities().getString("Abilities.Vampire.Message.Message").replace("%player%", e.getRightClicked().getName()).replace("%prefix%", Game.getInstance().getPrefix())));
+
+			} else if (Toolkit.getMainHandItem(p).getType() == XMaterial.GHAST_TEAR.parseMaterial()) {
+
+				if (p.hasPermission("kp.ability.vampire")) {
+
+					Player damagedPlayer = (Player) e.getRightClicked();
+
+					if (Game.getInstance().getArena().getKits().hasKit(damagedPlayer.getName())) {
+
+						ItemStack suck = new ItemStack(Toolkit.getMainHandItem(p).getType(), Toolkit.getMainHandItem(p).getAmount());
+						ItemMeta suckMeta = suck.getItemMeta();
+						suckMeta.setDisplayName(Config.tr(resources.getAbilities().getString("Abilities.Vampire.Item.Name")));
+						suck.setItemMeta(suckMeta);
+
+						p.playSound(p.getLocation(), XSound.matchXSound(resources.getAbilities().getString("Abilities.Vampire.Sound.Sound")).get().parseSound(), 1, (int) resources.getAbilities().getInt("Abilities.Vampire.Sound.Pitch"));
+
+						if (resources.getAbilities().getBoolean("Abilities.Vampire.Message.Enabled")) {
+							p.sendMessage(Config.tr(resources.getAbilities().getString("Abilities.Vampire.Message.Message").replace("%player%", e.getRightClicked().getName()).replace("%prefix%", Game.getInstance().getPrefix())));
+						}
+
+						damagedPlayer.damage(4.0);
+						damagedPlayer.playSound(damagedPlayer.getLocation(), XSound.ENTITY_GENERIC_DRINK.parseSound(), 1, -1);
+
+						if (p.getHealth() <= 16.0) {
+
+							p.setHealth(p.getHealth() + 4.0);
+							p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 20 * 2, 1));
+
+						}
+
+						suck.setAmount(suck.getAmount() - 1);
+						Toolkit.setMainHandItem(p, suck);
+
 					}
-			
-					damagedPlayer.damage(4.0);
-					damagedPlayer.playSound(damagedPlayer.getLocation(), XSound.ENTITY_GENERIC_DRINK.parseSound(), 1, -1);
-					
-					if (p.getHealth() <= 16.0) {
-						
-						p.setHealth(p.getHealth() + 4.0);
-						p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 20 * 2, 1));
-						
-					}
-					
-					suck.setAmount(suck.getAmount() - 1);
-					Toolkit.setMainHandItem(p, suck);
-					
+
 				}
-				
+
 			}
 			
 		}
