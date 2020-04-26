@@ -60,7 +60,7 @@ public class ItemListener implements Listener {
 		
 		if (Toolkit.inArena(p) && e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
 
-			ItemStack item = e.getItem();
+			ItemStack item = Toolkit.getMainHandItem(p);
 			ItemMeta meta = item.getItemMeta();
 
 			if (item.getType() == XMaterial.SADDLE.parseMaterial()) {

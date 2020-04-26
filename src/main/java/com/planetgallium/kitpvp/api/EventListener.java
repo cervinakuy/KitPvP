@@ -36,7 +36,7 @@ public class EventListener implements Listener {
 				
 				if (arena.getKits().hasKit(p.getName())) {
 
-					ItemStack currentItem = e.getItem();
+					ItemStack currentItem = Toolkit.getMainHandItem(p);
 					
 					if (currentItem.hasItemMeta() && currentItem.getItemMeta().hasDisplayName()) {
 
