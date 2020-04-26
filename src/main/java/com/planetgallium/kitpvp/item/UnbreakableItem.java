@@ -15,7 +15,7 @@ public class UnbreakableItem {
 
             ItemMeta meta = original.getItemMeta();
 
-            Method spigotMethod = meta.getClass().getDeclaredMethod("spigot");
+            Method spigotMethod = meta.getClass().getMethod("spigot");
             spigotMethod.setAccessible(true);
 
             Object spigotInstance = spigotMethod.invoke(meta);
