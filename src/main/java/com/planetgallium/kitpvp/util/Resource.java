@@ -3,6 +3,7 @@ package com.planetgallium.kitpvp.util;
 import java.io.File;
 import java.io.IOException;
 
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
@@ -83,6 +84,17 @@ public class Resource extends YamlConfiguration {
 		}
 		
 	}
+
+    @Override
+    public String getString(String path) {
+        String string = super.getString(path);
+
+        if (file.getName().equalsIgnoreCase("messages.yml") || file.getName().equalsIgnoreCase("messages")) {
+            string.replace("%prefix%", super.getString("Messages.General.Prefix"));
+        }
+
+        return ChatColor.translateAlternateColorCodes('&', string);
+    }
 	
 	public String getName() { return name; }
 	

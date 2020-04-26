@@ -27,7 +27,7 @@ public class Resources {
 		
 		this.plugin = plugin;
 		this.kits = new HashMap<String, Resource>();
-		
+
 		if (!plugin.getDataFolder().exists()) {
 			kits.put("Fighter.yml", new Resource(plugin, "kits/Fighter.yml", "Fighter.yml"));
 			kits.put("Archer.yml", new Resource(plugin, "kits/Archer.yml", "Archer.yml"));
@@ -61,7 +61,7 @@ public class Resources {
 	}
 	
 	public void load() {
-		
+
 		abilities.load();
 		killstreaks.load();
 		levels.load();
@@ -84,7 +84,7 @@ public class Resources {
 	}
 	
 	public void save() {
-		
+
 		abilities.save();
 		killstreaks.save();
 		levels.save();
