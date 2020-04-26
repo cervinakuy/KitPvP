@@ -613,6 +613,10 @@ public class MainCommand implements CommandExecutor {
 
 			}
 
+		} else {
+
+			sender.sendMessage(Config.tr(resources.getMessages().getString("Messages.General.Player")));
+
 		}
 		
 		return false;
