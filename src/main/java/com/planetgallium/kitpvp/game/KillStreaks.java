@@ -134,9 +134,11 @@ public class KillStreaks implements Listener {
 	}
 	
 	public void resetStreak(Player p) {
-		
-		runCase("EndStreaks", kills.get(p.getName()), p.getName(), p.getWorld(), p);
-		kills.put(p.getName(), 0);
+
+		if (kills.containsKey(p.getName())) {
+			runCase("EndStreaks", kills.get(p.getName()), p.getName(), p.getWorld(), p);
+			kills.put(p.getName(), 0);
+		}
 		
 	}
 
