@@ -100,9 +100,9 @@ public class Arena {
 			getKillStreaks().resetStreak(p);
 		}
 		
-		if (Config.getB("Arena.FancyDeath")) {
-			p.setHealth(20.0);
-		}
+//		if (Config.getB("Arena.FancyDeath")) {
+//			p.setHealth(20.0); commenting this out fixes block glitching for some reason
+//		}
 		
 		p.setExp(0f);
 		p.setFoodLevel(20);

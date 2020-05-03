@@ -43,14 +43,14 @@ public class DeathListener implements Listener {
 	public void onDeath(PlayerDeathEvent e) {
 		
 		if (Toolkit.inArena(e.getEntity())) {
-			
+
 			Player victim = e.getEntity();
 			e.setDeathMessage("");
 
 			if (Config.getB("Arena.PreventDeathDrops")) {
 				e.getDrops().clear();
 			}
-			
+
 			respawnPlayer(victim);
 			setDeathMessage(victim, e);
 
@@ -64,7 +64,7 @@ public class DeathListener implements Listener {
 			if (Config.getB("Death.Sound.Enabled")) {
 				broadcast(victim.getWorld(), XSound.matchXSound(Config.getS("Death.Sound.Sound")).get().parseSound(), 1, (int) Config.getI("Death.Sound.Pitch"));
 			}
-			
+
 		}
 	
 	}
@@ -72,13 +72,22 @@ public class DeathListener implements Listener {
 	private void respawnPlayer(Player victim) {
 		
 		if (Config.getB("Arena.FancyDeath")) {
-			
+
 			Location deathLocation = victim.getLocation();
-			Bukkit.getScheduler().scheduleSyncDelayedTask(Game.getInstance(), () -> victim.spigot().respawn(), 1);
-			
+
+			new BukkitRunnable() {
+
+				@Override
+				public void run() {
+
+					victim.spigot().respawn();
+					victim.teleport(deathLocation);
+
+				}
+
+			}.runTaskLater(Game.getInstance(), 1L);
+
 			victim.setGameMode(GameMode.SPECTATOR);
-			victim.teleport(deathLocation);
-			
 			arena.removePlayer(victim);
 			
 			new BukkitRunnable() {
@@ -137,12 +146,6 @@ public class DeathListener implements Listener {
 	private void setDeathMessage(Player victim, PlayerDeathEvent e) {
 
 		DamageCause cause = victim.getLastDamageCause().getCause();
-
-		Bukkit.getConsoleSender().sendMessage("Player died, hit cache occupied: " + (arena.getHitCache().get(victim.getName()) != null));
-
-		if (arena.getHitCache().get(victim.getName()) != null) {
-			Bukkit.getConsoleSender().sendMessage("Hit cache  result: " + arena.getHitCache().get(victim.getName()));
-		}
 
 		if (cause == DamageCause.PROJECTILE) {
 
