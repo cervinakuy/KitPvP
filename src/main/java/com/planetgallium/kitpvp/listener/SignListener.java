@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
@@ -41,29 +42,29 @@ public class SignListener implements Listener {
 				
 			} else if (e.getLine(1).equalsIgnoreCase("clear")) {
 				
-				renameSign(e, "Signs.Clear");
-				saveSign("Clear", e.getBlock().getLocation());
+				renameSign(e, "Signs.Clear", null);
+				saveSign("Clear", e.getBlock().getLocation(), null);
 				
 				p.sendMessage(Config.tr(resources.getMessages().getString("Messages.Other.Sign").replace("%prefix%", resources.getMessages().getString("Messages.General.Prefix"))));
 				
 			} else if (e.getLine(1).equalsIgnoreCase("menu")) {
 				
-				renameSign(e, "Signs.Menu");
-				saveSign("Menu", e.getBlock().getLocation());
+				renameSign(e, "Signs.Menu", null);
+				saveSign("Menu", e.getBlock().getLocation(), null);
 				
 				p.sendMessage(Config.tr(resources.getMessages().getString("Messages.Other.Sign").replace("%prefix%", resources.getMessages().getString("Messages.General.Prefix"))));
 				
 			} else if (e.getLine(1).equalsIgnoreCase("stats")) {
 				
-				renameSign(e, "Signs.Stats");
-				saveSign("Stats", e.getBlock().getLocation());
+				renameSign(e, "Signs.Stats", null);
+				saveSign("Stats", e.getBlock().getLocation(), null);
 				
 				p.sendMessage(Config.tr(resources.getMessages().getString("Messages.Other.Sign").replace("%prefix%", resources.getMessages().getString("Messages.General.Prefix"))));
 				
 			} else if (e.getLine(1).equalsIgnoreCase("refill")) {
 				
-				renameSign(e, "Signs.Refill");
-				saveSign("Refill", e.getBlock().getLocation());
+				renameSign(e, "Signs.Refill", null);
+				saveSign("Refill", e.getBlock().getLocation(), null);
 				
 				p.sendMessage(Config.tr(resources.getMessages().getString("Messages.Other.Sign").replace("%prefix%", resources.getMessages().getString("Messages.General.Prefix"))));
 				
@@ -82,27 +83,27 @@ public class SignListener implements Listener {
 				
 				Sign sign = (Sign) e.getClickedBlock().getState();
 				Player p = e.getPlayer();
-					
-				if (sign.getLine(0).replace("§", "&").equals(resources.getSigns().getString("Signs.Kit.Line-1")) ||
-					sign.getLine(0).replace("§", "&").equals(resources.getSigns().getString("Signs.Clear.Line-1")) ||
-					sign.getLine(0).replace("§", "&").equals(resources.getSigns().getString("Signs.Menu.Line-1")) ||
-					sign.getLine(0).replace("§", "&").equals(resources.getSigns().getString("Signs.Stats.Line-1")) ||
-					sign.getLine(0).replace("§", "&").equals(resources.getSigns().getString("Signs.Refill.Line-1"))) {
-					
-					if (signsMatch(sign.getLines(), "Signs.Menu")) {
+
+				if (sign.getLine(0).equals(resources.getSigns().getString("Signs.Kit.Line-1")) ||
+					sign.getLine(0).equals(resources.getSigns().getString("Signs.Clear.Line-1")) ||
+					sign.getLine(0).equals(resources.getSigns().getString("Signs.Menu.Line-1")) ||
+					sign.getLine(0).equals(resources.getSigns().getString("Signs.Stats.Line-1")) ||
+					sign.getLine(0).equals(resources.getSigns().getString("Signs.Refill.Line-1"))) {
+
+					if (signsMatch(sign.getLines(), "Signs.Menu", null)) {
 						
 						KitMenu menu = new KitMenu(resources);
 						menu.create(p);
 						
-					} else if (signsMatch(sign.getLines(), "Signs.Clear")) {
+					} else if (signsMatch(sign.getLines(), "Signs.Clear", null)) {
 						
 						p.performCommand("kp clear");
 						
-					} else if (signsMatch(sign.getLines(), "Signs.Stats")) {
+					} else if (signsMatch(sign.getLines(), "Signs.Stats", null)) {
 						
 						p.performCommand("kp stats");
 						
-					} else if (signsMatch(sign.getLines(), "Signs.Refill")) {
+					} else if (signsMatch(sign.getLines(), "Signs.Refill", null)) {
 						
 						Menu menu = new Menu("Refill", null, 54);
 						
@@ -127,19 +128,12 @@ public class SignListener implements Listener {
 		}
 		
 	}
-	
-	private void saveSign(String type, Location location) {
-		
-		int start = findStart();
-		
-		resources.getSigns().set("Signs.Locations." + start + ".Type", type);
-		resources.getSigns().set("Signs.Locations." + start + ".World", location.getWorld().getName());
-		resources.getSigns().set("Signs.Locations." + start + ".X", location.getBlock().getX());
-		resources.getSigns().set("Signs.Locations." + start + ".Y", location.getBlock().getY());
-		resources.getSigns().set("Signs.Locations." + start + ".Z", location.getBlock().getZ());
-		
-		resources.getSigns().save();
-		
+
+	@EventHandler
+	public void onSignBreak(BlockBreakEvent e) {
+
+		deleteSign(e.getBlock().getLocation());
+
 	}
 	
 	private void saveSign(String type, Location location, String kit) {
@@ -147,7 +141,7 @@ public class SignListener implements Listener {
 		int start = findStart();
 		
 		resources.getSigns().set("Signs.Locations." + start + ".Type", type);
-		resources.getSigns().set("Signs.Locations." + start + ".Kit", kit);
+		resources.getSigns().set("Signs.Locations." + start + ".Kit", kit != null ? kit : null);
 		resources.getSigns().set("Signs.Locations." + start + ".World", location.getWorld().getName());
 		resources.getSigns().set("Signs.Locations." + start + ".X", location.getBlock().getX());
 		resources.getSigns().set("Signs.Locations." + start + ".Y", location.getBlock().getY());
@@ -157,21 +151,11 @@ public class SignListener implements Listener {
 		
 	}
 	
-	private void renameSign(SignChangeEvent e, String path) {
-		
-		for (int i = 0; i < 3; i++) {
-			
-			e.setLine(i, Config.tr(resources.getSigns().getString(path + ".Line-" + (i + 1))));
-			
-		}
-		
-	}
-	
 	private void renameSign(SignChangeEvent e, String path, String kit) {
 		
 		for (int i = 0; i < 3; i++) {
 			
-			e.setLine(i, Config.tr(resources.getSigns().getString(path + ".Line-" + (i + 1)).replace("%kit%", kit)));
+			e.setLine(i, Config.tr(resources.getSigns().getString(path + ".Line-" + (i + 1)).replace("%kit%", kit != null ? kit : "")));
 			
 		}
 		
@@ -221,29 +205,13 @@ public class SignListener implements Listener {
 		
 	}
 	
-	private boolean signsMatch(String[] sign, String path) {
-		
-		for (int i = 0; i < 3; i++) {
-			
-			if (!sign[i].replace("§", "&").equals(resources.getSigns().getString(path + ".Line-" + (i + 1)))) {
-				
-				return false;
-				
-			}
-			
-		}
-		
-		return true;
-		
-	}
-	
 	private boolean signsMatch(String[] sign, String path, String kit) {
 		
 		for (int i = 0; i < 3; i++) {
 			
 			if (sign[i] != null && sign[i].length() > 0) {
 				
-				if (!sign[i].replace("§", "&").equals(resources.getSigns().getString(path + ".Line-" + (i + 1)).replace("%kit%", kit))) {
+				if (!sign[i].equals(resources.getSigns().getString(path + ".Line-" + (i + 1)).replace("%kit%", kit != null ? kit : ""))) {
 					
 					return false;
 					
@@ -255,6 +223,13 @@ public class SignListener implements Listener {
 		
 		return true;
 		
+	}
+
+	private void deleteSign(Location location) {
+
+		resources.getSigns().set("Signs.Locations." + findSign(location), null);
+		resources.getSigns().save();
+
 	}
 	
 }
