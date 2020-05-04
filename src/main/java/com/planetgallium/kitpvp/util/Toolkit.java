@@ -116,9 +116,11 @@ public class Toolkit {
  	    
  	}
  	
- 	public static Color stringToColor(String kitName, String path) {
+ 	public static Color serializeColor(Resource resource, String path) {
  		
- 		return Color.fromRGB(Game.getInstance().getResources().getKits(kitName).getInt(path + ".Red"), Game.getInstance().getResources().getKits(kitName).getInt(path + ".Green"), Game.getInstance().getResources().getKits(kitName).getInt(path + ".Blue"));
+ 		return Color.fromRGB(resource.getInt(path + ".Red"),
+				resource.getInt(path + ".Green"),
+				resource.getInt(path + ".Blue"));
  		
  	}
  	
