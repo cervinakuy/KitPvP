@@ -90,10 +90,16 @@ public class Resource extends YamlConfiguration {
         String string = super.getString(path);
 
         if (file.getName().equalsIgnoreCase("messages.yml") || file.getName().equalsIgnoreCase("messages")) {
-            string = string.replace("%prefix%", super.getString("Messages.General.Prefix"));
+            if (string != null) {
+				string = string.replace("%prefix%", super.getString("Messages.General.Prefix"));
+			}
         }
 
-        return ChatColor.translateAlternateColorCodes('&', string);
+		if (string != null) {
+			string = ChatColor.translateAlternateColorCodes('&', string);
+		}
+
+        return string;
     }
 	
 	public String getName() { return name; }
