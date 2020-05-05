@@ -81,13 +81,13 @@ public class DeathListener implements Listener {
 				public void run() {
 
 					victim.spigot().respawn();
+					victim.setGameMode(GameMode.SPECTATOR);
 					victim.teleport(deathLocation);
 
 				}
 
 			}.runTaskLater(Game.getInstance(), 1L);
 
-			victim.setGameMode(GameMode.SPECTATOR);
 			arena.removePlayer(victim);
 			
 			new BukkitRunnable() {
