@@ -60,10 +60,9 @@ Inventory:
       - '&7This is a regular potion item'
       - '&7Splash potions are also supported'
       Item: POTION
-      Potion:
-        Type: POTION
+      Effects:
         JUMP:
-          Level: 1
+          Amplifier: 1
           Duration: 45
           Upgraded: false
           Extended: false
@@ -96,9 +95,9 @@ Ability:
     Sound: NOTE_PLING
     Pitch: 1
     Enabled: true
-  Potions:
+  Effects:
     SPEED:
-      Level: 5
+      Amplifier: 5
       Duration: 10
   Commands:
     Commands:

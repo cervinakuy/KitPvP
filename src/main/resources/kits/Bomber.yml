@@ -50,7 +50,7 @@ Inventory:
     Fill:
       Name: '&aRegenerative Soup &7(Right Click)'
       Item: MUSHROOM_SOUP
-Potions:
+Effects:
   SPEED:
-    Level: 2
+    Amplifier: 2
     Duration: 100000

@@ -30,9 +30,9 @@ Inventory:
     Fill:
       Name: '&aRegenerative Soup &7(Right Click)'
       Item: MUSHROOM_SOUP
-Potions:
+Effects:
   SLOW:
-    Level: 2
+    Amplifier: 2
     Duration: 100000
 Ability:
   Activator:
@@ -45,9 +45,9 @@ Ability:
     Sound: ZOMBIE_IDLE
     Pitch: 1
     Enabled: true
-  Potions:
+  Effects:
     SPEED:
-      Level: 7
+      Amplifier: 7
       Duration: 10
   Commands:
     Commands:

@@ -56,7 +56,7 @@ Ability:
     Sound: HORSE_ANGRY
     Pitch: 0
     Enabled: true
-  Potions:
+  Effects:
     SPEED:
       Level: 3
       Duration: 5

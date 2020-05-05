@@ -40,18 +40,18 @@ public class Ability {
 		
 	}
 	
-	public List<PotionEffect> getPotions() {
+	public List<PotionEffect> getEffects() {
 		
-		if (kit.contains("Ability.Potions")) {
-			
+		if (kit.contains("Ability.Effects")) {
+
 			List<PotionEffect> potions = new ArrayList<PotionEffect>();
-			ConfigurationSection section = kit.getConfigurationSection("Ability.Potions");
+			ConfigurationSection section = kit.getConfigurationSection("Ability.Effects");
 			
 			for (String identifier : section.getKeys(false)) {
-				
+
 				potions.add(new PotionEffect(PotionEffectType.getByName(identifier.toUpperCase()),
-						kit.getInt("Ability.Potions." + identifier + ".Duration") * 20,
-						kit.getInt("Ability.Potions." + identifier + ".Level") - 1));
+						kit.getInt("Ability.Effects." + identifier + ".Duration") * 20,
+						kit.getInt("Ability.Effects." + identifier + ".Amplifier") - 1));
 				
 			}
 			

@@ -41,12 +41,12 @@ Ability:
     Sound: ANVIL_USE
     Pitch: 1
     Enabled: true
-  Potions:
-    SPEED:  
-      Level: 2
+  Effects:
+    SPEED:
+      Amplifier: 2
       Duration: 10
     REGENERATION:
-      Level: 2
+      Amplifier: 2
       Duration: 10
   Commands:
     Commands:
