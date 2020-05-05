@@ -10,7 +10,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 
 import com.planetgallium.kitpvp.Game;
-import com.planetgallium.kitpvp.item.EffectItem;
 import com.planetgallium.kitpvp.item.KitItem;
 import com.planetgallium.kitpvp.util.Config;
 import com.planetgallium.kitpvp.util.XSound;
@@ -64,7 +63,7 @@ public class Kit {
 		
 	}
 	
-	public void addEffect(EffectItem effect) {
+	public void addEffect(KitEffect effect) {
 		
 		potions.add(effect.toPotionEffect());
 		
@@ -102,6 +101,12 @@ public class Kit {
 				
 			}
 			
+		}
+
+		if (inventory.get(40) != null) {
+
+			p.getInventory().setItem(40, inventory.get(40));
+
 		}
 		
 		for (int i = 0; i < 36; i++) {

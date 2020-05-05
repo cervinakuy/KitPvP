@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.bukkit.Bukkit;
+import org.bukkit.Color;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -17,10 +18,11 @@ import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.potion.Potion;
+import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
 import com.planetgallium.kitpvp.Game;
 import com.planetgallium.kitpvp.api.PlayerSelectKitEvent;
-import com.planetgallium.kitpvp.item.EffectItem;
+import com.planetgallium.kitpvp.kit.KitEffect;
 import com.planetgallium.kitpvp.item.KitItem;
 import com.planetgallium.kitpvp.kit.Kit;
 import com.planetgallium.kitpvp.util.Config;
@@ -77,24 +79,28 @@ public class Kits {
 				saveItem(kitResource, name, "Inventory.Armor.Boots", p.getInventory().getBoots(), "&fBoots");
 				
 			}
-			
+
 			for (int i = 0; i < 36; i++) {
 				
 				ItemStack item = p.getInventory().getItem(i);
-				
+
 				if (item != null) {
-					
 					String backupName = (item.getType() == XMaterial.MUSHROOM_STEW.parseMaterial()) ? Config.getS("Soups.Name") : null;
 					saveItem(kitResource, name, "Inventory.Items." + i, p.getInventory().getItem(i), backupName);
-					
 				}
 				
 			}
-			
+
+			if (Toolkit.versionToNumber() >= 119 && p.getInventory().getItem(40) != null) {
+				ItemStack offhand = p.getInventory().getItem(40);
+				String backupName = (offhand.getType() == XMaterial.MUSHROOM_STEW.parseMaterial()) ? Config.getS("Soups.Name") : null;
+				saveItem(kitResource, name, "Inventory.Items.40", offhand, backupName);
+			}
+
 			for (PotionEffect effect : p.getActivePotionEffects()) {
 				
-				resources.getKits(name).set("Potions." + effect.getType().getName() + ".Level", effect.getAmplifier() + 1);
-				resources.getKits(name).set("Potions." + effect.getType().getName() + ".Duration", effect.getDuration() / 20);
+				resources.getKits(name).set("Effects." + effect.getType().getName() + ".Amplifier", effect.getAmplifier() + 1);
+				resources.getKits(name).set("Effects." + effect.getType().getName() + ".Duration", effect.getDuration() / 20);
 				resources.getKits(name).save();
 				
 			}
@@ -106,8 +112,8 @@ public class Kits {
 			resources.getKits(name).set("Ability.Sound.Sound", "FIZZ");
 			resources.getKits(name).set("Ability.Sound.Pitch", 1);
 			resources.getKits(name).set("Ability.Sound.Enabled", true);
-			resources.getKits(name).set("Ability.Potions.SPEED.Level", 1);
-			resources.getKits(name).set("Ability.Potions.SPEED.Duration", 10);
+			resources.getKits(name).set("Ability.Effects.SPEED.Amplifier", 1);
+			resources.getKits(name).set("Ability.Effects.SPEED.Duration", 10);
 			resources.getKits(name).set("Ability.Commands.Commands", new String[]{"console: This command is run from the console, you can use %player%", "player: This command is run from the player, you can use %player%"});
 			resources.getKits(name).set("Ability.Commands.Enabled", false);
 			resources.getKits(name).save();
@@ -181,13 +187,13 @@ public class Kits {
 							
 						}
 						
-						if (kitResource.contains("Potions")) {
+						if (kitResource.contains("Effects")) {
 							
-							ConfigurationSection potions = kitResource.getConfigurationSection("Potions");
+							ConfigurationSection potions = kitResource.getConfigurationSection("Effects");
 							
 							for (String identifier : potions.getKeys(false)) {
 								
-								kit.addEffect(new EffectItem(kitResource, identifier));
+								kit.addEffect(new KitEffect(kitResource, identifier));
 								
 							}
 							
@@ -253,39 +259,44 @@ public class Kits {
 			resource.save();
 			
 		} else if (item.getType() == XMaterial.PLAYER_HEAD.parseMaterial()) {
-			
+
 			SkullMeta skullMeta = (SkullMeta) meta;
-			
+
 			resource.set(path + ".Skull", skullMeta.getOwner());
 			resource.save();
-			
+
+		} else if (Toolkit.versionToNumber() >= 19 && item.getType() == XMaterial.TIPPED_ARROW.parseMaterial()) {
+
+			serializeEffects(resource, (PotionMeta) meta, path);
+
 		} else if (item.getType() == XMaterial.POTION.parseMaterial() ||
 					item.getType() == XMaterial.SPLASH_POTION.parseMaterial() ||
 					item.getType() == XMaterial.LINGERING_POTION.parseMaterial()) {
-			
+
 			if (Toolkit.versionToNumber() == 18) {
 				
 				Potion potionStack = Potion.fromItemStack(item);
 				PotionMeta potionMeta = (PotionMeta) meta;
-				
+
+				resource.set(path + ".Type", potionStack.isSplash() ? "SPLASH_POTION" : "POTION");
+				resource.save();
+
 				if (potionMeta.getCustomEffects().size() > 0) {
 					
-					for (PotionEffect potion : potionMeta.getCustomEffects()) {
-						
-						resource.set(path + ".Potion.Type", potionStack.isSplash() ? "SPLASH_POTION" : "POTION");
-						resource.set(path + ".Potion." + potion.getType().getName() + ".Level", potion.getAmplifier());
-						resource.set(path + ".Potion." + potion.getType().getName() + ".Duration", potion.getDuration() / 20);
+					for (PotionEffect effect : potionMeta.getCustomEffects()) {
+
+						resource.set(path + ".Effects." + effect.getType().getName() + ".Amplifier", effect.getAmplifier() + 1);
+						resource.set(path + ".Effects." + effect.getType().getName() + ".Duration", effect.getDuration() / 20);
 						resource.save();
 
 					}
 					
 				} else {
 					
-			        for (PotionEffect potion : potionStack.getEffects()) {
-			        	
-			        	resource.set(path + ".Potion.Type", potionStack.isSplash() ? "SPLASH_POTION" : "POTION");
-						resource.set(path + ".Potion." + potion.getType().getName() + ".Level", potion.getAmplifier());
-						resource.set(path + ".Potion." + potion.getType().getName() + ".Duration", potion.getDuration() / 20);
+			        for (PotionEffect effect : potionStack.getEffects()) {
+
+						resource.set(path + ".Effects." + effect.getType().getName() + ".Amplifier", effect.getAmplifier() + 1);
+						resource.set(path + ".Effects." + effect.getType().getName() + ".Duration", effect.getDuration() / 20);
 						resource.save();
 			        	
 			        }
@@ -294,26 +305,7 @@ public class Kits {
 				
 			} else if (Toolkit.versionToNumber() >= 19) {
 
-				PotionMeta potionMeta = (PotionMeta) meta;
-				
-				if (potionMeta.getCustomEffects().size() > 0) {
-					
-					for (PotionEffect potion : potionMeta.getCustomEffects()) {
-						
-						resource.set(path + ".Potion." + potion.getType().getName() + ".Level", potion.getAmplifier());
-						resource.set(path + ".Potion." + potion.getType().getName() + ".Duration", potion.getDuration() / 20);
-						resource.save();
-						
-					}
-					
-				} else {
-					
-					String type = potionMeta.getBasePotionData().getType().toString();
-					resource.set(path + ".Potion." + type + ".Upgraded", potionMeta.getBasePotionData().isUpgraded());
-			        resource.set(path + ".Potion." + type + ".Extended", potionMeta.getBasePotionData().isExtended());
-			        resource.save();
-					
-				}
+				serializeEffects(resource, (PotionMeta) meta, path);
 				
 			}
 			
@@ -375,6 +367,41 @@ public class Kits {
 			
 		}
 		
+	}
+
+	private void serializeEffects(Resource resource, PotionMeta meta, String path) {
+
+		PotionData data = meta.getBasePotionData();
+
+		if (meta.getCustomEffects().size() > 0) {
+
+			for (PotionEffect potion : meta.getCustomEffects()) {
+
+				resource.set(path + ".Effects." + potion.getType().getName() + ".Amplifier", potion.getAmplifier() + 1);
+				resource.set(path + ".Effects." + potion.getType().getName() + ".Duration", potion.getDuration() / 20);
+				resource.save();
+
+			}
+
+		} else {
+
+			String effectName = data.getType().getEffectType().getName();
+			resource.set(path + ".Effects." + effectName + ".Upgraded", data.isUpgraded());
+			resource.set(path + ".Effects." + effectName + ".Extended", data.isExtended());
+			resource.save();
+
+		}
+
+		if (meta.hasColor()) {
+
+			Color potionColor = meta.getColor();
+			resource.set(path + ".Color.Red", potionColor.getRed());
+			resource.set(path + ".Color.Green", potionColor.getGreen());
+			resource.set(path + ".Color.Blue", potionColor.getBlue());
+			resource.save();
+
+		}
+
 	}
 	
 	private void setKit(String username, String kit) {

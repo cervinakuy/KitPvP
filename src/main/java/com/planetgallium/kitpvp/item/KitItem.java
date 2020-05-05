@@ -22,7 +22,7 @@ public class KitItem {
 	private int amount;
 	private Color color;
 	private SkullItem skull;
-	private PotionItem potion;
+	private EffectItem effect;
 	private EnchantedItem enchant;
 	private DamagedItem damaged;
 	private UnbreakableItem unbreakable;
@@ -50,15 +50,15 @@ public class KitItem {
 		}
 		
 		if (resource.contains(path + ".Dye")) {
-			this.color = Toolkit.stringToColor(kit, path + ".Dye");
+			this.color = Toolkit.serializeColor(resource, path + ".Dye");
 		}
 		
 		if (resource.contains(path + ".Skull")) {
 			this.skull = new SkullItem(resource.getString(path + ".Skull"));
 		}
 		
-		if (resource.contains(path + ".Potion")) {
-			this.potion = new PotionItem(resource, path + ".Potion");
+		if (resource.contains(path + ".Effects")) {
+			this.effect = new EffectItem(resource, path + ".Effects");
 		}
 		
 		if (resource.contains(path + ".Enchantments")) {
@@ -119,14 +119,17 @@ public class KitItem {
 				
 			}
 			
-		} else if (item.getType() == XMaterial.POTION.parseMaterial() || item.getType() == XMaterial.SPLASH_POTION.parseMaterial()) {
-			
-			if (potion != null) {
-				
-				item = potion.convertToPotion(item);
-				
+		} else if (item.getType() == XMaterial.POTION.parseMaterial() ||
+				item.getType() == XMaterial.SPLASH_POTION.parseMaterial() ||
+				item.getType() == XMaterial.LINGERING_POTION.parseMaterial() ||
+				item.getType() == XMaterial.TIPPED_ARROW.parseMaterial()) {
+
+			if (effect != null) {
+
+				item = effect.convertToEffectItem(item);
+
 			}
-			
+
 		}
 
 		if (unbreakable != null) {
@@ -142,21 +145,5 @@ public class KitItem {
 		return item;
 		
 	}
-	
-	public String getName() { return name; }
-	
-	public List<String> getLore() { return lore; }
 
-	public Material getType() { return material; }
-	
-	public int getAmount() { return amount; }
-	
-	public Color getColor() { return color; }
-	
-	public SkullItem getSkull() { return skull; }
-	
-	public PotionItem getPotion() { return potion; }
-	
-	public EnchantedItem getEnchant() { return enchant; }
-	
 }
