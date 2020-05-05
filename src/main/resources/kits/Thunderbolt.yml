@@ -25,7 +25,7 @@ Inventory:
       Name: '&aThunderbolt''s Sword'
       Item: GOLD_SWORD
     1:
-      Name: '&aLightning Strikes &7(Right Click)'
+      Name: '&aLightning Strike &7(Click Player)'
       Item: BLAZE_ROD
       Amount: 3
     8:

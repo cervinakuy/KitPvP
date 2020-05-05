@@ -80,7 +80,7 @@ Abilities:
       Enabled: true
   Thunderbolt:
     Item:
-      Name: '&aLighting Strike &7(Click Player)'
+      Name: '&aLightning Strike &7(Click Player)'
       Amount: 3
     Message:
       Message: '%prefix% &7You have used a &bLighting Strike &7on &b%player%&7.'

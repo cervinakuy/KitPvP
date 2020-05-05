@@ -37,7 +37,7 @@ Inventory:
       Name: '&aVampire''s Sword'
       Item: IRON_SWORD
     1:
-      Name: '&aBlood Sucker &7(Right Click)'
+      Name: '&aBlood Suckers &7(Click Player)'
       Item: GHAST_TEAR
       Amount: 5
     8:

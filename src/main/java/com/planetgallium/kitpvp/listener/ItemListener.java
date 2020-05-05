@@ -328,7 +328,7 @@ public class ItemListener implements Listener {
 
 				ItemMeta meta = interactedItem.getItemMeta();
 
-				if (meta.getDisplayName().equals(abilConfig.getString("Abilities." + kitName + ".Item.Name"))) {
+				if (Config.tr(meta.getDisplayName()).equals(abilConfig.getString("Abilities." + kitName + ".Item.Name"))) {
 
 					if (p.hasPermission("kp.ability." + kitName.toLowerCase())) {
 
