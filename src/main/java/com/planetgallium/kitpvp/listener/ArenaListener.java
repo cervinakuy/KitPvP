@@ -56,14 +56,14 @@ public class ArenaListener implements Listener {
 	
 	@EventHandler
 	public void onPlace(BlockPlaceEvent e) {
-		
+
 		Player p = e.getPlayer();
 		
 		if (Toolkit.inArena(p)) {
 
-			if (Config.getB("TNT.Enabled")) {
+			if (e.getBlock().getType() == XMaterial.TNT.parseMaterial()) {
 
-				if (e.getBlock().getType() == XMaterial.TNT.parseMaterial()) {
+				if (Config.getB("TNT.Enabled")) {
 
 					e.setCancelled(true);
 
