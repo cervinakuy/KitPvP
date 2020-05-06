@@ -26,7 +26,7 @@ public class SignListener implements Listener {
 	
 	@EventHandler
 	public void onSignChange(SignChangeEvent e) {
-		
+
 		if (e.getLine(0).equalsIgnoreCase("[KitPvP]")) {
 			
 			Player p = e.getPlayer();
