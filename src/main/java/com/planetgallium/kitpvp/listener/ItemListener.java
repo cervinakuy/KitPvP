@@ -377,30 +377,17 @@ public class ItemListener implements Listener {
 			if (Toolkit.inArena(p)) {
 				
 				if (p.hasPermission("kp.ability.archer")) {
-					
-					if (p.getInventory().getItem(2) != null) {
-					
-						int amount = p.getInventory().getItem(2).getAmount();
-					
-						ItemStack ammo = new ItemStack(Material.MAGMA_CREAM, amount);
-						ItemMeta ammometa = ammo.getItemMeta();
-						ammometa.setDisplayName(Config.tr(resources.getAbilities().getString("Abilities.Archer.Item.Fire")));
-						ammo.setItemMeta(ammometa);
-						
-						if (p.getInventory().contains(ammo)) {
-						
-							e.getProjectile().setFireTicks(1000);
-									
-							p.playSound(p.getLocation(), XSound.matchXSound(resources.getAbilities().getString("Abilities.Archer.Sound.Sound")).get().parseSound(), 1, (int) resources.getAbilities().getInt("Abilities.Archer.Sound.Pitch"));
-										
-							ItemStack magma = new ItemStack(Material.MAGMA_CREAM);
-							ItemMeta magmameta = ammo.getItemMeta();
-							magmameta.setDisplayName(Config.tr(resources.getAbilities().getString("Abilities.Archer.Item.Fire")));
-							magma.setItemMeta(magmameta);
-							p.getInventory().removeItem(magma);
-							
-						}
-							
+
+					int ammoSlot = getItemByMeta(Material.MAGMA_CREAM, resources.getAbilities().getString("Abilities.Archer.Item.Fire"), p);
+
+					if (ammoSlot != -1) {
+
+						ItemStack ammo = p.getInventory().getItem(ammoSlot);
+
+						e.getProjectile().setFireTicks(1000);
+						p.playSound(p.getLocation(), XSound.matchXSound(resources.getAbilities().getString("Abilities.Archer.Sound.Sound")).get().parseSound(), 1, (int) resources.getAbilities().getInt("Abilities.Archer.Sound.Pitch"));
+
+						ammo.setAmount(ammo.getAmount() - 1);
 					}
 					
 				}
@@ -409,6 +396,20 @@ public class ItemListener implements Listener {
 			
 		}
 		
+	}
+
+	private int getItemByMeta(Material type, String displayName, Player p) {
+
+		for (int i = 0; i < 36; i++) {
+			ItemStack item = p.getInventory().getItem(i);
+			if (item.getType() == type) {
+				if (Config.tr(item.getItemMeta().getDisplayName()).equals(displayName)) {
+					return i;
+				}
+			}
+		}
+		return -1;
+
 	}
 	
 	@EventHandler
