@@ -217,10 +217,6 @@ public class ItemListener implements Listener {
 
 				XSound.playSoundFromString(p, "UI_BUTTON_CLICK, 1, 1");
 
-			} else if (item.getType() == XMaterial.BLAZE_ROD.parseMaterial() || item.getType() == XMaterial.GHAST_TEAR.parseMaterial()) {
-
-				p.sendMessage(resources.getMessages().getString("Messages.Error.Player"));
-
 			} else if (item.getType() == XMaterial.matchXMaterial(config.getString("Items.Kits.Item")).get().parseMaterial()) {
 
 				if (meta.getDisplayName().equals(Config.getS("Items.Kits.Name"))) {
