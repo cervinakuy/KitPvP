@@ -60,12 +60,11 @@ Inventory:
       - '&7This is a regular potion item'
       - '&7Splash potions are also supported'
       Item: POTION
+      Type: POTION
       Effects:
         JUMP:
           Amplifier: 1
           Duration: 45
-          Upgraded: false
-          Extended: false
     8:
       Name: '&aAbility Item'
       Lore:
