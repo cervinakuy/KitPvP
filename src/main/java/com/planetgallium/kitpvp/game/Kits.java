@@ -58,25 +58,25 @@ public class Kits {
 			
 			if (p.getInventory().getHelmet() != null) {
 				
-				saveItem(kitResource, name, "Inventory.Armor.Helmet", p.getInventory().getHelmet(), "&fHelmet");
+				saveItem(kitResource, name, "Inventory.Armor.Helmet", p.getInventory().getHelmet(), null);
 				
 			}
 			
 			if (p.getInventory().getChestplate() != null) {
 				
-				saveItem(kitResource, name, "Inventory.Armor.Chestplate", p.getInventory().getChestplate(), "&fChestplate");
+				saveItem(kitResource, name, "Inventory.Armor.Chestplate", p.getInventory().getChestplate(), null);
 				
 			}
 			
 			if (p.getInventory().getLeggings() != null) {
 				
-				saveItem(kitResource, name, "Inventory.Armor.Leggings", p.getInventory().getLeggings(), "&fLeggings");
+				saveItem(kitResource, name, "Inventory.Armor.Leggings", p.getInventory().getLeggings(), null);
 				
 			}
 			
 			if (p.getInventory().getBoots() != null) {
 				
-				saveItem(kitResource, name, "Inventory.Armor.Boots", p.getInventory().getBoots(), "&fBoots");
+				saveItem(kitResource, name, "Inventory.Armor.Boots", p.getInventory().getBoots(), null);
 				
 			}
 
@@ -91,7 +91,7 @@ public class Kits {
 				
 			}
 
-			if (Toolkit.versionToNumber() >= 119 && p.getInventory().getItem(40) != null) {
+			if (Toolkit.versionToNumber() >= 19 && p.getInventory().getItem(40) != null) {
 				ItemStack offhand = p.getInventory().getItem(40);
 				String backupName = (offhand.getType() == XMaterial.MUSHROOM_STEW.parseMaterial()) ? Config.getS("Soups.Name") : null;
 				saveItem(kitResource, name, "Inventory.Items.40", offhand, backupName);
@@ -136,7 +136,7 @@ public class Kits {
 				
 				if (Game.getInstance().getArena().getLevels().getLevel(p.getUniqueId()) >= resources.getKits(name).getInt("Kit.Level")) {
 					
-					if (!plugin.getArena().getCooldowns().isOnCooldown(p.getUniqueId(), name)) {
+					if (p.hasPermission("kp.cooldownbypass") || !plugin.getArena().getCooldowns().isOnCooldown(p.getUniqueId(), name)) {
 					
 						Kit kit = new Kit();
 						kit.setName(name);
@@ -202,7 +202,7 @@ public class Kits {
 						kit.applyKit(p);
 						setKit(p.getName(), name);
 						
-						if (resources.getKits(name).getString("Kit.Cooldown") != "0") {
+						if (resources.getKits(name).getString("Kit.Cooldown") != "0" && !p.hasPermission("kp.cooldownbypass")) {
 							
 							plugin.getArena().getCooldowns().setCooldown(p.getUniqueId(), name);
 							
