@@ -35,10 +35,12 @@ import com.planetgallium.kitpvp.util.Toolkit;
 public class Kits {
 
 	private Game plugin;
+	private Arena arena;
 	private Resources resources;
 	
 	public Kits(Game plugin, Resources resources) {
 		this.plugin = plugin;
+		this.arena = plugin.getArena();
 		this.resources = resources;
 	}
 	
@@ -134,7 +136,7 @@ public class Kits {
 			
 			if (p.hasPermission(resources.getKits(name).getString("Kit.Permission"))) {
 				
-				if (Game.getInstance().getArena().getLevels().getLevel(p.getUniqueId()) >= resources.getKits(name).getInt("Kit.Level")) {
+				if (p.hasPermission("kp.levelbypass") || arena.getLevels().getLevel(p.getUniqueId()) >= resources.getKits(name).getInt("Kit.Level")) {
 					
 					if (p.hasPermission("kp.cooldownbypass") || !plugin.getArena().getCooldowns().isOnCooldown(p.getUniqueId(), name)) {
 					
