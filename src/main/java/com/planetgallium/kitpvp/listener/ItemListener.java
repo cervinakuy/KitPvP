@@ -398,9 +398,11 @@ public class ItemListener implements Listener {
 
 		for (int i = 0; i < 36; i++) {
 			ItemStack item = p.getInventory().getItem(i);
-			if (item.getType() == type) {
-				if (Config.tr(item.getItemMeta().getDisplayName()).equals(displayName)) {
-					return i;
+			if (item != null) {
+				if (item.getType() == type) {
+					if (Config.tr(item.getItemMeta().getDisplayName()).equals(displayName)) {
+						return i;
+					}
 				}
 			}
 		}
