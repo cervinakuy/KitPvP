@@ -388,6 +388,7 @@ public class Kits {
 		} else {
 
 			String effectName = data.getType().getEffectType().getName();
+			resource.set(path + ".Type", data.getType().toString());
 			resource.set(path + ".Effects." + effectName + ".Upgraded", data.isUpgraded());
 			resource.set(path + ".Effects." + effectName + ".Extended", data.isExtended());
 			resource.save();

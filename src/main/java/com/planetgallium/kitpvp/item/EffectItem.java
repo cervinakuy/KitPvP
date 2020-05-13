@@ -50,7 +50,7 @@ public class EffectItem {
 
             for (String identifier : resource.getConfigurationSection(path).getKeys(false)) {
 
-                this.potionType = XPotion.matchXPotion(identifier).get().getPotionType();
+                this.potionType = PotionType.valueOf(resource.getString(path.replace("Effects", "") + "Type"));
                 this.isUpgraded = resource.getBoolean(path + "." + identifier + ".Upgraded");
                 this.isExtended = resource.getBoolean(path + "." + identifier + ".Extended");
                 this.potionData = new PotionData(potionType, isExtended, isUpgraded);
