@@ -51,8 +51,8 @@ public class DeathListener implements Listener {
 				e.getDrops().clear();
 			}
 
-			respawnPlayer(victim);
 			setDeathMessage(victim, e);
+			respawnPlayer(victim);
 
 			arena.getStats().addDeath(victim.getUniqueId());
 			arena.getLevels().removeExperience(victim, resources.getLevels().getInt("Levels.General.Experience.Death"));
