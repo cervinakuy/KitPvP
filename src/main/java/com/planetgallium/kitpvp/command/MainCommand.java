@@ -175,7 +175,7 @@ public class MainCommand implements CommandExecutor {
 
         } else if (args.length == 2) {
 
-            if (args[0].equalsIgnoreCase("clear")) {
+            if (args[0].equalsIgnoreCase("clear") && hasPermission(sender, "kp.command.clear")) {
 
                 String playerName = args[1];
 
@@ -357,7 +357,7 @@ public class MainCommand implements CommandExecutor {
 
                     return true;
 
-                } else if (args[0].equalsIgnoreCase("delspawn")) {
+                } else if (args[0].equalsIgnoreCase("delspawn") && hasPermission(sender, "kp.command.delspawn")) {
 
                     if (Config.getC().contains("Arenas.Spawn." + p.getWorld().getName())) {
 
@@ -387,7 +387,7 @@ public class MainCommand implements CommandExecutor {
 
             } else if (args.length == 2) {
 
-                if (args[0].equalsIgnoreCase("spawn")) {
+                if (args[0].equalsIgnoreCase("spawn") && hasPermission(sender, "kp.command.spawn")) {
 
                     String arena = args[1];
 
@@ -415,7 +415,7 @@ public class MainCommand implements CommandExecutor {
 
                     }
 
-                } else if (args[0].equalsIgnoreCase("preview")) {
+                } else if (args[0].equalsIgnoreCase("preview") && hasPermission(sender, "kp.command.preview")) {
 
                     if (Toolkit.inArena(p)) {
 
@@ -436,7 +436,7 @@ public class MainCommand implements CommandExecutor {
 
                     }
 
-                } else if (args[0].equalsIgnoreCase("create")) {
+                } else if (args[0].equalsIgnoreCase("create") && hasPermission(sender, "kp.command.create")) {
 
                     if (Toolkit.inArena(p)) {
 
@@ -448,7 +448,7 @@ public class MainCommand implements CommandExecutor {
 
                     }
 
-                } else if (args[0].equalsIgnoreCase("delete")) {
+                } else if (args[0].equalsIgnoreCase("delete") && hasPermission(sender, "kp.command.delete")) {
 
                     if (Toolkit.inArena(p)) {
 
@@ -469,7 +469,7 @@ public class MainCommand implements CommandExecutor {
 
                     }
 
-                } else if (args[0].equalsIgnoreCase("kit")) {
+                } else if (args[0].equalsIgnoreCase("kit") && hasPermission(sender, "kp.command.kit")) {
 
                     if (Toolkit.inArena(p)) {
 
