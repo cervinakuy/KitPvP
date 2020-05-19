@@ -11,12 +11,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
-import org.bukkit.event.entity.EntityExplodeEvent;
-import org.bukkit.event.entity.FoodLevelChangeEvent;
-import org.bukkit.event.inventory.InventoryEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemDamageEvent;
@@ -228,13 +224,13 @@ public class ArenaListener implements Listener {
 					}
 				
 				} else if (e.getCause() == DamageCause.FALL) {
-						
+
 					if (Config.getB("Arena.PreventFallDamage")) {
-						
+
 						e.setCancelled(true); // only canceling if preventing fall damage is enabled, this allows for WorldGuard to step in
-						
+
 					}
-					
+
 				} else if (damagedPlayer.getGameMode() == GameMode.SPECTATOR) {
 					
 					e.setCancelled(true);
