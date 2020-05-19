@@ -152,10 +152,10 @@ public class DeathListener implements Listener {
 			broadcast(victim.getWorld(), Config.getS("Death.Messages.Shot").replace("%victim%", victim.getName()).replace("%shooter%", getShooter(victim.getLastDamageCause()).getName()));
 			creditWithKill(victim, victim.getKiller());
 
-		} else if (cause == DamageCause.ENTITY_ATTACK) {
-
-			broadcast(victim.getWorld(), Config.getS("Death.Messages.Player").replace("%victim%", victim.getName()).replace("%killer%", victim.getKiller().getName()));
-			creditWithKill(victim, victim.getKiller());
+//		} else if (cause == DamageCause.ENTITY_ATTACK) {
+//
+//			broadcast(victim.getWorld(), Config.getS("Death.Messages.Player").replace("%victim%", victim.getName()).replace("%killer%", victim.getKiller().getName()));
+//			creditWithKill(victim, victim.getKiller());
 
 		} else if (victim.getKiller() != null) {
 
@@ -205,27 +205,31 @@ public class DeathListener implements Listener {
 
 	private void creditWithKill(Player victim, Player killer) {
 
-		arena.getStats().addKill(killer.getUniqueId());
-		arena.getLevels().addExperience(killer, resources.getLevels().getInt("Levels.General.Experience.Kill"));
+		if (victim.getName() != killer.getName()) {
 
-		Toolkit.runKillCommands(victim, killer);
+			arena.getStats().addKill(killer.getUniqueId());
+			arena.getLevels().addExperience(killer, resources.getLevels().getInt("Levels.General.Experience.Kill"));
 
-		if (resources.getScoreboard().getBoolean("Scoreboard.General.Enabled")) {
+			Toolkit.runKillCommands(victim, killer);
 
-			new BukkitRunnable() {
+			if (resources.getScoreboard().getBoolean("Scoreboard.General.Enabled")) {
 
-				@Override
-				public void run() {
+				new BukkitRunnable() {
 
-					if (killer instanceof Player) {
+					@Override
+					public void run() {
 
-						arena.updateScoreboards(killer, false);
+						if (killer instanceof Player) {
+
+							arena.updateScoreboards(killer, false);
+
+						}
 
 					}
 
-				}
+				}.runTaskLater(Game.getInstance(), 20L);
 
-			}.runTaskLater(Game.getInstance(), 20L);
+			}
 
 		}
 
