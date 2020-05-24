@@ -3,6 +3,7 @@ package com.planetgallium.kitpvp.listener;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
@@ -88,44 +89,48 @@ public class SoupListener implements Listener {
 			Player p = e.getPlayer();
 			
 			if (Toolkit.inArena(p)) {
-				
-				if (Toolkit.getMainHandItem(p).getType() == XMaterial.MUSHROOM_STEW.parseMaterial() || Toolkit.getOffhandItem(p).getType() == XMaterial.MUSHROOM_STEW.parseMaterial()) {
-					
-			        e.setCancelled(true);
-			        
-			        if (p.getHealth() < 20.0) {
-			        	
-			            p.setHealth(p.getHealth() + (double) health >= 20.0 ? 20.0 : p.getHealth() + (double) health);
-			            p.playSound(p.getLocation(), XSound.matchXSound(Config.getS("Soups.Sound")).get().parseSound(), 1, (float) Config.getI("Soups.Pitch"));
-			            
-						if (Toolkit.getMainHandItem(p).getType() == XMaterial.MUSHROOM_STEW.parseMaterial()) {
-							
-				            if (Config.getB("Soups.RemoveAfterUse")) {
-				            	
-				            	Toolkit.setMainHandItem(p, new ItemStack(XMaterial.AIR.parseItem()));
-				            	
-				            } else {
-				            	
-				            	Toolkit.setMainHandItem(p, new ItemStack(XMaterial.BOWL.parseItem()));
-				            	
-				            }
-					        
-					    } else if (Toolkit.getOffhandItem(p).getType() == XMaterial.MUSHROOM_STEW.parseMaterial()) {
-					    	
-				            if (Config.getB("Soups.RemoveAfterUse")) {
-				            	
-				            	Toolkit.setOffhandItem(p, new ItemStack(XMaterial.AIR.parseItem()));
-				            	
-				            } else {
-				            	
-				            	Toolkit.setOffhandItem(p, new ItemStack(XMaterial.BOWL.parseItem()));
-				            	
-				            }
-					    	
-					    }
-						
-			        }
-				
+
+				if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
+
+					if (Toolkit.getMainHandItem(p).getType() == XMaterial.MUSHROOM_STEW.parseMaterial() || Toolkit.getOffhandItem(p).getType() == XMaterial.MUSHROOM_STEW.parseMaterial()) {
+
+						e.setCancelled(true);
+
+						if (p.getHealth() < 20.0) {
+
+							p.setHealth(p.getHealth() + (double) health >= 20.0 ? 20.0 : p.getHealth() + (double) health);
+							p.playSound(p.getLocation(), XSound.matchXSound(Config.getS("Soups.Sound")).get().parseSound(), 1, (float) Config.getI("Soups.Pitch"));
+
+							if (Toolkit.getMainHandItem(p).getType() == XMaterial.MUSHROOM_STEW.parseMaterial()) {
+
+								if (Config.getB("Soups.RemoveAfterUse")) {
+
+									Toolkit.setMainHandItem(p, new ItemStack(XMaterial.AIR.parseItem()));
+
+								} else {
+
+									Toolkit.setMainHandItem(p, new ItemStack(XMaterial.BOWL.parseItem()));
+
+								}
+
+							} else if (Toolkit.getOffhandItem(p).getType() == XMaterial.MUSHROOM_STEW.parseMaterial()) {
+
+								if (Config.getB("Soups.RemoveAfterUse")) {
+
+									Toolkit.setOffhandItem(p, new ItemStack(XMaterial.AIR.parseItem()));
+
+								} else {
+
+									Toolkit.setOffhandItem(p, new ItemStack(XMaterial.BOWL.parseItem()));
+
+								}
+
+							}
+
+						}
+
+					}
+
 				}
 				
 			}
