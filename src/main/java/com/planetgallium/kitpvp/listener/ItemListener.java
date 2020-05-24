@@ -107,6 +107,7 @@ public class ItemListener implements Listener {
 
 					Entity entity = p.getWorld().spawn(handLocation, TNTPrimed.class);
 					entity.setVelocity(direction.multiply(1.5));
+					entity.setCustomName(p.getName());
 
 					useAbilityItem(p, p, item, "none");
 

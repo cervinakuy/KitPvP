@@ -470,5 +470,21 @@ public class Toolkit {
  		return newList;
  		
  	}
+
+ 	public static Player getPlayer(World world, String name) {
+
+		for (Player player : world.getPlayers()) {
+
+			if (player.getName().equals(name)) {
+
+				return player;
+
+			}
+
+		}
+
+		return null;
+
+	}
 	
 }
