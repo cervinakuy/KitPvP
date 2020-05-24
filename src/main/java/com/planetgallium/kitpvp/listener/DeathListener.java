@@ -205,7 +205,7 @@ public class DeathListener implements Listener {
 
 	private void creditWithKill(Player victim, Player killer) {
 
-		if (victim.getName() != killer.getName()) {
+		if (!victim.getName().equals(killer.getName())) {
 
 			arena.getStats().addKill(killer.getUniqueId());
 			arena.getLevels().addExperience(killer, resources.getLevels().getInt("Levels.General.Experience.Kill"));
