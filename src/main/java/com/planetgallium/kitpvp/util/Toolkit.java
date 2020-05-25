@@ -18,7 +18,7 @@ public class Toolkit {
 		
 		if (Config.getC().contains("Arenas.Spawn")) {
 			
-			if (Config.getC().contains("Arenas.Spawn." + world.getName())) {
+			if (Config.getC().contains("Arenas.Spawn." + world.getName() + ".X")) {
 				
 				return true;
 				
@@ -32,45 +32,11 @@ public class Toolkit {
 		
 		return false;
 		
-	}	
+	}
 	
-	public static boolean inArena(Entity en) {
+	public static boolean inArena(Entity entity) {
 		
-		if (Config.getC().contains("Arenas.Spawn")) {
-			
-			if (Config.getC().contains("Arenas.Spawn." + en.getWorld().getName())) {
-				
-				return true;
-				
-			}
-			
-		} else {
-			
-			Bukkit.getConsoleSender().sendMessage(Config.tr("&7[&b&lKIT-PVP&7] &cThere was no spawn found, please set it using /kp addspawn."));
-			
-		}
-		
-		return false;
-		
-	}	
-	
-	public static boolean inArena(Player p) {
-		
-		if (Config.getC().contains("Arenas.Spawn")) {
-			
-			if (Config.getC().contains("Arenas.Spawn." + p.getWorld().getName())) {
-				
-				return true;
-				
-			}
-			
-		} else {
-			
-			Bukkit.getConsoleSender().sendMessage(Config.tr("&7[&b&lKIT-PVP&7] &cThere was no spawn found, please set it using /kp addspawn."));
-			
-		}
-		
-		return false;
+		return inArena(entity.getWorld());
 		
 	}
 	

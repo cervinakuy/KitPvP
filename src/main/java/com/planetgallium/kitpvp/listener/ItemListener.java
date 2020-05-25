@@ -57,8 +57,8 @@ public class ItemListener implements Listener {
 	public void onInteract(PlayerInteractEvent e) {
 
 		Player p = e.getPlayer();
-		
-		if (Toolkit.inArena(p) && e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
+
+		if (Toolkit.inArena(p) && (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK)) {
 
 			ItemStack item = Toolkit.getMainHandItem(p);
 			ItemMeta meta = item.getItemMeta();
