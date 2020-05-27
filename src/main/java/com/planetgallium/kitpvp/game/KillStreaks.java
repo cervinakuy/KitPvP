@@ -142,4 +142,10 @@ public class KillStreaks implements Listener {
 		
 	}
 
+	public void setStreak(Player p, int streak) {
+
+		kills.put(p.getName(), streak);
+
+	}
+
 }

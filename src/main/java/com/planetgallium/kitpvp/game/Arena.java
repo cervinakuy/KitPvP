@@ -59,6 +59,8 @@ public class Arena {
 	public void addPlayer(Player p) {
 		
 		getKits().clearKit(p.getName());
+
+		getKillStreaks().setStreak(p, 0);
 		
 		if (Config.getB("Arena.ClearPotionEffectsOnJoin")) {
 			for (PotionEffect effect : p.getActivePotionEffects()) {
