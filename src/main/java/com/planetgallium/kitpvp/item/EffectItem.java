@@ -53,7 +53,7 @@ public class EffectItem {
                 this.potionType = PotionType.valueOf(resource.getString(path.replace("Effects", "") + "Type"));
                 this.isUpgraded = resource.getBoolean(path + "." + identifier + ".Upgraded");
                 this.isExtended = resource.getBoolean(path + "." + identifier + ".Extended");
-                this.potionData = new PotionData(potionType, isExtended, isUpgraded);
+                this.potionData = new PotionData(potionType == null ? PotionType.UNCRAFTABLE : potionType, isExtended, isUpgraded);
 
             }
 
