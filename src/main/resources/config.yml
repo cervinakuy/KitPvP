@@ -61,8 +61,8 @@ Death:
     - 'player: These commands are run by the player, you can use the %victim% variable for the player who died'
     Enabled: false
   Messages:
-    Player: '%prefix% &b%victim% &7was killed by &b%killer%&7.'
-    Shot: '%prefix% &b%victim% &7was shot by &b%shooter%&7.'
+    Player: '%prefix% &b%victim% &7was killed by &b%killer% &7(&c%killer_health%&7).'
+    Shot: '%prefix% &b%victim% &7was shot by &b%killer% &7(&c%killer_health%&7).'
     Fall: '%prefix% &b%victim% &7fell to their doom.'
     Void: '%prefix% &b%victim% &7died from the void.'
     Fire: '%prefix% &b%victim% &7died from fire.'

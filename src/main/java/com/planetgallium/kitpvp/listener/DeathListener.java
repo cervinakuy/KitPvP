@@ -33,10 +33,10 @@ public class DeathListener implements Listener {
 	private FileConfiguration config;
 	private Resources resources;
 	
-	public DeathListener(Game plugin, Arena arena, Resources resources) {
+	public DeathListener(Game plugin, Arena arena) {
 		this.arena = arena;
 		this.config = plugin.getConfig();
-		this.resources = resources;
+		this.resources = plugin.getResources();
 	}
 	
 	@EventHandler
@@ -51,7 +51,7 @@ public class DeathListener implements Listener {
 				e.getDrops().clear();
 			}
 
-			setDeathMessage(victim, e);
+			setDeathMessage(victim);
 			respawnPlayer(victim);
 
 			arena.getStats().addDeath(victim.getUniqueId());
@@ -143,14 +143,16 @@ public class DeathListener implements Listener {
 		
 	}
 
-	private void setDeathMessage(Player victim, PlayerDeathEvent e) {
+	private void setDeathMessage(Player victim) {
 
 		DamageCause cause = victim.getLastDamageCause().getCause();
 
-		if (cause == DamageCause.PROJECTILE) {
+		if (cause == DamageCause.PROJECTILE && getShooter(victim.getLastDamageCause()).getType() == EntityType.PLAYER) {
 
-			broadcast(victim.getWorld(), Config.getS("Death.Messages.Shot").replace("%victim%", victim.getName()).replace("%shooter%", getShooter(victim.getLastDamageCause()).getName()));
-			creditWithKill(victim, victim.getKiller());
+			Player killer = (Player) getShooter(victim.getLastDamageCause());
+
+			broadcast(victim.getWorld(), getDeathMessage(victim, killer, "Shot"));
+			creditWithKill(victim, killer);
 
 //		} else if (cause == DamageCause.ENTITY_ATTACK) {
 //
@@ -159,47 +161,47 @@ public class DeathListener implements Listener {
 
 		} else if (victim.getKiller() != null) {
 
-			broadcast(victim.getWorld(), Config.getS("Death.Messages.Player").replace("%victim%", victim.getName()).replace("%killer%", victim.getKiller().getName()));
-			creditWithKill(victim, victim.getKiller());
+			Player killer = victim.getKiller();
+
+			broadcast(victim.getWorld(), getDeathMessage(victim, killer, "Player"));
+			creditWithKill(victim, killer);
 
 		} else if (arena.getHitCache().get(victim.getName()) != null) {
 
 			String killerName = arena.getHitCache().get(victim.getName());
-			broadcast(victim.getWorld(), Config.getS("Death.Messages.Player").replace("%victim%", victim.getName()).replace("%killer%", killerName));
-			creditWithKill(victim, getPlayer(victim, killerName));
+			Player killer = Toolkit.getPlayer(victim.getWorld(), killerName);
+
+			broadcast(victim.getWorld(), getDeathMessage(victim, killer, "Player"));
+			creditWithKill(victim, killer);
 
 		} else if ((cause == DamageCause.BLOCK_EXPLOSION || cause == DamageCause.ENTITY_EXPLOSION) && getExplodedEntity(victim.getLastDamageCause()).getType() == EntityType.PRIMED_TNT) {
 
 			String bomberName = getExplodedEntity(victim.getLastDamageCause()).getCustomName();
+			Player killer = Toolkit.getPlayer(victim.getWorld(), bomberName);
 
-			if (bomberName != null) {
-
-				Player killer = Toolkit.getPlayer(victim.getWorld(), bomberName);
-				broadcast(victim.getWorld(), Config.getS("Death.Messages.Player").replace("%victim%", victim.getName()).replace("%killer%", bomberName));
-				creditWithKill(victim, killer);
-
-			}
+			broadcast(victim.getWorld(), getDeathMessage(victim, killer, "Player"));
+			creditWithKill(victim, killer);
 
 		} else if (cause == DamageCause.VOID) {
 
-			broadcast(victim.getWorld(), Config.getS("Death.Messages.Void").replace("%victim%", victim.getName()));
+			broadcast(victim.getWorld(), getDeathMessage(victim, null, "Void"));
 
 		} else if (cause == DamageCause.FALL) {
-			
-			broadcast(victim.getWorld(), Config.getS("Death.Messages.Fall").replace("%victim%", victim.getName()));
+
+			broadcast(victim.getWorld(), getDeathMessage(victim, null, "Fall"));
 			
 		} else if (cause == DamageCause.FIRE || cause == DamageCause.FIRE_TICK || cause == DamageCause.LAVA) {
-			
-			broadcast(victim.getWorld(), Config.getS("Death.Messages.Fire").replace("%victim%", victim.getName()));
+
+			broadcast(victim.getWorld(), getDeathMessage(victim, null, "Fire"));
 			
 		} else if (cause == DamageCause.BLOCK_EXPLOSION || cause == DamageCause.ENTITY_EXPLOSION) {
-			
-			broadcast(victim.getWorld(), Config.getS("Death.Messages.Explosion").replace("%victim%", victim.getName()));
+
+			broadcast(victim.getWorld(), getDeathMessage(victim, null, "Explosion"));
 
 		} else {
-			
-			broadcast(victim.getWorld(), Config.getS("Death.Messages.Unknown").replace("%victim%", victim.getName()));
-			
+
+			broadcast(victim.getWorld(), getDeathMessage(victim, null, "Unknown"));
+
 		}
 		
 	}
@@ -258,21 +260,38 @@ public class DeathListener implements Listener {
 		}
 
 	}
-	
+
+	private String getDeathMessage(Player victim, Player killer, String type) {
+
+		String deathMessage = config.getString("Death.Messages." + type);
+
+		if (victim != null) {
+			deathMessage = deathMessage.replace("%victim%", victim.getName());
+		}
+
+		if (killer != null) {
+			deathMessage = deathMessage.replace("%killer%", killer.getName())
+					.replace("%killer_health%", String.valueOf(Toolkit.round(killer.getHealth(), 2)));
+		}
+
+		return deathMessage;
+
+	}
+
 	private void broadcast(World world, String message) {
 		
 		if (Config.getB("Death.Messages.Enabled")) {
 			
 			for (Player all : world.getPlayers()) {
 				
-				all.sendMessage(message);
+				all.sendMessage(Config.tr(message));
 				
 			}
 			
 		}
 		
 	}
-	
+
 	private void broadcast(World world, Sound sound, int volume, int pitch) {
 		
 		if (Config.getB("Death.Sound.Enabled")) {
@@ -285,22 +304,6 @@ public class DeathListener implements Listener {
 			
 		}
 		
-	}
-
-	private Player getPlayer(Player origin, String name) {
-
-		for (Player player : origin.getWorld().getPlayers()) {
-
-			if (player.getName().equals(name)) {
-
-				return player;
-
-			}
-
-		}
-
-		return null;
-
 	}
 
 }
