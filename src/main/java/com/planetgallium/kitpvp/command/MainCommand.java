@@ -34,10 +34,10 @@ public class MainCommand implements CommandExecutor {
     private Arena arena;
     private Resources resources;
 
-    public MainCommand(Game game, Arena arena, Resources resources) {
+    public MainCommand(Game game) {
         this.game = game;
-        this.arena = arena;
-        this.resources = resources;
+        this.arena = game.getArena();
+        this.resources = game.getResources();
     }
 
     @Override

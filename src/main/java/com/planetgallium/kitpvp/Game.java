@@ -68,7 +68,7 @@ public class Game extends JavaPlugin implements Listener {
 		saveConfig();
 		
 		getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
-	    getCommand("kitpvp").setExecutor(new MainCommand(this, arena, resources));
+	    getCommand("kitpvp").setExecutor(new MainCommand(this));
 	    getCommand("ckit").setExecutor(new KitCommand(resources));
 	    getCommand("cspawn").setExecutor(new SpawnCommand());
 	    getCommand("ckits").setExecutor(new KitsCommand());

@@ -38,10 +38,10 @@ public class Kits {
 	private Arena arena;
 	private Resources resources;
 	
-	public Kits(Game plugin, Resources resources) {
+	public Kits(Game plugin, Arena arena) {
+		this.arena = arena;
 		this.plugin = plugin;
-		this.arena = plugin.getArena();
-		this.resources = resources;
+		this.resources = plugin.getResources();
 	}
 	
 	private Map<String, String> kits = new HashMap<String, String>();
@@ -131,14 +131,14 @@ public class Kits {
 	}
 	
 	public void giveKit(String name, Player p) {
-		
+
 		if (isKit(name)) {
 			
 			if (p.hasPermission(resources.getKits(name).getString("Kit.Permission"))) {
 				
 				if (p.hasPermission("kp.levelbypass") || arena.getLevels().getLevel(p.getUniqueId()) >= resources.getKits(name).getInt("Kit.Level")) {
 					
-					if (p.hasPermission("kp.cooldownbypass") || !plugin.getArena().getCooldowns().isOnCooldown(p.getUniqueId(), name)) {
+					if (p.hasPermission("kp.cooldownbypass") || !arena.getCooldowns().isOnCooldown(p.getUniqueId(), name)) {
 					
 						Kit kit = new Kit();
 						kit.setName(name);
@@ -206,7 +206,7 @@ public class Kits {
 						
 						if (resources.getKits(name).getString("Kit.Cooldown") != "0" && !p.hasPermission("kp.cooldownbypass")) {
 							
-							plugin.getArena().getCooldowns().setCooldown(p.getUniqueId(), name);
+							arena.getCooldowns().setCooldown(p.getUniqueId(), name);
 							
 						}
 						
@@ -214,7 +214,7 @@ public class Kits {
 						
 					} else {
 						
-						p.sendMessage(Config.tr(resources.getMessages().getString("Messages.Error.Cooldown").replace("%cooldown%", plugin.getArena().getCooldowns().getFormattedCooldown(p.getUniqueId(), name))));
+						p.sendMessage(Config.tr(resources.getMessages().getString("Messages.Error.Cooldown").replace("%cooldown%", arena.getCooldowns().getFormattedCooldown(p.getUniqueId(), name))));
 						
 					}
 					

@@ -40,7 +40,6 @@ public class Arena {
 	private Cooldowns cooldowns;
 	
 	public Arena(Game plugin, Resources resources) {
-
 		this.plugin = plugin;
 
 		this.resources = resources;
@@ -49,11 +48,10 @@ public class Arena {
 		this.hitCache = new HashMap<String, String>();
 		
 		this.stats = new Stats(plugin, resources);
-		this.kits = new Kits(plugin, resources);
+		this.kits = new Kits(plugin, this);
 		this.killstreaks = new KillStreaks(resources);
 		this.levels = new Levels(this, resources);
 		this.cooldowns = new Cooldowns(this, resources);
-		
 	}
 	
 	public void addPlayer(Player p) {
