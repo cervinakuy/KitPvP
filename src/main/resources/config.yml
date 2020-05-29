@@ -131,6 +131,8 @@ Arena:
   PreventDeathDrops: true
   KeepWeatherAtSunny: true
   GiveItemsOnClear: true
+  GiveItemsOnRespawn: true
+  GiveItemsOnJoin: true
   NoKitProtection: true
   FancyDeath: true
   ResetKillStreakOnLeave: true

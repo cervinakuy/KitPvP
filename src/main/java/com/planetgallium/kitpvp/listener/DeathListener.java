@@ -110,7 +110,7 @@ public class DeathListener implements Listener {
 							victim.getInventory().setArmorContents(null);
 						}
 						
-						arena.addPlayer(victim, true);
+						arena.addPlayer(victim, true, config.getBoolean("Arena.GiveItemsOnRespawn"));
 						
 						victim.sendMessage(Config.getS("Death.Title.Message"));
 						victim.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 30, 0));
@@ -135,7 +135,7 @@ public class DeathListener implements Listener {
 				victim.getInventory().setArmorContents(null);
 			}
 			
-			Bukkit.getScheduler().scheduleSyncDelayedTask(Game.getInstance(), () -> arena.addPlayer(victim, true), 1);
+			Bukkit.getScheduler().scheduleSyncDelayedTask(Game.getInstance(), () -> arena.addPlayer(victim, true, Config.getB("Arena.GiveItemsOnRespawn")), 1);
 			
 			Toolkit.runCommands("Respawn", victim);
 			

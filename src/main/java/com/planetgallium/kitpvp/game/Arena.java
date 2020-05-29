@@ -54,7 +54,7 @@ public class Arena {
 		this.cooldowns = new Cooldowns(this, resources);
 	}
 	
-	public void addPlayer(Player p, boolean toSpawn) {
+	public void addPlayer(Player p, boolean toSpawn, boolean giveItems) {
 		
 		getKits().clearKit(p.getName());
 
@@ -78,8 +78,10 @@ public class Arena {
 		
 		p.setExp(0f);
 		p.setFoodLevel(20);
-		
-		giveItems(p);
+
+		if (giveItems) {
+			giveItems(p);
+		}
 
 		if (toSpawn) {
 			toSpawn(p);
