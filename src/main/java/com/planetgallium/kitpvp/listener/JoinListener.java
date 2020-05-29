@@ -47,7 +47,7 @@ public class JoinListener implements Listener {
 				p.getInventory().setArmorContents(null);
 			}
 			
-			arena.addPlayer(p);
+			arena.addPlayer(p, Config.getB("Arena.ToSpawnOnJoin"));
 			
 		}
 
@@ -71,7 +71,7 @@ public class JoinListener implements Listener {
 				p.getInventory().setArmorContents(null);
 			}
 			
-			arena.addPlayer(p);
+			arena.addPlayer(p, Config.getB("Arena.ToSpawnOnJoin"));
 			
 		} else if (Toolkit.inArena(e.getFrom())) {
 

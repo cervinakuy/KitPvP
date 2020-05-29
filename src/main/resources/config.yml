@@ -134,6 +134,7 @@ Arena:
   NoKitProtection: true
   FancyDeath: true
   ResetKillStreakOnLeave: true
+  ToSpawnOnJoin: true
 Spawn:
   Time: 5
   Enabled: true
