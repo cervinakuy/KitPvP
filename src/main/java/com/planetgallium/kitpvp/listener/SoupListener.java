@@ -1,5 +1,6 @@
 package com.planetgallium.kitpvp.listener;
 
+import com.planetgallium.kitpvp.util.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -10,20 +11,19 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import com.planetgallium.kitpvp.Game;
-import com.planetgallium.kitpvp.util.Config;
-import com.planetgallium.kitpvp.util.Toolkit;
-import com.planetgallium.kitpvp.util.XMaterial;
-import com.planetgallium.kitpvp.util.XSound;
 
 public class SoupListener implements Listener {
 
 	private Game plugin;
+	private Resources resources;
+	private int soupBoost;
 	
 	public SoupListener(Game plugin) {
 		this.plugin = plugin;
+		this.resources = plugin.getResources();
+
+		this.soupBoost = plugin.getConfig().getInt("Soups.RegenAmount");
 	}
-	
-	private int health = 6;
 	
 	@EventHandler
 	public void onDamage(PlayerDeathEvent e) {
@@ -98,7 +98,7 @@ public class SoupListener implements Listener {
 
 						if (p.getHealth() < 20.0) {
 
-							p.setHealth(p.getHealth() + (double) health >= 20.0 ? 20.0 : p.getHealth() + (double) health);
+							p.setHealth(p.getHealth() + (double) soupBoost >= 20.0 ? 20.0 : p.getHealth() + (double) soupBoost);
 							p.playSound(p.getLocation(), XSound.matchXSound(Config.getS("Soups.Sound")).get().parseSound(), 1, (float) Config.getI("Soups.Pitch"));
 
 							if (Toolkit.getMainHandItem(p).getType() == XMaterial.MUSHROOM_STEW.parseMaterial()) {
