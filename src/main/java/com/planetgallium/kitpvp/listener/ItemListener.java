@@ -384,7 +384,12 @@ public class ItemListener implements Listener {
 						e.getProjectile().setFireTicks(1000);
 						p.playSound(p.getLocation(), XSound.matchXSound(resources.getAbilities().getString("Abilities.Archer.Sound.Sound")).get().parseSound(), 1, (int) resources.getAbilities().getInt("Abilities.Archer.Sound.Pitch"));
 
-						ammo.setAmount(ammo.getAmount() - 1);
+						if (ammo.getAmount() == 1) {
+							p.getInventory().setItem(ammoSlot, new ItemStack(Material.AIR));
+						} else {
+							ammo.setAmount(ammo.getAmount() - 1);
+						}
+
 					}
 					
 				}
