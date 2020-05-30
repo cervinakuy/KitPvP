@@ -137,6 +137,7 @@ Arena:
   FancyDeath: true
   ResetKillStreakOnLeave: true
   ToSpawnOnJoin: true
+  DeathParticles: true
 Spawn:
   Time: 5
   Enabled: true
