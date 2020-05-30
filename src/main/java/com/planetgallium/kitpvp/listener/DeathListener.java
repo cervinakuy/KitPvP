@@ -47,7 +47,7 @@ public class DeathListener implements Listener {
 			Player victim = e.getEntity();
 			e.setDeathMessage("");
 
-			if (Config.getB("Arena.PreventDeathDrops")) {
+			if (config.getBoolean("Arena.PreventDeathDrops")) {
 				e.getDrops().clear();
 			}
 
@@ -63,7 +63,7 @@ public class DeathListener implements Listener {
 
 			Toolkit.runCommands("Death", victim, "%victim%", victim.getName());
 
-			if (Config.getB("Death.Sound.Enabled")) {
+			if (config.getBoolean("Death.Sound.Enabled")) {
 				broadcast(victim.getWorld(), XSound.matchXSound(Config.getS("Death.Sound.Sound")).get().parseSound(), 1, (int) Config.getI("Death.Sound.Pitch"));
 			}
 
@@ -73,7 +73,7 @@ public class DeathListener implements Listener {
 
 	private void respawnPlayer(Player victim) {
 		
-		if (Config.getB("Arena.FancyDeath")) {
+		if (config.getBoolean("Arena.FancyDeath")) {
 
 			Location deathLocation = victim.getLocation();
 
@@ -107,7 +107,7 @@ public class DeathListener implements Listener {
 						
 					} else {
 						
-						if (Config.getB("Arena.ClearInventoryOnRespawn")) {
+						if (config.getBoolean("Arena.ClearInventoryOnRespawn")) {
 							victim.getInventory().clear();
 							victim.getInventory().setArmorContents(null);
 						}
@@ -132,12 +132,12 @@ public class DeathListener implements Listener {
 			
 			arena.removePlayer(victim);
 			
-			if (Config.getB("Arena.ClearInventoryOnRespawn")) {
+			if (config.getBoolean("Arena.ClearInventoryOnRespawn")) {
 				victim.getInventory().clear();
 				victim.getInventory().setArmorContents(null);
 			}
 			
-			Bukkit.getScheduler().scheduleSyncDelayedTask(Game.getInstance(), () -> arena.addPlayer(victim, true, Config.getB("Arena.GiveItemsOnRespawn")), 1);
+			Bukkit.getScheduler().scheduleSyncDelayedTask(Game.getInstance(), () -> arena.addPlayer(victim, true, config.getBoolean("Arena.GiveItemsOnRespawn")), 1);
 			
 			Toolkit.runCommands("Respawn", victim);
 			
@@ -282,7 +282,7 @@ public class DeathListener implements Listener {
 
 	private void broadcast(World world, String message) {
 		
-		if (Config.getB("Death.Messages.Enabled")) {
+		if (config.getBoolean("Death.Messages.Enabled")) {
 			
 			for (Player all : world.getPlayers()) {
 				
@@ -296,7 +296,7 @@ public class DeathListener implements Listener {
 
 	private void broadcast(World world, Sound sound, int volume, int pitch) {
 		
-		if (Config.getB("Death.Sound.Enabled")) {
+		if (config.getBoolean("Death.Sound.Enabled")) {
 			
 			for (Player all : world.getPlayers()) {
 				
