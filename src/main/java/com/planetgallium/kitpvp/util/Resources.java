@@ -43,6 +43,7 @@ public class Resources {
 			kits.put("Witch.yml", new Resource(plugin, "kits/Witch.yml", "Witch.yml"));
 			kits.put("Rhino.yml", new Resource(plugin, "kits/Rhino.yml", "Rhino.yml"));
 			kits.put("Example.yml", new Resource(plugin, "kits/Example.yml", "Example.yml"));
+			kits.put("Trickster.yml", new Resource(plugin, "kits/Trickster.yml", "Trickster.yml"));
 		}
 		
 		abilities = new Resource(plugin, "abilities.yml");

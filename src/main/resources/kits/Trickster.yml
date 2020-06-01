@@ -1,0 +1,62 @@
+Kit:
+  Permission: kp.kit.trickster
+  Level: 0
+  Cooldown: 0
+Inventory:
+  Armor:
+    Helmet:
+      Name: '&7Trickster Helmet'
+      Item: LEATHER_HELMET
+      Dye:
+        Red: 22
+        Green: 156
+        Blue: 156
+      Enchantments:
+        thorns:
+          Level: 1
+    Chestplate:
+      Item: DIAMOND_CHESTPLATE
+      Name: '&7Trickster Chestplate'
+      Enchantments:
+        thorns:
+          Level: 1
+    Leggings:
+      Name: '&7Trickster Leggings'
+      Item: LEATHER_LEGGINGS
+      Dye:
+        Red: 22
+        Green: 156
+        Blue: 156
+      Enchantments:
+        thorns:
+          Level: 1
+    Boots:
+      Name: '&7Trickster Boots'
+      Item: LEATHER_BOOTS
+      Dye:
+        Red: 22
+        Green: 156
+        Blue: 156
+      Enchantments:
+        thorns:
+          Level: 1
+  Items:
+    0:
+      Name: '&7Trickster''s Sword'
+      Item: STONE_SWORD
+      Enchantments:
+        knockback:
+          Level: 2
+    1:
+      Name: '&7Trickster''s Fishing Rod'
+      Item: FISHING_ROD
+    2:
+      Name: '&aSwitcher Pellets &7(Right Click)'
+      Item: EGG
+      Amount: 4
+    8:
+      Name: '&aPlayer Tracker &7(Right Click)'
+      Item: COMPASS
+    Fill:
+      Name: '&aRegenerative Soup &7(Right Click)'
+      Item: MUSHROOM_SOUP

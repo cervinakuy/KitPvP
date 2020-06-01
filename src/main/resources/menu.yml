@@ -271,10 +271,31 @@ Menu:
         Right-Click:
         - 'player: kp preview Rhino'
         Enabled: true
+    Trickster:
+      Name: '&a&lTrickster Kit'
+      Item: EGG
+      Slot: 24
+      Lore:
+      - '&6Ability: &74 Switcher Pellets'
+      - ' '
+      - '&7- Stone Sword'
+      - '&7- Leather Helmet'
+      - '&7- Diamond Chestplate'
+      - '&7- Leather Leggings'
+      - '&7- Leather Boots'
+      - ' '
+      - '&eLeft-click to select.'
+      - '&eRight-click to preview.'
+      Commands:
+        Left-Click:
+        - 'player: kp kit Trickster'
+        Right-Click:
+        - 'player: kp preview Trickster'
+        Enabled: true
     Example:
       Name: '&a&lExample Kit'
       Item: WOOD_SWORD
-      Slot: 24
+      Slot: 25
       View-Permission: kp.kit.example
       Lore:
       - '&7This is the example of a custom'
@@ -295,5 +316,3 @@ Menu:
       Slot: 40
       Lore:
       - '&7Click to close the Kit Menu.'
-      
-      

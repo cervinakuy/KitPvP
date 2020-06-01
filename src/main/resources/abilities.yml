@@ -100,3 +100,14 @@ Abilities:
       Sound: BAT_HURT
       Pitch: 1
       Enabled: true
+  Trickster:
+    Item:
+      Name: '&aSwitcher Pellets &7(Right Click)'
+      Amount: 4
+    Message:
+      Message: '%prefix% &7You have switched places with &b%player%&7.'
+      Enabled: true
+    Sound:
+      Sound: ENDERMAN_TELEPORT
+      Pitch: 1
+      Enabled: true

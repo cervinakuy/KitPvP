@@ -7,11 +7,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Snowball;
-import org.bukkit.entity.TNTPrimed;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -418,44 +414,66 @@ public class ItemListener implements Listener {
 	
 	@EventHandler
 	public void onPotion(ProjectileLaunchEvent e) {
-		
+
 		if (Toolkit.inArena(e.getEntity())) {
 		
-			if (e.getEntity().getShooter() instanceof Player && e.getEntity().getType() == EntityType.SPLASH_POTION) {
-				
-				Player p = (Player) e.getEntity().getShooter();
-				int slot = p.getInventory().getHeldItemSlot();
-				
-				if (arena.getKits().getKit(p.getName()).equals("Witch")) {
-					
-					Potion potion = new Potion(pickPotion(), 1);
-					potion.setSplash(true);
-					
-					new BukkitRunnable() {
-						
-						@Override
-						public void run() {
-							
-							if (arena.getKits().getKit(p.getName()) != null) {
-								
-								if (arena.getKits().getKit(p.getName()).equals("Witch")) {
-									
-									p.getInventory().setItem(slot, potion.toItemStack(1));
-									
-									if (resources.getAbilities().getBoolean("Abilities.Witch.Message.Enabled")) {
-										p.sendMessage(Config.tr(resources.getAbilities().getString("Abilities.Witch.Message.Message").replace("%prefix%", resources.getMessages().getString("Messages.General.Prefix"))));
+			if (e.getEntity().getShooter() instanceof Player) {
+
+				Player shooter = (Player) e.getEntity().getShooter();
+
+				if (e.getEntity().getType() == EntityType.SPLASH_POTION) {
+
+					int slot = shooter.getInventory().getHeldItemSlot();
+
+					if (arena.getKits().getKit(shooter.getName()).equals("Witch")) {
+
+						Potion potion = new Potion(pickPotion(), 1);
+						potion.setSplash(true);
+
+						new BukkitRunnable() {
+
+							@Override
+							public void run() {
+
+								if (arena.getKits().getKit(shooter.getName()) != null) {
+
+									if (arena.getKits().getKit(shooter.getName()).equals("Witch")) {
+
+										shooter.getInventory().setItem(slot, potion.toItemStack(1));
+
+										if (resources.getAbilities().getBoolean("Abilities.Witch.Message.Enabled")) {
+											shooter.sendMessage(Config.tr(resources.getAbilities().getString("Abilities.Witch.Message.Message").replace("%prefix%", resources.getMessages().getString("Messages.General.Prefix"))));
+										}
+
+										shooter.playSound(shooter.getLocation(), XSound.matchXSound(resources.getAbilities().getString("Abilities.Witch.Sound.Sound")).get().parseSound(), 1, resources.getAbilities().getInt("Abliities.Witch.Sound.Pitch"));
+
 									}
-									
-									p.playSound(p.getLocation(), XSound.matchXSound(resources.getAbilities().getString("Abilities.Witch.Sound.Sound")).get().parseSound(), 1, resources.getAbilities().getInt("Abliities.Witch.Sound.Pitch"));
-									
+
 								}
-								
+
 							}
-							
+
+						}.runTaskLater(Game.getInstance(), 5 * 20);
+
+					}
+
+				} else if (e.getEntity().getType() == EntityType.EGG) {
+
+					if (arena.getKits().getKit(shooter.getName()).equals("Trickster")) {
+
+						if (shooter.hasPermission("kp.ability.trickster")) {
+
+							e.getEntity().setCustomName("pellet");
+
+						} else {
+
+							e.setCancelled(true);
+							shooter.sendMessage(Config.tr(resources.getMessages().getString("Messages.General.Permission")));
+
 						}
-						
-					}.runTaskLater(Game.getInstance(), 5 * 20);
-					
+
+					}
+
 				}
 				
 			}
@@ -484,6 +502,38 @@ public class ItemListener implements Listener {
 
 				}
 				
+			} else if (e.getDamager() instanceof Egg) {
+
+				Player damagedPlayer = (Player) e.getEntity();
+				Egg egg = (Egg) e.getDamager();
+
+				if (egg.getCustomName() != null && egg.getCustomName().equals("pellet")) {
+
+					if (Toolkit.inArena(damagedPlayer) && arena.getKits().hasKit(damagedPlayer.getName())) {
+
+						if (egg.getShooter() instanceof Player) {
+
+							Player shooter = (Player) egg.getShooter();
+							Location shooterLocation = shooter.getLocation();
+
+							shooter.teleport(damagedPlayer);
+							damagedPlayer.teleport(shooterLocation);
+
+							if (abilConfig.getBoolean("Abilities.Trickster.Message.Enabled")) {
+								shooter.sendMessage(Config.tr(resources.getAbilities().getString("Abilities.Trickster.Message.Message").replace("%player%", damagedPlayer.getName())));
+							}
+
+							if (abilConfig.getBoolean("Abilities.Trickster.Sound.Enabled")) {
+								XSound.playSoundFromString(shooter, abilConfig.getString("Abilities.Trickster.Sound.Sound") + " 1 " + abilConfig.getInt("Abilities.Trickster.Sound.Pitch"));
+								XSound.playSoundFromString(damagedPlayer, abilConfig.getString("Abilities.Trickster.Sound.Sound") + " 1 " + abilConfig.getInt("Abilities.Trickster.Sound.Pitch"));
+							}
+
+						}
+
+					}
+
+				}
+
 			}
 			
 		}
