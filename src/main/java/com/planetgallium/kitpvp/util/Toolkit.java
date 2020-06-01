@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.*;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -450,6 +451,17 @@ public class Toolkit {
 		}
 
 		return null;
+
+	}
+
+	public static Location getLocationFromConfig(FileConfiguration config, String path) {
+
+		return new Location(Bukkit.getWorld(config.getString(path + ".World")),
+				(float) config.getInt(path + ".X") + 0.5,
+				(float) config.getInt(path + ".Y"),
+				(float) config.getInt(path + ".Z") + 0.5,
+				(float) config.getDouble(path + ".Yaw"),
+				(float) config.getDouble(path + ".Pitch"));
 
 	}
 	

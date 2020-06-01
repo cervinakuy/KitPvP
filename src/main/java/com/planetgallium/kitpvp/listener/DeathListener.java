@@ -14,6 +14,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -41,7 +42,7 @@ public class DeathListener implements Listener {
 	
 	@EventHandler
 	public void onDeath(PlayerDeathEvent e) {
-		
+
 		if (Toolkit.inArena(e.getEntity())) {
 
 			Player victim = e.getEntity();
@@ -69,6 +70,19 @@ public class DeathListener implements Listener {
 
 		}
 	
+	}
+
+	@EventHandler
+	public void onRespawn(PlayerRespawnEvent e) {
+
+		if (!config.getBoolean("Arena.FancyDeath")) {
+
+			Player p = e.getPlayer();
+
+			e.setRespawnLocation(Toolkit.getLocationFromConfig(config, "Arenas.Spawn." + p.getWorld().getName()));
+
+		}
+
 	}
 
 	private void respawnPlayer(Player victim) {
@@ -129,7 +143,9 @@ public class DeathListener implements Listener {
 			}.runTaskTimer(Game.getInstance(), 0L, 20L);
 			
 		} else {
-			
+
+
+
 			arena.removePlayer(victim);
 			
 			if (config.getBoolean("Arena.ClearInventoryOnRespawn")) {
