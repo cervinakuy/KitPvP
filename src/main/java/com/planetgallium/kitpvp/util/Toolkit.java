@@ -83,185 +83,41 @@ public class Toolkit {
  	    
  	}
  	
- 	public static Color serializeColor(Resource resource, String path) {
+ 	public static Color getColorFromConfig(FileConfiguration config, String path) {
  		
- 		return Color.fromRGB(resource.getInt(path + ".Red"),
-				resource.getInt(path + ".Green"),
-				resource.getInt(path + ".Blue"));
+ 		return Color.fromRGB(config.getInt(path + ".Red"),
+				config.getInt(path + ".Green"),
+				config.getInt(path + ".Blue"));
  		
  	}
- 	
- 	public static void runCommands(Resource resource, String path, Player p) {
-			
- 		if (resource.getBoolean(path + ".Commands.Enabled")) {
- 			
- 			for (String list : resource.getStringList(path + ".Commands.Commands")) {
- 				
- 				String[] command = list.split(":", 2);
- 			    command[1] = command[1].trim();
- 				
- 			    if (command[0].equals("console")) {
- 					
- 					if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
- 						
- 						String withPlaceholders = PlaceholderAPI.setPlaceholders(p, command[1].replace("%player%", p.getName()));
- 						Bukkit.dispatchCommand(Bukkit.getConsoleSender(), withPlaceholders);
- 						
- 					} else {
- 						
- 						Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command[1].trim().replace("%player%", p.getName()));
- 						
- 					}
- 					
- 				} else if (command[0].equals("player")) {
- 					
- 					if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
- 						
- 						String withPlaceholders = PlaceholderAPI.setPlaceholders(p, command[1].trim().replace("%player%", p.getName()));
- 						p.performCommand(withPlaceholders);
- 						
- 					} else {
- 						
- 						p.performCommand(command[1].replace("%player%", p.getName()));
- 						
- 					}
 
- 				}
- 				
- 	        }
- 			
- 		}
- 		
- 	}
- 	
- 	public static void runCommands(Resource resource, String path, Player p, String place, String placeTo) {
-		
- 		if (resource.getBoolean(path + ".Commands.Enabled")) {
- 			
- 			for (String list : resource.getStringList(path + ".Commands.Commands")) {
- 				
- 				String[] command = list.split(":", 2);
- 			    command[1] = command[1].trim();
- 				
- 			    if (command[0].equals("console")) {
- 					
- 					if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
- 						
- 						String withPlaceholders = PlaceholderAPI.setPlaceholders(p, command[1].replace("%player%", p.getName()).replace(place, placeTo));
- 						Bukkit.dispatchCommand(Bukkit.getConsoleSender(), withPlaceholders);
- 						
- 					} else {
- 						
- 						Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command[1].trim().replace("%player%", p.getName()).replace(place, placeTo));
- 						
- 					}
- 					
- 				} else if (command[0].equals("player")) {
- 					
- 					if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
- 						
- 						String withPlaceholders = PlaceholderAPI.setPlaceholders(p, command[1].trim().replace("%player%", p.getName()).replace(place, placeTo));
- 						p.performCommand(withPlaceholders);
- 						
- 					} else {
- 						
- 						p.performCommand(command[1].replace("%player%", p.getName()).replace(place, placeTo));
- 						
- 					}
+ 	public static void runCommands(FileConfiguration config, String path, Player p, String replaceFrom, String replaceTo) {
 
- 				}
- 				
- 	        }
- 			
- 		}
- 		
- 	}
- 	
- 	public static void runCommands(String path, Player p) {
-		
- 		if (Config.getB(path + ".Commands.Enabled")) {
- 			
- 			for (String list : Config.getC().getStringList(path + ".Commands.Commands")) {
- 				
- 				String[] command = list.split(":", 2);
- 			    command[1] = command[1].trim();
- 				
- 			    if (command[0].equals("console")) {
- 					
- 					if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
- 						
- 						String withPlaceholders = PlaceholderAPI.setPlaceholders(p, command[1].replace("%player%", p.getName()));
- 						Bukkit.dispatchCommand(Bukkit.getConsoleSender(), withPlaceholders);
- 						
- 					} else {
- 						
- 						Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command[1].trim().replace("%player%", p.getName()));
- 						
- 					}
- 					
- 				} else if (command[0].equals("player")) {
- 					
- 					if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
- 						
- 						String withPlaceholders = PlaceholderAPI.setPlaceholders(p, command[1].trim().replace("%player%", p.getName()));
- 						p.performCommand(withPlaceholders);
- 						
- 					} else {
- 						
- 						p.performCommand(command[1].replace("%player%", p.getName()));
- 						
- 					}
+		if (config.getBoolean(path + ".Commands.Enabled")) {
 
- 				}
- 				
- 	        }
- 			
- 		}
- 		
- 	}
- 	
-	public static void runCommands(String path, Player p, String replace, String replaceTo) {
-		
- 		if (Config.getB(path + ".Commands.Enabled")) {
- 			
- 			for (String list : Config.getC().getStringList(path + ".Commands.Commands")) {
- 				
- 				String[] command = list.split(":", 2);
- 			    command[1] = command[1].trim();
- 				
- 			    if (command[0].equals("console")) {
- 					
- 					if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
- 						
- 						String withPlaceholders = PlaceholderAPI.setPlaceholders(p, command[1].replace("%player%", p.getName()).replace(replace, replaceTo));
- 						Bukkit.dispatchCommand(Bukkit.getConsoleSender(), withPlaceholders);
- 						
- 					} else {
- 						
- 						Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command[1].trim().replace("%player%", p.getName()).replace(replace, replaceTo));
- 						
- 					}
- 					
- 				} else if (command[0].equals("player")) {
- 					
- 					if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
- 						
- 						String withPlaceholders = PlaceholderAPI.setPlaceholders(p, command[1].trim().replace("%player%", p.getName()).replace(replace, replaceTo));
- 						p.performCommand(withPlaceholders);
- 						
- 					} else {
- 						
- 						p.performCommand(command[1].replace("%player%", p.getName()).replace(replace, replaceTo));
- 						
- 					}
+			for (String list : config.getStringList(path + ".Commands.Commands")) {
 
- 				}
- 				
- 	        }
- 			
- 		}
- 		
- 	}
+				String[] commandPhrase = list.split(":", 2);
+				commandPhrase[1] = commandPhrase[1].trim();
+
+				String sender = commandPhrase[0];
+				String command = commandPhrase[1];
+
+				if (sender.equals("console")) {
+
+					Bukkit.dispatchCommand(Bukkit.getConsoleSender(), addPlaceholdersIfPossible(p, command.replace("%player%", p.getName()).replace(replaceFrom, replaceTo)));
+
+				} else if (sender.equals("player")) {
+
+					p.performCommand(addPlaceholdersIfPossible(p, command.replace("%player%", p.getName()).replace(replaceFrom, replaceTo)));
+
+				}
+
+			}
+
+		}
+
+	}
 	
 	public static void runKillCommands(Player victim, Player killer) {
 		
@@ -462,6 +318,16 @@ public class Toolkit {
 				(float) config.getInt(path + ".Z") + 0.5,
 				(float) config.getDouble(path + ".Yaw"),
 				(float) config.getDouble(path + ".Pitch"));
+
+	}
+
+	private static String addPlaceholdersIfPossible(Player player, String text) {
+
+		if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+			text = PlaceholderAPI.setPlaceholders(player, text);
+		}
+
+		return text;
 
 	}
 	

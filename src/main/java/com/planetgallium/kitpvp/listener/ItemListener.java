@@ -218,7 +218,7 @@ public class ItemListener implements Listener {
 
 				if (meta.getDisplayName().equals(Config.getS("Items.Kits.Name"))) {
 
-					Toolkit.runCommands("Items.Kits", p);
+					Toolkit.runCommands(config, "Items.Kits", p, "none", "none");
 
 					if (Game.getInstance().getConfig().getBoolean("Items.Kits.Menu")) {
 
@@ -243,7 +243,7 @@ public class ItemListener implements Listener {
 
 							if (item.getItemMeta().getDisplayName().equals(Config.tr(config.getString(itemPath + ".Name")))) {
 
-								Toolkit.runCommands(itemPath, p);
+								Toolkit.runCommands(config, itemPath, p, "none", "none");
 
 							}
 

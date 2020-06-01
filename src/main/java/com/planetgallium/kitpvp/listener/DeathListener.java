@@ -62,7 +62,7 @@ public class DeathListener implements Listener {
 				victim.getWorld().playEffect(victim.getLocation().add(0.0D, 1.0D, 0.0D), Effect.STEP_SOUND, 152);
 			}
 
-			Toolkit.runCommands("Death", victim, "%victim%", victim.getName());
+			Toolkit.runCommands(config, "Death", victim, "%victim%", victim.getName());
 
 			if (config.getBoolean("Death.Sound.Enabled")) {
 				broadcast(victim.getWorld(), XSound.matchXSound(Config.getS("Death.Sound.Sound")).get().parseSound(), 1, (int) Config.getI("Death.Sound.Pitch"));
@@ -131,8 +131,8 @@ public class DeathListener implements Listener {
 						victim.sendMessage(Config.getS("Death.Title.Message"));
 						victim.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 30, 0));
 						victim.playSound(victim.getLocation(), XSound.ENTITY_EXPERIENCE_ORB_PICKUP.parseSound(), 1, 1);
-						
-						Toolkit.runCommands("Respawn", victim);
+
+						Toolkit.runCommands(config, "Respawn", victim, "none", "none");
 						
 						cancel();
 						
@@ -154,8 +154,8 @@ public class DeathListener implements Listener {
 			}
 			
 			Bukkit.getScheduler().scheduleSyncDelayedTask(Game.getInstance(), () -> arena.addPlayer(victim, true, config.getBoolean("Arena.GiveItemsOnRespawn")), 1);
-			
-			Toolkit.runCommands("Respawn", victim);
+
+			Toolkit.runCommands(config, "Respawn", victim, "none", "none");
 			
 		}
 		

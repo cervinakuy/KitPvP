@@ -47,7 +47,7 @@ public class AbilityListener implements Listener {
 			}
 			
 			if (resources.getKits(kit).getBoolean("Ability.Commands.Enabled")) {
-				Toolkit.runCommands(resources.getKits(arena.getKits().getKit(p.getName())), "Ability", p);
+				Toolkit.runCommands(resources.getKits(arena.getKits().getKit(p.getName())), "Ability", p, "none", "none");
 			}
 			
 			if (Toolkit.getMainHandItem(p).getAmount() == 1) {

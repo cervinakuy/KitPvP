@@ -112,8 +112,8 @@ public class KillStreaks implements Listener {
 			}
 			
 			if (killConfig.getBoolean(streakType + "." + streakNumber + ".Commands.Enabled")) {
-				
-				Toolkit.runCommands(resources.getKillStreaks(), streakType + "." + streakNumber, p);
+
+				Toolkit.runCommands(resources.getKillStreaks(), streakType + "." + streakNumber, p, "none", "none");
 				
 			}
 		

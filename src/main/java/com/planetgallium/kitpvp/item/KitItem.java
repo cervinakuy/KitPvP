@@ -50,7 +50,7 @@ public class KitItem {
 		}
 		
 		if (resource.contains(path + ".Dye")) {
-			this.color = Toolkit.serializeColor(resource, path + ".Dye");
+			this.color = Toolkit.getColorFromConfig(resource, path + ".Dye");
 		}
 		
 		if (resource.contains(path + ".Skull")) {

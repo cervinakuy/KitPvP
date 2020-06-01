@@ -3,7 +3,6 @@ package com.planetgallium.kitpvp.item;
 import com.planetgallium.kitpvp.util.Resource;
 import com.planetgallium.kitpvp.util.Toolkit;
 import com.planetgallium.kitpvp.util.XMaterial;
-import com.planetgallium.kitpvp.util.XPotion;
 import org.bukkit.Color;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
@@ -61,7 +60,7 @@ public class EffectItem {
 
         if (hasColor) {
 
-            this.color = Toolkit.serializeColor(resource, path.replace("Effects", "") + "Color");
+            this.color = Toolkit.getColorFromConfig(resource, path.replace("Effects", "") + "Color");
 
         }
 
