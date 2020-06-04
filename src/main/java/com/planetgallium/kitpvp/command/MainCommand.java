@@ -175,7 +175,7 @@ public class MainCommand implements CommandExecutor {
 
         } else if (args.length == 2) {
 
-            if (args[0].equalsIgnoreCase("clear") && hasPermission(sender, "kp.command.clear")) {
+            if (args[0].equalsIgnoreCase("clear") && hasPermission(sender, "kp.command.clear.other")) {
 
                 String playerName = args[1];
 
@@ -469,7 +469,7 @@ public class MainCommand implements CommandExecutor {
 
                     }
 
-                } else if (args[0].equalsIgnoreCase("kit") && hasPermission(sender, "kp.command.kit")) {
+                } else if (args[0].equalsIgnoreCase("kit") && hasPermission(sender, "kp.command.kit.other")) {
 
                     if (Toolkit.inArena(p)) {
 

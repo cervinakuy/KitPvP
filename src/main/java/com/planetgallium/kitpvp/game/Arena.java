@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.planetgallium.kitpvp.util.Toolkit;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -162,15 +163,8 @@ public class Arena {
 	public void toSpawn(Player p) {
 		
 		if (config.contains("Arenas.Spawn." + p.getWorld().getName())) {
-			
-			Location spawn = new Location(Bukkit.getWorld(config.getString("Arenas.Spawn." + p.getWorld().getName() + ".World")),
-					config.getInt("Arenas.Spawn." + p.getWorld().getName() + ".X") + 0.5,
-					config.getInt("Arenas.Spawn." + p.getWorld().getName() + ".Y"),
-					config.getInt("Arenas.Spawn." + p.getWorld().getName() + ".Z") + 0.5,
-					(float) config.getDouble("Arenas.Spawn." + p.getWorld().getName() + ".Yaw"),
-					(float) config.getDouble("Arenas.Spawn." + p.getWorld().getName() + ".Pitch"));
-			
-			p.teleport(spawn);
+
+			p.teleport(Toolkit.getLocationFromConfig(config, "Arenas.Spawn." + p.getWorld().getName()));
 			
 		} else {
 			
