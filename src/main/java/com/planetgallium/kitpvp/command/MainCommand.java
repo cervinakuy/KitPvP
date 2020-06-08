@@ -199,7 +199,7 @@ public class MainCommand implements CommandExecutor {
 
         } else if (args.length == 3) {
 
-            if (args[0].equalsIgnoreCase("kit") && hasPermission(sender, "kp.command.kit")) {
+            if (args[0].equalsIgnoreCase("kit") && hasPermission(sender, "kp.command.kit.other")) {
 
                 String kitName = args[1];
                 String playerName = args[2];
@@ -469,7 +469,7 @@ public class MainCommand implements CommandExecutor {
 
                     }
 
-                } else if (args[0].equalsIgnoreCase("kit") && hasPermission(sender, "kp.command.kit.other")) {
+                } else if (args[0].equalsIgnoreCase("kit") && hasPermission(sender, "kp.command.kit")) {
 
                     if (Toolkit.inArena(p)) {
 
