@@ -12,6 +12,8 @@ import org.bukkit.inventory.ItemStack;
 import com.planetgallium.kitpvp.Game;
 
 import me.clip.placeholderapi.PlaceholderAPI;
+import org.bukkit.permissions.Permission;
+import org.bukkit.permissions.PermissionAttachmentInfo;
 
 public class Toolkit {
 	
@@ -329,6 +331,22 @@ public class Toolkit {
 
 		return text;
 
+	}
+
+	public static int getPermissionAmount(Player player, String permissionPrefix, int defaultValue) {
+//		String permissionPrefix = "some.permission.here.";
+		if (!player.isOp()) {
+			for (PermissionAttachmentInfo attachmentInfo : player.getEffectivePermissions()) {
+				if (attachmentInfo.getPermission().startsWith(permissionPrefix)) {
+					String permission = attachmentInfo.getPermission();
+					return Integer.parseInt(permission.substring(permission.lastIndexOf(".") + 1));
+				}
+			}
+		} else {
+			return Integer.MAX_VALUE;
+		}
+
+		return defaultValue;
 	}
 	
 }

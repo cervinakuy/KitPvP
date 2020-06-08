@@ -135,8 +135,10 @@ public class Kits {
 		if (isKit(name)) {
 			
 			if (p.hasPermission(resources.getKits(name).getString("Kit.Permission"))) {
-				
-				if (p.hasPermission("kp.levelbypass") || arena.getLevels().getLevel(p.getUniqueId()) >= resources.getKits(name).getInt("Kit.Level")) {
+
+				int kitLevel = resources.getKits(name).getInt("Kit.Level");
+
+				if (Toolkit.getPermissionAmount(p, "kp.levelbypass.", 0) >= kitLevel || arena.getLevels().getLevel(p.getUniqueId()) >= kitLevel) {
 					
 					if (p.hasPermission("kp.cooldownbypass") || !arena.getCooldowns().isOnCooldown(p.getUniqueId(), name)) {
 					
