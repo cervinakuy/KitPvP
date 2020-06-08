@@ -4,8 +4,7 @@ import com.planetgallium.kitpvp.Game;
 import org.bukkit.GameMode;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -13,6 +12,8 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.hanging.HangingBreakByEntityEvent;
+import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemDamageEvent;
@@ -160,26 +161,34 @@ public class ArenaListener implements Listener {
     }
 	
     @EventHandler
-    public void onArrowDamage(EntityDamageByEntityEvent e) {
-    	
-    	if (e.getEntity() instanceof Player && e.getDamager() instanceof Projectile) {
-    	
-    		Player damagedPlayer = (Player) e.getEntity();
-    	
-    		if (Toolkit.inArena(damagedPlayer)) {
-    			
-    			if (Config.getB("Arena.NoKitProtection")) {
+    public void onEntityDamage(EntityDamageByEntityEvent e) {
 
-    				if (!arena.getKits().hasKit(damagedPlayer.getName())) {
+		if (Toolkit.inArena(e.getEntity())) {
+
+			if (e.getEntity() instanceof Player && e.getDamager() instanceof Projectile) {
+
+				Player damagedPlayer = (Player) e.getEntity();
+
+				if (Config.getB("Arena.NoKitProtection")) {
+
+					if (!arena.getKits().hasKit(damagedPlayer.getName())) {
 
 						e.setCancelled(true);
 
 					}
 
-    			}
-    		
-    		}
-			
+				}
+
+			} else if (e.getEntity() instanceof Damageable && e.getEntity().getType() != EntityType.PLAYER) {
+
+				if (e.getDamager().getType() == EntityType.PRIMED_TNT) {
+
+					e.setCancelled(true);
+
+				}
+
+			}
+
 		}
 		
 	}
@@ -294,6 +303,21 @@ public class ArenaListener implements Listener {
 			
 		}
 		
+	}
+
+	@EventHandler
+	public void onEntityBreakByTNT(HangingBreakEvent e) {
+
+		if (Toolkit.inArena(e.getEntity())) {
+
+			if (e.getCause() == HangingBreakEvent.RemoveCause.EXPLOSION) {
+
+				e.setCancelled(true);
+
+			}
+
+		}
+
 	}
 	
 }
