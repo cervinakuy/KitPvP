@@ -43,15 +43,14 @@ public class PreviewMenu {
 		
 		// Hotbar
 		for (int i = 0; i < 9; i++) {
-			if (kitResource.contains("Inventory.Items." + i + ".Name")) {
+			if (kitResource.contains("Inventory.Items." + i)) {
 				menu.addItem(new KitItem(kitResource, kit, "Inventory.Items." + i), (45 + i));
 			}
-			
 		}
 		
 		// Items
 		for (int i = 9; i < 36; i++) {
-			if (kitResource.contains("Inventory.Items." + i + ".Name")) {
+			if (kitResource.contains("Inventory.Items." + i)) {
 				menu.addItem(new KitItem(kitResource, kit, "Inventory.Items." + i), (i + 9));
 			}
 		}
