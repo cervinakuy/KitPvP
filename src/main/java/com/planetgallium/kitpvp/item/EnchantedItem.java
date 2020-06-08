@@ -19,21 +19,18 @@ public class EnchantedItem {
 		this.enchantments = new HashMap<Enchantment, Integer>();
 		
 		ConfigurationSection section = resource.getConfigurationSection(path);
-		
+
 		for (String identifier : section.getKeys(false)) {
-			
 			enchantments.put(XEnchantment.matchXEnchantment(identifier).get().parseEnchantment(), resource.getInt(path + "." + identifier + ".Level"));
-			
 		}
 		
 	}
 	
-	public ItemStack convertToEnchantedItem(ItemStack toConvert) {
-		
-		ItemStack newEnchanted = toConvert;
-		newEnchanted.addUnsafeEnchantments(enchantments);
-		
-		return newEnchanted;
+	public ItemStack convertToEnchantedItem(ItemStack original) {
+
+		original.addUnsafeEnchantments(enchantments);
+
+		return original;
 		
 	}
 	
