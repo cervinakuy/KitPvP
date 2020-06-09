@@ -83,7 +83,7 @@ public class Database {
             
         }
         
-        Bukkit.getScheduler().runTaskLater(game, () -> holdConnection(), 24000L);
+        Bukkit.getScheduler().runTaskLaterAsynchronously(game, () -> holdConnection(), 24000L);
 		
 	}
 	
