@@ -306,7 +306,7 @@ public class ArenaListener implements Listener {
 	}
 
 	@EventHandler
-	public void onEntityBreakByTNT(HangingBreakEvent e) {
+	public void onHangingEntityBreakByTNT(HangingBreakEvent e) {
 
 		if (Toolkit.inArena(e.getEntity())) {
 
