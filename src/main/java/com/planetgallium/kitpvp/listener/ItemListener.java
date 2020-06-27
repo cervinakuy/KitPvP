@@ -186,33 +186,41 @@ public class ItemListener implements Listener {
 
 				}
 
-			} else if (item.getType() == XMaterial.SLIME_BALL.parseMaterial()) {
+			} else if (item.getType() == XMaterial.SLIME_BALL.parseMaterial() && item.hasItemMeta()) {
 
-				item.setType(XMaterial.MAGMA_CREAM.parseMaterial());
-				meta.setDisplayName(Config.tr(resources.getAbilities().getString("Abilities.Archer.Item.Fire")));
-				item.setItemMeta(meta);
+				if (item.getItemMeta().getDisplayName().equals(abilConfig.getString("Abilities.Archer.Item.NoFire"))) {
 
-				Toolkit.setMainHandItem(p, item);
+					item.setType(XMaterial.MAGMA_CREAM.parseMaterial());
+					meta.setDisplayName(Config.tr(resources.getAbilities().getString("Abilities.Archer.Item.Fire")));
+					item.setItemMeta(meta);
 
-				if (resources.getAbilities().getBoolean("Abilities.Archer.Message.Enabled")) {
-					p.sendMessage(Config.tr(resources.getAbilities().getString("Abilities.Archer.Message.Fire")));
+					Toolkit.setMainHandItem(p, item);
+
+					if (resources.getAbilities().getBoolean("Abilities.Archer.Message.Enabled")) {
+						p.sendMessage(Config.tr(resources.getAbilities().getString("Abilities.Archer.Message.Fire")));
+					}
+
+					XSound.playSoundFromString(p, "UI_BUTTON_CLICK, 1, 1");
+
 				}
 
-				XSound.playSoundFromString(p, "UI_BUTTON_CLICK, 1, 1");
+			} else if (item.getType() == XMaterial.MAGMA_CREAM.parseMaterial() && item.hasItemMeta()) {
 
-			} else if (item.getType() == XMaterial.MAGMA_CREAM.parseMaterial()) {
+				if (item.getItemMeta().getDisplayName().equals(abilConfig.getString("Abilities.Archer.Item.Fire"))) {
 
-				item.setType(XMaterial.SLIME_BALL.parseMaterial());
-				meta.setDisplayName(Config.tr(resources.getAbilities().getString("Abilities.Archer.Item.NoFire")));
-				item.setItemMeta(meta);
+					item.setType(XMaterial.SLIME_BALL.parseMaterial());
+					meta.setDisplayName(Config.tr(resources.getAbilities().getString("Abilities.Archer.Item.NoFire")));
+					item.setItemMeta(meta);
 
-				Toolkit.setMainHandItem(p, item);
+					Toolkit.setMainHandItem(p, item);
 
-				if (resources.getAbilities().getBoolean("Abilities.Archer.Message.Enabled")) {
-					p.sendMessage(Config.tr(resources.getAbilities().getString("Abilities.Archer.Message.NoFire")));
+					if (resources.getAbilities().getBoolean("Abilities.Archer.Message.Enabled")) {
+						p.sendMessage(Config.tr(resources.getAbilities().getString("Abilities.Archer.Message.NoFire")));
+					}
+
+					XSound.playSoundFromString(p, "UI_BUTTON_CLICK, 1, 1");
+
 				}
-
-				XSound.playSoundFromString(p, "UI_BUTTON_CLICK, 1, 1");
 
 			} else if (item.getType() == XMaterial.matchXMaterial(config.getString("Items.Kits.Item")).get().parseMaterial()) {
 
