@@ -112,39 +112,37 @@ public class DeathListener implements Listener {
 				
 				@Override
 				public void run() {
-					
+
 					if (time != 0) {
 
 						title.sendTitle(victim, Config.getS("Death.Title.Title"), Config.getS("Death.Title.Subtitle").replace("%seconds%", String.valueOf(time)), 0, 20, 20);
 						victim.playSound(victim.getLocation(), XSound.UI_BUTTON_CLICK.parseSound(), 1, 1);
 						time--;
-						
+
 					} else {
-						
+
 						if (config.getBoolean("Arena.ClearInventoryOnRespawn")) {
 							victim.getInventory().clear();
 							victim.getInventory().setArmorContents(null);
 						}
-						
+
 						arena.addPlayer(victim, true, config.getBoolean("Arena.GiveItemsOnRespawn"));
-						
+
 						victim.sendMessage(Config.getS("Death.Title.Message"));
 						victim.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 30, 0));
 						victim.playSound(victim.getLocation(), XSound.ENTITY_EXPERIENCE_ORB_PICKUP.parseSound(), 1, 1);
 
 						Toolkit.runCommands(config, "Respawn", victim, "none", "none");
-						
+
 						cancel();
-						
+
 					}
-					
+
 				}
 				
 			}.runTaskTimer(Game.getInstance(), 0L, 20L);
 			
 		} else {
-
-
 
 			arena.removePlayer(victim);
 			

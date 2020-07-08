@@ -40,8 +40,8 @@ public class KillStreaks implements Listener {
 			if (damager != null && damager.getName() != damagedPlayer.getName()) {
 				
 				kills.put(damager.getName(), (kills.get(damager.getName()) + 1));
-				runCase("KillStreaks", kills.get(damager.getName()), damager.getName(), damager.getWorld(), damager);
-				runCase("EndStreaks", kills.get(damagedPlayer.getName()), damagedPlayer.getName(), damagedPlayer.getWorld(), damagedPlayer);
+				runCase("KillStreaks", getStreak(damager.getName()), damager.getName(), damager.getWorld(), damager);
+				runCase("EndStreaks", getStreak(damagedPlayer.getName()), damagedPlayer.getName(), damagedPlayer.getWorld(), damagedPlayer);
 				kills.put(damagedPlayer.getName(), 0);
 				
 			} else {
