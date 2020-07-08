@@ -204,9 +204,13 @@ public class Toolkit {
  			
  			return 115;
  			
- 		}
- 		
- 		return -1;
+ 		} else if (Bukkit.getVersion().contains("1.16")) {
+
+ 			return 116;
+
+		}
+
+ 		return 500;
  		
  	}
  	
