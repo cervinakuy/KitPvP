@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2019 Crypto Morin
+ * Copyright (c) 2020 Crypto Morin
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -19,7 +19,6 @@
  * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
  * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-
 package com.planetgallium.kitpvp.util;
 
 import com.google.common.base.Strings;
@@ -42,25 +41,19 @@ import javax.annotation.Nullable;
 import java.util.*;
 import java.util.regex.Pattern;
 
-/*
- * References
- *
- * * * GitHub: https://github.com/CryptoMorin/XSeries/blob/master/XPotion.java
- * * XSeries: https://www.spigotmc.org/threads/378136/
- * EssentialsX Potions: https://github.com/EssentialsX/Essentials/blob/2.x/Essentials/src/com/earth2me/essentials/Potions.java
- * Status Effect: https://minecraft.gamepedia.com/Status_effect
- * Potions: https://minecraft.gamepedia.com/Potion
- */
-
 /**
- * Up to 1.14 potion type support for multiple aliases.
+ * Potion type support for multiple aliases.
  * Uses EssentialsX potion list for aliases.
  * <p>
  * Duration: The duration of the effect in ticks. Values 0 or lower are treated as 1. Optional, and defaults to 1 tick.
  * Amplifier: The amplifier of the effect, with level I having value 0. Optional, and defaults to level I.
+ * <p>
+ * EssentialsX Potions: https://github.com/EssentialsX/Essentials/blob/2.x/Essentials/src/com/earth2me/essentials/Potions.java
+ * Status Effect: https://minecraft.gamepedia.com/Status_effect
+ * Potions: https://minecraft.gamepedia.com/Potion
  *
  * @author Crypto Morin
- * @version 1.0.1
+ * @version 1.1.1
  * @see PotionEffect
  * @see PotionEffectType
  * @see PotionType
@@ -77,13 +70,13 @@ public enum XPotion {
     FIRE_RESISTANCE("FIRE_RESIST", "RESIST_FIRE", "FIRE_RESISTANCE"),
     GLOWING("GLOW", "SHINE", "SHINY"),
     HARM("INJURE", "DAMAGE", "HARMING", "INFLICT"),
-    HEAL("HEALTHY", "INSTA_HEAL", "INSTANT_HEAL", "INSTA_HEALTH", "INSTANT_HEALTH"),
-    HEALTH_BOOST("BOOST_HEALTH", "BOOST"),
+    HEAL("HEALTH", "INSTA_HEAL", "INSTANT_HEAL", "INSTA_HEALTH", "INSTANT_HEALTH"),
+    HEALTH_BOOST("BOOST_HEALTH", "BOOST", "HP"),
     HERO_OF_THE_VILLAGE("HERO", "VILLAGE_HERO"),
     HUNGER("STARVE", "HUNGRY"),
     INCREASE_DAMAGE("STRENGTH", "BULL", "STRONG", "ATTACK"),
-    INVISIBILITY("INVISIBLE", "VANISH", "INVIS", "DISAPPEAR"),
-    JUMP("LEAP"),
+    INVISIBILITY("INVISIBLE", "VANISH", "INVIS", "DISAPPEAR", "HIDE"),
+    JUMP("LEAP", "JUMP_BOOST"),
     LEVITATION("LEVITATE"),
     LUCK("LUCKY"),
     NIGHT_VISION("VISION", "VISION_NIGHT"),
@@ -106,7 +99,11 @@ public enum XPotion {
      * @since 1.0.0
      */
     public static final EnumSet<XPotion> VALUES = EnumSet.allOf(XPotion.class);
+    public static final EnumSet<XPotion> DEBUFFS = EnumSet.of(
+            BAD_OMEN, BLINDNESS, CONFUSION, HARM, HUNGER, LEVITATION, POISON, SATURATION,
+            SLOW, SLOW_DIGGING, SLOW_FALLING, UNLUCK, WEAKNESS, WITHER);
     private static final Pattern FORMAT_PATTERN = Pattern.compile("\\d+|\\W+");
+    private static final Pattern SPACE = Pattern.compile("  +");
     private final String[] aliases;
 
     XPotion(String... aliases) {
@@ -202,7 +199,7 @@ public enum XPotion {
         if (Strings.isNullOrEmpty(potion) || potion.equalsIgnoreCase("none")) return null;
         String[] split = StringUtils.contains(potion, ',') ?
                 StringUtils.split(StringUtils.deleteWhitespace(potion), ',') :
-                StringUtils.split(potion.replaceAll("  +", " "), ' ');
+                StringUtils.split(SPACE.matcher(potion).replaceAll(" "), ' ');
 
         Optional<XPotion> typeOpt = matchXPotion(split[0]);
         if (!typeOpt.isPresent()) return null;
@@ -236,12 +233,13 @@ public enum XPotion {
 
         for (String effect : effects) {
             PotionEffect potionEffect = parsePotionEffectFromString(effect);
-            if (potionEffect != null) player.addPotionEffect(potionEffect, true);
+            if (potionEffect != null) player.addPotionEffect(potionEffect);
         }
     }
 
     /**
      * Throws a splash potion from the target entity.
+     * This method is only compatible for 1.9+
      *
      * @param entity  the entity to throw the potion from.
      * @param color   the color of the potion's bottle.
@@ -270,6 +268,7 @@ public enum XPotion {
 
     /**
      * Builds an item with the given type, color and effects.
+     * This method is only compatible for 1.9+
      * <p>
      * The item type must be one of the following:
      * <pre>
@@ -323,7 +322,6 @@ public enum XPotion {
      * @since 1.0.0
      */
     private boolean anyMatchAliases(@Nullable String potionEffect) {
-        if (Strings.isNullOrEmpty(potionEffect)) return false;
         for (String alias : aliases)
             if (potionEffect.equals(alias) || potionEffect.equals(StringUtils.remove(alias, '_'))) return true;
         return false;
