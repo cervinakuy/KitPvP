@@ -247,7 +247,7 @@ public class MainCommand implements CommandExecutor {
 
                     }
 
-                    XSound.playSoundFromString(p, "ENTITY_ITEM_PICKUP, 1, 1");
+                    XSound.play(p, "ENTITY_ITEM_PICKUP, 1, 1");
 
                 } else if (args[0].equalsIgnoreCase("menu") && hasPermission(sender, "kp.command.menu")) {
 
@@ -263,7 +263,7 @@ public class MainCommand implements CommandExecutor {
                             spawnUsers.add(p.getName());
 
                             p.sendMessage(resources.getMessages().getString("Messages.Commands.Teleporting"));
-                            XSound.playSoundFromString(p, "ENTITY_ITEM_PICKUP, 1, -1");
+                            XSound.play(p, "ENTITY_ITEM_PICKUP, 1, -1");
 
                             Location beforeLocation = p.getLocation();
 
@@ -281,7 +281,7 @@ public class MainCommand implements CommandExecutor {
                                         if (p.getGameMode() != GameMode.SPECTATOR) {
 
                                             p.sendMessage(resources.getMessages().getString("Messages.Commands.Time").replace("%time%", String.valueOf(t)));
-                                            XSound.playSoundFromString(p, "BLOCK_NOTE_BLOCK_SNARE, 1, 1");
+                                            XSound.play(p, "BLOCK_NOTE_BLOCK_SNARE, 1, 1");
 
                                             if (beforeLocation.getBlockX() != p.getLocation().getBlockX() || beforeLocation.getBlockY() != p.getLocation().getBlockY() || beforeLocation.getBlockZ() != p.getLocation().getBlockZ()) {
 
@@ -312,7 +312,7 @@ public class MainCommand implements CommandExecutor {
 
                                         spawnUsers.remove(p.getName());
 
-                                        XSound.playSoundFromString(p, "ENTITY_ENDERMAN_TELEPORT, 1, 1");
+                                        XSound.play(p, "ENTITY_ENDERMAN_TELEPORT, 1, 1");
 
                                         cancel();
 
@@ -344,7 +344,7 @@ public class MainCommand implements CommandExecutor {
                     Toolkit.saveLocationToConfig(game, Config.getC(), "Arenas." + arenaName + "." + spawnNumber, p.getLocation());
 
                     p.sendMessage(resources.getMessages().getString("Messages.Commands.Added").replace("%number%", String.valueOf(spawnNumber)).replace("%arena%", arenaName));
-                    XSound.playSoundFromString(p, "ENTITY_ZOMBIE_ATTACK_WOODEN_DOOR, 1, 1");
+                    XSound.play(p, "ENTITY_ZOMBIE_ATTACK_WOODEN_DOOR, 1, 1");
 
                     return true;
 
@@ -358,7 +358,7 @@ public class MainCommand implements CommandExecutor {
                         game.saveConfig();
 
                         p.sendMessage(resources.getMessages().getString("Messages.Commands.Removed").replace("%arena%", arenaName));
-                        XSound.playSoundFromString(p, "ENTITY_ZOMBIE_ATTACK_WOODEN_DOOR, 1, 1");
+                        XSound.play(p, "ENTITY_ZOMBIE_ATTACK_WOODEN_DOOR, 1, 1");
 
                     } else {
 

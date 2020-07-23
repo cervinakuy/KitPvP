@@ -37,7 +37,7 @@ public class KitMenu implements Listener {
 			if (!resources.getMenu().getBoolean("Menu.General.Hide-Items-With-No-Permission")) {
 				
 				menu.addItem(resources.getMenu().getString("Menu.Items." + identifier + ".Name"),
-						XMaterial.matchXMaterial(resources.getMenu().getString("Menu.Items." + identifier + ".Item").toUpperCase()).get().parseMaterial(),
+						XMaterial.matchXMaterial(resources.getMenu().getString("Menu.Items." + identifier + ".Item").toUpperCase()).get().parseMaterial().get(),
 						resources.getMenu().getStringList("Menu.Items." + identifier + ".Lore"),
 						resources.getMenu().getInt("Menu.Items." + identifier + ".Slot"));
 				
@@ -48,7 +48,7 @@ public class KitMenu implements Listener {
 					if (p.hasPermission(resources.getMenu().getString("Menu.Items." + identifier + ".View-Permission"))) {
 						
 						menu.addItem(resources.getMenu().getString("Menu.Items." + identifier + ".Name"),
-								XMaterial.matchXMaterial(resources.getMenu().getString("Menu.Items." + identifier + ".Item").toUpperCase()).get().parseMaterial(),
+								XMaterial.matchXMaterial(resources.getMenu().getString("Menu.Items." + identifier + ".Item").toUpperCase()).get().parseMaterial().get(),
 								resources.getMenu().getStringList("Menu.Items." + identifier + ".Lore"),
 								resources.getMenu().getInt("Menu.Items." + identifier + ".Slot"));
 						

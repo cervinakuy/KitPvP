@@ -58,7 +58,7 @@ public class ArenaListener implements Listener {
 		
 		if (Toolkit.inArena(p)) {
 
-			if (e.getBlock().getType() == XMaterial.TNT.parseMaterial()) {
+			if (e.getBlock().getType() == XMaterial.TNT.parseMaterial().get()) {
 
 				if (Config.getB("TNT.Enabled")) {
 
@@ -72,7 +72,7 @@ public class ArenaListener implements Listener {
 
 				if (abilityPath != null) {
 
-					if (e.getBlock().getType() == XMaterial.matchXMaterial(abilityPath).get().parseMaterial()) {
+					if (e.getBlock().getType() == XMaterial.matchXMaterial(abilityPath).get().parseMaterial().get()) {
 
 						e.setCancelled(true);
 
@@ -96,7 +96,7 @@ public class ArenaListener implements Listener {
 
 				String itemPath = "Items." + identifier;
 
-				if (e.getBlock().getType() == XMaterial.matchXMaterial(config.getString(itemPath + ".Item")).get().parseMaterial()) {
+				if (e.getBlock().getType() == XMaterial.matchXMaterial(config.getString(itemPath + ".Item")).get().parseMaterial().get()) {
 
 					if (e.getItemInHand().hasItemMeta() && e.getItemInHand().getItemMeta().getDisplayName().equals(Config.tr(config.getString(itemPath + ".Name")))) {
 
@@ -259,7 +259,7 @@ public class ArenaListener implements Listener {
 		
 		if (Toolkit.inArena(p)) {
 			
-			if (Toolkit.getMainHandItem(p).getType() == XMaterial.ENDER_EYE.parseMaterial()) {
+			if (Toolkit.getMainHandItem(p).getType() == XMaterial.ENDER_EYE.parseMaterial().get()) {
 				
 				e.setCancelled(true);
 				
@@ -267,7 +267,7 @@ public class ArenaListener implements Listener {
 			
 			if (e.getClickedBlock() != null) {
 				
-				if (e.getClickedBlock().getType() == XMaterial.CHEST.parseMaterial()) {
+				if (e.getClickedBlock().getType() == XMaterial.CHEST.parseMaterial().get()) {
 					
 					if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
 						

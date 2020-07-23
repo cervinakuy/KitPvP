@@ -1,6 +1,7 @@
 package com.planetgallium.kitpvp.listener;
 
 import com.planetgallium.kitpvp.util.*;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -8,20 +9,18 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import com.planetgallium.kitpvp.Game;
 
 public class SoupListener implements Listener {
 
-	private Game plugin;
-	private Resources resources;
+	private FileConfiguration config;
 	private int soupBoost;
 	
 	public SoupListener(Game plugin) {
-		this.plugin = plugin;
-		this.resources = plugin.getResources();
-
+		this.config = plugin.getConfig();
 		this.soupBoost = plugin.getConfig().getInt("Soups.RegenAmount");
 	}
 	
@@ -36,7 +35,7 @@ public class SoupListener implements Listener {
 				
 				Player killer = victim.getKiller();
 				
-				if (Config.getB("GiveSoupOnKill.Enabled")) {
+				if (config.getBoolean("GiveSoupOnKill.Enabled")) {
 					
 					if (killer.hasPermission("kp.soupreturn")) {
 					
@@ -54,22 +53,29 @@ public class SoupListener implements Listener {
 										}
 									}
 									
-									if (count < Config.getI("GiveSoupOnKill.Amount")) {
-										killer.sendMessage(Config.getS("GiveSoupOnKill.NoSpace").replace("%amount%", String.valueOf((Config.getI("GiveSoupOnKill.Amount") - count))));
+									if (count < config.getInt("GiveSoupOnKill.Amount")) {
+										killer.sendMessage(Config.getS("GiveSoupOnKill.NoSpace").replace("%amount%", String.valueOf((config.getInt("GiveSoupOnKill.Amount") - count))));
+									} else {
+										count = config.getInt("GiveSoupOnKill.Amount");
 									}
-									else{
-										count = Config.getI("GiveSoupOnKill.Amount");
-									}
-									
+
+									ItemStack soup = XMaterial.MUSHROOM_STEW.parseItem();
+									ItemMeta soupMeta = soup.getItemMeta();
+
+									soupMeta.setDisplayName(Config.getS("Soups.Name"));
+									soupMeta.setLore(Toolkit.colorizeList(config.getStringList("Soups.Lore")));
+
+									soup.setItemMeta(soupMeta);
+
 									for (int r = 0; r < count; r++) {
-										killer.getInventory().addItem(new ItemStack(XMaterial.MUSHROOM_STEW.parseItem()));
+										killer.getInventory().addItem(soup);
 									}
 									
 								}
 								
 							}
 							
-						}.runTaskLater(plugin, Config.getI("GiveSoupOnKill.Delay") * 20);
+						}.runTaskLater(Game.getInstance(), config.getInt("GiveSoupOnKill.Delay") * 20);
 						
 					}
 					
@@ -92,7 +98,7 @@ public class SoupListener implements Listener {
 
 				if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
 
-					if (Toolkit.getMainHandItem(p).getType() == XMaterial.MUSHROOM_STEW.parseMaterial() || Toolkit.getOffhandItem(p).getType() == XMaterial.MUSHROOM_STEW.parseMaterial()) {
+					if (Toolkit.getMainHandItem(p).getType() == XMaterial.MUSHROOM_STEW.parseMaterial().get() || Toolkit.getOffhandItem(p).getType() == XMaterial.MUSHROOM_STEW.parseMaterial().get()) {
 
 						e.setCancelled(true);
 
@@ -101,7 +107,7 @@ public class SoupListener implements Listener {
 							p.setHealth(p.getHealth() + (double) soupBoost >= 20.0 ? 20.0 : p.getHealth() + (double) soupBoost);
 							p.playSound(p.getLocation(), XSound.matchXSound(Config.getS("Soups.Sound")).get().parseSound(), 1, (float) Config.getI("Soups.Pitch"));
 
-							if (Toolkit.getMainHandItem(p).getType() == XMaterial.MUSHROOM_STEW.parseMaterial()) {
+							if (Toolkit.getMainHandItem(p).getType() == XMaterial.MUSHROOM_STEW.parseMaterial().get()) {
 
 								if (Config.getB("Soups.RemoveAfterUse")) {
 
@@ -113,7 +119,7 @@ public class SoupListener implements Listener {
 
 								}
 
-							} else if (Toolkit.getOffhandItem(p).getType() == XMaterial.MUSHROOM_STEW.parseMaterial()) {
+							} else if (Toolkit.getOffhandItem(p).getType() == XMaterial.MUSHROOM_STEW.parseMaterial().get()) {
 
 								if (Config.getB("Soups.RemoveAfterUse")) {
 

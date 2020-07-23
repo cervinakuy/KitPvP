@@ -33,7 +33,7 @@ public class TrackerListener implements Listener {
 			
 			if (item != null) {
 				
-				if (item.getType() == XMaterial.COMPASS.parseMaterial()) {
+				if (item.getType() == XMaterial.COMPASS.parseMaterial().get()) {
 					
 					new BukkitRunnable() {
 						

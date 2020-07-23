@@ -51,7 +51,7 @@ public class Kits {
 		if (!isKit(name)) {
 			
 			resources.addKit(name);
-			
+
 			Resource kitResource = resources.getKits(name);
 			kitResource.set("Kit.Permission", "kp.kit." + name.toLowerCase());
 			kitResource.set("Kit.Level", 0);
@@ -87,7 +87,7 @@ public class Kits {
 				ItemStack item = p.getInventory().getItem(i);
 
 				if (item != null) {
-					String backupName = (item.getType() == XMaterial.MUSHROOM_STEW.parseMaterial()) ? Config.getS("Soups.Name") : null;
+					String backupName = (item.getType() == XMaterial.MUSHROOM_STEW.parseMaterial().get()) ? Config.getS("Soups.Name") : null;
 					saveItem(kitResource, name, "Inventory.Items." + i, p.getInventory().getItem(i), backupName);
 				}
 				
@@ -95,7 +95,7 @@ public class Kits {
 
 			if (Toolkit.versionToNumber() >= 19 && p.getInventory().getItem(40) != null) {
 				ItemStack offhand = p.getInventory().getItem(40);
-				String backupName = (offhand.getType() == XMaterial.MUSHROOM_STEW.parseMaterial()) ? Config.getS("Soups.Name") : null;
+				String backupName = (offhand.getType() == XMaterial.MUSHROOM_STEW.parseMaterial().get()) ? Config.getS("Soups.Name") : null;
 				saveItem(kitResource, name, "Inventory.Items.40", offhand, backupName);
 			}
 
@@ -250,10 +250,10 @@ public class Kits {
 		resource.set(path + ".Amount", item.getAmount() == 1 ? null : item.getAmount());
 		resource.save();
 		
-		if (item.getType() == XMaterial.LEATHER_HELMET.parseMaterial() ||
-			item.getType() == XMaterial.LEATHER_CHESTPLATE.parseMaterial() ||
-			item.getType() == XMaterial.LEATHER_LEGGINGS.parseMaterial() ||
-			item.getType() == XMaterial.LEATHER_BOOTS.parseMaterial()) {
+		if (item.getType() == XMaterial.LEATHER_HELMET.parseMaterial().get() ||
+			item.getType() == XMaterial.LEATHER_CHESTPLATE.parseMaterial().get() ||
+			item.getType() == XMaterial.LEATHER_LEGGINGS.parseMaterial().get() ||
+			item.getType() == XMaterial.LEATHER_BOOTS.parseMaterial().get()) {
 			
 			LeatherArmorMeta dyedMeta = (LeatherArmorMeta) meta;
 			
@@ -262,20 +262,20 @@ public class Kits {
 			resource.set(path + ".Dye.Blue", dyedMeta.getColor().getBlue());
 			resource.save();
 			
-		} else if (item.getType() == XMaterial.PLAYER_HEAD.parseMaterial()) {
+		} else if (item.getType() == XMaterial.PLAYER_HEAD.parseMaterial().get()) {
 
 			SkullMeta skullMeta = (SkullMeta) meta;
 
 			resource.set(path + ".Skull", skullMeta.getOwner());
 			resource.save();
 
-		} else if (Toolkit.versionToNumber() >= 19 && item.getType() == XMaterial.TIPPED_ARROW.parseMaterial()) {
+		} else if (Toolkit.versionToNumber() >= 19 && item.getType() == XMaterial.TIPPED_ARROW.parseMaterial().get()) {
 
 			serializeEffects(resource, (PotionMeta) meta, path);
 
-		} else if (item.getType() == XMaterial.POTION.parseMaterial() ||
-					item.getType() == XMaterial.SPLASH_POTION.parseMaterial() ||
-					item.getType() == XMaterial.LINGERING_POTION.parseMaterial()) {
+		} else if (item.getType() == XMaterial.POTION.parseMaterial().get() ||
+					item.getType() == XMaterial.SPLASH_POTION.parseMaterial().get() ||
+					item.getType() == XMaterial.LINGERING_POTION.parseMaterial().get()) {
 
 			if (Toolkit.versionToNumber() == 18) {
 				
@@ -342,9 +342,9 @@ public class Kits {
 		if (Toolkit.versionToNumber() < 113) {
 			
 			if (item.getDurability() > 0 &&
-					item.getType() != XMaterial.PLAYER_HEAD.parseMaterial() &&
-					item.getType() != XMaterial.POTION.parseMaterial() &&
-					item.getType() != XMaterial.SPLASH_POTION.parseMaterial()) {
+					item.getType() != XMaterial.PLAYER_HEAD.parseMaterial().get() &&
+					item.getType() != XMaterial.POTION.parseMaterial().get() &&
+					item.getType() != XMaterial.SPLASH_POTION.parseMaterial().get()) {
 				
 				resource.set(path + ".Durability", item.getDurability());
 				resource.save();
@@ -354,9 +354,9 @@ public class Kits {
 		} else if (Toolkit.versionToNumber() >= 113) {
 			
 			if (meta instanceof Damageable &&
-					item.getType() != XMaterial.PLAYER_HEAD.parseMaterial() &&
-					item.getType() != XMaterial.POTION.parseMaterial() &&
-					item.getType() != XMaterial.SPLASH_POTION.parseMaterial()) {
+					item.getType() != XMaterial.PLAYER_HEAD.parseMaterial().get() &&
+					item.getType() != XMaterial.POTION.parseMaterial().get() &&
+					item.getType() != XMaterial.SPLASH_POTION.parseMaterial().get()) {
 				
 				Damageable damagedMeta = (Damageable) meta;
 				

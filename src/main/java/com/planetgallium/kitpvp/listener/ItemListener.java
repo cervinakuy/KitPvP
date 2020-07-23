@@ -59,7 +59,7 @@ public class ItemListener implements Listener {
 			ItemStack item = Toolkit.getMainHandItem(p);
 			ItemMeta meta = item.getItemMeta();
 
-			if (item.getType() == XMaterial.SADDLE.parseMaterial()) {
+			if (item.getType() == XMaterial.SADDLE.parseMaterial().get()) {
 
 				if (isAbilityItem(p, "Kangaroo", item)) {
 
@@ -70,7 +70,7 @@ public class ItemListener implements Listener {
 
 				}
 
-			} else if (item.getType() == XMaterial.IRON_HOE.parseMaterial()) {
+			} else if (item.getType() == XMaterial.IRON_HOE.parseMaterial().get()) {
 
 				if (isAbilityItem(p, "Soldier", item)) {
 
@@ -82,7 +82,7 @@ public class ItemListener implements Listener {
 
 				}
 
-			} else if (item.getType() == XMaterial.GLASS_BOTTLE.parseMaterial()) {
+			} else if (item.getType() == XMaterial.GLASS_BOTTLE.parseMaterial().get()) {
 
 				if (isAbilityItem(p, "Witch", item)) {
 
@@ -93,7 +93,7 @@ public class ItemListener implements Listener {
 
 				}
 
-			} else if (item.getType() == XMaterial.TNT.parseMaterial()) {
+			} else if (item.getType() == XMaterial.TNT.parseMaterial().get()) {
 
 				if (Config.getB("TNT.Enabled") && item.hasItemMeta() && item.getItemMeta().getDisplayName().equals(Config.getS("TNT.Name"))) {
 
@@ -109,7 +109,7 @@ public class ItemListener implements Listener {
 
 				}
 
-			} else if (item.getType() == XMaterial.ENDER_EYE.parseMaterial()) {
+			} else if (item.getType() == XMaterial.ENDER_EYE.parseMaterial().get()) {
 
 				if (isAbilityItem(p, "Warper", item)) {
 
@@ -141,7 +141,7 @@ public class ItemListener implements Listener {
 
 				}
 
-			} else if (item.getType() == XMaterial.NETHER_STAR.parseMaterial()) {
+			} else if (item.getType() == XMaterial.NETHER_STAR.parseMaterial().get()) {
 
 				if (isAbilityItem(p, "Ninja", item)) {
 
@@ -186,11 +186,11 @@ public class ItemListener implements Listener {
 
 				}
 
-			} else if (item.getType() == XMaterial.SLIME_BALL.parseMaterial() && item.hasItemMeta()) {
+			} else if (item.getType() == XMaterial.SLIME_BALL.parseMaterial().get() && item.hasItemMeta()) {
 
 				if (item.getItemMeta().getDisplayName().equals(abilConfig.getString("Abilities.Archer.Item.NoFire"))) {
 
-					item.setType(XMaterial.MAGMA_CREAM.parseMaterial());
+					item.setType(XMaterial.MAGMA_CREAM.parseMaterial().get());
 					meta.setDisplayName(Config.tr(resources.getAbilities().getString("Abilities.Archer.Item.Fire")));
 					item.setItemMeta(meta);
 
@@ -200,15 +200,15 @@ public class ItemListener implements Listener {
 						p.sendMessage(Config.tr(resources.getAbilities().getString("Abilities.Archer.Message.Fire")));
 					}
 
-					XSound.playSoundFromString(p, "UI_BUTTON_CLICK, 1, 1");
+					XSound.play(p, "UI_BUTTON_CLICK, 1, 1");
 
 				}
 
-			} else if (item.getType() == XMaterial.MAGMA_CREAM.parseMaterial() && item.hasItemMeta()) {
+			} else if (item.getType() == XMaterial.MAGMA_CREAM.parseMaterial().get() && item.hasItemMeta()) {
 
 				if (item.getItemMeta().getDisplayName().equals(abilConfig.getString("Abilities.Archer.Item.Fire"))) {
 
-					item.setType(XMaterial.SLIME_BALL.parseMaterial());
+					item.setType(XMaterial.SLIME_BALL.parseMaterial().get());
 					meta.setDisplayName(Config.tr(resources.getAbilities().getString("Abilities.Archer.Item.NoFire")));
 					item.setItemMeta(meta);
 
@@ -218,11 +218,11 @@ public class ItemListener implements Listener {
 						p.sendMessage(Config.tr(resources.getAbilities().getString("Abilities.Archer.Message.NoFire")));
 					}
 
-					XSound.playSoundFromString(p, "UI_BUTTON_CLICK, 1, 1");
+					XSound.play(p, "UI_BUTTON_CLICK, 1, 1");
 
 				}
 
-			} else if (item.getType() == XMaterial.matchXMaterial(config.getString("Items.Kits.Item")).get().parseMaterial()) {
+			} else if (item.getType() == XMaterial.matchXMaterial(config.getString("Items.Kits.Item")).get().parseMaterial().get()) {
 
 				if (meta.getDisplayName().equals(Config.getS("Items.Kits.Name"))) {
 
@@ -247,7 +247,7 @@ public class ItemListener implements Listener {
 
 					if (config.getBoolean(itemPath + ".Enabled")) {
 
-						if (item.getType() == XMaterial.matchXMaterial(config.getString(itemPath + ".Item")).get().parseMaterial()) {
+						if (item.getType() == XMaterial.matchXMaterial(config.getString(itemPath + ".Item")).get().parseMaterial().get()) {
 
 							if (item.getItemMeta().getDisplayName().equals(Config.tr(config.getString(itemPath + ".Name")))) {
 
@@ -285,7 +285,7 @@ public class ItemListener implements Listener {
 
 			}
 
-			if (item.getType() == XMaterial.BLAZE_ROD.parseMaterial()) {
+			if (item.getType() == XMaterial.BLAZE_ROD.parseMaterial().get()) {
 
 				if (isAbilityItem(p, "Thunderbolt", item)) {
 
@@ -297,7 +297,7 @@ public class ItemListener implements Listener {
 
 				}
 
-			} else if (item.getType() == XMaterial.GHAST_TEAR.parseMaterial()) {
+			} else if (item.getType() == XMaterial.GHAST_TEAR.parseMaterial().get()) {
 
 				if (isAbilityItem(p, "Vampire", item)) {
 
@@ -363,7 +363,7 @@ public class ItemListener implements Listener {
 		Toolkit.setMainHandItem(p, abilityItem);
 
 		if (abilConfig.getBoolean(abilityPrefix + ".Sound.Enabled")) {
-			XSound.playSoundFromString(p, abilConfig.getString(abilityPrefix + ".Sound.Sound") + ", 1, " + abilConfig.getInt(abilityPrefix + ".Sound.Pitch"));
+			XSound.play(p, abilConfig.getString(abilityPrefix + ".Sound.Sound") + ", 1, " + abilConfig.getInt(abilityPrefix + ".Sound.Pitch"));
 		}
 
 	}
@@ -532,8 +532,8 @@ public class ItemListener implements Listener {
 							}
 
 							if (abilConfig.getBoolean("Abilities.Trickster.Sound.Enabled")) {
-								XSound.playSoundFromString(shooter, abilConfig.getString("Abilities.Trickster.Sound.Sound") + " 1 " + abilConfig.getInt("Abilities.Trickster.Sound.Pitch"));
-								XSound.playSoundFromString(damagedPlayer, abilConfig.getString("Abilities.Trickster.Sound.Sound") + " 1 " + abilConfig.getInt("Abilities.Trickster.Sound.Pitch"));
+								XSound.play(shooter, abilConfig.getString("Abilities.Trickster.Sound.Sound") + " 1 " + abilConfig.getInt("Abilities.Trickster.Sound.Pitch"));
+								XSound.play(damagedPlayer, abilConfig.getString("Abilities.Trickster.Sound.Sound") + " 1 " + abilConfig.getInt("Abilities.Trickster.Sound.Pitch"));
 							}
 
 						}

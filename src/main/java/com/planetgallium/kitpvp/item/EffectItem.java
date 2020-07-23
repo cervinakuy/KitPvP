@@ -76,7 +76,7 @@ public class EffectItem {
 
         if (Toolkit.versionToNumber() == 18) {
 
-            if (original.getType() == XMaterial.POTION.parseMaterial() || original.getType() == XMaterial.SPLASH_POTION.parseMaterial()) {
+            if (original.getType() == XMaterial.POTION.parseMaterial().get() || original.getType() == XMaterial.SPLASH_POTION.parseMaterial().get()) {
                 Potion potion = Potion.fromItemStack(original);
                 potion.setSplash(isSplash);
 

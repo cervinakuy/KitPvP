@@ -63,7 +63,7 @@ public class ArrowListener implements Listener {
 						
 						for (ItemStack items : shooter.getInventory().getContents()) {
 							
-							if (items != null && items.getType() == XMaterial.ARROW.parseMaterial() && items.getAmount() < 64) {
+							if (items != null && items.getType() == XMaterial.ARROW.parseMaterial().get() && items.getAmount() < 64) {
 								
 								if (shooter.hasPermission("kp.arrowreturn")) {
 									

@@ -109,7 +109,7 @@ public class SignListener implements Listener {
 						
 						for (int i = 0; i < menu.getSize(); i++) {
 							
-							menu.addItem(Config.getS("Soups.Name"), XMaterial.MUSHROOM_STEW.parseMaterial(), Config.getC().getStringList("Soups.Lore"), i);
+							menu.addItem(Config.getS("Soups.Name"), XMaterial.MUSHROOM_STEW.parseMaterial().get(), Config.getC().getStringList("Soups.Lore"), i);
 							
 						}
 						

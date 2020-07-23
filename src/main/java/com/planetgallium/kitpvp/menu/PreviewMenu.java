@@ -64,7 +64,7 @@ public class PreviewMenu {
 			}
 		}
 		
-		menu.addItem("&cBack to Kits", XMaterial.ARROW.parseMaterial(), new ArrayList<String>(), 8);
+		menu.addItem("&cBack to Kits", XMaterial.ARROW.parseMaterial().get(), new ArrayList<String>(), 8);
 		
 		menu.openMenu(p);
 		

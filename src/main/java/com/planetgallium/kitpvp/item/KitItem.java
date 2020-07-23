@@ -38,7 +38,7 @@ public class KitItem {
 		}
 		
 		if (resource.contains(path + ".Item")) {
-			this.material = XMaterial.matchXMaterial(resource.getString(path + ".Item")).get().parseMaterial();
+			this.material = XMaterial.matchXMaterial(resource.getString(path + ".Item")).get().parseMaterial().get();
 		}
 		
 		if (resource.contains(path + ".Amount")) {
@@ -73,7 +73,7 @@ public class KitItem {
 	
 	public ItemStack toItemStack() {
 		
-		ItemStack item = new ItemStack(material != null ? material : XMaterial.BEDROCK.parseMaterial());
+		ItemStack item = new ItemStack(material != null ? material : XMaterial.BEDROCK.parseMaterial().get());
 		ItemMeta meta = item.getItemMeta();
 		
 		item.setAmount(amount != 0 ? amount : 1);
@@ -95,10 +95,10 @@ public class KitItem {
 			
 		}
 		
-		if (item.getType() == XMaterial.LEATHER_HELMET.parseMaterial() ||
-			item.getType() == XMaterial.LEATHER_CHESTPLATE.parseMaterial() ||
-			item.getType() == XMaterial.LEATHER_LEGGINGS.parseMaterial() ||
-			item.getType() == XMaterial.LEATHER_BOOTS.parseMaterial()) {
+		if (item.getType() == XMaterial.LEATHER_HELMET.parseMaterial().get() ||
+			item.getType() == XMaterial.LEATHER_CHESTPLATE.parseMaterial().get() ||
+			item.getType() == XMaterial.LEATHER_LEGGINGS.parseMaterial().get() ||
+			item.getType() == XMaterial.LEATHER_BOOTS.parseMaterial().get()) {
 			
 			if (color != null) {
 				
@@ -108,10 +108,10 @@ public class KitItem {
 				
 			}
 			
-		} else if (item.getType() == XMaterial.PLAYER_HEAD.parseMaterial() ||
-				item.getType() == XMaterial.CREEPER_HEAD.parseMaterial() ||
-				item.getType() == XMaterial.DRAGON_HEAD.parseMaterial() ||
-				item.getType() == XMaterial.ZOMBIE_HEAD.parseMaterial()) {
+		} else if (item.getType() == XMaterial.PLAYER_HEAD.parseMaterial().get() ||
+				item.getType() == XMaterial.CREEPER_HEAD.parseMaterial().get() ||
+				item.getType() == XMaterial.DRAGON_HEAD.parseMaterial().get() ||
+				item.getType() == XMaterial.ZOMBIE_HEAD.parseMaterial().get()) {
 			
 			if (skull != null) {
 				
@@ -119,10 +119,10 @@ public class KitItem {
 				
 			}
 			
-		} else if (item.getType() == XMaterial.POTION.parseMaterial() ||
-				item.getType() == XMaterial.SPLASH_POTION.parseMaterial() ||
-				item.getType() == XMaterial.LINGERING_POTION.parseMaterial() ||
-				item.getType() == XMaterial.TIPPED_ARROW.parseMaterial()) {
+		} else if (item.getType() == XMaterial.POTION.parseMaterial().get() ||
+				item.getType() == XMaterial.SPLASH_POTION.parseMaterial().get() ||
+				item.getType() == XMaterial.LINGERING_POTION.parseMaterial().get() ||
+				item.getType() == XMaterial.TIPPED_ARROW.parseMaterial().get()) {
 
 			if (effect != null) {
 

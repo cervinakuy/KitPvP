@@ -36,7 +36,7 @@ public class TrailListener implements Listener {
 	
 		Player p = e.getPlayer();
 		
-		if (Toolkit.inArena(p) && Toolkit.getMainHandItem(p).getType() == XMaterial.COAL.parseMaterial()) {
+		if (Toolkit.inArena(p) && Toolkit.getMainHandItem(p).getType() == XMaterial.COAL.parseMaterial().get()) {
 			
 			if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
 			
