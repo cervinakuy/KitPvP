@@ -28,7 +28,7 @@ public class AttackListener implements Listener {
 			Player damagedPlayer = (Player) e.getEntity();
 			Player damager = (Player) e.getDamager();
 			
-			if (Toolkit.inArena(damagedPlayer)) {
+			if (Toolkit.inArena(damagedPlayer) && !damagedPlayer.hasMetadata("NPC")) {
 				
 				if (Config.getB("Arena.NoKitProtection")) {
 					
