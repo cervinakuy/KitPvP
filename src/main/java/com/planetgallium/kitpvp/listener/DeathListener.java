@@ -79,7 +79,14 @@ public class DeathListener implements Listener {
 
 			Player p = e.getPlayer();
 
-			e.setRespawnLocation(Toolkit.getLocationFromConfig(config, "Arenas.Spawn." + p.getWorld().getName()));
+			new BukkitRunnable() {
+
+				@Override
+				public void run() {
+					arena.toSpawn(p);
+				}
+
+			}.runTaskLater(Game.getInstance(), 1L);
 
 		}
 

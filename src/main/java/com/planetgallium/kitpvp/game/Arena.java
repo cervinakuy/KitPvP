@@ -1,17 +1,12 @@
 package com.planetgallium.kitpvp.game;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import com.planetgallium.kitpvp.util.Toolkit;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
-import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -28,6 +23,7 @@ import me.clip.placeholderapi.PlaceholderAPI;
 public class Arena {
 
 	private Game plugin;
+	private Random random;
 
 	private Resources resources;
 	private FileConfiguration config;
@@ -42,6 +38,7 @@ public class Arena {
 	
 	public Arena(Game plugin, Resources resources) {
 		this.plugin = plugin;
+		this.random = new Random();
 
 		this.resources = resources;
 		this.config = plugin.getConfig();
@@ -161,10 +158,12 @@ public class Arena {
 	}
 	
 	public void toSpawn(Player p) {
-		
-		if (config.contains("Arenas.Spawn." + p.getWorld().getName())) {
 
-			p.teleport(Toolkit.getLocationFromConfig(config, "Arenas.Spawn." + p.getWorld().getName()));
+		String arenaName = p.getWorld().getName();
+
+		if (config.contains("Arenas." + arenaName)) {
+
+			p.teleport(Toolkit.getLocationFromConfig(config, "Arenas." + arenaName + "." + generateRandomArenaSpawn(arenaName)));
 			
 		} else {
 			
@@ -211,6 +210,19 @@ public class Arena {
 					.replace("%kills%", String.valueOf(this.getStats().getKills(p.getUniqueId())));
 
 		return text;
+
+	}
+
+	public String generateRandomArenaSpawn(String arenaName) {
+
+		ConfigurationSection section = config.getConfigurationSection("Arenas." + arenaName);
+		List<String> spawnKeys = new ArrayList<String>();
+
+		for (String identifier : section.getKeys(false)) {
+			spawnKeys.add(identifier);
+		}
+
+		return spawnKeys.get(random.nextInt(spawnKeys.size()));
 
 	}
 

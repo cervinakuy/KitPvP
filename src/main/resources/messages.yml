@@ -16,7 +16,7 @@ Messages:
     Teleport: '%prefix% &7Teleported you to the spawn.'
     Teleporting: '%prefix% &7Teleporting, do not move.'
     Time: '%prefix% &7Teleporting you in &b%time% seconds&7.'
-    Added: '%prefix% &7Successfully set the spawn in arena &b%arena%&7.'
+    Added: '%prefix% &7Successfully added spawn &b#%number% &7in arena &b&b%arena%&7.'
     Removed: '%prefix% &7Successfully removed the arena &b%arena%&7.'
     Reload: '%prefix% &7Successfully reloaded the configurations.'
     Cleared: '%prefix% &7Your kit has been cleared.'

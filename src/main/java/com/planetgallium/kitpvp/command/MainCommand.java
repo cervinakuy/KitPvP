@@ -16,6 +16,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
@@ -32,11 +33,13 @@ public class MainCommand implements CommandExecutor {
 
     private Game game;
     private Arena arena;
+    private FileConfiguration config;
     private Resources resources;
 
     public MainCommand(Game game) {
         this.game = game;
         this.arena = game.getArena();
+        this.config = game.getConfig();
         this.resources = game.getResources();
     }
 
@@ -62,10 +65,10 @@ public class MainCommand implements CommandExecutor {
                 sender.sendMessage(Config.tr("&7- &b/kp help &7Displays the help message."));
                 sender.sendMessage(Config.tr("&7- &b/kp reload &7Reloads the configuration."));
                 sender.sendMessage(Config.tr("&7- &b/kp debug &7Prints debug information."));
-                sender.sendMessage(Config.tr("&7- &b/kp addspawn &7Adds an arena."));
-                sender.sendMessage(Config.tr("&7- &b/kp delspawn &7Removes an arena."));
+                sender.sendMessage(Config.tr("&7- &b/kp addspawn &7Adds a spawn to an arena."));
+                sender.sendMessage(Config.tr("&7- &b/kp delarena &7Removes an arena."));
                 sender.sendMessage(Config.tr("&7- &b/kp spawn &7Teleports you to the Spawn in your current arena."));
-                sender.sendMessage(Config.tr("&7- &b/kp spawn [arena] &7Teleport to a different KitPvP arena."));
+                sender.sendMessage(Config.tr("&7- &b/kp arena [arena] &7Teleport to a different KitPvP arena."));
                 sender.sendMessage(Config.tr("&7- &b/kp create [kitname] &7Creates a kit from your inventory."));
                 sender.sendMessage(Config.tr("&7- &b/kp delete [kitname] &7Deletes an existing kit."));
                 sender.sendMessage(Config.tr("&7- &b/kp preview [kitname] &7Preview the contents of a kit."));
@@ -99,8 +102,8 @@ public class MainCommand implements CommandExecutor {
                 }
 
                 sender.sendMessage(Config.tr("&7[&b&lKIT-PVP&7] &aServer Version: &7" + Bukkit.getBukkitVersion()) + " " + (Bukkit.getVersion().contains("Spigot") ? "(Spigot)" : "(Other)"));
-                sender.sendMessage(Config.tr("&7[&b&lKIT-PVP&7] &aPlugin Version: &7" + game.getDescription().getVersion()) + " " + (game.needsUpdate() ? "(Requires Update)" : "(Latest Version)"));
-                sender.sendMessage(Config.tr("&7[&b&lKIT-PVP&7] &aSpawn Set: &7" + (Config.getC().contains("Arenas.Spawn") ? "Configured" : "Unconfigured")));
+                sender.sendMessage(Config.tr("&7[&b&lKIT-PVP&7] &aPlugin Version: " + game.getDescription().getVersion()) + " " + (game.needsUpdate() ? "&c(Requires Update)" : "&a(Latest Version)"));
+                sender.sendMessage(Config.tr("&7[&b&lKIT-PVP&7] &aSpawn Set: " + (config.contains("Arenas") ? "&aConfigured" : "&cUnconfigured")));
                 sender.sendMessage(Config.tr("&7[&b&lKIT-PVP&7] &aSupport Discord: &7https://discord.gg/GtXQKZ6"));
                 sender.sendMessage(Config.tr("&7[&b&lKIT-PVP&7] &aPlugin List: &7" + names));
 
@@ -253,7 +256,7 @@ public class MainCommand implements CommandExecutor {
 
                 } else if (args[0].equalsIgnoreCase("spawn") && hasPermission(sender, "kp.command.spawn")) {
 
-                    if (Config.getC().contains("Arenas.Spawn." + p.getWorld().getName())) {
+                    if (config.contains("Arenas." + p.getWorld().getName())) {
 
                         if (!spawnUsers.contains(p.getName())) {
 
@@ -303,16 +306,7 @@ public class MainCommand implements CommandExecutor {
 
                                         if (Config.getB("Arena.ClearKitOnCommandSpawn")) {
 
-                                            for (PotionEffect effect : p.getActivePotionEffects()) {
-                                                p.removePotionEffect(effect.getType());
-                                            }
-
-                                            p.getInventory().setArmorContents(null);
-                                            p.getInventory().clear();
-
-                                            arena.giveItems(p);
-
-                                            arena.getKits().clearKit(p.getName());
+                                            clearKit(p);
 
                                         }
 
@@ -344,61 +338,49 @@ public class MainCommand implements CommandExecutor {
 
                 } else if (args[0].equalsIgnoreCase("addspawn") && hasPermission(p, "kp.command.addspawn")) {
 
-                    Config.getC().set("Arenas.Spawn." + p.getLocation().getWorld().getName() + ".World", p.getLocation().getWorld().getName());
-                    Config.getC().set("Arenas.Spawn." + p.getLocation().getWorld().getName() + ".X", p.getLocation().getBlockX());
-                    Config.getC().set("Arenas.Spawn." + p.getLocation().getWorld().getName() + ".Y", p.getLocation().getBlockY());
-                    Config.getC().set("Arenas.Spawn." + p.getLocation().getWorld().getName() + ".Z", p.getLocation().getBlockZ());
-                    Config.getC().set("Arenas.Spawn." + p.getLocation().getWorld().getName() + ".Yaw", Float.valueOf(p.getLocation().getYaw()));
-                    Config.getC().set("Arenas.Spawn." + p.getLocation().getWorld().getName() + ".Pitch", Float.valueOf(p.getLocation().getPitch()));
-                    game.saveConfig();
+                    String arenaName = p.getWorld().getName();
+                    int spawnNumber = getNextArenaSpawnNumber(arenaName);
 
-                    p.sendMessage(resources.getMessages().getString("Messages.Commands.Added").replace("%arena%", p.getLocation().getWorld().getName()));
+                    Toolkit.saveLocationToConfig(game, Config.getC(), "Arenas." + arenaName + "." + spawnNumber, p.getLocation());
+
+                    p.sendMessage(resources.getMessages().getString("Messages.Commands.Added").replace("%number%", String.valueOf(spawnNumber)).replace("%arena%", arenaName));
                     XSound.playSoundFromString(p, "ENTITY_ZOMBIE_ATTACK_WOODEN_DOOR, 1, 1");
 
                     return true;
 
-                } else if (args[0].equalsIgnoreCase("delspawn") && hasPermission(sender, "kp.command.delspawn")) {
+                } else if (args[0].equalsIgnoreCase("delarena") && hasPermission(sender, "kp.command.delarena")) {
 
-                    if (Config.getC().contains("Arenas.Spawn." + p.getWorld().getName())) {
+                    String arenaName = p.getWorld().getName();
 
-                        ConfigurationSection section = Config.getC().getConfigurationSection("Arenas.Spawn");
+                    if (config.contains("Arenas." + arenaName)) {
 
-                        if (section.getKeys(false).size() == 1) {
-                            Config.getC().set("Arenas", null);
-                            game.saveConfig();
-                        } else {
-                            Config.getC().set("Arenas.Spawn." + p.getWorld().getName(), null);
-                            game.saveConfig();
-                        }
+                        config.set("Arenas." + arenaName, null);
+                        game.saveConfig();
 
-                        p.sendMessage(resources.getMessages().getString("Messages.Commands.Removed").replace("%arena%", p.getLocation().getWorld().getName()));
+                        p.sendMessage(resources.getMessages().getString("Messages.Commands.Removed").replace("%arena%", arenaName));
                         XSound.playSoundFromString(p, "ENTITY_ZOMBIE_ATTACK_WOODEN_DOOR, 1, 1");
-
-                        return true;
 
                     } else {
 
                         p.sendMessage(resources.getMessages().getString("Messages.Error.Arena"));
-                        return true;
 
                     }
+
+                    return true;
 
                 }
 
             } else if (args.length == 2) {
 
-                if (args[0].equalsIgnoreCase("spawn") && hasPermission(sender, "kp.command.spawn")) {
+                if (args[0].equalsIgnoreCase("arena") && hasPermission(sender, "kp.command.spawn")) {
 
-                    String arena = args[1];
+                    String arenaName = args[1];
 
-                    if (Config.getC().contains("Arenas.Spawn." + arena)) {
+                    if (config.contains("Arenas.Spawn." + arenaName)) {
 
                         if (!game.getArena().getKits().hasKit(p.getName())) {
 
-                            Location spawn = new Location(Bukkit.getWorld(Config.getS("Arenas.Spawn." + arena + ".World")),
-                                    Config.getI("Arenas.Spawn." + arena + ".X"),
-                                    Config.getI("Arenas.Spawn." + arena + ".Y"),
-                                    Config.getI("Arenas.Spawn." + arena + ".Z"));
+                            Location spawn = Toolkit.getLocationFromConfig(config, "Arenas." + arenaName + "." + arena.generateRandomArenaSpawn(arenaName));
 
                             p.teleport(spawn);
                             p.sendMessage(resources.getMessages().getString("Messages.Commands.Teleport"));
@@ -545,6 +527,22 @@ public class MainCommand implements CommandExecutor {
                 .replace("%experience%", String.valueOf(arena.getLevels().getExperience(p.getUniqueId())));
 
         return text;
+
+    }
+
+    private int getNextArenaSpawnNumber(String arenaName) {
+
+        for (int i = 1; i < 1000; i++) {
+
+            if (!config.contains("Arenas." + arenaName + "." + i)) {
+
+                return i;
+
+            }
+
+        }
+
+        return 1;
 
     }
 

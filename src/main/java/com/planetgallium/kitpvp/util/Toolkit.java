@@ -14,18 +14,15 @@ import com.planetgallium.kitpvp.Game;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionAttachmentInfo;
+import org.bukkit.plugin.Plugin;
 
 public class Toolkit {
 	
 	public static boolean inArena(World world) {
 		
-		if (Config.getC().contains("Arenas.Spawn")) {
-			
-			if (Config.getC().contains("Arenas.Spawn." + world.getName() + ".X")) {
-				
-				return true;
-				
-			}
+		if (Config.getC().contains("Arenas." + world.getName())) {
+
+			return true;
 			
 		} else {
 			
@@ -313,6 +310,18 @@ public class Toolkit {
 		}
 
 		return null;
+
+	}
+
+	public static void saveLocationToConfig(Plugin plugin, FileConfiguration config, String path, Location location) {
+
+		config.set(path + ".World", location.getWorld().getName());
+		config.set(path + ".X", location.getBlockX());
+		config.set(path + ".Y", location.getBlockY());
+		config.set(path + ".Z", location.getBlockZ());
+		config.set(path + ".Yaw", location.getYaw());
+		config.set(path + ".Pitch", location.getPitch());
+		plugin.saveConfig();
 
 	}
 
