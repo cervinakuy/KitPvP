@@ -274,8 +274,10 @@ public class Kits {
 			serializeEffects(resource, (PotionMeta) meta, path);
 
 		} else if (item.getType() == XMaterial.POTION.parseMaterial().get() ||
-					item.getType() == XMaterial.SPLASH_POTION.parseMaterial().get() ||
-					item.getType() == XMaterial.LINGERING_POTION.parseMaterial().get()) {
+				(Toolkit.versionToNumber() >= 19 &&
+						(item.getType() == XMaterial.SPLASH_POTION.parseMaterial().get() ||
+								item.getType() == XMaterial.LINGERING_POTION.parseMaterial().get()))
+				) {
 
 			if (Toolkit.versionToNumber() == 18) {
 				

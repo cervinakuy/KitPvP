@@ -118,11 +118,13 @@ public class KitItem {
 				item = skull.convertToSkull(item);
 				
 			}
-			
+
 		} else if (item.getType() == XMaterial.POTION.parseMaterial().get() ||
-				item.getType() == XMaterial.SPLASH_POTION.parseMaterial().get() ||
-				item.getType() == XMaterial.LINGERING_POTION.parseMaterial().get() ||
-				item.getType() == XMaterial.TIPPED_ARROW.parseMaterial().get()) {
+				(Toolkit.versionToNumber() >= 19 &&
+						(item.getType() == XMaterial.SPLASH_POTION.parseMaterial().get() ||
+						item.getType() == XMaterial.LINGERING_POTION.parseMaterial().get() ||
+						item.getType() == XMaterial.TIPPED_ARROW.parseMaterial().get()))
+				) {
 
 			if (effect != null) {
 
