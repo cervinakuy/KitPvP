@@ -89,7 +89,13 @@ public class ItemListener implements Listener {
 					Potion potion = new Potion(pickPotion(), 1);
 					potion.setSplash(true);
 
-					Toolkit.setMainHandItem(p, potion.toItemStack(1));
+					ItemStack potionStack = potion.toItemStack(1);
+					ItemMeta potionMeta = potionStack.getItemMeta();
+
+					potionMeta.setLocalizedName("WitchPotion");
+					potionStack.setItemMeta(potionMeta);
+
+					Toolkit.setMainHandItem(p, potionStack);
 
 				}
 
@@ -428,40 +434,51 @@ public class ItemListener implements Listener {
 			if (e.getEntity().getShooter() instanceof Player) {
 
 				Player shooter = (Player) e.getEntity().getShooter();
+				ItemStack itemThrown = Toolkit.getMainHandItem(shooter);
 
 				if (e.getEntity().getType() == EntityType.SPLASH_POTION) {
 
-					int slot = shooter.getInventory().getHeldItemSlot();
+					if (itemThrown.getItemMeta().getLocalizedName().equals("WitchPotion")) {
 
-					if (arena.getKits().getKit(shooter.getName()).equals("Witch")) {
+						int slot = shooter.getInventory().getHeldItemSlot();
 
-						Potion potion = new Potion(pickPotion(), 1);
-						potion.setSplash(true);
+						if (arena.getKits().getKit(shooter.getName()).equals("Witch")) {
 
-						new BukkitRunnable() {
+							Potion potion = new Potion(pickPotion(), 1);
+							potion.setSplash(true);
 
-							@Override
-							public void run() {
+							ItemStack potionStack = potion.toItemStack(1);
+							ItemMeta potionMeta = potionStack.getItemMeta();
 
-								if (arena.getKits().getKit(shooter.getName()) != null) {
+							potionMeta.setLocalizedName("WitchPotion");
+							potionStack.setItemMeta(potionMeta);
 
-									if (arena.getKits().getKit(shooter.getName()).equals("Witch")) {
+							new BukkitRunnable() {
 
-										shooter.getInventory().setItem(slot, potion.toItemStack(1));
+								@Override
+								public void run() {
 
-										if (resources.getAbilities().getBoolean("Abilities.Witch.Message.Enabled")) {
-											shooter.sendMessage(Config.tr(resources.getAbilities().getString("Abilities.Witch.Message.Message").replace("%prefix%", resources.getMessages().getString("Messages.General.Prefix"))));
+									if (arena.getKits().getKit(shooter.getName()) != null) {
+
+										if (arena.getKits().getKit(shooter.getName()).equals("Witch")) {
+
+											shooter.getInventory().setItem(slot, potionStack);
+
+											if (resources.getAbilities().getBoolean("Abilities.Witch.Message.Enabled")) {
+												shooter.sendMessage(Config.tr(resources.getAbilities().getString("Abilities.Witch.Message.Message").replace("%prefix%", resources.getMessages().getString("Messages.General.Prefix"))));
+											}
+
+											shooter.playSound(shooter.getLocation(), XSound.matchXSound(resources.getAbilities().getString("Abilities.Witch.Sound.Sound")).get().parseSound(), 1, resources.getAbilities().getInt("Abliities.Witch.Sound.Pitch"));
+
 										}
-
-										shooter.playSound(shooter.getLocation(), XSound.matchXSound(resources.getAbilities().getString("Abilities.Witch.Sound.Sound")).get().parseSound(), 1, resources.getAbilities().getInt("Abliities.Witch.Sound.Pitch"));
 
 									}
 
 								}
 
-							}
+							}.runTaskLater(Game.getInstance(), 5 * 20);
 
-						}.runTaskLater(Game.getInstance(), 5 * 20);
+						}
 
 					}
 
@@ -469,14 +486,18 @@ public class ItemListener implements Listener {
 
 					if (arena.getKits().getKit(shooter.getName()).equals("Trickster")) {
 
-						if (shooter.hasPermission("kp.ability.trickster")) {
+						if (isAbilityItem(shooter, "Trickster", itemThrown)) {
 
-							e.getEntity().setCustomName("pellet");
+							if (shooter.hasPermission("kp.ability.trickster")) {
 
-						} else {
+								e.getEntity().setCustomName("pellet");
 
-							e.setCancelled(true);
-							shooter.sendMessage(Config.tr(resources.getMessages().getString("Messages.General.Permission")));
+							} else {
+
+								e.setCancelled(true);
+								shooter.sendMessage(Config.tr(resources.getMessages().getString("Messages.General.Permission")));
+
+							}
 
 						}
 
