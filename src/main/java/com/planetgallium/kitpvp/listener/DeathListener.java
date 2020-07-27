@@ -75,18 +75,22 @@ public class DeathListener implements Listener {
 	@EventHandler
 	public void onRespawn(PlayerRespawnEvent e) {
 
-		if (!config.getBoolean("Arena.FancyDeath")) {
+		if (Toolkit.inArena(e.getPlayer())) {
 
-			Player p = e.getPlayer();
+			if (!config.getBoolean("Arena.FancyDeath")) {
 
-			new BukkitRunnable() {
+				Player p = e.getPlayer();
 
-				@Override
-				public void run() {
-					arena.toSpawn(p);
-				}
+				new BukkitRunnable() {
 
-			}.runTaskLater(Game.getInstance(), 1L);
+					@Override
+					public void run() {
+						arena.toSpawn(p);
+					}
+
+				}.runTaskLater(Game.getInstance(), 1L);
+
+			}
 
 		}
 
@@ -157,10 +161,18 @@ public class DeathListener implements Listener {
 				victim.getInventory().clear();
 				victim.getInventory().setArmorContents(null);
 			}
-			
-			Bukkit.getScheduler().scheduleSyncDelayedTask(Game.getInstance(), () -> arena.addPlayer(victim, true, config.getBoolean("Arena.GiveItemsOnRespawn")), 1);
 
-			Toolkit.runCommands(config, "Respawn", victim, "none", "none");
+			new BukkitRunnable() {
+
+				@Override
+				public void run() {
+
+					arena.addPlayer(victim, true, config.getBoolean("Arena.GiveItemsOnRespawn"));
+					Toolkit.runCommands(config, "Respawn", victim, "none", "none");
+
+				}
+
+			}.runTaskLater(Game.getInstance(), 1L);
 			
 		}
 		
