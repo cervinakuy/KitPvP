@@ -19,19 +19,23 @@ import org.bukkit.plugin.Plugin;
 public class Toolkit {
 	
 	public static boolean inArena(World world) {
-		
-		if (Config.getC().contains("Arenas." + world.getName())) {
 
-			return true;
-			
+		if (Config.getC().contains("Arenas")) {
+
+			if (Config.getC().contains("Arenas." + world.getName())) {
+
+				return true;
+
+			}
+
 		} else {
-			
+
 			Bukkit.getConsoleSender().sendMessage(Config.tr("&7[&b&lKIT-PVP&7] &cThere was no spawn found, please set it using /kp addspawn."));
-			
+
 		}
-		
+
 		return false;
-		
+
 	}
 	
 	public static boolean inArena(Entity entity) {
