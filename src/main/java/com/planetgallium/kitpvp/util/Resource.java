@@ -2,6 +2,10 @@ package com.planetgallium.kitpvp.util;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -12,49 +16,16 @@ public class Resource extends YamlConfiguration {
 	
 	private String name;
 	private final File file;
-	
-	public Resource(Plugin plugin, String name) {
-		
-		this.name = name;
-		
-		file = new File(plugin.getDataFolder(), name);
-		
+
+	public Resource(Plugin plugin, String path) {
+
+		this.file = new File(plugin.getDataFolder().getAbsolutePath() + "/" + Paths.get(path));
+		this.name = Paths.get(path).getFileName().
+
 		if (!file.getParentFile().exists()) {
 			file.getParentFile().mkdirs();
 		}
-		
-		if (!file.exists()) {
-			plugin.saveResource(name, true);
-		}
-		
-	}
-	
-	public Resource(Plugin plugin, String resourcePath, String name) {
-		
-		this.name = name;
-		
-		file = new File(plugin.getDataFolder().getAbsolutePath() + "/kits", name);
-		
-		if (!file.getParentFile().exists()) {
-			file.getParentFile().mkdirs();
-		}
-		
-		if (!file.exists()) {
-			plugin.saveResource(resourcePath, true);
-		}
-		
-	}
-	
-	public Resource(Plugin plugin, String resourcePath, String name, boolean custom) {
-		
-		this.name = name;
-		
-		file = new File(plugin.getDataFolder().getAbsolutePath() + "/kits", name);
-		
-		if (!file.getParentFile().exists()) {
-			file.getParentFile().mkdirs();
-		}
-		
+
 		if (!file.exists()) {
 			try {
 				file.createNewFile();
@@ -62,7 +33,7 @@ public class Resource extends YamlConfiguration {
 				e.printStackTrace();
 			}
 		}
-		
+
 	}
 	
 	public void load() {
@@ -76,7 +47,7 @@ public class Resource extends YamlConfiguration {
 	}
 	
 	public void save() {
-		
+
 		try {
 			super.save(file);
 		} catch (IOException e) {
@@ -101,6 +72,22 @@ public class Resource extends YamlConfiguration {
 
         return string;
     }
+
+    @Override
+	public List<String> getStringList(String path) {
+		List<String> originalList = super.getStringList(path);
+
+		if (originalList != null) {
+			List<String> colorizedList = new ArrayList<>();
+			for (String line : originalList) {
+				colorizedList.add(ChatColor.translateAlternateColorCodes('&', line));
+			}
+			return colorizedList;
+		}
+
+		return originalList;
+
+	}
 	
 	public String getName() { return name; }
 	

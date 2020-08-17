@@ -44,16 +44,16 @@ public class Cooldowns {
 		
 	}
 	
-	public Cooldown getCooldown(String kit) {
+	public Cooldown getCooldown(String kitName) {
 		
 		int days = 0;
 		int hours = 0;
 		int minutes = 0;
 		int seconds = 0;
 		
-		if (arena.getKits().isKit(kit)) {
+		if (arena.getKits().isKit(kitName)) {
 			
-			String[] units = resources.getKits(kit).getString("Kit.Cooldown").split(":");
+			String[] units = resources.getKit(kitName).getString("Kit.Cooldown").split(":");
 			
 			for (int i = 0; i < units.length; i++) {
 				

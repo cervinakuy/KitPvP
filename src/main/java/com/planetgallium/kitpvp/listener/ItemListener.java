@@ -234,10 +234,9 @@ public class ItemListener implements Listener {
 
 					Toolkit.runCommands(config, "Items.Kits", p, "none", "none");
 
-					if (Game.getInstance().getConfig().getBoolean("Items.Kits.Menu")) {
+					if (config.getBoolean("Items.Kits.Menu")) {
 
-						KitMenu menu = new KitMenu(resources);
-						menu.create(p);
+						arena.getMenus().getKitMenu().open(p);
 
 					}
 
@@ -442,7 +441,7 @@ public class ItemListener implements Listener {
 
 						int slot = shooter.getInventory().getHeldItemSlot();
 
-						if (arena.getKits().getKit(shooter.getName()).equals("Witch")) {
+						if (arena.getKits().getKitOfPlayer(shooter.getName()).equals("Witch")) {
 
 							Potion potion = new Potion(pickPotion(), 1);
 							potion.setSplash(true);
@@ -458,9 +457,9 @@ public class ItemListener implements Listener {
 								@Override
 								public void run() {
 
-									if (arena.getKits().getKit(shooter.getName()) != null) {
+									if (arena.getKits().getKitOfPlayer(shooter.getName()) != null) {
 
-										if (arena.getKits().getKit(shooter.getName()).equals("Witch")) {
+										if (arena.getKits().getKitOfPlayer(shooter.getName()).equals("Witch")) {
 
 											shooter.getInventory().setItem(slot, potionStack);
 
@@ -484,7 +483,7 @@ public class ItemListener implements Listener {
 
 				} else if (e.getEntity().getType() == EntityType.EGG) {
 
-					if (arena.getKits().getKit(shooter.getName()).equals("Trickster")) {
+					if (arena.getKits().getKitOfPlayer(shooter.getName()).equals("Trickster")) {
 
 						if (isAbilityItem(shooter, "Trickster", itemThrown)) {
 

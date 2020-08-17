@@ -1,6 +1,8 @@
 package com.planetgallium.kitpvp.listener;
 
 import com.planetgallium.kitpvp.Game;
+import com.planetgallium.kitpvp.api.Ability;
+import com.planetgallium.kitpvp.api.Kit;
 import org.bukkit.GameMode;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -12,7 +14,6 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
-import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -43,7 +44,7 @@ public class ArenaListener implements Listener {
 		
 		Player p = e.getPlayer();
 		
-		if (Toolkit.inArena(p) && Config.getB("Arena.PreventBlockBreaking")) {
+		if (Toolkit.inArena(p) && config.getBoolean("Arena.PreventBlockBreaking")) {
 			
 			e.setCancelled(!p.hasPermission("kp.arena.blockbreaking"));
 			
@@ -68,18 +69,12 @@ public class ArenaListener implements Listener {
 
 			} else if (arena.getKits().hasKit(p.getName())) {
 
-				String abilityPath = resources.getKits(arena.getKits().getKit(p.getName())).getString("Ability.Activator.Item");
+				Kit kit = arena.getKits().getKitOfPlayer(p.getName());
+				Ability ability = Toolkit.findAbility(kit, e.getItemInHand());
 
-				if (abilityPath != null) {
+				if (ability != null)
+					e.setCancelled(true);
 
-					if (e.getBlock().getType() == XMaterial.matchXMaterial(abilityPath).get().parseMaterial().get()) {
-
-						e.setCancelled(true);
-
-					}
-
-				}
-				
 			} else {
 
 				if (Config.getB("Arena.PreventBlockPlacing")) {

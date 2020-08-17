@@ -35,6 +35,24 @@ public class Cooldown {
 		return result;
 		
 	}
+
+	public void toResource(Resource resource, String path) {
+
+		String condensedCooldown = "";
+
+		if (getDays() != 0) condensedCooldown += getDays() + "D:";
+		if (getHours() != 0) condensedCooldown += getHours() + "H:";
+		if (getMinutes() != 0) condensedCooldown += getMinutes() + "M:";
+		if (getSeconds() != 0) condensedCooldown += getSeconds() + "S:";
+
+		if (condensedCooldown.endsWith(":")) {
+			condensedCooldown = condensedCooldown.substring(0, condensedCooldown.length() - 1);
+		}
+
+		resource.set(path + ".Cooldown", condensedCooldown);
+		resource.save();
+
+	}
 	
 	public int getDays() { return days; }
 	

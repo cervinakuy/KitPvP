@@ -9,13 +9,11 @@
 Menu:
   General:
     Title: 'Kits'
-    Hide-Items-With-No-Permission: false
     Size: 54
   Items:
-    Fighter:
+    10:
       Name: '&a&lFighter Kit'
-      Item: IRON_CHESTPLATE
-      Slot: 10
+      Material: IRON_CHESTPLATE
       Lore:
       - '&6Ability: &73 Health Packs'
       - ' '
@@ -33,10 +31,9 @@ Menu:
         Right-Click:
         - 'player: kp preview Fighter'
         Enabled: true
-    Archer:
+    11:
       Name: '&a&lArcher Kit'
-      Item: BOW
-      Slot: 11
+      Material: BOW
       Lore:
       - '&6Ability: &710 Fire Arrows'
       - ' '
@@ -56,10 +53,9 @@ Menu:
         Right-Click:
         - 'player: kp preview Archer'
         Enabled: true
-    Tank:
+    12:
       Name: '&a&lTank Kit'
-      Item: DIAMOND
-      Slot: 12
+      Material: DIAMOND
       Lore:
       - '&6Ability: &73 Speed Boosts'
       - ' '
@@ -77,10 +73,9 @@ Menu:
         Right-Click:
         - 'player: kp preview Tank'
         Enabled: true
-    Soldier:
+    13:
       Name: '&a&lSoldier Kit'
-      Item: ARROW
-      Slot: 13
+      Material: ARROW
       Lore:
       - '&6Ability: &75 Guns'
       - ' '
@@ -101,10 +96,9 @@ Menu:
         Right-Click:
         - 'player: kp preview Soldier'
         Enabled: true
-    Bomber:
+    14:
       Name: '&a&lBomber Kit'
-      Item: TNT
-      Slot: 14
+      Material: TNT
       Lore:
       - '&6Ability: &73 TNT Trails'
       - ' '
@@ -123,10 +117,9 @@ Menu:
         Right-Click:
         - 'player: kp preview Bomber'
         Enabled: true
-    Kangaroo:
+    15:
       Name: '&a&lKangaroo Kit'
-      Item: SADDLE
-      Slot: 15
+      Material: SADDLE
       Lore:
       - '&6Ability: &73 Launchers'
       - ' '
@@ -144,10 +137,9 @@ Menu:
         Right-Click:
         - 'player: kp preview Kangaroo'
         Enabled: true
-    Warper:
+    16:
       Name: '&a&lWarper Kit'    
-      Item: ENDER_PEARL
-      Slot: 16
+      Material: ENDER_PEARL
       Lore:
       - '&6Ability: &73 Teleporters'
       - ' '
@@ -166,9 +158,9 @@ Menu:
         Right-Click:
         - 'player: kp preview Warper'
         Enabled: true
-    Witch:
+    19:
       Name: '&a&lWitch Kit'
-      Item: POTION
+      Material: POTION
       Slot: 19
       Lore:
       - '&6Ability: &7Infinite Potions'
@@ -187,10 +179,9 @@ Menu:
         Right-Click:
         - 'player: kp preview Witch'
         Enabled: true
-    Ninja:
+    20:
       Name: '&a&lNinja Kit'
-      Item: NETHER_STAR
-      Slot: 20
+      Material: NETHER_STAR
       Lore:
       - '&6Ability: &73 Vanish Stars'
       - ' '
@@ -208,10 +199,9 @@ Menu:
         Right-Click:
         - 'player: kp preview Ninja'
         Enabled: true
-    Thunderbolt:
+    21:
       Name: '&a&lThunderbolt Kit'
-      Item: BLAZE_POWDER
-      Slot: 21
+      Material: BLAZE_POWDER
       Lore:
       - '&6Ability: &73 Lightning Strikes'
       - ' '
@@ -229,10 +219,9 @@ Menu:
         Right-Click:
         - 'player: kp preview Thunderbolt'
         Enabled: true
-    Vampire:
+    22:
       Name: '&a&lVampire Kit'
-      Item: FERMENTED_SPIDER_EYE
-      Slot: 22
+      Material: FERMENTED_SPIDER_EYE
       Lore:
       - '&6Ability: &73 Blood Suckers'
       - ' '
@@ -250,10 +239,9 @@ Menu:
         Right-Click:
         - 'player: kp preview Vampire'
         Enabled: true
-    Rhino:
+    23:
       Name: '&a&lRhino Kit'
-      Item: DIAMOND_HELMET
-      Slot: 23
+      Material: DIAMOND_HELMET
       Lore:
       - '&6Ability: &73 Rhino Charges'
       - ' '
@@ -271,10 +259,9 @@ Menu:
         Right-Click:
         - 'player: kp preview Rhino'
         Enabled: true
-    Trickster:
+    24:
       Name: '&a&lTrickster Kit'
-      Item: EGG
-      Slot: 24
+      Material: EGG
       Lore:
       - '&6Ability: &74 Switcher Pellets'
       - ' '
@@ -292,10 +279,9 @@ Menu:
         Right-Click:
         - 'player: kp preview Trickster'
         Enabled: true
-    Example:
+    25:
       Name: '&a&lExample Kit'
-      Item: WOOD_SWORD
-      Slot: 25
+      Material: WOOD_SWORD
       View-Permission: kp.kit.example
       Lore:
       - '&7This is the example of a custom'
@@ -310,9 +296,8 @@ Menu:
         Right-Click:
         - 'player: kp preview Example'
         Enabled: true
-    Close:
+    40:
       Name: '&c&lClose'
-      Item: BARRIER
-      Slot: 40
+      Material: BARRIER
       Lore:
       - '&7Click to close the Kit Menu.'

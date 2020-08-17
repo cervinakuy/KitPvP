@@ -1,472 +1,228 @@
 package com.planetgallium.kitpvp.game;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.planetgallium.kitpvp.Game;
+import com.planetgallium.kitpvp.api.Ability;
+import com.planetgallium.kitpvp.api.Kit;
+import com.planetgallium.kitpvp.api.PlayerSelectKitEvent;
+import com.planetgallium.kitpvp.game.Arena;
+import com.planetgallium.kitpvp.newkit.AttributeParser;
+import com.planetgallium.kitpvp.util.*;
 import org.bukkit.Bukkit;
-import org.bukkit.Color;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.LeatherArmorMeta;
-import org.bukkit.inventory.meta.PotionMeta;
-import org.bukkit.inventory.meta.SkullMeta;
-import org.bukkit.potion.Potion;
-import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
-import com.planetgallium.kitpvp.Game;
-import com.planetgallium.kitpvp.api.PlayerSelectKitEvent;
-import com.planetgallium.kitpvp.kit.KitEffect;
-import com.planetgallium.kitpvp.item.KitItem;
-import com.planetgallium.kitpvp.kit.Kit;
-import com.planetgallium.kitpvp.util.Config;
-import com.planetgallium.kitpvp.util.XMaterial;
-import com.planetgallium.kitpvp.util.Resource;
-import com.planetgallium.kitpvp.util.Resources;
-import com.planetgallium.kitpvp.util.Toolkit;
+import org.bukkit.potion.PotionEffectType;
 
-@SuppressWarnings("deprecation")
+import java.io.File;
+import java.util.*;
+
 public class Kits {
 
-	private Game plugin;
-	private Arena arena;
-	private Resources resources;
-	
-	public Kits(Game plugin, Arena arena) {
-		this.arena = arena;
-		this.plugin = plugin;
-		this.resources = plugin.getResources();
-	}
-	
-	private Map<String, String> kits = new HashMap<String, String>();
-	
-	public void createKit(String name, Player p) {
-		
-		if (!isKit(name)) {
-			
-			resources.addKit(name);
+    private Game plugin;
+    private Arena arena;
+    private Resources resources;
 
-			Resource kitResource = resources.getKits(name);
-			kitResource.set("Kit.Permission", "kp.kit." + name.toLowerCase());
-			kitResource.set("Kit.Level", 0);
-			kitResource.set("Kit.Cooldown", 0);
-			kitResource.save();
-			
-			if (p.getInventory().getHelmet() != null) {
-				
-				saveItem(kitResource, name, "Inventory.Armor.Helmet", p.getInventory().getHelmet(), null);
-				
-			}
-			
-			if (p.getInventory().getChestplate() != null) {
-				
-				saveItem(kitResource, name, "Inventory.Armor.Chestplate", p.getInventory().getChestplate(), null);
-				
-			}
-			
-			if (p.getInventory().getLeggings() != null) {
-				
-				saveItem(kitResource, name, "Inventory.Armor.Leggings", p.getInventory().getLeggings(), null);
-				
-			}
-			
-			if (p.getInventory().getBoots() != null) {
-				
-				saveItem(kitResource, name, "Inventory.Armor.Boots", p.getInventory().getBoots(), null);
-				
-			}
+    private Map<String, String> kits;
 
-			for (int i = 0; i < 36; i++) {
-				
-				ItemStack item = p.getInventory().getItem(i);
+    public Kits(Game plugin, Arena arena) {
+        this.arena = arena;
+        this.plugin = plugin;
+        this.resources = plugin.getResources();
 
-				if (item != null) {
-					String backupName = (item.getType() == XMaterial.MUSHROOM_STEW.parseMaterial().get()) ? Config.getS("Soups.Name") : null;
-					saveItem(kitResource, name, "Inventory.Items." + i, p.getInventory().getItem(i), backupName);
-				}
-				
-			}
+        this.kits = new HashMap<>();
+    }
 
-			if (Toolkit.versionToNumber() >= 19 && p.getInventory().getItem(40) != null) {
-				ItemStack offhand = p.getInventory().getItem(40);
-				String backupName = (offhand.getType() == XMaterial.MUSHROOM_STEW.parseMaterial().get()) ? Config.getS("Soups.Name") : null;
-				saveItem(kitResource, name, "Inventory.Items.40", offhand, backupName);
-			}
+    public Kit createKitFromPlayer(Player player, String name) {
 
-			for (PotionEffect effect : p.getActivePotionEffects()) {
-				
-				resources.getKits(name).set("Effects." + effect.getType().getName() + ".Amplifier", effect.getAmplifier() + 1);
-				resources.getKits(name).set("Effects." + effect.getType().getName() + ".Duration", effect.getDuration() / 20);
-				resources.getKits(name).save();
-				
-			}
-			
-			resources.getKits(name).set("Ability.Activator.Name", "&aDefault Ability &7(Must be modified in kit file)");
-			resources.getKits(name).set("Ability.Activator.Item", "BEDROCK");
-			resources.getKits(name).set("Ability.Message.Message", "%prefix% &7You have used your ability.");
-			resources.getKits(name).set("Ability.Message.Enabled", true);
-			resources.getKits(name).set("Ability.Sound.Sound", "FIZZ");
-			resources.getKits(name).set("Ability.Sound.Pitch", 1);
-			resources.getKits(name).set("Ability.Sound.Enabled", true);
-			resources.getKits(name).set("Ability.Effects.SPEED.Amplifier", 1);
-			resources.getKits(name).set("Ability.Effects.SPEED.Duration", 10);
-			resources.getKits(name).set("Ability.Commands.Commands", new String[]{"console: This command is run from the console, you can use %player%", "player: This command is run from the player, you can use %player%"});
-			resources.getKits(name).set("Ability.Commands.Enabled", false);
-			resources.getKits(name).save();
-			
-			p.sendMessage(Config.tr(resources.getMessages().getString("Messages.Commands.Create").replace("%kit%", name)));
-			
-		} else {
-			
-			p.sendMessage(Config.tr(resources.getMessages().getString("Messages.Error.Exists").replace("%prefix%", resources.getMessages().getString("Messages.General.Prefix"))));
-			
-		}
-		
-	}
-	
-	public void giveKit(String name, Player p) {
+        Player p = player;
+        
+        //          KIT             //
 
-		if (isKit(name)) {
-			
-			if (p.hasPermission(resources.getKits(name).getString("Kit.Permission"))) {
+        Kit kit = new Kit(name);
 
-				int kitLevel = resources.getKits(name).getInt("Kit.Level");
+        kit.setHelmet(p.getInventory().getHelmet());
+        kit.setChestplate(p.getInventory().getChestplate());
+        kit.setLeggings(p.getInventory().getLeggings());
+        kit.setBoots(p.getInventory().getBoots());
 
-				if (Toolkit.getPermissionAmount(p, "kp.levelbypass.", 0) >= kitLevel || arena.getLevels().getLevel(p.getUniqueId()) >= kitLevel) {
-					
-					if (p.hasPermission("kp.cooldownbypass") || !arena.getCooldowns().isOnCooldown(p.getUniqueId(), name)) {
-					
-						Kit kit = new Kit();
-						kit.setName(name);
-						
-						Resource kitResource = resources.getKits(kit.getName());
-						
-						if (kitResource.contains("Inventory.Armor")) {
-							
-							if (kitResource.contains("Inventory.Armor.Helmet")) {
-								
-								kit.setHelmet(new KitItem(kitResource, kit.getName(), "Inventory.Armor.Helmet"));
-								
-							}
-							
-							if (kitResource.contains("Inventory.Armor.Chestplate")) {
-								
-								kit.setChestplate(new KitItem(kitResource, kit.getName(), "Inventory.Armor.Chestplate"));
-								
-							}
-							
-							if (kitResource.contains("Inventory.Armor.Leggings")) {
-								
-								kit.setLeggings(new KitItem(kitResource, kit.getName(), "Inventory.Armor.Leggings"));
-								
-							}
-							
-							if (kitResource.contains("Inventory.Armor.Boots")) {
-								
-								kit.setBoots(new KitItem(kitResource, kit.getName(), "Inventory.Armor.Boots"));
-								
-							}
-							
-						}
-						
-						ConfigurationSection items = kitResource.getConfigurationSection("Inventory.Items");
-						
-						for (String identifier : items.getKeys(false)) {
-							
-							if (!identifier.equals("Fill")) {
-	
-								kit.addItem(new KitItem(kitResource, kit.getName(), "Inventory.Items." + identifier), Integer.valueOf(identifier));
-								
-							} else {
-								
-								kit.setFill(new KitItem(kitResource, kit.getName(), "Inventory.Items.Fill"));
-								
-							}
-							
-						}
-						
-						if (kitResource.contains("Effects")) {
-							
-							ConfigurationSection potions = kitResource.getConfigurationSection("Effects");
-							
-							for (String identifier : potions.getKeys(false)) {
-								
-								kit.addEffect(new KitEffect(kitResource, identifier));
-								
-							}
-							
-						}
-						
-						kit.applyKit(p);
-						setKit(p.getName(), name);
-						
-						if (resources.getKits(name).getString("Kit.Cooldown") != "0" && !p.hasPermission("kp.cooldownbypass")) {
-							
-							arena.getCooldowns().setCooldown(p.getUniqueId(), name);
-							
-						}
-						
-						Bukkit.getPluginManager().callEvent(new PlayerSelectKitEvent(p, kit.getName()));
-						
-					} else {
-						
-						p.sendMessage(Config.tr(resources.getMessages().getString("Messages.Error.Cooldown").replace("%cooldown%", arena.getCooldowns().getFormattedCooldown(p.getUniqueId(), name))));
-						
-					}
-					
-				} else {
-					
-					p.sendMessage(Config.tr(resources.getMessages().getString("Messages.Other.Needed").replace("%level%", String.valueOf(resources.getKits(name).getInt("Kit.Level")))));
-					
-				}
-				
-			} else {
-				
-				p.sendMessage(Config.tr(resources.getMessages().getString("Messages.General.Permission")));
-				
-			}
-			
-		} else {
-			
-			p.sendMessage(Config.tr(resources.getMessages().getString("Messages.Error.Lost")));
-			
-		}
-		
-	}
-	
-	public void saveItem(Resource resource, String kit, String path, ItemStack item, String backupName) {
-		
-		ItemMeta meta = item.getItemMeta();
-		
-		resource.set(path + ".Name", meta.hasDisplayName() ? meta.getDisplayName().replace("§", "&") : backupName);
-		resource.set(path + ".Lore", meta.getLore());
-		resource.set(path + ".Item", item.getType().toString());
-		resource.set(path + ".Amount", item.getAmount() == 1 ? null : item.getAmount());
-		resource.save();
-		
-		if (item.getType() == XMaterial.LEATHER_HELMET.parseMaterial().get() ||
-			item.getType() == XMaterial.LEATHER_CHESTPLATE.parseMaterial().get() ||
-			item.getType() == XMaterial.LEATHER_LEGGINGS.parseMaterial().get() ||
-			item.getType() == XMaterial.LEATHER_BOOTS.parseMaterial().get()) {
-			
-			LeatherArmorMeta dyedMeta = (LeatherArmorMeta) meta;
-			
-			resource.set(path + ".Dye.Red", dyedMeta.getColor().getRed());
-			resource.set(path + ".Dye.Green", dyedMeta.getColor().getGreen());
-			resource.set(path + ".Dye.Blue", dyedMeta.getColor().getBlue());
-			resource.save();
-			
-		} else if (item.getType() == XMaterial.PLAYER_HEAD.parseMaterial().get()) {
+        for (PotionEffect effect : p.getActivePotionEffects()) {
+            PotionEffectType type = effect.getType();
+            int amplifier = effect.getAmplifier();
+            int duration = effect.getDuration();
 
-			SkullMeta skullMeta = (SkullMeta) meta;
+            kit.addEffect(type, amplifier, duration / 20);
+        }
 
-			resource.set(path + ".Skull", skullMeta.getOwner());
-			resource.save();
+        for (int i = 0; i < 36; i++) {
+            ItemStack item = p.getInventory().getItem(i);
+            if (item != null) {
+                kit.setInventoryItem(i, item);
+            }
+            // do something about soups?
+        }
+        
+        if (Toolkit.versionToNumber() >= 19) {
+            ItemStack offhandItem = p.getInventory().getItemInOffHand();
+            if (offhandItem != null) {
+                kit.setOffhand(offhandItem);
+            }
+        }
 
-		} else if (Toolkit.versionToNumber() >= 19 && item.getType() == XMaterial.TIPPED_ARROW.parseMaterial().get()) {
+        //          ABILITY         //
 
-			serializeEffects(resource, (PotionMeta) meta, path);
+        Ability sampleAbility = new Ability("Example");
 
-		} else if (item.getType() == XMaterial.POTION.parseMaterial().get() ||
-				(Toolkit.versionToNumber() >= 19 &&
-						(item.getType() == XMaterial.SPLASH_POTION.parseMaterial().get() ||
-								item.getType() == XMaterial.LINGERING_POTION.parseMaterial().get()))
-				) {
+        ItemStack activator = XMaterial.EMERALD.parseItem();
+        ItemMeta activatorMeta = activator.getItemMeta();
 
-			if (Toolkit.versionToNumber() == 18) {
-				
-				Potion potionStack = Potion.fromItemStack(item);
-				PotionMeta potionMeta = (PotionMeta) meta;
+        activatorMeta.setDisplayName(Toolkit.translate("&aDefault Ability &7(Must be modified in kit file)"));
+        activator.setItemMeta(activatorMeta);
 
-				resource.set(path + ".Type", potionStack.isSplash() ? "SPLASH_POTION" : "POTION");
-				resource.save();
+        sampleAbility.setActivator(activator);
 
-				if (potionMeta.getCustomEffects().size() > 0) {
-					
-					for (PotionEffect effect : potionMeta.getCustomEffects()) {
+        sampleAbility.setMessage("%prefix% &7You have used your ability.");
+        sampleAbility.setSound(XSound.BLOCK_NOTE_BLOCK_PLING.parseSound(), 1, 1);
+        sampleAbility.addEffect(XPotion.SPEED.parsePotionEffectType(), 1, 10);
+        sampleAbility.addCommand("console: This command is run from the console, you can use %player%");
+        sampleAbility.addCommand("player: This command is run from the p, you can use %player%");
 
-						resource.set(path + ".Effects." + effect.getType().getName() + ".Amplifier", effect.getAmplifier() + 1);
-						resource.set(path + ".Effects." + effect.getType().getName() + ".Duration", effect.getDuration() / 20);
-						resource.save();
+        kit.addAbility(sampleAbility);
 
-					}
-					
-				} else {
-					
-			        for (PotionEffect effect : potionStack.getEffects()) {
+        return kit;
 
-						resource.set(path + ".Effects." + effect.getType().getName() + ".Amplifier", effect.getAmplifier() + 1);
-						resource.set(path + ".Effects." + effect.getType().getName() + ".Duration", effect.getDuration() / 20);
-						resource.save();
-			        	
-			        }
-					
-				}
-				
-			} else if (Toolkit.versionToNumber() >= 19) {
+    }
 
-				serializeEffects(resource, (PotionMeta) meta, path);
-				
-			}
-			
-		}
-		
-		if (item.getEnchantments().size() > 0) {
-			
-			if (Toolkit.versionToNumber() < 113) {
-				
-				for (Enchantment enchantment : item.getEnchantments().keySet()) {
-					
-					resource.set(path + ".Enchantments." + enchantment.getName() + ".Level", item.getEnchantments().get(enchantment));
-					resource.save();
-					
-				}
-				
-			} else if (Toolkit.versionToNumber() >= 113) {
-				
-				for (Enchantment enchantment : item.getEnchantments().keySet()) {
-					
-					resource.set(path + ".Enchantments." + enchantment.getKey().getKey() + ".Level", item.getEnchantments().get(enchantment));
-					resource.save();
-					
-				}
-				
-			}
-			
-		}
-		
-		if (Toolkit.versionToNumber() < 113) {
-			
-			if (item.getDurability() > 0 &&
-					item.getType() != XMaterial.PLAYER_HEAD.parseMaterial().get() &&
-					item.getType() != XMaterial.POTION.parseMaterial().get() &&
-					item.getType() != XMaterial.SPLASH_POTION.parseMaterial().get()) {
-				
-				resource.set(path + ".Durability", item.getDurability());
-				resource.save();
-				
-			}
-			
-		} else if (Toolkit.versionToNumber() >= 113) {
-			
-			if (meta instanceof Damageable &&
-					item.getType() != XMaterial.PLAYER_HEAD.parseMaterial().get() &&
-					item.getType() != XMaterial.POTION.parseMaterial().get() &&
-					item.getType() != XMaterial.SPLASH_POTION.parseMaterial().get()) {
-				
-				Damageable damagedMeta = (Damageable) meta;
-				
-				if (damagedMeta.hasDamage()) {
-					
-					resource.set(path + ".Durability", damagedMeta.getDamage());
-					resource.save();
-					
-				}
-				
-			}
-			
-		}
-		
-	}
+    private Kit createKitFromResource(Resource resource) {
 
-	private void serializeEffects(Resource resource, PotionMeta meta, String path) {
+        Kit kit = new Kit(resource.getName());
 
-		PotionData data = meta.getBasePotionData();
+        kit.setPermission(resource.getString("Kit.Permission"));
+        kit.setLevel(resource.getInt("Kit.Level"));
+        // cooldown
 
-		if (meta.getCustomEffects().size() > 0) {
 
-			for (PotionEffect potion : meta.getCustomEffects()) {
+        kit.setHelmet(AttributeParser.getItemStackFromPath(resource, "Inventory.Armor.Helmet"));
+        kit.setChestplate(AttributeParser.getItemStackFromPath(resource, "Inventory.Armor.Chestplate"));
+        kit.setLeggings(AttributeParser.getItemStackFromPath(resource, "Inventory.Armor.Leggings"));
+        kit.setBoots(AttributeParser.getItemStackFromPath(resource, "Inventory.Armor.Boots"));
 
-				resource.set(path + ".Effects." + potion.getType().getName() + ".Amplifier", potion.getAmplifier() + 1);
-				resource.set(path + ".Effects." + potion.getType().getName() + ".Duration", potion.getDuration() / 20);
-				resource.save();
+        for (PotionEffect effect : AttributeParser.getEffectsFromPath(resource, "Effects")) {
+            kit.addEffect(effect.getType(), effect.getAmplifier(), effect.getDuration());
+        }
 
-			}
+        for (int i = 0; i < 36; i++) {
+            if (resource.contains("Inventory.Items." + i)) {
+                kit.setInventoryItem(i, AttributeParser.getItemStackFromPath(resource, "Inventory.Items." + i));
+            }
+        }
 
-		} else {
 
-			String effectName = data.getType().getEffectType().getName();
-			resource.set(path + ".Type", data.getType().toString());
-			resource.set(path + ".Effects." + effectName + ".Upgraded", data.isUpgraded());
-			resource.set(path + ".Effects." + effectName + ".Extended", data.isExtended());
-			resource.save();
 
-		}
+        kit.setFill(AttributeParser.getItemStackFromPath(resource, "Inventory.Items.Fill"));
+        kit.setOffhand(AttributeParser.getItemStackFromPath(resource, "Inventory.Items.Offhand"));
 
-		if (meta.hasColor()) {
+        return kit;
 
-			Color potionColor = meta.getColor();
-			resource.set(path + ".Color.Red", potionColor.getRed());
-			resource.set(path + ".Color.Green", potionColor.getGreen());
-			resource.set(path + ".Color.Blue", potionColor.getBlue());
-			resource.save();
+    }
 
-		}
+    public void attemptToGiveKitToPlayer(Player player, Kit kit) {
 
-	}
-	
-	private void setKit(String username, String kit) {
-		
-		if (!kits.containsKey(username)) {
-			
-			kits.put(username, kit);
-			
-		}
-		
-	}
-	
-	public void clearKit(String username) {
-		
-		if (hasKit(username)) {
-			
-			kits.remove(username);
-			
-		}
-		
-	}
-	
-	public String getKit(String username) {
+        Player p = player;
 
-		if (hasKit(username)) {
-			
-			return kits.get(username);
-			
-		}
-		
-		return resources.getMessages().getString("Messages.Other.NoKit");
-		
-	}
-	
-	public boolean hasKit(String username) {
-		
-		return kits.containsKey(username);
-		
-	}
-	
-	public boolean isKit(String kit) {
-		
-		return getList().contains(kit + ".yml");
-		
-	}
-	
-	public String getPath() {
-		
-		return plugin.getDataFolder().getAbsolutePath() + "/kits";
-		
-	}
-	
-	public List<String> getList() {
-		
-		File folder = new File(plugin.getDataFolder().getAbsolutePath() + "/kits");
-		
-		return new ArrayList<String>(Arrays.asList(folder.list()));
-		
-	}
-	
+        if (!p.hasPermission(kit.getPermission())) {
+            p.sendMessage(resources.getMessages().getString("Messages.General.Permission"));
+            return;
+        }
+
+        if (!(Toolkit.getPermissionAmount(p, "kp.levelbypass.", 0) >= kit.getLevel() ||
+                arena.getLevels().getLevel(p.getUniqueId()) >= kit.getLevel())) {
+            p.sendMessage(resources.getMessages().getString("Messages.Other.Needed").replace("%level%", String.valueOf(kit.getLevel())));
+            return;
+        }
+
+        if (!(p.hasPermission("kp.cooldownbypass") || !arena.getCooldowns().isOnCooldown(p.getUniqueId(), kit.getName()))) {
+            p.sendMessage(resources.getMessages().getString("Messages.Error.Cooldown").replace("%cooldown%", arena.getCooldowns().getFormattedCooldown(p.getUniqueId(), kit.getName())));
+            return;
+        }
+
+        if (hasKit(player.getName())) {
+            p.sendMessage(resources.getMessages().getString("Messages.Error.Selected"));
+            p.playSound(p.getLocation(), XSound.ENTITY_ENDER_DRAGON_HURT.parseSound(), 1, 1);
+            return;
+        }
+
+        if (Config.getB("Arena.ClearInventoryOnKit")) {
+            p.getInventory().clear();
+            p.getInventory().setArmorContents(null);
+        }
+
+        kit.apply(p);
+        p.sendMessage(resources.getMessages().getString("Messages.Commands.Kit").replace("%kit%", kit.getName()));
+        p.playSound(p.getLocation(), XSound.ENTITY_HORSE_ARMOR.parseSound(), 1, 1);
+
+        Bukkit.getPluginManager().callEvent(new PlayerSelectKitEvent(player, kit));
+
+        if (kit.getCooldown() != null && !p.hasPermission("kp.cooldownbypass")) {
+            arena.getCooldowns().setCooldown(p.getUniqueId(), kit.getName());
+        }
+
+    }
+
+    public Kit getKitByName(String kitName) {
+
+        if (!CacheManager.getKitCache().containsKey(kitName)) {
+
+        }
+
+        return CacheManager.getKitCache().get(kitName);
+
+    }
+
+    public void setKit(String playerName, String kitName) {
+
+        kits.put(playerName, kitName);
+
+    }
+
+    public boolean hasKit(String playerName) {
+
+        return kits.containsKey(playerName);
+
+    }
+
+    public Kit getKitOfPlayer(String playerName) {
+
+        // USE CACHING SYSTEM PLEASE
+
+//        return kits.get(playerName);
+
+        return null;
+    }
+
+    public void resetKit(String playerName) {
+
+        kits.remove(playerName);
+
+    }
+
+    public boolean isKit(String kitName) {
+
+        return getList().contains(kitName);
+
+    }
+
+    public List<String> getList() {
+
+        File folder = new File(plugin.getDataFolder().getAbsolutePath() + "/kits");
+        List<String> list = new ArrayList<>();
+
+        for (String fileName : folder.list()) {
+            list.add(fileName.split(".yml")[0]);
+        }
+
+        return list;
+
+    }
+
 }

@@ -1,4 +1,4 @@
-package com.planetgallium.kitpvp.item;
+package com.planetgallium.kitpvp.newkit;
 
 import com.planetgallium.kitpvp.util.Resource;
 import com.planetgallium.kitpvp.util.Toolkit;

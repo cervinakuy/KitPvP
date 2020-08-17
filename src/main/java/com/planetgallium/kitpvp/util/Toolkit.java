@@ -3,6 +3,8 @@ package com.planetgallium.kitpvp.util;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.planetgallium.kitpvp.api.Ability;
+import com.planetgallium.kitpvp.api.Kit;
 import org.bukkit.*;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Entity;
@@ -12,6 +14,7 @@ import org.bukkit.inventory.ItemStack;
 import com.planetgallium.kitpvp.Game;
 
 import me.clip.placeholderapi.PlaceholderAPI;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.Plugin;
@@ -94,29 +97,35 @@ public class Toolkit {
  		
  	}
 
+ 	public static void runCommands(Player p, List<String> commands, String replaceFrom, String replaceTo) {
+
+		for (String commandString : commands) {
+
+			String[] commandPhrase = commandString.split(":", 2);
+			commandPhrase[1] = commandPhrase[1].trim();
+
+			String sender = commandPhrase[0];
+			String command = commandPhrase[1];
+
+			if (sender.equals("console")) {
+
+				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), addPlaceholdersIfPossible(p, command.replace("%player%", p.getName()).replace(replaceFrom, replaceTo)));
+
+			} else if (sender.equals("player")) {
+
+				p.performCommand(addPlaceholdersIfPossible(p, command.replace("%player%", p.getName()).replace(replaceFrom, replaceTo)));
+
+			}
+
+		}
+
+	}
+
  	public static void runCommands(FileConfiguration config, String path, Player p, String replaceFrom, String replaceTo) {
 
 		if (config.getBoolean(path + ".Commands.Enabled")) {
 
-			for (String list : config.getStringList(path + ".Commands.Commands")) {
-
-				String[] commandPhrase = list.split(":", 2);
-				commandPhrase[1] = commandPhrase[1].trim();
-
-				String sender = commandPhrase[0];
-				String command = commandPhrase[1];
-
-				if (sender.equals("console")) {
-
-					Bukkit.dispatchCommand(Bukkit.getConsoleSender(), addPlaceholdersIfPossible(p, command.replace("%player%", p.getName()).replace(replaceFrom, replaceTo)));
-
-				} else if (sender.equals("player")) {
-
-					p.performCommand(addPlaceholdersIfPossible(p, command.replace("%player%", p.getName()).replace(replaceFrom, replaceTo)));
-
-				}
-
-			}
+			runCommands(p, config.getStringList(path + ".Commands.Commands"), replaceFrom, replaceTo);
 
 		}
 
@@ -364,6 +373,36 @@ public class Toolkit {
 		}
 
 		return defaultValue;
+	}
+
+	public static String translate(String s) {
+
+		return ChatColor.translateAlternateColorCodes('&', s);
+
+	}
+
+	public static Ability findAbility(Kit kit, ItemStack item) {
+
+		for (Ability ability : kit.getAbilities()) {
+
+			if (item.getType() == ability.getActivator().getType()) {
+
+				ItemMeta meta = item.getItemMeta();
+
+				// might have to replace something here in the meta.getDisplayname for it to return true
+
+				if (meta.getDisplayName().equals(ability.getActivator().getItemMeta().getDisplayName())) {
+
+					return ability;
+
+				}
+
+			}
+
+		}
+
+		return null;
+
 	}
 	
 }

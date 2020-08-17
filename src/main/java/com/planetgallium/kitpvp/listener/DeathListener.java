@@ -85,7 +85,7 @@ public class DeathListener implements Listener {
 
 					@Override
 					public void run() {
-						arena.toSpawn(p);
+						arena.toSpawn(p, p.getWorld().getName());
 					}
 
 				}.runTaskLater(Game.getInstance(), 1L);

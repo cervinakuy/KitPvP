@@ -1,13 +1,9 @@
 package com.planetgallium.kitpvp.command;
 
 import com.planetgallium.kitpvp.Game;
+import com.planetgallium.kitpvp.api.Kit;
 import com.planetgallium.kitpvp.game.Arena;
-import com.planetgallium.kitpvp.menu.KitMenu;
-import com.planetgallium.kitpvp.menu.PreviewMenu;
-import com.planetgallium.kitpvp.util.Config;
-import com.planetgallium.kitpvp.util.Resources;
-import com.planetgallium.kitpvp.util.Toolkit;
-import com.planetgallium.kitpvp.util.XSound;
+import com.planetgallium.kitpvp.util.*;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -15,7 +11,6 @@ import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -29,15 +24,13 @@ public class MainCommand implements CommandExecutor {
 
     private List<String> spawnUsers = new ArrayList<String>();
 
-    private boolean isFirst = false;
-
-    private Game game;
+    private Game plugin;
     private Arena arena;
     private FileConfiguration config;
     private Resources resources;
 
     public MainCommand(Game game) {
-        this.game = game;
+        this.plugin = game;
         this.arena = game.getArena();
         this.config = game.getConfig();
         this.resources = game.getResources();
@@ -49,7 +42,7 @@ public class MainCommand implements CommandExecutor {
         if (args.length == 0) {
 
             sender.sendMessage(Config.tr("&7[&b&lKIT-PVP&7]"));
-            sender.sendMessage(Config.tr("&7Version: &b" + Game.getInstance().getDescription().getVersion()));
+            sender.sendMessage(Config.tr("&7Version: &b" + plugin.getDescription().getVersion()));
             sender.sendMessage(Config.tr("&7Developer: &bCervinakuy"));
             sender.sendMessage(Config.tr("&7Commands: &b/kp help"));
             sender.sendMessage(Config.tr("&7Download: &bbit.ly/KP-Download"));
@@ -87,7 +80,7 @@ public class MainCommand implements CommandExecutor {
 
             } else if (args[0].equalsIgnoreCase("reload") && hasPermission(sender, "kp.command.reload")) {
 
-                game.reloadConfig();
+                plugin.reloadConfig();
                 resources.reload();
 
                 sender.sendMessage(resources.getMessages().getString("Messages.Commands.Reload"));
@@ -102,19 +95,17 @@ public class MainCommand implements CommandExecutor {
                 }
 
                 sender.sendMessage(Config.tr("&7[&b&lKIT-PVP&7] &aServer Version: &7" + Bukkit.getBukkitVersion()) + " " + (Bukkit.getVersion().contains("Spigot") ? "(Spigot)" : "(Other)"));
-                sender.sendMessage(Config.tr("&7[&b&lKIT-PVP&7] &aPlugin Version: " + game.getDescription().getVersion()) + " " + (game.needsUpdate() ? "&c(Requires Update)" : "&a(Latest Version)"));
+                sender.sendMessage(Config.tr("&7[&b&lKIT-PVP&7] &aPlugin Version: " + plugin.getDescription().getVersion()) + " " + (plugin.needsUpdate() ? "&c(Requires Update)" : "&a(Latest Version)"));
                 sender.sendMessage(Config.tr("&7[&b&lKIT-PVP&7] &aSpawn Set: " + (config.contains("Arenas") ? "&aConfigured" : "&cUnconfigured")));
                 sender.sendMessage(Config.tr("&7[&b&lKIT-PVP&7] &aSupport Discord: &7https://discord.gg/GtXQKZ6"));
                 sender.sendMessage(Config.tr("&7[&b&lKIT-PVP&7] &aPlugin List: &7" + names));
 
             } else if (args[0].equalsIgnoreCase("import") && hasPermission(sender, "kp.command.import")) {
 
-                if (game.getDatabase().isEnabled()) {
+                if (plugin.getDatabase().isEnabled()) {
 
                     sender.sendMessage(Config.tr("%prefix% &7Importing data, please wait..."));
-
-                    game.getDatabase().importData(resources);
-
+                    plugin.getDatabase().importData(resources);
                     sender.sendMessage(Config.tr("%prefix% &aDatabase data has successfully been exported to the stats.yml."));
 
                 } else {
@@ -127,12 +118,10 @@ public class MainCommand implements CommandExecutor {
 
             } else if (args[0].equalsIgnoreCase("export") && hasPermission(sender, "kp.command.export")) {
 
-                if (game.getDatabase().isEnabled()) {
+                if (plugin.getDatabase().isEnabled()) {
 
                     sender.sendMessage(Config.tr("%prefix% &7Exporting data, please wait..."));
-
-                    game.getDatabase().exportData(resources);
-
+                    plugin.getDatabase().exportData(resources);
                     sender.sendMessage(Config.tr("%prefix% &aStats successfully exported to database."));
 
                 } else {
@@ -148,29 +137,13 @@ public class MainCommand implements CommandExecutor {
                 String message = "";
 
                 for (String kitName : arena.getKits().getList()) {
-
-                    String[] fullName = kitName.split(".ym", 2);
-                    fullName[0] = fullName[0].trim();
-
-                    if (arena.getKits().getList().size() == 1) {
-
-                        message += fullName[0];
-
-                    } else {
-
-                        if (!isFirst) {
-                            isFirst = true;
-                            message += fullName[0];
-                        } else {
-                            message += ", " + fullName[0];
-                        }
-
-                    }
-
+                    String[] fileName = kitName.split(".yml", 2);
+                    message += fileName[0] + ", ";
                 }
 
+                message = message.substring(0, message.length() - 2);
+
                 sender.sendMessage(resources.getMessages().getString("Messages.Commands.Kits").replace("%kits%", message));
-                isFirst = false;
 
                 return true;
 
@@ -196,6 +169,7 @@ public class MainCommand implements CommandExecutor {
                     sender.sendMessage(resources.getMessages().getString("Messages.Error.Offline"));
 
                 }
+
                 return true;
 
             }
@@ -211,22 +185,17 @@ public class MainCommand implements CommandExecutor {
 
                 if (target != null && Toolkit.inArena(target)) {
 
-                    if (!arena.getKits().hasKit(target.getName())) {
+                    Kit kitToGive = arena.getKits().getKitByName(kitName);
+                    arena.getKits().attemptToGiveKitToPlayer(target, kitToGive);
 
-                        arena.getKits().giveKit(kitName, target);
-                        sender.sendMessage(resources.getMessages().getString("Messages.Commands.KitOther").replace("%player%", playerName).replace("%kit%", kitName));
-
-                    } else {
-
-                        sender.sendMessage(resources.getMessages().getString("Messages.Error.SelectedOther").replace("%kit%", kitName));
-
-                    }
+                    sender.sendMessage(resources.getMessages().getString("Messages.Commands.KitOther").replace("%player%", playerName).replace("%kit%", kitName));
 
                 } else {
 
                     sender.sendMessage(resources.getMessages().getString("Messages.Error.Offline"));
 
                 }
+
                 return true;
 
             }
@@ -241,9 +210,9 @@ public class MainCommand implements CommandExecutor {
 
                 if (args[0].equalsIgnoreCase("stats") && hasPermission(sender, "kp.command.stats")) {
 
-                    for (String msg : resources.getMessages().getStringList("Messages.Stats.Message")) {
+                    for (String line : resources.getMessages().getStringList("Messages.Stats.Message")) {
 
-                        p.sendMessage(addPlaceholdersIfPossible(p, Config.tr(msg)));
+                        p.sendMessage(addPlaceholdersIfPossible(p, Config.tr(line)));
 
                     }
 
@@ -251,8 +220,7 @@ public class MainCommand implements CommandExecutor {
 
                 } else if (args[0].equalsIgnoreCase("menu") && hasPermission(sender, "kp.command.menu")) {
 
-                    KitMenu menu = new KitMenu(resources);
-                    menu.create(p);
+                    arena.getMenus().getKitMenu().open(p);
 
                 } else if (args[0].equalsIgnoreCase("spawn") && hasPermission(sender, "kp.command.spawn")) {
 
@@ -269,18 +237,18 @@ public class MainCommand implements CommandExecutor {
 
                             new BukkitRunnable() {
 
-                                public int t = Config.getI("Spawn.Time") + 1;
+                                public int time = Config.getI("Spawn.Time") + 1;
 
                                 @Override
                                 public void run() {
 
-                                    t--;
+                                    time--;
 
-                                    if (t != 0) {
+                                    if (time != 0) {
 
                                         if (p.getGameMode() != GameMode.SPECTATOR) {
 
-                                            p.sendMessage(resources.getMessages().getString("Messages.Commands.Time").replace("%time%", String.valueOf(t)));
+                                            p.sendMessage(resources.getMessages().getString("Messages.Commands.Time").replace("%time%", String.valueOf(time)));
                                             XSound.play(p, "BLOCK_NOTE_BLOCK_SNARE, 1, 1");
 
                                             if (beforeLocation.getBlockX() != p.getLocation().getBlockX() || beforeLocation.getBlockY() != p.getLocation().getBlockY() || beforeLocation.getBlockZ() != p.getLocation().getBlockZ()) {
@@ -302,12 +270,10 @@ public class MainCommand implements CommandExecutor {
 
                                         p.sendMessage(resources.getMessages().getString("Messages.Commands.Teleport"));
 
-                                        arena.toSpawn(p);
+                                        arena.toSpawn(p, p.getWorld().getName());
 
                                         if (Config.getB("Arena.ClearKitOnCommandSpawn")) {
-
                                             clearKit(p);
-
                                         }
 
                                         spawnUsers.remove(p.getName());
@@ -320,7 +286,7 @@ public class MainCommand implements CommandExecutor {
 
                                 }
 
-                            }.runTaskTimer(game, 0L, 20L);
+                            }.runTaskTimer(plugin, 0L, 20L);
 
                         }
 
@@ -333,17 +299,19 @@ public class MainCommand implements CommandExecutor {
                 } else if (args[0].equalsIgnoreCase("clear") && hasPermission(sender, "kp.command.clear")) {
 
                     clearKit(p);
-
                     p.sendMessage(resources.getMessages().getString("Messages.Commands.Cleared"));
+                    return true;
 
                 } else if (args[0].equalsIgnoreCase("addspawn") && hasPermission(p, "kp.command.addspawn")) {
 
                     String arenaName = p.getWorld().getName();
                     int spawnNumber = getNextArenaSpawnNumber(arenaName);
 
-                    Toolkit.saveLocationToConfig(game, Config.getC(), "Arenas." + arenaName + "." + spawnNumber, p.getLocation());
+                    Toolkit.saveLocationToConfig(plugin, config, "Arenas." + arenaName + "." + spawnNumber, p.getLocation());
 
-                    p.sendMessage(resources.getMessages().getString("Messages.Commands.Added").replace("%number%", String.valueOf(spawnNumber)).replace("%arena%", arenaName));
+                    p.sendMessage(resources.getMessages().getString("Messages.Commands.Added")
+                            .replace("%number%", String.valueOf(spawnNumber))
+                            .replace("%arena%", arenaName));
                     XSound.play(p, "ENTITY_ZOMBIE_ATTACK_WOODEN_DOOR, 1, 1");
 
                     return true;
@@ -355,7 +323,7 @@ public class MainCommand implements CommandExecutor {
                     if (config.contains("Arenas." + arenaName)) {
 
                         config.set("Arenas." + arenaName, null);
-                        game.saveConfig();
+                        plugin.saveConfig();
 
                         p.sendMessage(resources.getMessages().getString("Messages.Commands.Removed").replace("%arena%", arenaName));
                         XSound.play(p, "ENTITY_ZOMBIE_ATTACK_WOODEN_DOOR, 1, 1");
@@ -376,95 +344,78 @@ public class MainCommand implements CommandExecutor {
 
                     String arenaName = args[1];
 
-                    if (config.contains("Arenas.Spawn." + arenaName)) {
+                    if (!arena.getKits().hasKit(p.getName())) {
 
-                        if (!game.getArena().getKits().hasKit(p.getName())) {
-
-                            Location spawn = Toolkit.getLocationFromConfig(config, "Arenas." + arenaName + "." + arena.generateRandomArenaSpawn(arenaName));
-
-                            p.teleport(spawn);
-                            p.sendMessage(resources.getMessages().getString("Messages.Commands.Teleport"));
-
-                        } else {
-
-                            p.sendMessage(resources.getMessages().getString("Messages.Error.KitInvalid"));
-
-                        }
+                        arena.toSpawn(p, arenaName);
 
                     } else {
 
-                        p.sendMessage(resources.getMessages().getString("Messages.Error.ExistsArena"));
+                        p.sendMessage(resources.getMessages().getString("Messages.Error.KitInvalid"));
 
                     }
 
                 } else if (args[0].equalsIgnoreCase("preview") && hasPermission(sender, "kp.command.preview")) {
 
-                    if (Toolkit.inArena(p)) {
+                    String kitName = args[1];
 
-                        if (arena.getKits().isKit(args[1])) {
+                    if (arena.getKits().isKit(kitName)) {
 
-                            PreviewMenu preview = new PreviewMenu(args[1], resources.getKits(args[1]));
-                            preview.open(p);
-
-                        } else {
-
-                            p.sendMessage(resources.getMessages().getString("Messages.Error.Lost"));
-
-                        }
+                        Kit kitToPreview = arena.getKits().getKitByName(kitName);
+                        arena.getMenus().getPreviewMenu().open(p, kitToPreview);
 
                     } else {
 
-                        p.sendMessage(resources.getMessages().getString("Messages.Error.Location"));
+                        p.sendMessage(resources.getMessages().getString("Messages.Error.Lost"));
 
                     }
 
                 } else if (args[0].equalsIgnoreCase("create") && hasPermission(sender, "kp.command.create")) {
 
-                    if (Toolkit.inArena(p)) {
+                    String kitName = args[1];
 
-                        arena.getKits().createKit(args[1], p);
+                    if (!arena.getKits().isKit(kitName)) {
+
+                        Kit kitToCreate = arena.getKits().createKitFromPlayer(p, kitName);
+                        Resource kitResource = new Resource(plugin, "kits/" + kitToCreate.getName() + ".yml");
+                        kitToCreate.toResource(kitResource);
+
+                        resources.addResource(kitToCreate.getName() + ".yml", kitResource);
+
+                        p.sendMessage(resources.getMessages().getString("Messages.Commands.Create")
+                                .replace("%kit%", kitName));
 
                     } else {
 
-                        p.sendMessage(resources.getMessages().getString("Messages.Error.Location"));
+                        p.sendMessage(resources.getMessages().getString("Messages.Error.Exists"));
 
                     }
 
                 } else if (args[0].equalsIgnoreCase("delete") && hasPermission(sender, "kp.command.delete")) {
 
-                    if (Toolkit.inArena(p)) {
+                    String kitName = args[1];
 
-                        if (arena.getKits().getList().contains(args[1] + ".yml")) {
+                    if (arena.getKits().isKit(kitName)) {
 
-                            resources.removeKit(args[1]);
-                            p.sendMessage(resources.getMessages().getString("Messages.Commands.Delete").replace("%kit%", args[1]));
-
-                        } else {
-
-                            p.sendMessage(resources.getMessages().getString("Messages.Error.Lost"));
-
-                        }
+                        resources.removeResource(kitName + ".yml");
+                        p.sendMessage(resources.getMessages().getString("Messages.Commands.Delete")
+                                .replace("%kit%", kitName));
 
                     } else {
 
-                        p.sendMessage(resources.getMessages().getString("Messages.Error.Location"));
+                        p.sendMessage(resources.getMessages().getString("Messages.Error.Lost"));
 
                     }
+
+                    return true;
 
                 } else if (args[0].equalsIgnoreCase("kit") && hasPermission(sender, "kp.command.kit")) {
 
                     if (Toolkit.inArena(p)) {
 
-                        if (!arena.getKits().hasKit(p.getName())) {
+                        String kitName = args[1];
+                        Kit kitToGive = arena.getKits().getKitByName(kitName);
 
-                            arena.getKits().giveKit(args[1], p);
-
-                        } else {
-
-                            p.sendMessage(resources.getMessages().getString("Messages.Error.Selected"));
-                            p.playSound(p.getLocation(), XSound.ENTITY_ENDER_DRAGON_HURT.parseSound(), 1, 1);
-
-                        }
+                        arena.getKits().attemptToGiveKitToPlayer(p, kitToGive);
 
                     } else {
 
@@ -480,7 +431,7 @@ public class MainCommand implements CommandExecutor {
 
         } else {
 
-            sender.sendMessage(Config.tr(resources.getMessages().getString("Messages.General.Player")));
+            sender.sendMessage(resources.getMessages().getString("Messages.General.Player"));
 
         }
         return false;
@@ -510,13 +461,13 @@ public class MainCommand implements CommandExecutor {
             arena.giveItems(p);
         }
 
-        arena.getKits().clearKit(p.getName());
+        arena.getKits().resetKit(p.getName());
 
     }
 
     private String addPlaceholdersIfPossible(Player p, String text) {
 
-        if (game.hasPlaceholderAPI()) {
+        if (plugin.hasPlaceholderAPI()) {
             text = PlaceholderAPI.setPlaceholders(p, text);
         }
 

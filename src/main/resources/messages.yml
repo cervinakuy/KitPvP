@@ -29,7 +29,7 @@ Messages:
     NoKit: 'None'
   Error:
     Player: '%prefix% &cYou must right-click on a player to activate this ability.'
-    Arena: '%prefix% &cYou are not currently an in arena.'
+    Arena: '%prefix% &cNo arena exists with name %arena%.'
     ExistsArena: '%prefix% &cThe specified arena does not exist.'
     Exists: '%prefix% &cThe specified kit already exists.'
     Lost: '%prefix% &cKit not found! Remember kit names are case-sensitive!'

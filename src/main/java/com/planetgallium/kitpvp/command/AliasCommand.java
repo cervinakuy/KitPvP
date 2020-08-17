@@ -12,23 +12,24 @@ public class AliasCommand implements Listener {
 	public void onCommand(PlayerCommandPreprocessEvent e) {
 		
 		Player p = e.getPlayer();
-		
-		if (e.getMessage().equals("/spawn") && Config.getB("Commands.Alias.Spawn")) {
+		String message = e.getMessage();
+
+		if (message.equals("/spawn") && Config.getB("Commands.Alias.Spawn")) {
 			
 			e.setCancelled(true);
 			p.performCommand("cspawn");
 			
-		} else if (e.getMessage().equals("/kit") && Config.getB("Commands.Alias.Kit")) {
+		} else if (message.equals("/kit") && Config.getB("Commands.Alias.Kit")) {
 			
 			e.setCancelled(true);
 			p.performCommand("ckit");
 			
-		} else if (e.getMessage().equals("/kits") && Config.getB("Commands.Alias.Kits")) {
+		} else if (message.equals("/kits") && Config.getB("Commands.Alias.Kits")) {
 			
 			e.setCancelled(true);
 			p.performCommand("ckits");
 			
-		} else if (e.getMessage().equals("/stats") && Config.getB("Commands.Alias.Stats")) {
+		} else if (message.equals("/stats") && Config.getB("Commands.Alias.Stats")) {
 			
 			e.setCancelled(true);
 			p.performCommand("cstats");

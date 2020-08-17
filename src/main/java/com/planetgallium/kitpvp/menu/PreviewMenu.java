@@ -2,72 +2,74 @@ package com.planetgallium.kitpvp.menu;
 
 import java.util.ArrayList;
 
+import com.planetgallium.kitpvp.api.Kit;
+import com.planetgallium.kitpvp.util.CacheManager;
 import org.bukkit.entity.Player;
 
-import com.planetgallium.kitpvp.item.KitItem;
 import com.planetgallium.kitpvp.util.Menu;
-import com.planetgallium.kitpvp.util.Resource;
 import com.planetgallium.kitpvp.util.XMaterial;
 
 public class PreviewMenu {
 
-	private Menu menu;
-	private String kit;
-	private Resource kitResource;
-	
-	public PreviewMenu(String kit, Resource kitResource) {
-		this.kit = kit;
-		this.kitResource = kitResource;
-	}
-	
-	public void open(Player p) {
-		
-		menu = new Menu("Previewing: " + kit, new PreviewHolder(), 54);
-		
-		// Armor
-		if (kitResource.contains("Inventory.Armor.Helmet")) {
-			menu.addItem(new KitItem(kitResource, kit, "Inventory.Armor.Helmet"), 0);
-		}
-		
-		if (kitResource.contains("Inventory.Armor.Chestplate")) {
-			menu.addItem(new KitItem(kitResource, kit, "Inventory.Armor.Chestplate"), 1);
-		}
-		
-		if (kitResource.contains("Inventory.Armor.Leggings")) {
-			menu.addItem(new KitItem(kitResource, kit, "Inventory.Armor.Leggings"), 2);
-		}
-		
-		if (kitResource.contains("Inventory.Armor.Boots")) {
-			menu.addItem(new KitItem(kitResource, kit, "Inventory.Armor.Boots"), 3);
-		}
-		
-		// Hotbar
+	private Menu create(Kit kit) {
+
+		Menu previewMenu = new Menu("Previewing: " + kit.getName(), new PreviewHolder(), 54);
+
+		//			ARMOR			//
+
+		if (kit.getHelmet() != null)
+			previewMenu.setItem(kit.getHelmet(), 0);
+
+		if (kit.getChestplate() != null)
+			previewMenu.setItem(kit.getChestplate(), 1);
+
+		if (kit.getLeggings() != null)
+			previewMenu.setItem(kit.getLeggings(), 2);
+
+		if (kit.getBoots() != null)
+			previewMenu.setItem(kit.getBoots(), 3);
+
+		//			HOTBAR			//
+
 		for (int i = 0; i < 9; i++) {
-			if (kitResource.contains("Inventory.Items." + i)) {
-				menu.addItem(new KitItem(kitResource, kit, "Inventory.Items." + i), (45 + i));
+			if (kit.getInventory().containsKey(i)) {
+				previewMenu.setItem(kit.getInventory().get(i), (45 + i));
 			}
 		}
-		
-		// Items
+
+		//			ITEMS			//
+
 		for (int i = 9; i < 36; i++) {
-			if (kitResource.contains("Inventory.Items." + i)) {
-				menu.addItem(new KitItem(kitResource, kit, "Inventory.Items." + i), (i + 9));
+			if (kit.getInventory().containsKey(i)) {
+				previewMenu.setItem(kit.getInventory().get(i), (9 + i));
 			}
 		}
-		
-		// Fill
-		if (kitResource.contains("Inventory.Items.Fill")) {
+
+		//			FILL			//
+
+		if (kit.getFill() != null) {
 			for (int i = 18; i < 54; i++) {
-				if (menu.getSlot(i) == null) {
-					menu.addItem(new KitItem(kitResource, kit, "Inventory.Items.Fill"), i);
+				if (previewMenu.getSlot(i) == null) {
+					previewMenu.setItem(kit.getFill(), i);
 				}
 			}
 		}
-		
-		menu.addItem("&cBack to Kits", XMaterial.ARROW.parseMaterial().get(), new ArrayList<String>(), 8);
-		
-		menu.openMenu(p);
-		
+
+		previewMenu.addItem("&cBack to Kits", XMaterial.ARROW.parseMaterial().get(), new ArrayList<String>(), 8);
+
+		CacheManager.getMenuCache().put(kit.getName(), previewMenu);
+
+		return previewMenu;
+
+	}
+
+	public void open(Player p, Kit kit) {
+
+		Menu previewMenu = CacheManager.getMenuCache().containsKey(kit.getName()) ?
+				CacheManager.getMenuCache().get(kit.getName()) : create(kit);
+
+		previewMenu.openMenu(p);
+
 	}
 	
 }

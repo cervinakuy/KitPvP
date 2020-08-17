@@ -35,6 +35,7 @@ public class Arena {
 	private KillStreaks killstreaks;
 	private Levels levels;
 	private Cooldowns cooldowns;
+	private Menus menus;
 	
 	public Arena(Game plugin, Resources resources) {
 		this.plugin = plugin;
@@ -50,11 +51,12 @@ public class Arena {
 		this.killstreaks = new KillStreaks(resources);
 		this.levels = new Levels(this, resources);
 		this.cooldowns = new Cooldowns(this, resources);
+		this.menus = new Menus(resources);
 	}
 	
 	public void addPlayer(Player p, boolean toSpawn, boolean giveItems) {
 		
-		getKits().clearKit(p.getName());
+		getKits().resetKit(p.getName());
 
 		getKillStreaks().setStreak(p, 0);
 		
@@ -82,7 +84,7 @@ public class Arena {
 		}
 
 		if (toSpawn) {
-			toSpawn(p);
+			toSpawn(p, p.getWorld().getName());
 		}
 
 		if (resources.getScoreboard().getBoolean("Scoreboard.General.Enabled")) {
@@ -97,7 +99,7 @@ public class Arena {
 			p.removePotionEffect(effect.getType());
 		}
 		
-		getKits().clearKit(p.getName());
+		getKits().resetKit(p.getName());
 
 		if (Config.getB("Arena.ResetKillStreakOnLeave")) {
 			getKillStreaks().resetStreak(p);
@@ -156,21 +158,19 @@ public class Arena {
 		}
 		
 	}
-	
-	public void toSpawn(Player p) {
 
-		String arenaName = p.getWorld().getName();
+	public void toSpawn(Player p, String arenaName) {
 
 		if (config.contains("Arenas." + arenaName)) {
 
 			p.teleport(Toolkit.getLocationFromConfig(config, "Arenas." + arenaName + "." + generateRandomArenaSpawn(arenaName)));
-			
+
 		} else {
-			
-			p.sendMessage(Config.tr(resources.getMessages().getString("Messages.Error.Arena")));
-			
+
+			p.sendMessage(Config.tr(resources.getMessages().getString("Messages.Error.Arena").replace("%arena%", arenaName)));
+
 		}
-		
+
 	}
 	
 	public void updateScoreboards(Player p, boolean hide) {
@@ -205,7 +205,7 @@ public class Arena {
 					.replace("%max_xp%", String.valueOf(resources.getLevels().getInt("Levels.General.Experience.Levelup")))
 					.replace("%max_level%", String.valueOf(resources.getLevels().getInt("Levels.General.Level.Maximum")))
 					.replace("%kd%", String.valueOf(this.getStats().getKDRatio(p.getUniqueId())))
-					.replace("%kit%", this.getKits().getKit(p.getName()))
+//					.replace("%kit%", this.getKits().getKitOfPlayer(p.getName()).getName())
 					.replace("%deaths%", String.valueOf(this.getStats().getDeaths(p.getUniqueId())))
 					.replace("%kills%", String.valueOf(this.getStats().getKills(p.getUniqueId())));
 
@@ -237,5 +237,7 @@ public class Arena {
 	public Levels getLevels() { return levels; }
 	
 	public Cooldowns getCooldowns() { return cooldowns; }
+
+	public Menus getMenus() { return menus; }
 	
 }

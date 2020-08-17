@@ -1,6 +1,5 @@
 package com.planetgallium.kitpvp.api;
 
-import com.planetgallium.kitpvp.util.Config;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -10,19 +9,15 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
 import com.planetgallium.kitpvp.game.Arena;
-import com.planetgallium.kitpvp.kit.Ability;
-import com.planetgallium.kitpvp.util.Resources;
 import com.planetgallium.kitpvp.util.Toolkit;
-import com.planetgallium.kitpvp.util.XMaterial;
+import org.bukkit.inventory.meta.ItemMeta;
 
 public class EventListener implements Listener {
 
 	private Arena arena;
-	private Resources resources;
 	
-	public EventListener(Arena arena, Resources resources) {
+	public EventListener(Arena arena) {
 		this.arena = arena;
-		this.resources = resources;
 	}
 	
 	@EventHandler
@@ -37,26 +32,15 @@ public class EventListener implements Listener {
 				if (arena.getKits().hasKit(p.getName())) {
 
 					ItemStack currentItem = Toolkit.getMainHandItem(p);
-					
+					Kit kit = arena.getKits().getKitOfPlayer(p.getName());
+
 					if (currentItem.hasItemMeta() && currentItem.getItemMeta().hasDisplayName()) {
 
-						if (resources.getKits(arena.getKits().getKit(p.getName())).contains("Ability.Activator.Item")) {
+						Ability ability = Toolkit.findAbility(kit, currentItem);
 
-							if (currentItem.getType() == XMaterial.matchXMaterial(resources.getKits(arena.getKits().getKit(p.getName())).getString("Ability.Activator.Item")).get().parseMaterial().get()) {
+						if (ability != null)
+							Bukkit.getPluginManager().callEvent(new PlayerAbilityEvent(p, ability));
 
-								String kit = arena.getKits().getKit(p.getName());
-								
-								if (currentItem.getItemMeta().getDisplayName().equals(resources.getKits(kit).getString("Ability.Activator.Name"))) {
-
-									Ability ability = new Ability(resources.getKits(kit), currentItem.getType());
-									Bukkit.getPluginManager().callEvent(new PlayerAbilityEvent(p, ability));
-									
-								}
-								
-							}
-							
-						}
-						
 					}	
 					
 				}
@@ -66,5 +50,7 @@ public class EventListener implements Listener {
 		}
 		
 	}
+
+
 	
 }

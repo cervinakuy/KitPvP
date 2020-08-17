@@ -1,0 +1,201 @@
+package com.planetgallium.kitpvp.api;
+
+import com.planetgallium.kitpvp.newkit.AttributeWriter;
+import com.planetgallium.kitpvp.util.Cooldown;
+import com.planetgallium.kitpvp.util.Resource;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class Kit {
+
+    private String name;
+    private String permission;
+    private Cooldown cooldown;
+    private int level;
+
+    private Map<Integer, ItemStack> inventory;
+    private List<PotionEffect> effects;
+    private List<Ability> abilities;
+
+    private ItemStack helmet;
+    private ItemStack chestplate;
+    private ItemStack leggings;
+    private ItemStack boots;
+    private ItemStack offhand;
+    private ItemStack fill;
+
+    public Kit(String name) {
+
+        this.name = name;
+
+        this.inventory = new HashMap<>();
+        this.effects = new ArrayList<>();
+        this.abilities = new ArrayList<>();
+
+    }
+
+    public void setPermission(String permission) {
+
+        this.permission = permission;
+
+    }
+
+    public void setCooldown(Cooldown cooldown) {
+
+        this.cooldown = cooldown;
+
+    }
+
+    public void setLevel(int level) {
+
+        this.level = level;
+
+    }
+
+    public void setInventoryItem(int slot, ItemStack item) {
+
+        inventory.put(slot, item);
+
+    }
+
+    public void addEffect(PotionEffectType type, int amplifier, int durationSeconds) {
+
+        PotionEffect effect = new PotionEffect(type, durationSeconds * 20, amplifier - 1);
+        effects.add(effect);
+
+    }
+
+    public void addAbility(Ability ability) {
+
+        abilities.add(ability);
+
+    }
+
+    public void setHelmet(ItemStack helmet) {
+
+        this.helmet = helmet;
+
+    }
+
+    public void setChestplate(ItemStack chestplate) {
+
+        this.chestplate = chestplate;
+
+    }
+
+    public void setLeggings(ItemStack leggings) {
+
+        this.leggings = leggings;
+
+    }
+
+    public void setBoots(ItemStack boots) {
+
+        this.boots = boots;
+
+    }
+
+    public void setOffhand(ItemStack offhand) {
+
+        this.offhand = offhand;
+
+    }
+
+    public void setFill(ItemStack fill) {
+
+        this.fill = fill;
+
+    }
+
+    public void apply(Player player) {
+
+        if (helmet != null) player.getInventory().setHelmet(helmet);
+        if (chestplate != null) player.getInventory().setChestplate(chestplate);
+        if (leggings != null) player.getInventory().setLeggings(leggings);
+        if (boots != null) player.getInventory().setBoots(boots);
+
+        for (int i = 0; i < 36; i++) {
+            if (inventory.get(i) != null) {
+                player.getInventory().setItem(i, inventory.get(i));
+            } else {
+                if (fill != null) {
+                    player.getInventory().setItem(i, fill);
+                }
+            }
+        }
+
+        if (offhand != null) {
+            player.getInventory().setItemInOffHand(offhand);
+        }
+
+        effects.stream().forEach(effect -> player.addPotionEffect(effect));
+
+    }
+
+    public void toResource(Resource resource) {
+
+        resource.set("Kit.Permission", permission != null ? permission : "kp.kit." + name);
+        resource.save();
+
+        if (cooldown != null)
+            cooldown.toResource(resource, "Kit");
+        else
+            resource.set("Kit.Cooldown", 0);
+
+        resource.set("Kit.Level", level);
+        resource.save();
+
+        AttributeWriter.itemStackToResource(resource, "Inventory.Armor.Helmet", helmet);
+        AttributeWriter.itemStackToResource(resource, "Inventory.Armor.Chestplate", chestplate);
+        AttributeWriter.itemStackToResource(resource, "Inventory.Armor.Leggings", leggings);
+        AttributeWriter.itemStackToResource(resource, "Inventory.Armor.Boots", boots);
+
+        for (Integer slot : inventory.keySet()) {
+            AttributeWriter.itemStackToResource(resource, "Inventory.Items." + slot, inventory.get(slot));
+        }
+
+        AttributeWriter.itemStackToResource(resource, "Inventory.Items.Offhand", offhand);
+        AttributeWriter.itemStackToResource(resource, "Inventory.Items.Fill", fill);
+
+        for (PotionEffect effect : effects) {
+            AttributeWriter.potionEffectToResource(resource, "Effects", effect);
+        }
+
+        abilities.stream().forEach(ability -> ability.toResource(resource, "Abilities"));
+
+        resource.save();
+
+    }
+
+    public String getName() { return name; }
+
+    public String getPermission() { return permission; }
+
+    public Cooldown getCooldown() { return cooldown; }
+
+    public int getLevel() { return level; }
+
+    public Map<Integer, ItemStack> getInventory() { return inventory; }
+
+    public List<PotionEffect> getEffects() { return effects; }
+
+    public List<Ability> getAbilities() { return abilities; }
+
+    public ItemStack getHelmet() { return helmet; }
+
+    public ItemStack getChestplate() { return chestplate; }
+
+    public ItemStack getLeggings() { return leggings; }
+
+    public ItemStack getBoots() { return boots; }
+
+    public ItemStack getFill() { return fill; }
+
+}

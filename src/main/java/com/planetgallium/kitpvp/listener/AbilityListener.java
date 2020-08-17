@@ -1,17 +1,15 @@
 package com.planetgallium.kitpvp.listener;
 
+import com.planetgallium.kitpvp.api.Ability;
+import com.planetgallium.kitpvp.api.Kit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionEffect;
 import com.planetgallium.kitpvp.api.PlayerAbilityEvent;
 import com.planetgallium.kitpvp.game.Arena;
-import com.planetgallium.kitpvp.kit.Ability;
-import com.planetgallium.kitpvp.util.Config;
 import com.planetgallium.kitpvp.util.Resources;
 import com.planetgallium.kitpvp.util.Toolkit;
-import com.planetgallium.kitpvp.util.XSound;
 
 public class AbilityListener implements Listener {
 	
@@ -27,28 +25,22 @@ public class AbilityListener implements Listener {
 	public void onAbility(PlayerAbilityEvent e) {
 		
 		Player p = e.getPlayer();
-		String kit = arena.getKits().getKit(p.getName());
+		Kit kit = arena.getKits().getKitOfPlayer(p.getName());
 		Ability ability = e.getAbility();
-		
-		if (p.hasPermission("kp.ability." + kit.toLowerCase())) {
-			
-			if (resources.getKits(kit).getBoolean("Ability.Message.Enabled")) {
-				p.sendMessage(Config.tr(ability.getMessage()));
-			}
-			
-			if (resources.getKits(kit).getBoolean("Ability.Sound.Enabled")) {
-				p.playSound(p.getLocation(), XSound.matchXSound(ability.getSoundName()).get().parseSound(), 3, ability.getSoundPitch());
-			}
-			
-			if (resources.getKits(kit).contains("Ability.Effects")) {
-				for (PotionEffect potions : ability.getEffects()) {
-					p.addPotionEffect(potions);
-				}
-			}
-			
-			if (resources.getKits(kit).getBoolean("Ability.Commands.Enabled")) {
-				Toolkit.runCommands(resources.getKits(arena.getKits().getKit(p.getName())), "Ability", p, "none", "none");
-			}
+
+		if (p.hasPermission("kp.ability." + kit.getName().toLowerCase())) {
+
+			if (ability.getMessage() != null)
+				p.sendMessage(Toolkit.translate(ability.getMessage()));
+
+			if (ability.getSound() != null)
+				p.playSound(p.getLocation(), ability.getSound(), ability.getSoundVolume(), ability.getSoundPitch());
+
+			if (ability.getEffects().size() > 0)
+				ability.getEffects().stream().forEach(effect -> p.addPotionEffect(effect));
+
+			if (ability.getCommands().size() > 0)
+				Toolkit.runCommands(p, ability.getCommands(), "none", "none");
 			
 			if (Toolkit.getMainHandItem(p).getAmount() == 1) {
 				ItemStack emptyItem = Toolkit.getMainHandItem(p);
@@ -60,7 +52,7 @@ public class AbilityListener implements Listener {
 			
 		} else {
 			
-			p.sendMessage(Config.tr(resources.getMessages().getString("Messages.General.Permission")));
+			p.sendMessage(resources.getMessages().getString("Messages.General.Permission"));
 			
 		}
 		

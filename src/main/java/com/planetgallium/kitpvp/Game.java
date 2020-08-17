@@ -45,7 +45,7 @@ public class Game extends JavaPlugin implements Listener {
 		
 		PluginManager pm = Bukkit.getPluginManager();
 		pm.registerEvents(this, this);
-		pm.registerEvents(new EventListener(arena, resources), this);
+		pm.registerEvents(new EventListener(arena), this);
 		pm.registerEvents(new ArenaListener(this, arena, resources), this);
 		pm.registerEvents(new JoinListener(this, arena), this);
 		pm.registerEvents(new LeaveListener(this, arena), this);
@@ -57,11 +57,11 @@ public class Game extends JavaPlugin implements Listener {
 		pm.registerEvents(new SoupListener(this), this);
 		pm.registerEvents(new TrailListener(resources), this);
 		pm.registerEvents(new ChatListener(resources), this);
-		pm.registerEvents(new KitMenu(resources), this);
-		pm.registerEvents(new SignListener(resources), this);
+		pm.registerEvents(new SignListener(arena, resources), this);
 		pm.registerEvents(new AliasCommand(), this);
 		pm.registerEvents(new AbilityListener(arena, resources), this);
 		pm.registerEvents(new TrackerListener(this), this);
+		pm.registerEvents(new MenuListener(arena, resources), this);
 		pm.registerEvents(getArena().getKillStreaks(), this);
 		
 		getConfig().options().copyDefaults(true);

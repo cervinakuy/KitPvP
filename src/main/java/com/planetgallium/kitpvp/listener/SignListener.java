@@ -1,5 +1,6 @@
 package com.planetgallium.kitpvp.listener;
 
+import com.planetgallium.kitpvp.game.Arena;
 import org.bukkit.Location;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
@@ -18,9 +19,11 @@ import com.planetgallium.kitpvp.util.XMaterial;
 
 public class SignListener implements Listener {
 
+	private Arena arena;
 	private Resources resources;
 	
-	public SignListener(Resources resources) {
+	public SignListener(Arena arena, Resources resources) {
+		this.arena = arena;
 		this.resources = resources;
 	}
 	
@@ -91,9 +94,8 @@ public class SignListener implements Listener {
 					sign.getLine(0).equals(resources.getSigns().getString("Signs.Refill.Line-1"))) {
 
 					if (signsMatch(sign.getLines(), "Signs.Menu", null)) {
-						
-						KitMenu menu = new KitMenu(resources);
-						menu.create(p);
+
+						arena.getMenus().getKitMenu().open(p);
 						
 					} else if (signsMatch(sign.getLines(), "Signs.Clear", null)) {
 						
