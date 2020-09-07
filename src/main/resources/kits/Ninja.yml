@@ -6,34 +6,34 @@ Inventory:
   Armor:
     Helmet:
       Name: '&7Ninja Helmet'
-      Item: LEATHER_HELMET
+      Material: LEATHER_HELMET
       Dye:
         Red: 0
         Green: 0
         Blue: 0
     Chestplate:
       Name: '&7Ninja Chestplate'
-      Item: CHAINMAIL_CHESTPLATE
+      Material: CHAINMAIL_CHESTPLATE
     Leggings:
       Name: '&7Ninja Leggings'
-      Item: CHAINMAIL_LEGGINGS
+      Material: CHAINMAIL_LEGGINGS
     Boots:
       Name: '&7Ninja Boots'
-      Item: CHAINMAIL_BOOTS
+      Material: CHAINMAIL_BOOTS
   Items:
     0:
       Name: '&aNinja''s Sword'
-      Item: IRON_SWORD
+      Material: IRON_SWORD
     1:
       Name: '&aVanish Stars &7(Right Click)'
-      Item: NETHER_STAR
+      Material: NETHER_STAR
       Amount: 3
     8:
       Name: '&aPlayer Tracker &7(Right Click)'
-      Item: COMPASS
+      Material: COMPASS
     Fill:
       Name: '&aRegenerative Soup &7(Right Click)'
-      Item: MUSHROOM_SOUP
+      Material: MUSHROOM_SOUP
 Effects:
   SPEED:
     Amplifier: 1

@@ -6,28 +6,28 @@ Inventory:
   Armor:  
     Helmet:
       Name: '&7Soldier Helmet'
-      Item: LEATHER_HELMET
+      Material: LEATHER_HELMET
       Dye:
         Red: 77
         Green: 175
         Blue: 123
     Chestplate:
       Name: '&7Soldier Chestplate'
-      Item: CHAINMAIL_CHESTPLATE
+      Material: CHAINMAIL_CHESTPLATE
       Dye:
         Red: 77
         Green: 175
         Blue: 123
     Leggings:
       Name: '&7Soldier Leggings'
-      Item: LEATHER_LEGGINGS
+      Material: LEATHER_LEGGINGS
       Dye:
         Red: 77
         Green: 175
         Blue: 123
     Boots:
       Name: '&7Soldier Boots'
-      Item: LEATHER_BOOTS
+      Material: LEATHER_BOOTS
       Dye:
         Red: 77
         Green: 175
@@ -35,24 +35,24 @@ Inventory:
   Items:
     0:
       Name: '&aSoldier''s Sword'
-      Item: STONE_SWORD
+      Material: STONE_SWORD
     1:
       Name: '&aSoldier''s Bow'
-      Item: BOW
+      Material: BOW
     2:
       Name: '&aSoldier''s Fishing Rod'
-      Item: FISHING_ROD
+      Material: FISHING_ROD
     3:
       Name: '&aGun &7(Right Click)'
-      Item: IRON_HOE
+      Material: IRON_HOE
       Amount: 5
     7:
       Name: '&aSoldier''s Arrows &7(+1 arrow each successful shot)'
-      Item: ARROW
+      Material: ARROW
       Amount: 32
     8:
       Name: '&aPlayer Tracker &7(Right Click)'
-      Item: COMPASS
+      Material: COMPASS
     Fill:
       Name: '&aRegenerative Soup &7(Right Click)'
-      Item: MUSHROOM_SOUP
+      Material: MUSHROOM_SOUP

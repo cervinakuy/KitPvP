@@ -6,31 +6,31 @@ Inventory:
   Armor:
     Helmet:
       Name: '&7Thunderbolt Helmet'
-      Item: LEATHER_HELMET
+      Material: LEATHER_HELMET
       Dye:
         Red: 224
         Green: 249
         Blue: 0
     Chestplate:
       Name: '&7Thunderbolt Chestplate'
-      Item: GOLD_CHESTPLATE
+      Material: GOLD_CHESTPLATE
     Leggings:
       Name: '&7Thunderbolt Leggings'
-      Item: GOLD_LEGGINGS
+      Material: GOLD_LEGGINGS
     Boots:
       Name: '&7Thunderbolt Boots'
-      Item: GOLD_BOOTS
+      Material: GOLD_BOOTS
   Items:
     0:
       Name: '&aThunderbolt''s Sword'
-      Item: GOLD_SWORD
+      Material: GOLD_SWORD
     1:
       Name: '&aLightning Strike &7(Click Player)'
-      Item: BLAZE_ROD
+      Material: BLAZE_ROD
       Amount: 3
     8:
       Name: '&aPlayer Tracker &7(Right Click)'
-      Item: COMPASS
+      Material: COMPASS
     Fill:
       Name: '&aRegenerative Soup &7(Right Click)'
-      Item: MUSHROOM_SOUP
+      Material: MUSHROOM_SOUP

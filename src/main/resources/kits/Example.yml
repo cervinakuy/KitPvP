@@ -11,7 +11,7 @@ Inventory:
       - '&7which can automatically'
       - '&7be detected and saved'
       - '&7when using /kp create'
-      Item: SKULL_ITEM
+      Material: SKULL_ITEM
       Skull: cervinakuy
     Chestplate:
       Name: '&aDyed Item'
@@ -19,7 +19,7 @@ Inventory:
       - '&7This is a dyed item which'
       - '&7can include over 16 million'
       - '&7different color combinations'
-      Item: LEATHER_CHESTPLATE
+      Material: LEATHER_CHESTPLATE
       Dye:
         Red: 127
         Green: 63
@@ -32,7 +32,7 @@ Inventory:
       - '&7an unlimited amount of'
       - '&7enchantments and can bypass'
       - '&7vanilla enchantment limits.'
-      Item: IRON_LEGGINGS
+      Material: IRON_LEGGINGS
       Enchantments:
         DEPTH_STRIDER:
           Level: 10
@@ -40,26 +40,26 @@ Inventory:
       Name: '&aItem'
       Lore:
       - '&7This is just a regular item.'
-      Item: GOLD_BOOTS
+      Material: GOLD_BOOTS
   Items:
     0:
       Name: '&aCustomized Item'
       Lore:
       - '&3This is an item with a custom'
       - '&cname and lore.'
-      Item: PAPER
+      Material: PAPER
     1:
       Name: '&aDamaged Item'
       Lore:
       - '&7This is a damaged item'
       Durability: 10
-      Item: GOLD_PICKAXE
+      Material: GOLD_PICKAXE
     2:
       Name: '&aPotion Item'
       Lore:
       - '&7This is a regular potion item'
       - '&7Splash potions are also supported'
-      Item: POTION
+      Material: POTION
       Type: POTION
       Effects:
         JUMP:
@@ -74,7 +74,7 @@ Inventory:
       - '&7and commands when right-clicked.'
       - '&7It must be customized in'
       - '&7the kit file.'
-      Item: EMERALD
+      Material: EMERALD
     Fill:
       Name: '&aFill Item'
       Lore:
@@ -82,24 +82,23 @@ Inventory:
       - '&7can fill up any blank slots'
       - '&7in a kit. You must customize'
       - '&7this in the kit file.'
-      Item: COOKIE
-Ability:
-  Activator:
-    Name: '&aAbility Item'
-    Item: EMERALD
-  Message:
-    Message: '%prefix% &7This is an example ability message.'
-    Enabled: true
-  Sound:
-    Sound: NOTE_PLING
-    Pitch: 1
-    Enabled: true
-  Effects:
-    SPEED:
-      Amplifier: 5
-      Duration: 10
-  Commands:
+      Material: COOKIE
+Abilities:
+  SampleAbility:
+    Activator:
+      Name: '&aAbility Item'
+      Material: EMERALD
+    Message:
+      Message: '%prefix% &7This is an example ability message.'
+    Sound:
+      Sound: NOTE_PLING
+      Pitch: 1
+      Volume: 1
+    Effects:
+      SPEED:
+        Amplifier: 5
+        Duration: 10
     Commands:
-    - 'console: say Hi %player%, this is an example console command that can be run when you use your ability.'
-    - 'player: me This is an example player command that can be run when you use your ability.'
-    Enabled: true
+      Commands:
+        - 'console: say Hi %player%, this is an example console command that can be run when you use your ability.'
+        - 'player: me This is an example player command that can be run when you use your ability.'

@@ -6,34 +6,34 @@ Inventory:
   Armor:
     Helmet:
       Name: '&7Archer Helmet'
-      Item: CHAINMAIL_HELMET
+      Material: CHAINMAIL_HELMET
     Chestplate:
       Name: '&7Archer Chestplate'
-      Item: CHAINMAIL_CHESTPLATE
+      Material: CHAINMAIL_CHESTPLATE
     Leggings:
       Name: '&7Archer Leggings'
-      Item: CHAINMAIL_LEGGINGS
+      Material: CHAINMAIL_LEGGINGS
     Boots:
       Name: '&7Archer Boots'
-      Item: CHAINMAIL_BOOTS
+      Material: CHAINMAIL_BOOTS
   Items:
     0:
       Name: '&aArcher''s Sword'
-      Item: STONE_SWORD
+      Material: STONE_SWORD
     1:
       Name: '&aArcher''s Bow'
-      Item: BOW
+      Material: BOW
     2:
       Name: '&aFire Arrows &cOFF &7(Right Click)'
-      Item: SLIME_BALL
+      Material: SLIME_BALL
       Amount: 10
     7:
       Name: '&aArcher''s Arrows &7(+1 arrow each successful shot)'
-      Item: ARROW
+      Material: ARROW
       Amount: 64
     8:
       Name: '&aPlayer Tracker &7(Right Click)'
-      Item: COMPASS
+      Material: COMPASS
     Fill:
       Name: '&aRegenerative Soup &7(Right Click)'
-      Item: MUSHROOM_SOUP
+      Material: MUSHROOM_SOUP

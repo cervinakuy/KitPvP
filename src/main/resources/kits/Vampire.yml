@@ -6,28 +6,28 @@ Inventory:
   Armor:
     Helmet:
       Name: '&7Vampire Helmet'
-      Item: LEATHER_HELMET
+      Material: LEATHER_HELMET
       Dye:
         Red: 252
         Green: 45
         Blue: 59
     Chestplate:
       Name: '&7Vampire Chestplate'
-      Item: LEATHER_CHESTPLATE
+      Material: LEATHER_CHESTPLATE
       Dye:
         Red: 0
         Green: 0
         Blue: 0
     Leggings:
       Name: '&7Vampire Leggings'
-      Item: LEATHER_LEGGINGS
+      Material: LEATHER_LEGGINGS
       Dye:
         Red: 0
         Green: 0
         Blue: 0
     Boots:
       Name: '&7Vampire Boots'
-      Item: LEATHER_BOOTS
+      Material: LEATHER_BOOTS
       Dye:
         Red: 252
         Green: 45
@@ -35,14 +35,14 @@ Inventory:
   Items:
     0:
       Name: '&aVampire''s Sword'
-      Item: IRON_SWORD
+      Material: IRON_SWORD
     1:
       Name: '&aBlood Suckers &7(Click Player)'
-      Item: GHAST_TEAR
+      Material: GHAST_TEAR
       Amount: 5
     8:
       Name: '&aPlayer Tracker &7(Right Click)'
-      Item: COMPASS
+      Material: COMPASS
     Fill:
       Name: '&aRegenerative Soup &7(Right Click)'
-      Item: MUSHROOM_SOUP
+      Material: MUSHROOM_SOUP
