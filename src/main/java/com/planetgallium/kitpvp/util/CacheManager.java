@@ -7,17 +7,8 @@ import java.util.Map;
 
 public class CacheManager {
 
-    private static Map<String, Kit> kitCache;
-    private static Map<String, Menu> menuCache;
-
-    public CacheManager() {
-
-        this.kitCache = new HashMap<>();
-        this.menuCache = new HashMap<>();
-
-    }
-
-    // make method to print out cache contents to see if a getter actually modifies the map
+    private static Map<String, Kit> kitCache = new HashMap<>();;
+    private static Map<String, Menu> menuCache = new HashMap<>();
 
     public static Map<String, Kit> getKitCache() { return kitCache; }
 
