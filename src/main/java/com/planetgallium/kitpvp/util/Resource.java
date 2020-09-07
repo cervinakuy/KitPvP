@@ -19,18 +19,22 @@ public class Resource extends YamlConfiguration {
 
 	public Resource(Plugin plugin, String path) {
 
-		this.file = new File(plugin.getDataFolder().getAbsolutePath() + "/" + Paths.get(path));
-		this.name = Paths.get(path).getFileName().
+		this.file = new File(plugin.getDataFolder() + "/" + Paths.get(path));
+		this.name = Paths.get(path).getFileName().toString();
 
 		if (!file.getParentFile().exists()) {
 			file.getParentFile().mkdirs();
 		}
 
 		if (!file.exists()) {
-			try {
-				file.createNewFile();
-			} catch (IOException e) {
-				e.printStackTrace();
+			if (plugin.getResource(path) == null) {
+				try {
+					file.createNewFile();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			} else {
+				plugin.saveResource(path, true);
 			}
 		}
 
