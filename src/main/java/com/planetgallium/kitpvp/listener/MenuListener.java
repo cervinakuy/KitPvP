@@ -44,15 +44,15 @@ public class MenuListener implements Listener {
                         e.setCancelled(true);
                         p.closeInventory();
 
-                        if (menuConfig.getBoolean(itemPath + ".Commands.Enabled")) {
+                        String clickType = e.getClick() == ClickType.LEFT ? "Left-Click" : "Right-Click";
 
-                            String clickType = e.getClick() == ClickType.LEFT ? "Left-Click" : "Right-Click";
+                        if (menuConfig.getBoolean(itemPath + ".Commands.Enabled")) {
 
                             new BukkitRunnable() {
 
                                 @Override
                                 public void run() {
-                                    Toolkit.runCommands(menuConfig, itemPath + ".Commands." + clickType, p, "none", "none");
+                                    Toolkit.runCommands(p, menuConfig.getStringList(itemPath + ".Commands." + clickType), "none", "none");
                                 }
 
                             }.runTaskLater(Game.getInstance(), 1L);

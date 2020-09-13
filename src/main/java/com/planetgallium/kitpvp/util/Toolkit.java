@@ -299,16 +299,52 @@ public class Toolkit {
  	public static List<String> colorizeList(List<String> list) {
  		
  		List<String> newList = new ArrayList<String>();
- 		
- 		for (String string : list) {
- 			
- 			newList.add(ChatColor.translateAlternateColorCodes('&', string));
- 			
- 		}
- 		
- 		return newList;
+
+ 		if (list != null) {
+
+			for (String string : list) {
+
+				newList.add(ChatColor.translateAlternateColorCodes('&', string));
+
+			}
+
+			return newList;
+
+		}
+
+ 		return null;
  		
  	}
+
+ 	public static String toNormalColorCodes(String string) {
+
+		if (string != null) {
+			return string.replace("§", "&");
+		}
+
+		return null;
+
+	}
+
+	public static List<String> toNormalColorCodes(List<String> list) {
+
+		List<String> newList = new ArrayList<>();
+
+		if (list != null) {
+
+			for (String line : list) {
+
+				newList.add(toNormalColorCodes(line));
+
+			}
+
+			return newList;
+
+		}
+
+		return null;
+
+	}
 
  	public static Player getPlayer(World world, String name) {
 
@@ -381,28 +417,4 @@ public class Toolkit {
 
 	}
 
-	public static Ability findAbility(Kit kit, ItemStack item) {
-
-		for (Ability ability : kit.getAbilities()) {
-
-			if (item.getType() == ability.getActivator().getType()) {
-
-				ItemMeta meta = item.getItemMeta();
-
-				// might have to replace something here in the meta.getDisplayname for it to return true
-
-				if (meta.getDisplayName().equals(ability.getActivator().getItemMeta().getDisplayName())) {
-
-					return ability;
-
-				}
-
-			}
-
-		}
-
-		return null;
-
-	}
-	
 }

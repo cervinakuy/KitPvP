@@ -7,6 +7,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.planetgallium.kitpvp.Game;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -64,14 +65,9 @@ public class Resource extends YamlConfiguration {
     public String getString(String path) {
         String string = super.getString(path);
 
-        if (file.getName().equalsIgnoreCase("messages.yml") || file.getName().equalsIgnoreCase("messages")) {
-            if (string != null) {
-				string = string.replace("%prefix%", super.getString("Messages.General.Prefix"));
-			}
-        }
-
 		if (string != null) {
-			string = ChatColor.translateAlternateColorCodes('&', string);
+			string = ChatColor.translateAlternateColorCodes('&',
+					string.replace("%prefix%", Game.getPrefix() == null ? "" : Game.getPrefix()));
 		}
 
         return string;

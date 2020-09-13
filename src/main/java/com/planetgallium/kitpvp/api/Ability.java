@@ -1,8 +1,13 @@
 package com.planetgallium.kitpvp.api;
 
 import com.planetgallium.kitpvp.util.Resource;
+import com.planetgallium.kitpvp.util.Toolkit;
+import com.planetgallium.kitpvp.util.XMaterial;
+import com.planetgallium.kitpvp.util.XSound;
 import org.bukkit.Sound;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -66,7 +71,7 @@ public class Ability {
 
         String pathPrefix = path + "." + name;
 
-        resource.set(pathPrefix + ".Activator.Name", activator.getItemMeta().getDisplayName().replace("§", "&"));
+        resource.set(pathPrefix + ".Activator.Name", Toolkit.toNormalColorCodes(activator.getItemMeta().getDisplayName()));
         resource.set(pathPrefix + ".Activator.Material", activator.getType().toString());
         resource.set(pathPrefix + ".Message.Message", message);
         resource.set(pathPrefix + ".Sound.Sound", sound.toString());
@@ -74,15 +79,15 @@ public class Ability {
         resource.set(pathPrefix + ".Sound.Volume", soundVolume != 0 ? soundVolume : null);
 
         for (PotionEffect effect : effects) {
-            String type = effect.getType().getName(); // might just be effect.getType()? idk test this
-            int amplifier = effect.getAmplifier();
-            int duration = effect.getDuration();
+            String type = effect.getType().getName();
+            int amplifierNonZeroBased = effect.getAmplifier() + 1;
+            int durationSeconds = effect.getDuration() / 20;
 
-            resource.set(pathPrefix + ".Effects." + type + ".Amplifier", amplifier);
-            resource.set(pathPrefix + ".Effects." + type + ".Duration", duration);
+            resource.set(pathPrefix + ".Effects." + type + ".Amplifier", amplifierNonZeroBased);
+            resource.set(pathPrefix + ".Effects." + type + ".Duration", durationSeconds);
         }
 
-        resource.set(pathPrefix + ".Commands.Commands", commands.toArray()); // see if this actually changes it into a stringlist
+        resource.set(pathPrefix + ".Commands.Commands", commands.toArray());
 
         resource.save();
 

@@ -136,7 +136,7 @@ public class MainCommand implements CommandExecutor {
 
                 String message = "";
 
-                for (String kitName : arena.getKits().getList()) {
+                for (String kitName : arena.getKits().getKitList()) {
                     String[] fileName = kitName.split(".yml", 2);
                     message += fileName[0] + ", ";
                 }
@@ -167,6 +167,24 @@ public class MainCommand implements CommandExecutor {
                 } else {
 
                     sender.sendMessage(resources.getMessages().getString("Messages.Error.Offline"));
+
+                }
+
+                return true;
+
+            } else if (args[0].equalsIgnoreCase("delete") && hasPermission(sender, "kp.command.delete")) {
+
+                String kitName = args[1];
+
+                if (arena.getKits().isKit(kitName)) {
+
+                    resources.removeResource(kitName + ".yml");
+                    sender.sendMessage(resources.getMessages().getString("Messages.Commands.Delete")
+                            .replace("%kit%", kitName));
+
+                } else {
+
+                    sender.sendMessage(resources.getMessages().getString("Messages.Error.Lost"));
 
                 }
 
@@ -389,24 +407,6 @@ public class MainCommand implements CommandExecutor {
                         p.sendMessage(resources.getMessages().getString("Messages.Error.Exists"));
 
                     }
-
-                } else if (args[0].equalsIgnoreCase("delete") && hasPermission(sender, "kp.command.delete")) {
-
-                    String kitName = args[1];
-
-                    if (arena.getKits().isKit(kitName)) {
-
-                        resources.removeResource(kitName + ".yml");
-                        p.sendMessage(resources.getMessages().getString("Messages.Commands.Delete")
-                                .replace("%kit%", kitName));
-
-                    } else {
-
-                        p.sendMessage(resources.getMessages().getString("Messages.Error.Lost"));
-
-                    }
-
-                    return true;
 
                 } else if (args[0].equalsIgnoreCase("kit") && hasPermission(sender, "kp.command.kit")) {
 

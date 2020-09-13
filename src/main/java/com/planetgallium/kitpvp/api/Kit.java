@@ -5,6 +5,7 @@ import com.planetgallium.kitpvp.util.Cooldown;
 import com.planetgallium.kitpvp.util.Resource;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -65,9 +66,9 @@ public class Kit {
 
     }
 
-    public void addEffect(PotionEffectType type, int amplifier, int durationSeconds) {
+    public void addEffect(PotionEffectType type, int amplifierNonZeroBased, int durationSeconds) {
 
-        PotionEffect effect = new PotionEffect(type, durationSeconds * 20, amplifier - 1);
+        PotionEffect effect = new PotionEffect(type, durationSeconds * 20, amplifierNonZeroBased - 1);
         effects.add(effect);
 
     }
@@ -111,6 +112,28 @@ public class Kit {
     public void setFill(ItemStack fill) {
 
         this.fill = fill;
+
+    }
+
+    public Ability getAbilityFromActivator(ItemStack activator) {
+
+        for (Ability ability : abilities) {
+
+            if (activator.getType() == ability.getActivator().getType()) {
+
+                ItemMeta meta = activator.getItemMeta();
+
+                if (meta.getDisplayName().equals(ability.getActivator().getItemMeta().getDisplayName())) {
+
+                    return ability;
+
+                }
+
+            }
+
+        }
+
+        return null;
 
     }
 
@@ -168,7 +191,7 @@ public class Kit {
             AttributeWriter.potionEffectToResource(resource, "Effects", effect);
         }
 
-        abilities.stream().forEach(ability -> ability.toResource(resource, "Abilities"));
+        abilities.stream().forEach(ability -> ability.toResource(resource, "Abilities."));
 
         resource.save();
 

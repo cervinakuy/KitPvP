@@ -24,7 +24,8 @@ import net.md_5.bungee.api.ChatColor;
 public class Game extends JavaPlugin implements Listener {
 	
 	private static Game instance;
-	
+	private static String prefix;
+
 	private Arena arena;
 	private Database database;
 	private Resources resources = new Resources(this);
@@ -38,11 +39,12 @@ public class Game extends JavaPlugin implements Listener {
 	public void onEnable() {
 		
 		instance = this;
-		
+
 		resources.load();
+		prefix = resources.getMessages().getString("Messages.General.Prefix");
 		database = new Database(this, "Storage.MySQL");
 		arena = new Arena(this, resources);
-		
+
 		PluginManager pm = Bukkit.getPluginManager();
 		pm.registerEvents(this, this);
 		pm.registerEvents(new EventListener(arena), this);
@@ -179,7 +181,7 @@ public class Game extends JavaPlugin implements Listener {
 	
 	public Database getDatabase() { return database; }
 	
-	public String getPrefix() { return resources.getMessages().getString("Messages.General.Prefix"); }
+	public static String getPrefix() { return prefix; }
 	
 	public Resources getResources() { return resources; }
 	

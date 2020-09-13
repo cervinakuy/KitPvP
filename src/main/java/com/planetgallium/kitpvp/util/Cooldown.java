@@ -15,6 +15,34 @@ public class Cooldown {
 		this.seconds = seconds;
 		
 	}
+
+	public Cooldown(String formattedCooldown) {
+
+		String[] units = formattedCooldown.split(":");
+
+		for (int i = 0; i < units.length; i++) {
+
+			if (units[i].toUpperCase().endsWith("D")) {
+
+				days = Integer.valueOf(units[i].split("D")[0]);
+
+			} else if (units[i].toUpperCase().endsWith("H")) {
+
+				hours = Integer.valueOf(units[i].split("H")[0]);
+
+			} else if (units[i].toUpperCase().endsWith("M")) {
+
+				minutes = Integer.valueOf(units[i].split("M")[0]);
+
+			} else if (units[i].toUpperCase().endsWith("S")) {
+
+				seconds = Integer.valueOf(units[i].split("S")[0]);
+
+			}
+
+		}
+
+	}
 	
 	@Override
 	public String toString() {

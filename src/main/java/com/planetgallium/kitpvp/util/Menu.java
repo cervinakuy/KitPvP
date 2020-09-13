@@ -59,13 +59,6 @@ public class Menu {
 		menu.setItem(slot, item);
 		
 	}
-	
-	public void addItem(Material material, int slot) {
-		
-		ItemStack item = new ItemStack(material);
-		menu.setItem(slot, item);
-		
-	}
 
 	public void setItem(ItemStack item, int slot) {
 

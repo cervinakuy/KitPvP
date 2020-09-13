@@ -2,7 +2,6 @@ package com.planetgallium.kitpvp.newkit;
 
 import com.planetgallium.kitpvp.util.Resource;
 import com.planetgallium.kitpvp.util.Toolkit;
-import com.planetgallium.kitpvp.util.XEnchantment;
 import com.planetgallium.kitpvp.util.XMaterial;
 import org.bukkit.Color;
 import org.bukkit.enchantments.Enchantment;
@@ -18,31 +17,33 @@ public class AttributeWriter {
 
         if (effect == null) return;
 
-        resource.set(path + "." + effect.getType() + ".Amplifier", effect.getAmplifier());
-        resource.set(path + "." + effect.getType() + ".Duration", effect.getDuration());
+        int amplifierNonZeroBased = effect.getAmplifier() + 1;
+        int durationSeconds = effect.getDuration() / 20;
+
+        resource.set(path + "." + effect.getType().getName() + ".Amplifier", amplifierNonZeroBased);
+        resource.set(path + "." + effect.getType().getName() + ".Duration", durationSeconds);
         resource.save();
 
     }
 
     public static void itemStackToResource(Resource resource, String path, ItemStack item) {
 
-        if (item == null) return;
+        if (item == null || item.getType() == XMaterial.AIR.parseMaterial().get()) return;
 
         ItemMeta meta = item.getItemMeta();
 
-        resource.set(path + ".Name", meta.hasDisplayName() ? meta.getDisplayName().replace("§", "&") : null);
-        resource.set(path + ".Lore", meta.getLore());
-        resource.set(path + ".Item", item.getType().toString());
+        resource.set(path + ".Name", meta.hasDisplayName() ? Toolkit.toNormalColorCodes(meta.getDisplayName()) : null);
+        resource.set(path + ".Lore", Toolkit.toNormalColorCodes(meta.getLore()));
+        resource.set(path + ".Material", item.getType().toString());
         resource.set(path + ".Amount", item.getAmount() == 1 ? null : item.getAmount());
         resource.save();
 
-        // might not need to pass the meta tbh
-        serializeDyedArmor(resource, item, meta, path);
-        serializeSkull(resource, item, meta, path);
-        serializeTippedArrows(resource, item, meta, path);
-        serializePotion(resource, item, meta, path);
+        serializeDyedArmor(resource, item, path);
+        serializeSkull(resource, item, path);
+        serializeTippedArrows(resource, item, path);
+        serializePotion(resource, item, path);
         serializeEnchantments(resource, item, path);
-        serializeDurability(resource, item, meta, path);
+        serializeDurability(resource, item, path);
 
     }
 
@@ -70,27 +71,16 @@ public class AttributeWriter {
 
         }
 
-        if (meta.hasColor()) {
-
-            // check if this ever gets used?
-            Color potionColor = meta.getColor();
-            resource.set(path + ".Color.Red", potionColor.getRed());
-            resource.set(path + ".Color.Green", potionColor.getGreen());
-            resource.set(path + ".Color.Blue", potionColor.getBlue());
-            resource.save();
-
-        }
-
     }
 
-    private static void serializeDyedArmor(Resource resource, ItemStack item, ItemMeta meta, String path) {
+    private static void serializeDyedArmor(Resource resource, ItemStack item, String path) {
 
         if (item.getType() == XMaterial.LEATHER_HELMET.parseMaterial().get() ||
             item.getType() == XMaterial.LEATHER_CHESTPLATE.parseMaterial().get() ||
             item.getType() == XMaterial.LEATHER_LEGGINGS.parseMaterial().get() ||
             item.getType() == XMaterial.LEATHER_BOOTS.parseMaterial().get()) {
 
-            LeatherArmorMeta dyedMeta = (LeatherArmorMeta) meta;
+            LeatherArmorMeta dyedMeta = (LeatherArmorMeta) item.getItemMeta();
 
             resource.set(path + ".Dye.Red", dyedMeta.getColor().getRed());
             resource.set(path + ".Dye.Green", dyedMeta.getColor().getGreen());
@@ -101,11 +91,11 @@ public class AttributeWriter {
 
     }
 
-    private static void serializeSkull(Resource resource, ItemStack item, ItemMeta meta, String path) {
+    private static void serializeSkull(Resource resource, ItemStack item, String path) {
 
         if (item.getType() == XMaterial.PLAYER_HEAD.parseMaterial().get()) {
 
-            SkullMeta skullMeta = (SkullMeta) meta;
+            SkullMeta skullMeta = (SkullMeta) item.getItemMeta();
 
             resource.set(path + ".Skull", skullMeta.getOwner());
             resource.save();
@@ -114,17 +104,17 @@ public class AttributeWriter {
 
     }
 
-    private static void serializeTippedArrows(Resource resource, ItemStack item, ItemMeta meta, String path) {
+    private static void serializeTippedArrows(Resource resource, ItemStack item, String path) {
 
         if (Toolkit.versionToNumber() >= 19 && item.getType() == XMaterial.TIPPED_ARROW.parseMaterial().get()) {
 
-            serializeEffects(resource, (PotionMeta) meta, path);
+            serializeEffects(resource, (PotionMeta) item.getItemMeta(), path);
 
         }
 
     }
 
-    private static void serializePotion(Resource resource, ItemStack item, ItemMeta meta, String path) {
+    private static void serializePotion(Resource resource, ItemStack item, String path) {
 
         if (item.getType() == XMaterial.POTION.parseMaterial().get() ||
                 (Toolkit.versionToNumber() >= 19 &&
@@ -134,7 +124,7 @@ public class AttributeWriter {
             if (Toolkit.versionToNumber() == 18) {
 
                 Potion potionStack = Potion.fromItemStack(item);
-                PotionMeta potionMeta = (PotionMeta) meta;
+                PotionMeta potionMeta = (PotionMeta) item.getItemMeta();
 
                 resource.set(path + ".Type", potionStack.isSplash() ? "SPLASH_POTION" : "POTION");
                 resource.save();
@@ -163,7 +153,7 @@ public class AttributeWriter {
 
             } else if (Toolkit.versionToNumber() >= 19) {
 
-                serializeEffects(resource, (PotionMeta) meta, path);
+                serializeEffects(resource, (PotionMeta) item.getItemMeta(), path);
 
             }
 
@@ -177,38 +167,17 @@ public class AttributeWriter {
 
             for (Enchantment enchantment : item.getEnchantments().keySet()) {
 
-                // possibly use XEnchantment here or uncomment code below if this doesn't work
                 String enchantmentName = Toolkit.versionToNumber() < 113 ? enchantment.getName() : enchantment.getKey().getKey();
-                resource.set(path + ".Enchantments." + enchantmentName + ".Level", item.getEnchantments().get(enchantment));
+                resource.set(path + ".Enchantments." + enchantmentName.toUpperCase(), item.getEnchantments().get(enchantment));
                 resource.save();
 
             }
-
-//            if (Toolkit.versionToNumber() < 113) {
-//
-//                for (Enchantment enchantment : item.getEnchantments().keySet()) {
-//
-//                    resource.set(path + ".Enchantments." + enchantment.getName() + ".Level", item.getEnchantments().get(enchantment));
-//                    resource.save();
-//
-//                }
-//
-//            } else if (Toolkit.versionToNumber() >= 113) {
-//
-//                for (Enchantment enchantment : item.getEnchantments().keySet()) {
-//
-//                    resource.set(path + ".Enchantments." + enchantment.getKey().getKey() + ".Level", item.getEnchantments().get(enchantment));
-//                    resource.save();
-//
-//                }
-//
-//            }
 
         }
 
     }
 
-    private static void serializeDurability(Resource resource, ItemStack item, ItemMeta meta, String path) {
+    private static void serializeDurability(Resource resource, ItemStack item, String path) {
 
         if (Toolkit.versionToNumber() < 113) {
 
@@ -224,12 +193,12 @@ public class AttributeWriter {
 
         } else if (Toolkit.versionToNumber() >= 113) {
 
-            if (meta instanceof Damageable &&
+            if (item.getItemMeta() instanceof Damageable &&
                     item.getType() != XMaterial.PLAYER_HEAD.parseMaterial().get() &&
                     item.getType() != XMaterial.POTION.parseMaterial().get() &&
                     item.getType() != XMaterial.SPLASH_POTION.parseMaterial().get()) {
 
-                Damageable damagedMeta = (Damageable) meta;
+                Damageable damagedMeta = (Damageable) item.getItemMeta();
 
                 if (damagedMeta.hasDamage()) {
 

@@ -2,6 +2,7 @@ package com.planetgallium.kitpvp.game;
 
 import java.util.UUID;
 
+import com.planetgallium.kitpvp.api.Kit;
 import com.planetgallium.kitpvp.util.Cooldown;
 import com.planetgallium.kitpvp.util.Resources;
 
@@ -43,50 +44,12 @@ public class Cooldowns {
 		return false;
 		
 	}
-	
-	public Cooldown getCooldown(String kitName) {
-		
-		int days = 0;
-		int hours = 0;
-		int minutes = 0;
-		int seconds = 0;
-		
-		if (arena.getKits().isKit(kitName)) {
-			
-			String[] units = resources.getKit(kitName).getString("Kit.Cooldown").split(":");
-			
-			for (int i = 0; i < units.length; i++) {
-				
-				if (units[i].toUpperCase().endsWith("D")) {
-					
-					days = Integer.valueOf(units[i].split("D")[0]);
-					
-				} else if (units[i].toUpperCase().endsWith("H")) {
-					
-					hours = Integer.valueOf(units[i].split("H")[0]);
-					
-				} else if (units[i].toUpperCase().endsWith("M")) {
-					
-					minutes = Integer.valueOf(units[i].split("M")[0]);
-					
-				} else if (units[i].toUpperCase().endsWith("S")) {
-					
-					seconds = Integer.valueOf(units[i].split("S")[0]);
-					
-				}
-				
-			}
-			
-		}
-		
-		return new Cooldown(days, hours, minutes, seconds);
-		
-	}
-	
-	public int cooldownToSeconds(String kit) {
-		
-		Cooldown cooldown = getCooldown(kit);
-		
+
+	public int cooldownToSeconds(String kitName) {
+
+		Kit kit = arena.getKits().getKitByName(kitName);
+		Cooldown cooldown = kit.getCooldown();
+
 		return (cooldown.getDays() * 86400) + (cooldown.getHours() * 3600) + (cooldown.getMinutes() * 60) + (cooldown.getSeconds());
 		
 	}

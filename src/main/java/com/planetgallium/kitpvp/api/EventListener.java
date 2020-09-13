@@ -36,7 +36,7 @@ public class EventListener implements Listener {
 
 					if (currentItem.hasItemMeta() && currentItem.getItemMeta().hasDisplayName()) {
 
-						Ability ability = Toolkit.findAbility(kit, currentItem);
+						Ability ability = kit.getAbilityFromActivator(currentItem);
 
 						if (ability != null)
 							Bukkit.getPluginManager().callEvent(new PlayerAbilityEvent(p, ability));
@@ -51,6 +51,4 @@ public class EventListener implements Listener {
 		
 	}
 
-
-	
 }

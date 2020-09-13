@@ -70,7 +70,7 @@ public class ArenaListener implements Listener {
 			} else if (arena.getKits().hasKit(p.getName())) {
 
 				Kit kit = arena.getKits().getKitOfPlayer(p.getName());
-				Ability ability = Toolkit.findAbility(kit, e.getItemInHand());
+				Ability ability = kit.getAbilityFromActivator(e.getItemInHand());
 
 				if (ability != null)
 					e.setCancelled(true);

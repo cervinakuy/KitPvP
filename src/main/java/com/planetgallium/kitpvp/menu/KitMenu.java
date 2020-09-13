@@ -38,6 +38,7 @@ public class KitMenu {
 		for (String slot : section.getKeys(false)) {
 
 			String itemPath = "Menu.Items." + slot;
+
 			String name = menuConfig.getString(itemPath + ".Name");
 			Material material = XMaterial.matchXMaterial(menuConfig.getString(itemPath + ".Material")).get().parseMaterial().get();
 			List<String> lore = menuConfig.getStringList(itemPath + ".Lore");

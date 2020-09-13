@@ -8,7 +8,6 @@ import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 
 public class Placeholders extends PlaceholderExpansion {
 
-	private Game plugin;
 	private Arena arena;
 	private Resources resources;
 	
