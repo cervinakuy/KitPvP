@@ -25,6 +25,9 @@ Items:
       - 'console: This command is run from the console, you can use %player%'
       - 'player: This command is run from the player, you can use %player%'
       Enabled: false
+Chat:
+  Format: '%level% &e%player% &f%message%'
+  Enabled: true
 Combat:
   HitSound:
     Sound: BLAZE_HIT

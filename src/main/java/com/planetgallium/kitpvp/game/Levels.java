@@ -1,5 +1,6 @@
 package com.planetgallium.kitpvp.game;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -27,10 +28,10 @@ public class Levels {
 			
 			arena.getStats().addExperience(p.getUniqueId(), experience);
 			
-			if (arena.getLevels().getExperience(p.getUniqueId()) >= resources.getLevels().getInt("Levels.General.Experience.Levelup")) {
+			if (arena.getLevels().getExperience(p.getUniqueId()) >= resources.getLevels().getInt("Levels.Options.Experience-To-Level-Up")) {
 				
 				arena.getLevels().levelUp(p);
-				Bukkit.getPluginManager().callEvent(new PlayerLevelUpEvent(p, this.getLevel(p.getUniqueId())));
+				Bukkit.getPluginManager().callEvent(new PlayerLevelUpEvent(p, getLevel(p.getUniqueId())));
 				
 			}
 			
@@ -50,18 +51,23 @@ public class Levels {
 	
 	public void levelUp(Player p) {
 		
-		if (arena.getStats().getLevel(p.getUniqueId()) != resources.getLevels().getInt("Levels.General.Level.Maximum")) {
+		if (arena.getStats().getLevel(p.getUniqueId()) != resources.getLevels().getInt("Levels.Options.Maximum-Level")) {
 			
 			arena.getStats().setLevel(p.getUniqueId(), arena.getLevels().getLevel(p.getUniqueId()) + 1);
 			arena.getStats().setExperience(p.getUniqueId(), 0);
-			
+
+			String newLevel = String.valueOf(getLevel(p.getUniqueId()));
+
 	        if (resources.getLevels().getBoolean("Levels.Commands.Enabled")) {
-				
-	        	Toolkit.runCommands(resources.getLevels(), "Levels", p, "%level%", String.valueOf(this.getLevel(p.getUniqueId())));
-				
+	        	Toolkit.runCommands(resources.getLevels(), "Levels", p, "%level%", newLevel);
 	        }
+
+	        if (resources.getLevels().contains("Levels.Levels." + newLevel + ".Commands")) {
+	        	List<String> commandsList = resources.getLevels().getStringList("Levels.Levels." + newLevel + ".Commands");
+				Toolkit.runCommands(p, commandsList, "none", "none");
+			}
 			
-			p.sendMessage(Config.tr(resources.getMessages().getString("Messages.Other.Level").replace("%level%", String.valueOf(arena.getLevels().getLevel(p.getUniqueId())))));
+			p.sendMessage(resources.getMessages().getString("Messages.Other.Level").replace("%level%", newLevel));
 			p.playSound(p.getLocation(), XSound.ENTITY_PLAYER_LEVELUP.parseSound(), 1, 1);
 			
 		}
