@@ -78,45 +78,45 @@ public class KillStreaks implements Listener {
 	public void runCase(String streakType, int streakNumber, String username, World world, Player p) {
 		
 		killConfig = resources.getKillStreaks();
-		
-		if (killConfig.getBoolean(streakType + "." + streakNumber + ".Streak-Enabled")) {
+
+		if (killConfig.contains(streakType + "." + streakNumber)) {
 			
-			if (killConfig.getBoolean(streakType + "." + streakNumber + ".Title.Enabled")) {
-				
+			if (killConfig.contains(streakType + "." + streakNumber + ".Title")) {
+
 				for (Player local : world.getPlayers()) {
-					
+
 					title.sendTitle(local, killConfig.getString(streakType + "." + streakNumber + ".Title.Title"), killConfig.getString(streakType + "." + streakNumber + ".Title.Subtitle").replace("%player%", username).replace("%streak%", String.valueOf(streakNumber)), 20, 60, 20);
-					
+
 				}
-				
+
 			}
-			
-			if (killConfig.getBoolean(streakType + "." + streakNumber + ".Sound.Enabled")) {
-				
+
+			if (killConfig.contains(streakType + "." + streakNumber + ".Sound")) {
+
 				for (Player local : world.getPlayers()) {
-					
+
 					local.playSound(local.getLocation(), XSound.matchXSound(killConfig.getString(streakType + "." + streakNumber + ".Sound.Sound")).get().parseSound(), 1, killConfig.getInt(streakType + "." + streakNumber + ".Sound.Pitch"));
-					
+
 				}
-				
+
 			}
-			
-			if (killConfig.getBoolean(streakType + "." + streakNumber + ".Message.Enabled")) {
-				
+
+			if (killConfig.contains(streakType + "." + streakNumber + ".Message")) {
+
 				for (Player local : world.getPlayers()) {
-					
+
 					local.sendMessage(Config.tr(killConfig.getString(streakType + "." + streakNumber + ".Message.Message").replace("%streak%", String.valueOf(streakNumber)).replace("%player%", username)));
-					
+
 				}
-				
+
 			}
-			
-			if (killConfig.getBoolean(streakType + "." + streakNumber + ".Commands.Enabled")) {
+
+			if (killConfig.contains(streakType + "." + streakNumber + ".Commands")) {
 
 				Toolkit.runCommands(resources.getKillStreaks(), streakType + "." + streakNumber, p, "none", "none");
-				
+
 			}
-		
+
 		}
 		
 	}
