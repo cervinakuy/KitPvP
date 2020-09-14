@@ -385,13 +385,13 @@ public class Toolkit {
 
 	}
 
-	private static String addPlaceholdersIfPossible(Player player, String text) {
+	public static String addPlaceholdersIfPossible(Player player, String text) {
 
 		if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
 			text = PlaceholderAPI.setPlaceholders(player, text);
 		}
 
-		return text;
+		return Toolkit.translate(text);
 
 	}
 

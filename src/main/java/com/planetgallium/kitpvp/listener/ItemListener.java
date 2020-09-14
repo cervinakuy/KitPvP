@@ -464,7 +464,7 @@ public class ItemListener implements Listener {
 											shooter.getInventory().setItem(slot, potionStack);
 
 											if (resources.getAbilities().getBoolean("Abilities.Witch.Message.Enabled")) {
-												shooter.sendMessage(Config.tr(resources.getAbilities().getString("Abilities.Witch.Message.Message").replace("%prefix%", resources.getMessages().getString("Messages.General.Prefix"))));
+												shooter.sendMessage(Config.tr(resources.getAbilities().getString("Abilities.Witch.Message.Message")));
 											}
 
 											shooter.playSound(shooter.getLocation(), XSound.matchXSound(resources.getAbilities().getString("Abilities.Witch.Sound.Sound")).get().parseSound(), 1, resources.getAbilities().getInt("Abliities.Witch.Sound.Pitch"));
