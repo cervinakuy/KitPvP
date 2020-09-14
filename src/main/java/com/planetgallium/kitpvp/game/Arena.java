@@ -205,9 +205,14 @@ public class Arena {
 					.replace("%max_xp%", String.valueOf(resources.getLevels().getInt("Levels.General.Experience.Levelup")))
 					.replace("%max_level%", String.valueOf(resources.getLevels().getInt("Levels.General.Level.Maximum")))
 					.replace("%kd%", String.valueOf(this.getStats().getKDRatio(p.getUniqueId())))
-//					.replace("%kit%", this.getKits().getKitOfPlayer(p.getName()).getName())
 					.replace("%deaths%", String.valueOf(this.getStats().getDeaths(p.getUniqueId())))
 					.replace("%kills%", String.valueOf(this.getStats().getKills(p.getUniqueId())));
+
+		if (getKits().getKitOfPlayer(p.getName()) != null) {
+			text = text.replace("%kit%", getKits().getKitOfPlayer(p.getName()).getName());
+		} else {
+			text = text.replace("%kit%", "None");
+		}
 
 		return text;
 
