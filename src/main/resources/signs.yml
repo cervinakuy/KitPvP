@@ -1,10 +1,6 @@
-# SIGNS FILE - Customize the formatting of the signs, and also the storage for the locations of the signs.
-#
-# Recommendations:
-# 1) When creating kit signs, make sure the kit name is typed EXACTLY the same as shown in the kits.yml. The casing must match or else it won't find it.
-# 2) If you make an error while making a kit sign, remove or modify the Sign data stored at the bottom of this file.
-#
-# Please contact Cervinakuy (the developer) on Spigot if you have any problems.
+# To learn how to create signs, please
+# visit the signs.yml documentation on GitHub:
+# https://github.com/cervinakuy/KitPvP/wiki/signs.yml
 
 Signs:
   Kit:
@@ -31,4 +27,9 @@ Signs:
     Line-1: '&7[&b&lKIT-PVP&7]'
     Line-2: '&1Click to refill'
     Line-3: '&1your soups'
+    Line-4: ' '
+  Arena:
+    Line-1: '&7[&b&lKIT-PVP&7]'
+    Line-2: '&1Click to teleport'
+    Line-3: '&1to &1%arena% &1arena'
     Line-4: ' '
