@@ -1,6 +1,6 @@
 package com.planetgallium.kitpvp.api;
 
-import com.planetgallium.kitpvp.newkit.AttributeWriter;
+import com.planetgallium.kitpvp.item.AttributeWriter;
 import com.planetgallium.kitpvp.util.Cooldown;
 import com.planetgallium.kitpvp.util.Resource;
 import org.bukkit.entity.Player;

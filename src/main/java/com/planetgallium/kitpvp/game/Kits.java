@@ -4,7 +4,7 @@ import com.planetgallium.kitpvp.Game;
 import com.planetgallium.kitpvp.api.Ability;
 import com.planetgallium.kitpvp.api.Kit;
 import com.planetgallium.kitpvp.api.PlayerSelectKitEvent;
-import com.planetgallium.kitpvp.newkit.AttributeParser;
+import com.planetgallium.kitpvp.item.AttributeParser;
 import com.planetgallium.kitpvp.util.*;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
