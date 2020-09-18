@@ -57,7 +57,6 @@ public class Game extends JavaPlugin implements Listener {
 		pm.registerEvents(new AttackListener(resources), this);
 		pm.registerEvents(new ItemListener(this, arena, resources), this);
 		pm.registerEvents(new SoupListener(this), this);
-		pm.registerEvents(new TrailListener(resources), this);
 		pm.registerEvents(new ChatListener(this), this);
 		pm.registerEvents(new SignListener(arena, resources), this);
 		pm.registerEvents(new AliasCommand(), this);

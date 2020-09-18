@@ -2,9 +2,7 @@ package com.planetgallium.kitpvp.listener;
 
 import java.util.Random;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.*;
@@ -28,7 +26,6 @@ import org.bukkit.util.Vector;
 
 import com.planetgallium.kitpvp.Game;
 import com.planetgallium.kitpvp.game.Arena;
-import com.planetgallium.kitpvp.menu.KitMenu;
 import com.planetgallium.kitpvp.util.Config;
 import com.planetgallium.kitpvp.util.Resources;
 import com.planetgallium.kitpvp.util.Toolkit;
@@ -125,12 +122,12 @@ public class ItemListener implements Listener {
 
 						e.setCancelled(true);
 
-						String username = nearestData[0];
-						Location loc = Bukkit.getPlayer(username).getLocation();
+						String nearestPlayerUsername = nearestData[0];
+						Location nearestPlayerLocation = Bukkit.getPlayer(nearestPlayerUsername).getLocation();
 
-						if (arena.getKits().hasKit(username)) {
+						if (arena.getKits().hasKit(nearestPlayerUsername)) {
 
-							p.teleport(loc);
+							p.teleport(nearestPlayerLocation);
 
 							p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 60, 5));
 							p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 80, 5));
@@ -189,6 +186,44 @@ public class ItemListener implements Listener {
 						}
 
 					}.runTaskLater(Game.getInstance(), 100L);
+
+				}
+
+			} else if (item.getType() == XMaterial.COAL.parseMaterial().get() && item.hasItemMeta()) {
+
+				if (isAbilityItem(p, "Bomber", item)) {
+
+					p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 5 * 20, 2));
+
+					new BukkitRunnable() {
+
+						public int t = 5;
+
+						@Override
+						public void run() {
+
+							if (t != 0 && p.getGameMode() != GameMode.SPECTATOR) {
+
+								Entity entity = p.getWorld().spawn(p.getLocation(), TNTPrimed.class);
+								entity.setCustomName(p.getName());
+
+								String bomberSound = resources.getAbilities().getString("Abilities.Bomber.Sound.Sound");
+								p.playSound(p.getLocation(), XSound.matchXSound(bomberSound).get().parseSound(),
+										1, resources.getAbilities().getInt("Abilities.Bomber.Sound.Pitch"));
+
+								t--;
+
+							} else {
+
+								cancel();
+
+							}
+
+						}
+
+					}.runTaskTimer(Game.getInstance(), 0L, 20L);
+
+					useAbilityItem(p, null, item, "Bomber");
 
 				}
 
@@ -361,7 +396,9 @@ public class ItemListener implements Listener {
 		String abilityPrefix = "Abilities." + kitName;
 
 		if (abilConfig.getBoolean(abilityPrefix + ".Message.Enabled")) {
-			p.sendMessage(Config.tr(abilConfig.getString(abilityPrefix + ".Message.Message").replace("%player%", clicked.getName())));
+			String abilityMessage = abilConfig.getString(abilityPrefix + ".Message.Message");
+			if (clicked != null) abilityMessage = abilityMessage.replace("%player%", clicked.getName());
+			p.sendMessage(abilityMessage);
 		}
 
 		abilityItem.setAmount(abilityItem.getAmount() - 1);
