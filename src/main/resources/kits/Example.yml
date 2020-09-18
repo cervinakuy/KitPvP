@@ -102,3 +102,6 @@ Abilities:
       Commands:
         - 'console: say Hi %player%, this is an example console command that can be run when you use your ability.'
         - 'player: me This is an example player command that can be run when you use your ability.'
+Commands:
+  - 'console: say These commands can optionally be included in your kit file'
+  - 'console: say to be run when the kit is selected'

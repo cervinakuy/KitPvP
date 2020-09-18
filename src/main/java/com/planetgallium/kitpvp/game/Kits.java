@@ -179,6 +179,14 @@ public class Kits {
             arena.getCooldowns().setCooldown(p.getUniqueId(), kit.getName());
         }
 
+        if (resources.getKit(kit.getName()) != null) {
+            Resource kitResource = resources.getKit(kit.getName());
+            if (kitResource.contains("Commands")) {
+                List<String> commands = kitResource.getStringList("Commands");
+                Toolkit.runCommands(p, commands, "none", "none");
+            }
+        }
+
     }
 
     public Kit getKitByName(String kitName) {
