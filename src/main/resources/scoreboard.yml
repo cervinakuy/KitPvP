@@ -1,10 +1,6 @@
-# SCOREBOARD FILE - Configure the look of the Scoreboard.
-#
-# Recommendations:
-# 1) Remember that there is a limit of 32 characters per line.
-# 2) If you customize the scoreboard, you should restart the server to see the changes.
-#
-# Please contact Cervinakuy (the developer) on Spigot if you have any problems.
+# To learn more about customizing the Scoreboard, please
+# visit the scoreboard.yml documentation on GitHub:
+# https://github.com/cervinakuy/KitPvP/wiki/scoreboard.yml
 
 Scoreboard:
   General:
