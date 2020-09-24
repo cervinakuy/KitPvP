@@ -38,8 +38,8 @@ public class KillStreaks implements Listener {
 			Player damagedPlayer = e.getEntity();
 				
 			if (damager != null && damager.getName() != damagedPlayer.getName()) {
-				
-				kills.put(damager.getName(), (kills.get(damager.getName()) + 1));
+
+				kills.put(damager.getName(), getStreak(damager.getName()) + 1);
 				runCase("KillStreaks", getStreak(damager.getName()), damager.getName(), damager.getWorld(), damager);
 				runCase("EndStreaks", getStreak(damagedPlayer.getName()), damagedPlayer.getName(), damagedPlayer.getWorld(), damagedPlayer);
 				kills.put(damagedPlayer.getName(), 0);
@@ -47,7 +47,7 @@ public class KillStreaks implements Listener {
 			} else {
 		
 				kills.put(damagedPlayer.getName(), 0);
-				runCase("EndStreaks", kills.get(damagedPlayer.getName()), damagedPlayer.getName(), damagedPlayer.getWorld(), damagedPlayer);
+				runCase("EndStreaks", getStreak(damagedPlayer.getName()), damagedPlayer.getName(), damagedPlayer.getWorld(), damagedPlayer);
 				
 			}
 			
@@ -122,21 +122,19 @@ public class KillStreaks implements Listener {
 	}
 	
 	public int getStreak(String username) {
-		
-		if (kills.containsKey(username)) {
 
-			return kills.get(username);
-			
+		if (!kills.containsKey(username)) {
+			kills.put(username, 0);
 		}
-		
-		return 0;
+
+		return kills.get(username);
 		
 	}
 	
 	public void resetStreak(Player p) {
 
 		if (kills.containsKey(p.getName())) {
-			runCase("EndStreaks", kills.get(p.getName()), p.getName(), p.getWorld(), p);
+			runCase("EndStreaks", getStreak(p.getName()), p.getName(), p.getWorld(), p);
 			kills.put(p.getName(), 0);
 		}
 		
