@@ -58,13 +58,12 @@ public class Levels {
 
 			String newLevel = String.valueOf(getLevel(p.getUniqueId()));
 
-	        if (resources.getLevels().getBoolean("Levels.Commands.Enabled")) {
-	        	Toolkit.runCommands(resources.getLevels(), "Levels", p, "%level%", newLevel);
-	        }
+			List<String> levelUpCommands = resources.getLevels().getStringList("Levels.Commands-On-Level-Up");
+			Toolkit.runCommands(p, levelUpCommands, "%level%", newLevel);
 
 	        if (resources.getLevels().contains("Levels.Levels." + newLevel + ".Commands")) {
 	        	List<String> commandsList = resources.getLevels().getStringList("Levels.Levels." + newLevel + ".Commands");
-				Toolkit.runCommands(p, commandsList, "none", "none");
+				Toolkit.runCommands(p, commandsList, "%level%", newLevel);
 			}
 			
 			p.sendMessage(resources.getMessages().getString("Messages.Other.Level").replace("%level%", newLevel));
