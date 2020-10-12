@@ -408,7 +408,7 @@ public class MainCommand implements CommandExecutor {
 
                     }
 
-                } else if (args[0].equalsIgnoreCase("kit") && hasPermission(sender, "kp.command.kit")) {
+                } else if (args[0].equalsIgnoreCase("kit")/* && hasPermission(sender, "kp.command.kit")*/) {
 
                     if (Toolkit.inArena(p)) {
 
