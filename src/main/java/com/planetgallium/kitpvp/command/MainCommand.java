@@ -18,6 +18,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class MainCommand implements CommandExecutor {
@@ -82,6 +83,8 @@ public class MainCommand implements CommandExecutor {
 
                 plugin.reloadConfig();
                 resources.reload();
+                CacheManager.clearCaches();
+                arena.getMenus().getKitMenu().clearCache();
 
                 sender.sendMessage(resources.getMessages().getString("Messages.Commands.Reload"));
                 return true;
@@ -323,7 +326,7 @@ public class MainCommand implements CommandExecutor {
                 } else if (args[0].equalsIgnoreCase("addspawn") && hasPermission(p, "kp.command.addspawn")) {
 
                     String arenaName = p.getWorld().getName();
-                    int spawnNumber = getNextArenaSpawnNumber(arenaName);
+                    int spawnNumber = Toolkit.getNextAvailable(config, "Arenas." + arenaName, 1000, false, 1);
 
                     Toolkit.saveLocationToConfig(plugin, config, "Arenas." + arenaName + "." + spawnNumber, p.getLocation());
 
@@ -393,11 +396,7 @@ public class MainCommand implements CommandExecutor {
 
                     if (!arena.getKits().isKit(kitName)) {
 
-                        Kit kitToCreate = arena.getKits().createKitFromPlayer(p, kitName);
-                        Resource kitResource = new Resource(plugin, "kits/" + kitToCreate.getName() + ".yml");
-                        kitToCreate.toResource(kitResource);
-
-                        resources.addResource(kitToCreate.getName() + ".yml", kitResource);
+                        arena.getKits().createKit(p, kitName);
 
                         p.sendMessage(resources.getMessages().getString("Messages.Commands.Create")
                                 .replace("%kit%", kitName));
@@ -478,22 +477,6 @@ public class MainCommand implements CommandExecutor {
                 .replace("%experience%", String.valueOf(arena.getLevels().getExperience(p.getUniqueId())));
 
         return text;
-
-    }
-
-    private int getNextArenaSpawnNumber(String arenaName) {
-
-        for (int i = 1; i < 1000; i++) {
-
-            if (!config.contains("Arenas." + arenaName + "." + i)) {
-
-                return i;
-
-            }
-
-        }
-
-        return 1;
 
     }
 

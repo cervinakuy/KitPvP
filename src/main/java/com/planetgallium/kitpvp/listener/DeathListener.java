@@ -27,6 +27,8 @@ import com.planetgallium.kitpvp.util.Title;
 import com.planetgallium.kitpvp.util.Toolkit;
 import com.planetgallium.kitpvp.util.XSound;
 
+import java.util.List;
+
 public class DeathListener implements Listener {
 	
 	private Title title = new Title();
@@ -62,7 +64,7 @@ public class DeathListener implements Listener {
 				victim.getWorld().playEffect(victim.getLocation().add(0.0D, 1.0D, 0.0D), Effect.STEP_SOUND, 152);
 			}
 
-			Toolkit.runCommands(config, "Death", victim, "%victim%", victim.getName());
+			Toolkit.runCommands(victim, config.getStringList("Death.Commands"), "%victim%", victim.getName());
 
 			if (config.getBoolean("Death.Sound.Enabled")) {
 				broadcast(victim.getWorld(), XSound.matchXSound(Config.getS("Death.Sound.Sound")).get().parseSound(), 1, (int) Config.getI("Death.Sound.Pitch"));
@@ -108,8 +110,9 @@ public class DeathListener implements Listener {
 				public void run() {
 
 					victim.spigot().respawn();
-					victim.setGameMode(GameMode.SPECTATOR);
 					victim.teleport(deathLocation);
+					victim.setGameMode(GameMode.SPECTATOR);
+
 
 				}
 
@@ -143,7 +146,7 @@ public class DeathListener implements Listener {
 						victim.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 30, 0));
 						victim.playSound(victim.getLocation(), XSound.ENTITY_EXPERIENCE_ORB_PICKUP.parseSound(), 1, 1);
 
-						Toolkit.runCommands(config, "Respawn", victim, "none", "none");
+						Toolkit.runCommands(victim, config.getStringList("Respawn.Commands"), "none", "none");
 
 						cancel();
 
@@ -168,7 +171,7 @@ public class DeathListener implements Listener {
 				public void run() {
 
 					arena.addPlayer(victim, true, config.getBoolean("Arena.GiveItemsOnRespawn"));
-					Toolkit.runCommands(config, "Respawn", victim, "none", "none");
+					Toolkit.runCommands(victim, config.getStringList("Respawn.Commands"), "none", "none");
 
 				}
 
@@ -269,7 +272,9 @@ public class DeathListener implements Listener {
 				arena.getStats().addKill(killer.getUniqueId());
 				arena.getLevels().addExperience(killer, resources.getLevels().getInt("Levels.Options.Experience-Given-On-Kill"));
 
-				Toolkit.runKillCommands(victim, killer);
+				List<String> killCommands = config.getStringList("Kill.Commands");
+				killCommands = Toolkit.replaceInList(killCommands, "%victim%", victim.getName());
+				Toolkit.runCommands(killer, killCommands, "%killer%", killer.getName());
 
 				if (resources.getScoreboard().getBoolean("Scoreboard.General.Enabled")) {
 
@@ -299,6 +304,10 @@ public class DeathListener implements Listener {
 	private String getDeathMessage(Player victim, Player killer, String type) {
 
 		String deathMessage = config.getString("Death.Messages." + type);
+
+		if (victim.getName().equals(killer.getName())) {
+			deathMessage = config.getString("Death.Messages.Suicide");
+		}
 
 		if (victim != null) {
 			deathMessage = deathMessage.replace("%victim%", victim.getName());

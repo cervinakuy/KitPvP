@@ -1,7 +1,9 @@
 package com.planetgallium.kitpvp.listener;
 
+import java.util.List;
 import java.util.Random;
 
+import com.planetgallium.kitpvp.api.Kit;
 import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -263,11 +265,11 @@ public class ItemListener implements Listener {
 
 				}
 
-			} else if (item.getType() == XMaterial.matchXMaterial(config.getString("Items.Kits.Item")).get().parseMaterial().get()) {
+			} else if (item.getType() == XMaterial.matchXMaterial(config.getString("Items.Kits.Material")).get().parseMaterial().get()) {
 
 				if (meta.getDisplayName().equals(Config.getS("Items.Kits.Name"))) {
 
-					Toolkit.runCommands(config, "Items.Kits", p, "none", "none");
+					Toolkit.runCommands(p, config.getStringList("Items.Kits.Commands"), "none", "none");
 
 					if (config.getBoolean("Items.Kits.Menu")) {
 
@@ -287,11 +289,11 @@ public class ItemListener implements Listener {
 
 					if (config.getBoolean(itemPath + ".Enabled")) {
 
-						if (item.getType() == XMaterial.matchXMaterial(config.getString(itemPath + ".Item")).get().parseMaterial().get()) {
+						if (item.getType() == XMaterial.matchXMaterial(config.getString(itemPath + ".Material")).get().parseMaterial().get()) {
 
 							if (item.getItemMeta().getDisplayName().equals(Config.tr(config.getString(itemPath + ".Name")))) {
 
-								Toolkit.runCommands(config, itemPath, p, "none", "none");
+								Toolkit.runCommands(p, config.getStringList(itemPath + ".Commands"), "none", "none");
 
 							}
 
@@ -478,7 +480,9 @@ public class ItemListener implements Listener {
 
 						int slot = shooter.getInventory().getHeldItemSlot();
 
-						if (arena.getKits().getKitOfPlayer(shooter.getName()).equals("Witch")) {
+						Kit playerKit = arena.getKits().getKitOfPlayer(shooter.getName());
+
+						if (playerKit.getName().equals("Witch")) {
 
 							Potion potion = new Potion(pickPotion(), 1);
 							potion.setSplash(true);
@@ -494,9 +498,11 @@ public class ItemListener implements Listener {
 								@Override
 								public void run() {
 
+
+
 									if (arena.getKits().getKitOfPlayer(shooter.getName()) != null) {
 
-										if (arena.getKits().getKitOfPlayer(shooter.getName()).equals("Witch")) {
+										if (arena.getKits().getKitOfPlayer(shooter.getName()).getName().equals("Witch")) {
 
 											shooter.getInventory().setItem(slot, potionStack);
 

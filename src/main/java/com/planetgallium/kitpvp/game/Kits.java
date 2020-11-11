@@ -33,6 +33,47 @@ public class Kits {
         this.kits = new HashMap<>();
     }
 
+    public void createKit(Player fromPlayer, String kitName) {
+
+        Kit kitToCreate = createKitFromPlayer(fromPlayer, kitName);
+        Resource kitResource = new Resource(plugin, "kits/" + kitToCreate.getName() + ".yml");
+        kitToCreate.toResource(kitResource);
+
+        resources.addResource(kitToCreate.getName() + ".yml", kitResource);
+
+        if (plugin.getConfig().getBoolean("Other.AutomaticallyAddKitToMenu")) {
+
+            int nextAvailableMenuSlot = Toolkit.getNextAvailable(resources.getMenu(), "Menu.Items", resources.getMenu().getInt("Menu.General.Size") - 1, true, -1);
+
+            if (nextAvailableMenuSlot != -1) {
+                Resource menuConfig = resources.getMenu();
+                String pathPrefix = "Menu.Items." + nextAvailableMenuSlot;
+
+                menuConfig.set(pathPrefix + ".Name", "&a&l" + kitToCreate.getName() + " Kit");
+                menuConfig.set(pathPrefix + ".Material", "BEDROCK");
+                menuConfig.set(pathPrefix + ".Lore", new String[]{
+                        "&7This information can be modified in the",
+                        "&7menu.yml file. To disable automatic adding to the",
+                        "&7menu, disable AutomaticallyAddKitToMenu in the",
+                        "&7config.yml.",
+                        " ",
+                        "&e&eLeft-click to select.",
+                        "&eRight-click to preview."});
+                menuConfig.set(pathPrefix + ".Commands.Left-Click", new String[]{"player: kp kit " + kitToCreate.getName()});
+                menuConfig.set(pathPrefix + ".Commands.Right-Click", new String[]{"player: kp preview " + kitToCreate.getName()});
+
+                menuConfig.save();
+
+                menuConfig.load();
+                arena.getMenus().getKitMenu().clearCache();
+            } else {
+                fromPlayer.sendMessage(resources.getMessages().getString("Messages.Error.Menu"));
+            }
+
+        }
+
+    }
+
     public Kit createKitFromPlayer(Player player, String name) {
 
         Player p = player;
@@ -226,7 +267,6 @@ public class Kits {
                 Resource kit = resources.getKit(kitName);
                 try {
                     CacheManager.getKitCache().put(kitName, createKitFromResource(kit));
-                    System.out.println("Kit " + kitName + " was created for the first time and added to the cache");
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
                 } catch (NoSuchMethodException e) {

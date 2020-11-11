@@ -46,7 +46,7 @@ public class MenuListener implements Listener {
 
                         String clickType = e.getClick() == ClickType.LEFT ? "Left-Click" : "Right-Click";
 
-                        if (menuConfig.getBoolean(itemPath + ".Commands.Enabled")) {
+                        if (menuConfig.contains(itemPath + ".Commands")) {
 
                             new BukkitRunnable() {
 

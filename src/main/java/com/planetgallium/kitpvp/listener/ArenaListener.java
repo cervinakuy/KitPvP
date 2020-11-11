@@ -91,7 +91,7 @@ public class ArenaListener implements Listener {
 
 				String itemPath = "Items." + identifier;
 
-				if (e.getBlock().getType() == XMaterial.matchXMaterial(config.getString(itemPath + ".Item")).get().parseMaterial().get()) {
+				if (e.getBlock().getType() == XMaterial.matchXMaterial(config.getString(itemPath + ".Material")).get().parseMaterial().get()) {
 
 					if (e.getItemInHand().hasItemMeta() && e.getItemInHand().getItemMeta().getDisplayName().equals(Config.tr(config.getString(itemPath + ".Name")))) {
 

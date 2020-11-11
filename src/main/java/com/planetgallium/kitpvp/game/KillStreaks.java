@@ -78,42 +78,43 @@ public class KillStreaks implements Listener {
 	public void runCase(String streakType, int streakNumber, String username, World world, Player p) {
 		
 		killConfig = resources.getKillStreaks();
+		String pathPrefix = streakType + "." + streakNumber;
 
-		if (killConfig.contains(streakType + "." + streakNumber)) {
+		if (killConfig.contains(pathPrefix)) {
 			
-			if (killConfig.contains(streakType + "." + streakNumber + ".Title")) {
+			if (killConfig.contains(pathPrefix + ".Title")) {
 
 				for (Player local : world.getPlayers()) {
 
-					title.sendTitle(local, killConfig.getString(streakType + "." + streakNumber + ".Title.Title"), killConfig.getString(streakType + "." + streakNumber + ".Title.Subtitle").replace("%player%", username).replace("%streak%", String.valueOf(streakNumber)), 20, 60, 20);
+					title.sendTitle(local, killConfig.getString(pathPrefix + ".Title.Title"), killConfig.getString(pathPrefix + ".Title.Subtitle").replace("%player%", username).replace("%streak%", String.valueOf(streakNumber)), 20, 60, 20);
 
 				}
 
 			}
 
-			if (killConfig.contains(streakType + "." + streakNumber + ".Sound")) {
+			if (killConfig.contains(pathPrefix + ".Sound")) {
 
 				for (Player local : world.getPlayers()) {
 
-					local.playSound(local.getLocation(), XSound.matchXSound(killConfig.getString(streakType + "." + streakNumber + ".Sound.Sound")).get().parseSound(), 1, killConfig.getInt(streakType + "." + streakNumber + ".Sound.Pitch"));
+					local.playSound(local.getLocation(), XSound.matchXSound(killConfig.getString(pathPrefix + ".Sound.Sound")).get().parseSound(), 1, killConfig.getInt(pathPrefix + ".Sound.Pitch"));
 
 				}
 
 			}
 
-			if (killConfig.contains(streakType + "." + streakNumber + ".Message")) {
+			if (killConfig.contains(pathPrefix + ".Message")) {
 
 				for (Player local : world.getPlayers()) {
 
-					local.sendMessage(Config.tr(killConfig.getString(streakType + "." + streakNumber + ".Message.Message").replace("%streak%", String.valueOf(streakNumber)).replace("%player%", username)));
+					local.sendMessage(killConfig.getString(pathPrefix + ".Message.Message").replace("%streak%", String.valueOf(streakNumber)).replace("%player%", username));
 
 				}
 
 			}
 
-			if (killConfig.contains(streakType + "." + streakNumber + ".Commands")) {
+			if (killConfig.contains(pathPrefix + ".Commands")) {
 
-				Toolkit.runCommands(resources.getKillStreaks(), streakType + "." + streakNumber, p, "none", "none");
+				Toolkit.runCommands(p, killConfig.getStringList(pathPrefix + ".Commands"), "none", "none");
 
 			}
 

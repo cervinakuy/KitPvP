@@ -9,9 +9,7 @@ import org.bukkit.entity.Player;
 
 import com.planetgallium.kitpvp.util.Menu;
 import com.planetgallium.kitpvp.util.XMaterial;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 
 public class PreviewMenu {
 
@@ -79,7 +77,7 @@ public class PreviewMenu {
 
 		previewMenu.addItem("&cBack to Kits", XMaterial.ARROW.parseMaterial().get(), new ArrayList<String>(), 8);
 
-		CacheManager.getMenuCache().put(kit.getName(), previewMenu);
+		CacheManager.getPreviewMenuCache().put(kit.getName(), previewMenu);
 
 		return previewMenu;
 
@@ -87,8 +85,8 @@ public class PreviewMenu {
 
 	public void open(Player p, Kit kit) {
 
-		Menu previewMenu = CacheManager.getMenuCache().containsKey(kit.getName()) ?
-				CacheManager.getMenuCache().get(kit.getName()) : create(kit);
+		Menu previewMenu = CacheManager.getPreviewMenuCache().containsKey(kit.getName()) ?
+				CacheManager.getPreviewMenuCache().get(kit.getName()) : create(kit);
 
 		previewMenu.openMenu(p);
 

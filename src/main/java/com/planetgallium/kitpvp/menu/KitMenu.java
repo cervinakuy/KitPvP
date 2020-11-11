@@ -49,6 +49,10 @@ public class KitMenu {
 
 	}
 
+	public void clearCache() {
+		create();
+	}
+
 	public void open(Player p) {
 
 		menu.openMenu(p);

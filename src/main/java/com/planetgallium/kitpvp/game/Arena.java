@@ -44,7 +44,7 @@ public class Arena {
 		this.resources = resources;
 		this.config = plugin.getConfig();
 
-		this.hitCache = new HashMap<String, String>();
+		this.hitCache = new HashMap<>();
 		
 		this.stats = new Stats(plugin, resources);
 		this.kits = new Kits(plugin, this);
@@ -145,7 +145,7 @@ public class Arena {
 
 			if (config.getBoolean(itemPath + ".Enabled")) {
 
-				ItemStack item = XMaterial.matchXMaterial(config.getString(itemPath + ".Item")).get().parseItem();
+				ItemStack item = XMaterial.matchXMaterial(config.getString(itemPath + ".Material")).get().parseItem();
 				ItemMeta meta = item.getItemMeta();
 
 				meta.setDisplayName(Config.tr(config.getString(itemPath + ".Name")));
