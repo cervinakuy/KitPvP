@@ -35,7 +35,7 @@ public class SoupListener implements Listener {
 				
 				Player killer = victim.getKiller();
 				
-				if (config.getBoolean("GiveSoupOnKill.Enabled")) {
+				if (config.getBoolean("Kill.SoupReward.Enabled")) {
 					
 					if (killer.hasPermission("kp.soupreturn")) {
 					
@@ -53,10 +53,10 @@ public class SoupListener implements Listener {
 										}
 									}
 									
-									if (count < config.getInt("GiveSoupOnKill.Amount")) {
-										killer.sendMessage(Config.getS("GiveSoupOnKill.NoSpace").replace("%amount%", String.valueOf((config.getInt("GiveSoupOnKill.Amount") - count))));
+									if (count < config.getInt("Kill.SoupReward.Amount")) {
+										killer.sendMessage(Config.getS("Kill.SoupReward.NoSpace").replace("%amount%", String.valueOf((config.getInt("Kill.SoupReward.Amount") - count))));
 									} else {
-										count = config.getInt("GiveSoupOnKill.Amount");
+										count = config.getInt("Kill.SoupReward.Amount");
 									}
 
 									ItemStack soup = XMaterial.MUSHROOM_STEW.parseItem();
@@ -75,7 +75,7 @@ public class SoupListener implements Listener {
 								
 							}
 							
-						}.runTaskLater(Game.getInstance(), config.getInt("GiveSoupOnKill.Delay") * 20);
+						}.runTaskLater(Game.getInstance(), config.getInt("Kill.SoupReward.Delay") * 20);
 						
 					}
 					
