@@ -1,10 +1,6 @@
-# MENU FILE - This is where the menu can be completely customized.
-#
-# Recommendations:
-# 1) When adding your own menu item, please remember to indent using ONLY spaces. It is recommended that you simply copy and modify an item that already exists.
-# 2) Use the "Example" item at the bottom of this file for reference.
-#
-# Please contact Cervinakuy (the developer) on Spigot if you have any problems.
+# To learn more about customizing the menu, please
+# visit the menu.yml documentation on GitHub:
+# https://github.com/cervinakuy/KitPvP/wiki/menu.yml
 
 Menu:
   General:
@@ -30,7 +26,6 @@ Menu:
         - 'player: kp kit Fighter'
         Right-Click:
         - 'player: kp preview Fighter'
-        Enabled: true
     11:
       Name: '&a&lArcher Kit'
       Material: BOW
@@ -52,7 +47,6 @@ Menu:
         - 'player: kp kit Archer'
         Right-Click:
         - 'player: kp preview Archer'
-        Enabled: true
     12:
       Name: '&a&lTank Kit'
       Material: DIAMOND
@@ -72,7 +66,6 @@ Menu:
         - 'player: kp kit Tank'
         Right-Click:
         - 'player: kp preview Tank'
-        Enabled: true
     13:
       Name: '&a&lSoldier Kit'
       Material: ARROW
@@ -95,7 +88,6 @@ Menu:
         - 'player: kp kit Soldier'
         Right-Click:
         - 'player: kp preview Soldier'
-        Enabled: true
     14:
       Name: '&a&lBomber Kit'
       Material: TNT
@@ -116,7 +108,6 @@ Menu:
         - 'player: kp kit Bomber'
         Right-Click:
         - 'player: kp preview Bomber'
-        Enabled: true
     15:
       Name: '&a&lKangaroo Kit'
       Material: SADDLE
@@ -136,7 +127,6 @@ Menu:
         - 'player: kp kit Kangaroo'
         Right-Click:
         - 'player: kp preview Kangaroo'
-        Enabled: true
     16:
       Name: '&a&lWarper Kit'    
       Material: ENDER_PEARL
@@ -157,7 +147,6 @@ Menu:
         - 'player: kp kit Warper'
         Right-Click:
         - 'player: kp preview Warper'
-        Enabled: true
     19:
       Name: '&a&lWitch Kit'
       Material: POTION
@@ -178,7 +167,6 @@ Menu:
         - 'player: kp kit Witch'
         Right-Click:
         - 'player: kp preview Witch'
-        Enabled: true
     20:
       Name: '&a&lNinja Kit'
       Material: NETHER_STAR
@@ -198,7 +186,6 @@ Menu:
         - 'player: kp kit Ninja'
         Right-Click:
         - 'player: kp preview Ninja'
-        Enabled: true
     21:
       Name: '&a&lThunderbolt Kit'
       Material: BLAZE_POWDER
@@ -218,7 +205,6 @@ Menu:
         - 'player: kp kit Thunderbolt'
         Right-Click:
         - 'player: kp preview Thunderbolt'
-        Enabled: true
     22:
       Name: '&a&lVampire Kit'
       Material: FERMENTED_SPIDER_EYE
@@ -238,7 +224,6 @@ Menu:
         - 'player: kp kit Vampire'
         Right-Click:
         - 'player: kp preview Vampire'
-        Enabled: true
     23:
       Name: '&a&lRhino Kit'
       Material: DIAMOND_HELMET
@@ -258,7 +243,6 @@ Menu:
         - 'player: kp kit Rhino'
         Right-Click:
         - 'player: kp preview Rhino'
-        Enabled: true
     24:
       Name: '&a&lTrickster Kit'
       Material: EGG
@@ -278,11 +262,9 @@ Menu:
         - 'player: kp kit Trickster'
         Right-Click:
         - 'player: kp preview Trickster'
-        Enabled: true
     25:
       Name: '&a&lExample Kit'
       Material: WOOD_SWORD
-      View-Permission: kp.kit.example
       Lore:
       - '&7This is the example of a custom'
       - '&7kit you can create using KitPvP.'
@@ -295,9 +277,9 @@ Menu:
         - 'player: kp kit Example'
         Right-Click:
         - 'player: kp preview Example'
-        Enabled: true
     40:
       Name: '&c&lClose'
       Material: BARRIER
       Lore:
       - '&7Click to close the Kit Menu.'
+      Commands: []
