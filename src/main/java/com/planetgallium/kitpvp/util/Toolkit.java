@@ -99,6 +99,8 @@ public class Toolkit {
 
  	public static void runCommands(Player p, List<String> commands, String replaceFrom, String replaceTo) {
 
+		if (commands == null) return;
+
 		for (String commandString : commands) {
 
 			String[] commandPhrase = commandString.split(":", 2);
@@ -119,59 +121,6 @@ public class Toolkit {
 
 		}
 
-	}
-
- 	public static void runCommands(FileConfiguration config, String path, Player p, String replaceFrom, String replaceTo) {
-
-		if (config.getBoolean(path + ".Commands.Enabled")) {
-
-			runCommands(p, config.getStringList(path + ".Commands.Commands"), replaceFrom, replaceTo);
-
-		}
-
-	}
-	
-	public static void runKillCommands(Player victim, Player killer) {
-		
- 		if (Config.getB("Kill.Commands.Enabled")) {
- 			
- 			for (String list : Config.getC().getStringList("Kill.Commands.Commands")) {
- 				
- 				String[] command = list.split(":", 2);
- 			    command[1] = command[1].trim();
- 				
- 			    if (command[0].equals("console")) {
- 					
- 					if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
- 						
- 						String withPlaceholders = PlaceholderAPI.setPlaceholders(killer, command[1].replace("%victim%", victim.getName()).replace("%killer%", killer.getName()));
- 						Bukkit.dispatchCommand(Bukkit.getConsoleSender(), withPlaceholders);
- 						
- 					} else {
- 						
- 						Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command[1].trim().replace("%victim%", victim.getName()).replace("%killer%", killer.getName()));
- 						
- 					}
- 					
- 				} else if (command[0].equals("player")) {
- 					
- 					if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
- 						
- 						String withPlaceholders = PlaceholderAPI.setPlaceholders(killer, command[1].trim().replace("%victim%", victim.getName()).replace("%killer%", killer.getName()));
- 						killer.performCommand(withPlaceholders);
- 						
- 					} else {
- 						
- 						killer.performCommand(command[1].replace("%victim%", victim.getName()).replace("%killer%", killer.getName()));
- 						
- 					}
-
- 				}
- 				
- 	        }
- 			
- 		}
- 		
 	}
  	
  	public static boolean hasPlaceholders() {
@@ -316,6 +265,18 @@ public class Toolkit {
  		
  	}
 
+ 	public static List<String> replaceInList(List<String> list, String find, String replace) {
+
+		List<String> newList = new ArrayList<>();
+
+		for (String string : list) {
+			newList.add(string.replace(find, replace));
+		}
+
+		return newList;
+
+	}
+
  	public static String toNormalColorCodes(String string) {
 
 		if (string != null) {
@@ -414,6 +375,22 @@ public class Toolkit {
 	public static String translate(String s) {
 
 		return ChatColor.translateAlternateColorCodes('&', s);
+
+	}
+
+	public static int getNextAvailable(FileConfiguration yamlConfig, String path, int limit, boolean zeroBased, int fallbackAmount) {
+
+		for (int i = zeroBased ? 0 : 1; i < limit; i++) {
+
+			if (!yamlConfig.contains(path + "." + i)) {
+
+				return i;
+
+			}
+
+		}
+
+		return fallbackAmount;
 
 	}
 
