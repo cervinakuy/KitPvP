@@ -394,4 +394,20 @@ public class Toolkit {
 
 	}
 
+	public static boolean containsAnyThatStartWith(List<String> list, String target) {
+
+		for (String string : list) {
+
+			if (string.startsWith(target)) {
+
+				return true;
+
+			}
+
+		}
+
+		return false;
+
+	}
+
 }

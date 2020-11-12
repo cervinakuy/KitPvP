@@ -1,7 +1,6 @@
 package com.planetgallium.kitpvp.util;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -14,14 +13,24 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 
 public class Resource extends YamlConfiguration {
-	
+
 	private String name;
 	private final File file;
+	private List<String> copyDefaultExemptions;
+
+	private Plugin plugin;
+	private String path;
 
 	public Resource(Plugin plugin, String path) {
+		this.plugin = plugin;
+		this.path = path;
 
 		this.file = new File(plugin.getDataFolder() + "/" + Paths.get(path));
 		this.name = Paths.get(path).getFileName().toString();
+		this.copyDefaultExemptions = new ArrayList<>();
+	}
+
+	public void load() {
 
 		if (!file.getParentFile().exists()) {
 			file.getParentFile().mkdirs();
@@ -39,16 +48,45 @@ public class Resource extends YamlConfiguration {
 			}
 		}
 
-	}
-	
-	public void load() {
-		
 		try {
 			super.load(file);
 		} catch (IOException | InvalidConfigurationException e) {
 			e.printStackTrace();
 		}
-		
+
+	}
+
+	public void copyDefaults() {
+
+		Reader defaultConfigSearchResult = null;
+
+		if (plugin.getResource(path) != null) {
+			try {
+				defaultConfigSearchResult = new InputStreamReader(plugin.getResource(path), "UTF8");
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			}
+		}
+
+		if (defaultConfigSearchResult != null) {
+			YamlConfiguration defaultConfig = YamlConfiguration.loadConfiguration(defaultConfigSearchResult);
+
+			for (String valuePath : defaultConfig.getValues(true).keySet()) {
+				if (!contains(valuePath)) {
+					if (!Toolkit.containsAnyThatStartWith(copyDefaultExemptions, valuePath)) {
+						this.set(valuePath, defaultConfig.get(valuePath));
+					}
+				}
+			}
+			save();
+		}
+
+	}
+
+	public void addCopyDefaultExemption(String path) {
+
+		copyDefaultExemptions.add(path);
+
 	}
 	
 	public void save() {

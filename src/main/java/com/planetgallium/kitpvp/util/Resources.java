@@ -1,7 +1,6 @@
 package com.planetgallium.kitpvp.util;
 
 import java.io.File;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -9,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.planetgallium.kitpvp.Game;
-import com.planetgallium.kitpvp.api.Kit;
 
 public class Resources {
 
@@ -47,7 +45,7 @@ public class Resources {
 			kits.put("Example.yml", new Resource(plugin, "kits/Example.yml"));
 			kits.put("Trickster.yml", new Resource(plugin, "kits/Trickster.yml"));
 		}
-		
+
 		abilities = new Resource(plugin, "abilities.yml");
 		killstreaks = new Resource(plugin, "killstreaks.yml");
 		levels = new Resource(plugin, "levels.yml");
@@ -56,7 +54,7 @@ public class Resources {
 		scoreboard = new Resource(plugin, "scoreboard.yml");
 		stats = new Resource(plugin, "stats.yml");
 		signs = new Resource(plugin, "signs.yml");
-		
+
 		for (String fileName : this.getKitList()) {
 			kits.put(fileName, new Resource(plugin, "kits/" + fileName));
 		}
@@ -73,6 +71,21 @@ public class Resources {
 		scoreboard.load();
 		stats.load();
 		signs.load();
+
+		messages.addCopyDefaultExemption("Messages.Stats.Message");
+		messages.copyDefaults();
+
+		menu.addCopyDefaultExemption("Menu.Items");
+		menu.copyDefaults();
+
+		levels.addCopyDefaultExemption("Levels.Levels");
+		levels.copyDefaults();
+
+		scoreboard.addCopyDefaultExemption("Scoreboard.Lines");
+		scoreboard.copyDefaults();
+
+		abilities.copyDefaults();
+		signs.copyDefaults();
 		
 		for (String fileName : kits.keySet()) {
 			kits.get(fileName).load();
