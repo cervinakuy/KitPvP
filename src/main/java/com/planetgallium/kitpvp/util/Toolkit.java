@@ -410,4 +410,23 @@ public class Toolkit {
 
 	}
 
+	public static boolean matchesItemFromConfig(ItemStack itemToCompare, FileConfiguration resource, String path) {
+
+		Material materialFromConfig = XMaterial.matchXMaterial(resource.getString(path + ".Material")).get().parseMaterial().get();
+		String nameFromConfig = resource.getString(path + ".Name");
+
+		if (itemToCompare.getType() == materialFromConfig) {
+
+			if (Toolkit.translate(itemToCompare.getItemMeta().getDisplayName()).equals(nameFromConfig)) {
+
+				return true;
+
+			}
+
+		}
+
+		return false;
+
+	}
+
 }

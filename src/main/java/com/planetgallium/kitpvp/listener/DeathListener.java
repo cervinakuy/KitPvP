@@ -1,6 +1,5 @@
 package com.planetgallium.kitpvp.listener;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -66,9 +65,7 @@ public class DeathListener implements Listener {
 
 			Toolkit.runCommands(victim, config.getStringList("Death.Commands"), "%victim%", victim.getName());
 
-			if (config.getBoolean("Death.Sound.Enabled")) {
-				broadcast(victim.getWorld(), XSound.matchXSound(Config.getS("Death.Sound.Sound")).get().parseSound(), 1, (int) Config.getI("Death.Sound.Pitch"));
-			}
+			broadcast(victim.getWorld(), XSound.matchXSound(Config.getS("Death.Sound.Sound")).get().parseSound(), 1, config.getInt("Death.Sound.Pitch"));
 
 		}
 	
@@ -325,10 +322,10 @@ public class DeathListener implements Listener {
 	private void broadcast(World world, String message) {
 		
 		if (config.getBoolean("Death.Messages.Enabled")) {
-			
+
 			for (Player all : world.getPlayers()) {
 				
-				all.sendMessage(Config.tr(message));
+				all.sendMessage(Toolkit.translate(message));
 				
 			}
 			
