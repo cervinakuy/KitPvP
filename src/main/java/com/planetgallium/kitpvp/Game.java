@@ -161,9 +161,11 @@ public class Game extends JavaPlugin implements Listener {
 					}
 					
 				}
+
+				e.setCancelled(true);
 				
 			}
-			
+
 		}
 		
 	}

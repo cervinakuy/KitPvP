@@ -59,47 +59,9 @@ public class ArenaListener implements Listener {
 		
 		if (Toolkit.inArena(p)) {
 
-			if (e.getBlock().getType() == XMaterial.TNT.parseMaterial().get()) {
+			if (config.getBoolean("Arena.PreventBlockPlacing")) {
 
-				if (Config.getB("TNT.Enabled")) {
-
-					e.setCancelled(true);
-
-				}
-
-			} else if (arena.getKits().hasKit(p.getName())) {
-
-				Kit kit = arena.getKits().getKitOfPlayer(p.getName());
-				Ability ability = kit.getAbilityFromActivator(e.getItemInHand());
-
-				if (ability != null)
-					e.setCancelled(true);
-
-			} else {
-
-				if (Config.getB("Arena.PreventBlockPlacing")) {
-
-					e.setCancelled(!p.hasPermission("kp.arena.blockplacing"));
-
-				}
-
-			}
-
-			ConfigurationSection items = config.getConfigurationSection("Items");
-
-			for (String identifier : items.getKeys(false)) {
-
-				String itemPath = "Items." + identifier;
-
-				if (e.getBlock().getType() == XMaterial.matchXMaterial(config.getString(itemPath + ".Material")).get().parseMaterial().get()) {
-
-					if (e.getItemInHand().hasItemMeta() && e.getItemInHand().getItemMeta().getDisplayName().equals(Config.tr(config.getString(itemPath + ".Name")))) {
-
-						e.setCancelled(true);
-
-					}
-
-				}
+				e.setCancelled(!p.hasPermission("kp.arena.blockplacing"));
 
 			}
 			

@@ -41,6 +41,8 @@ public class EventListener implements Listener {
 						if (ability != null)
 							Bukkit.getPluginManager().callEvent(new PlayerAbilityEvent(p, ability));
 
+						e.setCancelled(true);
+
 					}	
 					
 				}

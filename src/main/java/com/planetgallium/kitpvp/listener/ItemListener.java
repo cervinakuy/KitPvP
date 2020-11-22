@@ -100,7 +100,7 @@ public class ItemListener implements Listener {
 
 			} else if (item.getType() == XMaterial.TNT.parseMaterial().get()) {
 
-				if (Config.getB("TNT.Enabled") && item.hasItemMeta() && item.getItemMeta().getDisplayName().equals(Config.getS("TNT.Name"))) {
+				if (config.getBoolean("TNT.Enabled") && item.hasItemMeta() && item.getItemMeta().getDisplayName().equals(Config.getS("TNT.Name"))) {
 
 					Location handLocation = p.getLocation();
 					handLocation.setY(handLocation.getY() + 1.0);
@@ -109,6 +109,8 @@ public class ItemListener implements Listener {
 					Entity entity = p.getWorld().spawn(handLocation, TNTPrimed.class);
 					entity.setVelocity(direction.multiply(1.5));
 					entity.setCustomName(p.getName());
+
+					e.setCancelled(true);
 
 					useAbilityItem(p, p, item, "none");
 
@@ -240,7 +242,7 @@ public class ItemListener implements Listener {
 					Toolkit.setMainHandItem(p, item);
 
 					if (resources.getAbilities().getBoolean("Abilities.Archer.Message.Enabled")) {
-						p.sendMessage(Config.tr(resources.getAbilities().getString("Abilities.Archer.Message.Fire")));
+						p.sendMessage(resources.getAbilities().getString("Abilities.Archer.Message.Fire"));
 					}
 
 					XSound.play(p, "UI_BUTTON_CLICK, 1, 1");
@@ -277,6 +279,8 @@ public class ItemListener implements Listener {
 
 					}
 
+					e.setCancelled(true);
+
 				}
 
 			} else if (item.hasItemMeta()) {
@@ -291,9 +295,10 @@ public class ItemListener implements Listener {
 
 						if (item.getType() == XMaterial.matchXMaterial(config.getString(itemPath + ".Material")).get().parseMaterial().get()) {
 
-							if (item.getItemMeta().getDisplayName().equals(Config.tr(config.getString(itemPath + ".Name")))) {
+							if (item.getItemMeta().getDisplayName().equals(Toolkit.translate(config.getString(itemPath + ".Name")))) {
 
 								Toolkit.runCommands(p, config.getStringList(itemPath + ".Commands"), "none", "none");
+								e.setCancelled(true);
 
 							}
 
@@ -371,7 +376,7 @@ public class ItemListener implements Listener {
 
 				ItemMeta meta = interactedItem.getItemMeta();
 
-				if (Config.tr(meta.getDisplayName()).equals(abilConfig.getString("Abilities." + kitName + ".Item.Name"))) {
+				if (Toolkit.translate(meta.getDisplayName()).equals(abilConfig.getString("Abilities." + kitName + ".Item.Name"))) {
 
 					if (p.hasPermission("kp.ability." + kitName.toLowerCase())) {
 
