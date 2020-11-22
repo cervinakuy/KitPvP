@@ -3,6 +3,7 @@ package com.planetgallium.kitpvp.api;
 import com.planetgallium.kitpvp.item.AttributeWriter;
 import com.planetgallium.kitpvp.util.Cooldown;
 import com.planetgallium.kitpvp.util.Resource;
+import com.planetgallium.kitpvp.util.Toolkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -154,7 +155,7 @@ public class Kit {
             }
         }
 
-        if (offhand != null) {
+        if (offhand != null && Toolkit.versionToNumber() >= 19) {
             player.getInventory().setItemInOffHand(offhand);
         }
 
