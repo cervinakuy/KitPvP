@@ -1,5 +1,7 @@
 package com.planetgallium.kitpvp.listener;
 
+import com.planetgallium.kitpvp.util.Resource;
+import com.planetgallium.kitpvp.util.Resources;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -8,17 +10,20 @@ import org.bukkit.event.player.PlayerJoinEvent;
 
 import com.planetgallium.kitpvp.Game;
 import com.planetgallium.kitpvp.game.Arena;
-import com.planetgallium.kitpvp.util.Config;
 import com.planetgallium.kitpvp.util.Toolkit;
 
 public class JoinListener implements Listener {
 
-	private Game game;
+	private Game plugin;
 	private Arena arena;
+	private Resources resources;
+	private Resource config;
 	
-	public JoinListener(Game game, Arena arena) {
-		this.game = game;
-		this.arena = arena;
+	public JoinListener(Game plugin) {
+		this.plugin = plugin;
+		this.arena = plugin.getArena();
+		this.resources = plugin.getResources();
+		this.config = resources.getConfig();
 	}
 	
 	@EventHandler
@@ -27,33 +32,33 @@ public class JoinListener implements Listener {
 		Player p = e.getPlayer();
 		
 		// Update checker
-		if (Game.getInstance().needsUpdate()) {
+		if (plugin.needsUpdate()) {
 			
 			if (p.isOp()) {
 				
-				p.sendMessage(Config.tr("&7[&b&lKIT-PVP&7] &aAn update was found: v" + Game.getInstance().getUpdateVersion() + " https://www.spigotmc.org/resources/27107/"));
+				p.sendMessage(Toolkit.translate("&7[&b&lKIT-PVP&7] &aAn update was found: v" + plugin.getUpdateVersion() + " https://www.spigotmc.org/resources/27107/"));
 				
 			}
 			
 		}
 
-		game.getDatabase().addPlayer(p);
+		plugin.getDatabase().addPlayer(p);
 		arena.getStats().createPlayer(p.getName(), p.getUniqueId());
 		
 		if (Toolkit.inArena(p)) {
 			
-			if (Config.getB("Arena.ClearInventoryOnJoin")) {
+			if (config.getBoolean("Arena.ClearInventoryOnJoin")) {
 				p.getInventory().clear();
 				p.getInventory().setArmorContents(null);
 			}
 			
-			arena.addPlayer(p, Config.getB("Arena.ToSpawnOnJoin"), Config.getB("Arena.GiveItemsOnJoin"));
+			arena.addPlayer(p, config.getBoolean("Arena.ToSpawnOnJoin"), config.getBoolean("Arena.GiveItemsOnJoin"));
 			
 		}
 
 		if (p.getName().equals("cervinakuy")) {
 			
-			e.setJoinMessage(Config.tr("&7[&b&lKIT-PVP&7] &7The Developer of &bKitPvP &7has joined the server."));
+			e.setJoinMessage(Toolkit.translate("&7[&b&lKIT-PVP&7] &7The Developer of &bKitPvP &7has joined the server."));
 			
 		}
 		
@@ -66,18 +71,18 @@ public class JoinListener implements Listener {
 
 		if (Toolkit.inArena(p)) {
 
-			if (Config.getB("Arena.ClearInventoryOnJoin")) {
+			if (config.getBoolean("Arena.ClearInventoryOnJoin")) {
 				p.getInventory().clear();
 				p.getInventory().setArmorContents(null);
 			}
 			
-			arena.addPlayer(p, Config.getB("Arena.ToSpawnOnJoin"), Config.getB("Arena.GiveItemsOnJoin"));
+			arena.addPlayer(p, config.getBoolean("Arena.ToSpawnOnJoin"), config.getBoolean("Arena.GiveItemsOnJoin"));
 			
 		} else if (Toolkit.inArena(e.getFrom())) {
 
 			// if they left from the kitpvp arena
 			
-			if (Config.getB("Arena.ClearInventoryOnLeave")) {
+			if (config.getBoolean("Arena.ClearInventoryOnLeave")) {
 				p.getInventory().clear();
 				p.getInventory().setArmorContents(null);
 			}

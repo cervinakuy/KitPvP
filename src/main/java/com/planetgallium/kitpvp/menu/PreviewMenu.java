@@ -3,12 +3,12 @@ package com.planetgallium.kitpvp.menu;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.cryptomorin.xseries.XMaterial;
 import com.planetgallium.kitpvp.api.Kit;
 import com.planetgallium.kitpvp.util.CacheManager;
 import org.bukkit.entity.Player;
 
 import com.planetgallium.kitpvp.util.Menu;
-import com.planetgallium.kitpvp.util.XMaterial;
 import org.bukkit.potion.PotionEffect;
 
 public class PreviewMenu {
@@ -47,7 +47,7 @@ public class PreviewMenu {
 			effectsLore.add("&7None");
 		}
 
-		previewMenu.addItem("&a&lPotion Effects", XMaterial.BREWING_STAND.parseMaterial().get(), effectsLore, 4);
+		previewMenu.addItem("&a&lPotion Effects", XMaterial.BREWING_STAND.parseMaterial(), effectsLore, 4);
 
 		//			HOTBAR			//
 
@@ -75,7 +75,7 @@ public class PreviewMenu {
 			}
 		}
 
-		previewMenu.addItem("&cBack to Kits", XMaterial.ARROW.parseMaterial().get(), new ArrayList<String>(), 8);
+		previewMenu.addItem("&cBack to Kits", XMaterial.ARROW.parseMaterial(), new ArrayList<String>(), 8);
 
 		CacheManager.getPreviewMenuCache().put(kit.getName(), previewMenu);
 

@@ -15,18 +15,16 @@ public class ChatListener implements Listener {
 
 	private Arena arena;
 	private Resources resources;
-	private FileConfiguration config;
 	
 	public ChatListener(Game plugin) {
 		this.arena = plugin.getArena();
-		this.config = plugin.getConfig();
 		this.resources = plugin.getResources();
 	}
 	
 	@EventHandler
 	public void onChat(AsyncPlayerChatEvent e) {
 		
-		if (config.getBoolean("Chat.Enabled") && Toolkit.inArena(e.getPlayer())) {
+		if (resources.getConfig().getBoolean("Chat.Enabled") && Toolkit.inArena(e.getPlayer())) {
 			
 			Player p = e.getPlayer();
 
@@ -34,7 +32,7 @@ public class ChatListener implements Listener {
 			String levelPrefix = resources.getLevels().getString("Levels.Levels." + playerLevel + ".Prefix")
 					.replace("%level%", playerLevel);
 
-			String format = config.getString("Chat.Format")
+			String format = resources.getConfig().getString("Chat.Format")
 					.replace("%player%", "%s")
 					.replace("%message%", "%s")
 					.replace("%level%", levelPrefix);

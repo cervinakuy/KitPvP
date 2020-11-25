@@ -4,9 +4,9 @@ import com.planetgallium.kitpvp.Game;
 import com.planetgallium.kitpvp.game.Arena;
 import com.planetgallium.kitpvp.menu.KitHolder;
 import com.planetgallium.kitpvp.menu.PreviewHolder;
+import com.planetgallium.kitpvp.util.Resource;
 import com.planetgallium.kitpvp.util.Resources;
 import com.planetgallium.kitpvp.util.Toolkit;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -18,11 +18,11 @@ import org.bukkit.scheduler.BukkitRunnable;
 public class MenuListener implements Listener {
 
     private Arena arena;
-    private FileConfiguration menuConfig;
+    private Resource menuConfig;
 
-    public MenuListener(Arena arena, Resources resources) {
-        this.arena = arena;
-        this.menuConfig = resources.getMenu();
+    public MenuListener(Game plugin) {
+        this.arena = plugin.getArena();
+        this.menuConfig = plugin.getResources().getMenu();
     }
 
     @EventHandler

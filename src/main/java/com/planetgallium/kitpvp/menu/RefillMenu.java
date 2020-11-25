@@ -1,15 +1,17 @@
 package com.planetgallium.kitpvp.menu;
 
-import com.planetgallium.kitpvp.util.Config;
+import com.cryptomorin.xseries.XMaterial;
 import com.planetgallium.kitpvp.util.Menu;
-import com.planetgallium.kitpvp.util.XMaterial;
+import com.planetgallium.kitpvp.util.Resources;
 import org.bukkit.entity.Player;
 
 public class RefillMenu {
 
+    private Resources resources;
     private Menu menu;
 
-    public RefillMenu() {
+    public RefillMenu(Resources resources) {
+        this.resources = resources;
         create();
     }
 
@@ -19,7 +21,7 @@ public class RefillMenu {
 
         for (int i = 0; i < menu.getSize(); i++) {
 
-            menu.addItem(Config.getS("Soups.Name"), XMaterial.MUSHROOM_STEW.parseMaterial().get(), Config.getC().getStringList("Soups.Lore"), i);
+            menu.addItem(resources.getConfig().getString("Soups.Name"), XMaterial.MUSHROOM_STEW.parseMaterial(), resources.getConfig().getStringList("Soups.Lore"), i);
 
         }
 

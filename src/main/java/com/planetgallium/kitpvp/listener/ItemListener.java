@@ -1,12 +1,13 @@
 package com.planetgallium.kitpvp.listener;
 
-import java.util.List;
 import java.util.Random;
 
+import com.cryptomorin.xseries.XMaterial;
+import com.cryptomorin.xseries.XSound;
 import com.planetgallium.kitpvp.api.Kit;
+import com.planetgallium.kitpvp.util.Resource;
 import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -28,24 +29,21 @@ import org.bukkit.util.Vector;
 
 import com.planetgallium.kitpvp.Game;
 import com.planetgallium.kitpvp.game.Arena;
-import com.planetgallium.kitpvp.util.Config;
 import com.planetgallium.kitpvp.util.Resources;
 import com.planetgallium.kitpvp.util.Toolkit;
-import com.planetgallium.kitpvp.util.XMaterial;
-import com.planetgallium.kitpvp.util.XSound;
 
 public class ItemListener implements Listener {
 	
 	private Arena arena;
 	private Resources resources;
-	private FileConfiguration config;
-	private FileConfiguration abilConfig;
+	private Resource config;
+	private Resource abilities;
 	
-	public ItemListener(Game plugin, Arena arena, Resources resources) {
-		this.arena = arena;
-		this.resources = resources;
-		this.config = plugin.getConfig();
-		this.abilConfig = resources.getAbilities();
+	public ItemListener(Game plugin) {
+		this.arena = plugin.getArena();
+		this.resources = plugin.getResources();
+		this.config = resources.getConfig();
+		this.abilities = resources.getAbilities();
 	}
 	
 	@EventHandler
@@ -58,7 +56,7 @@ public class ItemListener implements Listener {
 			ItemStack item = Toolkit.getMainHandItem(p);
 			ItemMeta meta = item.getItemMeta();
 
-			if (item.getType() == XMaterial.SADDLE.parseMaterial().get()) {
+			if (item.getType() == XMaterial.SADDLE.parseMaterial()) {
 
 				if (isAbilityItem(p, "Kangaroo", item)) {
 
@@ -69,7 +67,7 @@ public class ItemListener implements Listener {
 
 				}
 
-			} else if (item.getType() == XMaterial.IRON_HOE.parseMaterial().get()) {
+			} else if (item.getType() == XMaterial.IRON_HOE.parseMaterial()) {
 
 				if (isAbilityItem(p, "Soldier", item)) {
 
@@ -81,7 +79,7 @@ public class ItemListener implements Listener {
 
 				}
 
-			} else if (item.getType() == XMaterial.GLASS_BOTTLE.parseMaterial().get()) {
+			} else if (item.getType() == XMaterial.GLASS_BOTTLE.parseMaterial()) {
 
 				if (isAbilityItem(p, "Witch", item)) {
 
@@ -98,9 +96,9 @@ public class ItemListener implements Listener {
 
 				}
 
-			} else if (item.getType() == XMaterial.TNT.parseMaterial().get()) {
+			} else if (item.getType() == XMaterial.TNT.parseMaterial()) {
 
-				if (config.getBoolean("TNT.Enabled") && item.hasItemMeta() && item.getItemMeta().getDisplayName().equals(Config.getS("TNT.Name"))) {
+				if (config.getBoolean("TNT.Enabled") && item.hasItemMeta() && item.getItemMeta().getDisplayName().equals(config.getString("TNT.Name"))) {
 
 					Location handLocation = p.getLocation();
 					handLocation.setY(handLocation.getY() + 1.0);
@@ -116,11 +114,11 @@ public class ItemListener implements Listener {
 
 				}
 
-			} else if (item.getType() == XMaterial.ENDER_EYE.parseMaterial().get()) {
+			} else if (item.getType() == XMaterial.ENDER_EYE.parseMaterial()) {
 
 				if (isAbilityItem(p, "Warper", item)) {
 
-					String[] nearestData = Toolkit.getNearestPlayer(p, Config.getI("PlayerTracker.TrackBelowY"));
+					String[] nearestData = Toolkit.getNearestPlayer(p, config.getInt("PlayerTracker.TrackBelowY"));
 
 					if (Bukkit.getServer().getOnlinePlayers().size() > 1 && nearestData != null) {
 
@@ -139,16 +137,16 @@ public class ItemListener implements Listener {
 							useAbilityItem(p, p, item, "Warper");
 
 						} else {
-							p.sendMessage(Config.tr(resources.getMessages().getString("Messages.Other.Players")));
+							p.sendMessage(Toolkit.translate(resources.getMessages().getString("Messages.Other.Players")));
 						}
 
 					} else {
-						p.sendMessage(Config.tr(resources.getMessages().getString("Messages.Other.Players")));
+						p.sendMessage(Toolkit.translate(resources.getMessages().getString("Messages.Other.Players")));
 					}
 
 				}
 
-			} else if (item.getType() == XMaterial.NETHER_STAR.parseMaterial().get()) {
+			} else if (item.getType() == XMaterial.NETHER_STAR.parseMaterial()) {
 
 				if (isAbilityItem(p, "Ninja", item)) {
 
@@ -193,7 +191,7 @@ public class ItemListener implements Listener {
 
 				}
 
-			} else if (item.getType() == XMaterial.COAL.parseMaterial().get() && item.hasItemMeta()) {
+			} else if (item.getType() == XMaterial.COAL.parseMaterial() && item.hasItemMeta()) {
 
 				if (isAbilityItem(p, "Bomber", item)) {
 
@@ -211,9 +209,9 @@ public class ItemListener implements Listener {
 								Entity entity = p.getWorld().spawn(p.getLocation(), TNTPrimed.class);
 								entity.setCustomName(p.getName());
 
-								String bomberSound = resources.getAbilities().getString("Abilities.Bomber.Sound.Sound");
+								String bomberSound = abilities.getString("Abilities.Bomber.Sound.Sound");
 								p.playSound(p.getLocation(), XSound.matchXSound(bomberSound).get().parseSound(),
-										1, resources.getAbilities().getInt("Abilities.Bomber.Sound.Pitch"));
+										1, abilities.getInt("Abilities.Bomber.Sound.Pitch"));
 
 								t--;
 
@@ -231,45 +229,45 @@ public class ItemListener implements Listener {
 
 				}
 
-			} else if (item.getType() == XMaterial.SLIME_BALL.parseMaterial().get() && item.hasItemMeta()) {
+			} else if (item.getType() == XMaterial.SLIME_BALL.parseMaterial() && item.hasItemMeta()) {
 
-				if (item.getItemMeta().getDisplayName().equals(abilConfig.getString("Abilities.Archer.Item.NoFire"))) {
+				if (item.getItemMeta().getDisplayName().equals(abilities.getString("Abilities.Archer.Item.NoFire"))) {
 
-					item.setType(XMaterial.MAGMA_CREAM.parseMaterial().get());
-					meta.setDisplayName(Config.tr(resources.getAbilities().getString("Abilities.Archer.Item.Fire")));
+					item.setType(XMaterial.MAGMA_CREAM.parseMaterial());
+					meta.setDisplayName(Toolkit.translate(abilities.getString("Abilities.Archer.Item.Fire")));
 					item.setItemMeta(meta);
 
 					Toolkit.setMainHandItem(p, item);
 
-					if (resources.getAbilities().getBoolean("Abilities.Archer.Message.Enabled")) {
-						p.sendMessage(resources.getAbilities().getString("Abilities.Archer.Message.Fire"));
+					if (abilities.getBoolean("Abilities.Archer.Message.Enabled")) {
+						p.sendMessage(abilities.getString("Abilities.Archer.Message.Fire"));
 					}
 
 					XSound.play(p, "UI_BUTTON_CLICK, 1, 1");
 
 				}
 
-			} else if (item.getType() == XMaterial.MAGMA_CREAM.parseMaterial().get() && item.hasItemMeta()) {
+			} else if (item.getType() == XMaterial.MAGMA_CREAM.parseMaterial() && item.hasItemMeta()) {
 
-				if (item.getItemMeta().getDisplayName().equals(abilConfig.getString("Abilities.Archer.Item.Fire"))) {
+				if (item.getItemMeta().getDisplayName().equals(abilities.getString("Abilities.Archer.Item.Fire"))) {
 
-					item.setType(XMaterial.SLIME_BALL.parseMaterial().get());
-					meta.setDisplayName(Config.tr(resources.getAbilities().getString("Abilities.Archer.Item.NoFire")));
+					item.setType(XMaterial.SLIME_BALL.parseMaterial());
+					meta.setDisplayName(Toolkit.translate(abilities.getString("Abilities.Archer.Item.NoFire")));
 					item.setItemMeta(meta);
 
 					Toolkit.setMainHandItem(p, item);
 
-					if (resources.getAbilities().getBoolean("Abilities.Archer.Message.Enabled")) {
-						p.sendMessage(Config.tr(resources.getAbilities().getString("Abilities.Archer.Message.NoFire")));
+					if (abilities.getBoolean("Abilities.Archer.Message.Enabled")) {
+						p.sendMessage(Toolkit.translate(abilities.getString("Abilities.Archer.Message.NoFire")));
 					}
 
 					XSound.play(p, "UI_BUTTON_CLICK, 1, 1");
 
 				}
 
-			} else if (item.getType() == XMaterial.matchXMaterial(config.getString("Items.Kits.Material")).get().parseMaterial().get()) {
+			} else if (item.getType() == XMaterial.matchXMaterial(config.getString("Items.Kits.Material")).get().parseMaterial()) {
 
-				if (meta.getDisplayName().equals(Config.getS("Items.Kits.Name"))) {
+				if (meta.getDisplayName().equals(config.getString("Items.Kits.Name"))) {
 
 					Toolkit.runCommands(p, config.getStringList("Items.Kits.Commands"), "none", "none");
 
@@ -293,7 +291,7 @@ public class ItemListener implements Listener {
 
 					if (config.getBoolean(itemPath + ".Enabled")) {
 
-						if (item.getType() == XMaterial.matchXMaterial(config.getString(itemPath + ".Material")).get().parseMaterial().get()) {
+						if (item.getType() == XMaterial.matchXMaterial(config.getString(itemPath + ".Material")).get().parseMaterial()) {
 
 							if (item.getItemMeta().getDisplayName().equals(Toolkit.translate(config.getString(itemPath + ".Name")))) {
 
@@ -324,7 +322,7 @@ public class ItemListener implements Listener {
 			ItemStack item = Toolkit.getMainHandItem(p);
 			Player damagedPlayer = (Player) e.getRightClicked();
 
-			if (Config.getB("Arena.NoKitProtection")) {
+			if (config.getBoolean("Arena.NoKitProtection")) {
 
 				if (!arena.getKits().hasKit(damagedPlayer.getName())) {
 					return;
@@ -332,7 +330,7 @@ public class ItemListener implements Listener {
 
 			}
 
-			if (item.getType() == XMaterial.BLAZE_ROD.parseMaterial().get()) {
+			if (item.getType() == XMaterial.BLAZE_ROD.parseMaterial()) {
 
 				if (isAbilityItem(p, "Thunderbolt", item)) {
 
@@ -344,7 +342,7 @@ public class ItemListener implements Listener {
 
 				}
 
-			} else if (item.getType() == XMaterial.GHAST_TEAR.parseMaterial().get()) {
+			} else if (item.getType() == XMaterial.GHAST_TEAR.parseMaterial()) {
 
 				if (isAbilityItem(p, "Vampire", item)) {
 
@@ -376,7 +374,7 @@ public class ItemListener implements Listener {
 
 				ItemMeta meta = interactedItem.getItemMeta();
 
-				if (Toolkit.translate(meta.getDisplayName()).equals(abilConfig.getString("Abilities." + kitName + ".Item.Name"))) {
+				if (Toolkit.translate(meta.getDisplayName()).equals(abilities.getString("Abilities." + kitName + ".Item.Name"))) {
 
 					if (p.hasPermission("kp.ability." + kitName.toLowerCase())) {
 
@@ -402,8 +400,8 @@ public class ItemListener implements Listener {
 
 		String abilityPrefix = "Abilities." + kitName;
 
-		if (abilConfig.getBoolean(abilityPrefix + ".Message.Enabled")) {
-			String abilityMessage = abilConfig.getString(abilityPrefix + ".Message.Message");
+		if (abilities.getBoolean(abilityPrefix + ".Message.Enabled")) {
+			String abilityMessage = abilities.getString(abilityPrefix + ".Message.Message");
 			if (clicked != null) abilityMessage = abilityMessage.replace("%player%", clicked.getName());
 			p.sendMessage(abilityMessage);
 		}
@@ -411,8 +409,8 @@ public class ItemListener implements Listener {
 		abilityItem.setAmount(abilityItem.getAmount() - 1);
 		Toolkit.setMainHandItem(p, abilityItem);
 
-		if (abilConfig.getBoolean(abilityPrefix + ".Sound.Enabled")) {
-			XSound.play(p, abilConfig.getString(abilityPrefix + ".Sound.Sound") + ", 1, " + abilConfig.getInt(abilityPrefix + ".Sound.Pitch"));
+		if (abilities.getBoolean(abilityPrefix + ".Sound.Enabled")) {
+			XSound.play(p, abilities.getString(abilityPrefix + ".Sound.Sound") + ", 1, " + abilities.getInt(abilityPrefix + ".Sound.Pitch"));
 		}
 
 	}
@@ -428,14 +426,14 @@ public class ItemListener implements Listener {
 				
 				if (p.hasPermission("kp.ability.archer")) {
 
-					int ammoSlot = getItemByMeta(Material.MAGMA_CREAM, resources.getAbilities().getString("Abilities.Archer.Item.Fire"), p);
+					int ammoSlot = getItemByMeta(Material.MAGMA_CREAM, abilities.getString("Abilities.Archer.Item.Fire"), p);
 
 					if (ammoSlot != -1) {
 
 						ItemStack ammo = p.getInventory().getItem(ammoSlot);
 
 						e.getProjectile().setFireTicks(1000);
-						p.playSound(p.getLocation(), XSound.matchXSound(resources.getAbilities().getString("Abilities.Archer.Sound.Sound")).get().parseSound(), 1, (int) resources.getAbilities().getInt("Abilities.Archer.Sound.Pitch"));
+						p.playSound(p.getLocation(), XSound.matchXSound(abilities.getString("Abilities.Archer.Sound.Sound")).get().parseSound(), 1, (int) abilities.getInt("Abilities.Archer.Sound.Pitch"));
 
 						if (ammo.getAmount() == 1) {
 							p.getInventory().setItem(ammoSlot, new ItemStack(Material.AIR));
@@ -459,7 +457,7 @@ public class ItemListener implements Listener {
 			ItemStack item = p.getInventory().getItem(i);
 			if (item != null) {
 				if (item.getType() == type) {
-					if (Config.tr(item.getItemMeta().getDisplayName()).equals(displayName)) {
+					if (Toolkit.translate(item.getItemMeta().getDisplayName()).equals(displayName)) {
 						return i;
 					}
 				}
@@ -511,11 +509,11 @@ public class ItemListener implements Listener {
 
 											shooter.getInventory().setItem(slot, potionStack);
 
-											if (resources.getAbilities().getBoolean("Abilities.Witch.Message.Enabled")) {
-												shooter.sendMessage(Config.tr(resources.getAbilities().getString("Abilities.Witch.Message.Message")));
+											if (abilities.getBoolean("Abilities.Witch.Message.Enabled")) {
+												shooter.sendMessage(Toolkit.translate(abilities.getString("Abilities.Witch.Message.Message")));
 											}
 
-											shooter.playSound(shooter.getLocation(), XSound.matchXSound(resources.getAbilities().getString("Abilities.Witch.Sound.Sound")).get().parseSound(), 1, resources.getAbilities().getInt("Abliities.Witch.Sound.Pitch"));
+											shooter.playSound(shooter.getLocation(), XSound.matchXSound(abilities.getString("Abilities.Witch.Sound.Sound")).get().parseSound(), 1, abilities.getInt("Abliities.Witch.Sound.Pitch"));
 
 										}
 
@@ -542,7 +540,7 @@ public class ItemListener implements Listener {
 							} else {
 
 								e.setCancelled(true);
-								shooter.sendMessage(Config.tr(resources.getMessages().getString("Messages.General.Permission")));
+								shooter.sendMessage(Toolkit.translate(resources.getMessages().getString("Messages.General.Permission")));
 
 							}
 
@@ -595,13 +593,13 @@ public class ItemListener implements Listener {
 							shooter.teleport(damagedPlayer);
 							damagedPlayer.teleport(shooterLocation);
 
-							if (abilConfig.getBoolean("Abilities.Trickster.Message.Enabled")) {
-								shooter.sendMessage(Config.tr(resources.getAbilities().getString("Abilities.Trickster.Message.Message").replace("%player%", damagedPlayer.getName())));
+							if (abilities.getBoolean("Abilities.Trickster.Message.Enabled")) {
+								shooter.sendMessage(Toolkit.translate(abilities.getString("Abilities.Trickster.Message.Message").replace("%player%", damagedPlayer.getName())));
 							}
 
-							if (abilConfig.getBoolean("Abilities.Trickster.Sound.Enabled")) {
-								XSound.play(shooter, abilConfig.getString("Abilities.Trickster.Sound.Sound") + " 1 " + abilConfig.getInt("Abilities.Trickster.Sound.Pitch"));
-								XSound.play(damagedPlayer, abilConfig.getString("Abilities.Trickster.Sound.Sound") + " 1 " + abilConfig.getInt("Abilities.Trickster.Sound.Pitch"));
+							if (abilities.getBoolean("Abilities.Trickster.Sound.Enabled")) {
+								XSound.play(shooter, abilities.getString("Abilities.Trickster.Sound.Sound") + " 1 " + abilities.getInt("Abilities.Trickster.Sound.Pitch"));
+								XSound.play(damagedPlayer, abilities.getString("Abilities.Trickster.Sound.Sound") + " 1 " + abilities.getInt("Abilities.Trickster.Sound.Pitch"));
 							}
 
 						}

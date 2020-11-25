@@ -1,18 +1,18 @@
 package com.planetgallium.kitpvp.command;
 
+import com.planetgallium.kitpvp.util.Resource;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import com.planetgallium.kitpvp.util.Config;
 import com.planetgallium.kitpvp.util.Resources;
 
 public class KitCommand implements CommandExecutor {
 
-	private Resources resources;
+	private Resource messages;
 	
 	public KitCommand(Resources resources) {
-		this.resources = resources;
+		this.messages = resources.getMessages();
 	}
 	
 	@Override
@@ -24,7 +24,7 @@ public class KitCommand implements CommandExecutor {
 
 			if (args.length == 0) {
 
-				p.sendMessage(resources.getMessages().getString("Messages.Error.Arguments"));
+				p.sendMessage(messages.getString("Messages.Error.Arguments"));
 				return true;
 
 			} else if (args.length == 1) {

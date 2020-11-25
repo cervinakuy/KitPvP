@@ -56,7 +56,7 @@ public class Database {
 
 				Class.forName("com.mysql.jdbc.Driver");
 				this.connection = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database + "?autoReconnect=true", username, password);
-				Bukkit.getConsoleSender().sendMessage(Config.tr("&7[&b&lKIT-PVP&7] &aMySQL was successfully connected on port " + port + "."));
+				Bukkit.getConsoleSender().sendMessage(Toolkit.translate("&7[&b&lKIT-PVP&7] &aMySQL was successfully connected on port " + port + "."));
 				isEnabled = true;
 				
 			}

@@ -14,7 +14,7 @@ public class Menus {
     public Menus(Resources resources) {
         this.kitMenu = new KitMenu(resources);
         this.previewMenu = new PreviewMenu();
-        this.refillMenu = new RefillMenu();
+        this.refillMenu = new RefillMenu(resources);
     }
 
     public KitMenu getKitMenu() { return kitMenu; }

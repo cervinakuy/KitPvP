@@ -1,11 +1,9 @@
 package com.planetgallium.kitpvp.listener;
 
+import com.cryptomorin.xseries.XMaterial;
 import com.planetgallium.kitpvp.Game;
-import com.planetgallium.kitpvp.api.Ability;
-import com.planetgallium.kitpvp.api.Kit;
+import com.planetgallium.kitpvp.util.Resource;
 import org.bukkit.GameMode;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -22,21 +20,19 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.event.weather.WeatherChangeEvent;
 import com.planetgallium.kitpvp.game.Arena;
-import com.planetgallium.kitpvp.util.Config;
 import com.planetgallium.kitpvp.util.Resources;
 import com.planetgallium.kitpvp.util.Toolkit;
-import com.planetgallium.kitpvp.util.XMaterial;
 
 public class ArenaListener implements Listener {
 	
 	private Arena arena;
 	private Resources resources;
-	private FileConfiguration config;
+	private Resource config;
 	
-	public ArenaListener(Game plugin, Arena arena, Resources resources) {
-		this.arena = arena;
-		this.resources = resources;
-		this.config = plugin.getConfig();
+	public ArenaListener(Game plugin) {
+		this.arena = plugin.getArena();
+		this.resources = plugin.getResources();
+		this.config = resources.getConfig();
 	}
 	
 	@EventHandler
@@ -72,7 +68,7 @@ public class ArenaListener implements Listener {
 	@EventHandler
 	public void onItemDamage(PlayerItemDamageEvent e) {
 
-		if (Toolkit.inArena(e.getPlayer()) && Config.getB("Arena.PreventItemDurabilityDamage")) {
+		if (Toolkit.inArena(e.getPlayer()) && config.getBoolean("Arena.PreventItemDurabilityDamage")) {
 
 			e.setCancelled(true);
 		
@@ -85,7 +81,7 @@ public class ArenaListener implements Listener {
 		
 		Player p = e.getPlayer();
 		
-		if (Toolkit.inArena(p) && Config.getB("Arena.PreventItemDropping")) {
+		if (Toolkit.inArena(p) && config.getBoolean("Arena.PreventItemDropping")) {
 			
 			e.setCancelled(!p.hasPermission("kp.arena.itemdropping"));
 			
@@ -98,7 +94,7 @@ public class ArenaListener implements Listener {
 		
 		Player p = (Player) e.getEntity();
 		
-		if (Toolkit.inArena(p) && Config.getB("Arena.PreventHunger")) {
+		if (Toolkit.inArena(p) && config.getBoolean("Arena.PreventHunger")) {
 			
 			e.setCancelled(true);
 			
@@ -109,7 +105,7 @@ public class ArenaListener implements Listener {
     @EventHandler
     public void onExplode(EntityExplodeEvent e) {
 	
-    	if (Toolkit.inArena(e.getEntity()) && Config.getB("Arena.PreventBlockBreaking")) {
+    	if (Toolkit.inArena(e.getEntity()) && config.getBoolean("Arena.PreventBlockBreaking")) {
 
 			e.setCancelled(true);
 			
@@ -126,7 +122,7 @@ public class ArenaListener implements Listener {
 
 				Player damagedPlayer = (Player) e.getEntity();
 
-				if (Config.getB("Arena.NoKitProtection")) {
+				if (config.getBoolean("Arena.NoKitProtection")) {
 
 					if (!arena.getKits().hasKit(damagedPlayer.getName())) {
 
@@ -153,7 +149,7 @@ public class ArenaListener implements Listener {
 	@EventHandler
 	public void onWeatherChange(WeatherChangeEvent e) {
 		
-		if (Toolkit.inArena(e.getWorld()) && Config.getB("Arena.KeepWeatherAtSunny")) {
+		if (Toolkit.inArena(e.getWorld()) && config.getBoolean("Arena.KeepWeatherAtSunny")) {
 			
 			if (e.toWeatherState()) {
 			
@@ -179,7 +175,7 @@ public class ArenaListener implements Listener {
 				
 				if (e.getCause() == DamageCause.BLOCK_EXPLOSION || e.getCause() == DamageCause.ENTITY_EXPLOSION || e.getCause() == DamageCause.FIRE || e.getCause() == DamageCause.FIRE_TICK) {
 					
-					if (Config.getB("Arena.NoKitProtection")) {
+					if (config.getBoolean("Arena.NoKitProtection")) {
 
 						if (!arena.getKits().hasKit(damagedPlayer.getName())) {
 
@@ -191,7 +187,7 @@ public class ArenaListener implements Listener {
 				
 				} else if (e.getCause() == DamageCause.FALL) {
 
-					if (Config.getB("Arena.PreventFallDamage")) {
+					if (config.getBoolean("Arena.PreventFallDamage")) {
 
 						e.setCancelled(true); // only canceling if preventing fall damage is enabled, this allows for WorldGuard to step in
 
@@ -216,7 +212,7 @@ public class ArenaListener implements Listener {
 		
 		if (Toolkit.inArena(p)) {
 			
-			if (Toolkit.getMainHandItem(p).getType() == XMaterial.ENDER_EYE.parseMaterial().get()) {
+			if (Toolkit.getMainHandItem(p).getType() == XMaterial.ENDER_EYE.parseMaterial()) {
 				
 				e.setCancelled(true);
 				
@@ -224,11 +220,11 @@ public class ArenaListener implements Listener {
 			
 			if (e.getClickedBlock() != null) {
 				
-				if (e.getClickedBlock().getType() == XMaterial.CHEST.parseMaterial().get()) {
+				if (e.getClickedBlock().getType() == XMaterial.CHEST.parseMaterial()) {
 					
 					if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
 						
-						if (Config.getB("Arena.PreventChestOpen")) {
+						if (config.getBoolean("Arena.PreventChestOpen")) {
 							
 							e.setCancelled(true);
 							

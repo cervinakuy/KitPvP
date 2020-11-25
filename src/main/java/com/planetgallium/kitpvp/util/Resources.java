@@ -13,7 +13,8 @@ public class Resources {
 
 	private Game plugin;
 	private Map<String, Resource> kits;
-	
+
+	private Resource config;
 	private Resource abilities;
 	private Resource killstreaks;
 	private Resource levels;
@@ -46,6 +47,7 @@ public class Resources {
 			kits.put("Trickster.yml", new Resource(plugin, "kits/Trickster.yml"));
 		}
 
+		config = new Resource(plugin, "config.yml");
 		abilities = new Resource(plugin, "abilities.yml");
 		killstreaks = new Resource(plugin, "killstreaks.yml");
 		levels = new Resource(plugin, "levels.yml");
@@ -63,6 +65,7 @@ public class Resources {
 	
 	public void load() {
 
+		config.load();
 		abilities.load();
 		killstreaks.load();
 		levels.load();
@@ -78,12 +81,13 @@ public class Resources {
 		menu.addCopyDefaultExemption("Menu.Items");
 		menu.copyDefaults();
 
-		levels.addCopyDefaultExemption("Levels.Levels");
+		levels.addCopyDefaultExemption("Levels.Levels.10.Commands");
 		levels.copyDefaults();
 
 		scoreboard.addCopyDefaultExemption("Scoreboard.Lines");
 		scoreboard.copyDefaults();
 
+		config.copyDefaults();
 		abilities.copyDefaults();
 		signs.copyDefaults();
 		
@@ -101,6 +105,7 @@ public class Resources {
 	
 	public void save() {
 
+		config.save();
 		abilities.save();
 		killstreaks.save();
 		levels.save();
@@ -150,7 +155,9 @@ public class Resources {
 		return new ArrayList<String>();
 
 	}
-	
+
+	public Resource getConfig() { return config; }
+
 	public Resource getAbilities() { return abilities; }
 	
 	public Resource getKillStreaks() { return killstreaks; }

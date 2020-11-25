@@ -2,6 +2,8 @@ package com.planetgallium.kitpvp.game;
 
 import java.util.HashMap;
 
+import com.cryptomorin.xseries.XSound;
+import com.planetgallium.kitpvp.util.*;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -11,22 +13,16 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import com.planetgallium.kitpvp.util.Config;
-import com.planetgallium.kitpvp.util.Resources;
-import com.planetgallium.kitpvp.util.Title;
-import com.planetgallium.kitpvp.util.Toolkit;
-import com.planetgallium.kitpvp.util.XSound;
-
 public class KillStreaks implements Listener {
 
 	private Resources resources;
-	
+	private Resource killConfig;
 	private Title title = new Title();
 	private HashMap<String, Integer> kills = new HashMap<String, Integer>();
-	private FileConfiguration killConfig;
 	
 	public KillStreaks(Resources resources) {
 		this.resources = resources;
+		this.killConfig = resources.getKillStreaks();
 	}
 	
 	@EventHandler
@@ -69,15 +65,14 @@ public class KillStreaks implements Listener {
 	@EventHandler
 	public void removeStreak(PlayerQuitEvent e) {
 
-		if (Config.getB("Arena.ResetKillStreakOnLeave")) {
+		if (resources.getConfig().getBoolean("Arena.ResetKillStreakOnLeave")) {
 			kills.put(e.getPlayer().getName(), 0);
 		}
 		
 	}
 	
 	public void runCase(String streakType, int streakNumber, String username, World world, Player p) {
-		
-		killConfig = resources.getKillStreaks();
+
 		String pathPrefix = streakType + "." + streakNumber;
 
 		if (killConfig.contains(pathPrefix)) {

@@ -8,7 +8,6 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
 import com.planetgallium.kitpvp.Game;
-import com.planetgallium.kitpvp.util.Config;
 import com.planetgallium.kitpvp.util.Resources;
 import com.planetgallium.kitpvp.util.Toolkit;
 
@@ -30,18 +29,18 @@ public class AttackListener implements Listener {
 			
 			if (Toolkit.inArena(damagedPlayer) && !damagedPlayer.hasMetadata("NPC")) {
 				
-				if (Config.getB("Arena.NoKitProtection")) {
+				if (resources.getConfig().getBoolean("Arena.NoKitProtection")) {
 					
 					if (!Game.getInstance().getArena().getKits().hasKit(damagedPlayer.getName())) {
 						
-						damager.sendMessage(Config.tr(resources.getMessages().getString("Messages.Error.Invincible")));
+						damager.sendMessage(Toolkit.translate(resources.getMessages().getString("Messages.Error.Invincible")));
 						e.setCancelled(true);
 						
 					}
 					
 					if (Game.getInstance().getArena().getKits().hasKit(damagedPlayer.getName()) && !Game.getInstance().getArena().getKits().hasKit(damager.getName())) {
 						
-						damager.sendMessage(Config.tr(resources.getMessages().getString("Messages.Error.Kit")));
+						damager.sendMessage(Toolkit.translate(resources.getMessages().getString("Messages.Error.Kit")));
 						e.setCancelled(true);
 						
 					}
@@ -63,7 +62,7 @@ public class AttackListener implements Listener {
 			
 			if (Toolkit.inArena(damagedPlayer)) {
 				
-				if (Config.getB("Arena.NoKitProtection")) {
+				if (resources.getConfig().getBoolean("Arena.NoKitProtection")) {
 					
 					if (!Game.getInstance().getArena().getKits().hasKit(damagedPlayer.getName())) {
 						

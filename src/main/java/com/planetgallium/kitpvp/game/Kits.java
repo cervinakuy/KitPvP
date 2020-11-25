@@ -1,5 +1,8 @@
 package com.planetgallium.kitpvp.game;
 
+import com.cryptomorin.xseries.XMaterial;
+import com.cryptomorin.xseries.XPotion;
+import com.cryptomorin.xseries.XSound;
 import com.planetgallium.kitpvp.Game;
 import com.planetgallium.kitpvp.api.Ability;
 import com.planetgallium.kitpvp.api.Kit;
@@ -22,6 +25,7 @@ public class Kits {
     private Game plugin;
     private Arena arena;
     private Resources resources;
+    private Resource messages;
 
     private Map<String, String> kits;
 
@@ -29,6 +33,7 @@ public class Kits {
         this.arena = arena;
         this.plugin = plugin;
         this.resources = plugin.getResources();
+        this.messages = resources.getMessages();
 
         this.kits = new HashMap<>();
     }
@@ -67,7 +72,7 @@ public class Kits {
                 menuConfig.load();
                 arena.getMenus().getKitMenu().clearCache();
             } else {
-                fromPlayer.sendMessage(resources.getMessages().getString("Messages.Error.Menu"));
+                fromPlayer.sendMessage(messages.getString("Messages.Error.Menu"));
             }
 
         }
@@ -100,10 +105,10 @@ public class Kits {
         for (int i = 0; i < 36; i++) {
             ItemStack item = p.getInventory().getItem(i);
             if (item != null) {
-                if (item.getType() == XMaterial.MUSHROOM_STEW.parseMaterial().get()) {
+                if (item.getType() == XMaterial.MUSHROOM_STEW.parseMaterial()) {
                     ItemMeta itemMeta = item.getItemMeta();
-                    itemMeta.setDisplayName(Config.getS("Soups.Name"));
-                    itemMeta.setLore(Toolkit.colorizeList(Config.getC().getStringList("Soups.Lore")));
+                    itemMeta.setDisplayName(resources.getConfig().getString("Soups.Name"));
+                    itemMeta.setLore(Toolkit.colorizeList(resources.getConfig().getStringList("Soups.Lore")));
                     item.setItemMeta(itemMeta);
                 }
                 kit.setInventoryItem(i, item);
@@ -178,39 +183,39 @@ public class Kits {
         Player p = player;
 
         if (kit == null) {
-            p.sendMessage(resources.getMessages().getString("Messages.Error.Lost"));
+            p.sendMessage(messages.getString("Messages.Error.Lost"));
             return;
         }
 
         if (!p.hasPermission(kit.getPermission())) {
-            p.sendMessage(resources.getMessages().getString("Messages.General.Permission"));
+            p.sendMessage(messages.getString("Messages.General.Permission"));
             return;
         }
 
         if (!(Toolkit.getPermissionAmount(p, "kp.levelbypass.", 0) >= kit.getLevel() ||
                 arena.getLevels().getLevel(p.getUniqueId()) >= kit.getLevel())) {
-            p.sendMessage(resources.getMessages().getString("Messages.Other.Needed").replace("%level%", String.valueOf(kit.getLevel())));
+            p.sendMessage(messages.getString("Messages.Other.Needed").replace("%level%", String.valueOf(kit.getLevel())));
             return;
         }
 
         if (!(p.hasPermission("kp.cooldownbypass") || !arena.getCooldowns().isOnCooldown(p.getUniqueId(), kit.getName()))) {
-            p.sendMessage(resources.getMessages().getString("Messages.Error.Cooldown").replace("%cooldown%", arena.getCooldowns().getFormattedCooldown(p.getUniqueId(), kit.getName())));
+            p.sendMessage(messages.getString("Messages.Error.Cooldown").replace("%cooldown%", arena.getCooldowns().getFormattedCooldown(p.getUniqueId(), kit.getName())));
             return;
         }
 
         if (hasKit(player.getName())) {
-            p.sendMessage(resources.getMessages().getString("Messages.Error.Selected"));
+            p.sendMessage(messages.getString("Messages.Error.Selected"));
             p.playSound(p.getLocation(), XSound.ENTITY_ENDER_DRAGON_HURT.parseSound(), 1, 1);
             return;
         }
 
-        if (Config.getB("Arena.ClearInventoryOnKit")) {
+        if (resources.getConfig().getBoolean("Arena.ClearInventoryOnKit")) {
             p.getInventory().clear();
             p.getInventory().setArmorContents(null);
         }
 
         kit.apply(p);
-        p.sendMessage(resources.getMessages().getString("Messages.Commands.Kit").replace("%kit%", kit.getName()));
+        p.sendMessage(messages.getString("Messages.Commands.Kit").replace("%kit%", kit.getName()));
         p.playSound(p.getLocation(), XSound.ENTITY_HORSE_ARMOR.parseSound(), 1, 1);
 
         Bukkit.getPluginManager().callEvent(new PlayerSelectKitEvent(player, kit));

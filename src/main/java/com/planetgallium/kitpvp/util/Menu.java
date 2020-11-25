@@ -22,7 +22,7 @@ public class Menu {
 	
 	public Menu(String title, InventoryHolder owner, int size) {
 		
-		menu = Bukkit.createInventory(owner, size, Config.tr(title));
+		menu = Bukkit.createInventory(owner, size, Toolkit.translate(title));
 		this.title = title;
 		this.size = size;
 		this.owner = owner;
@@ -36,7 +36,7 @@ public class Menu {
 		
 		lore.replaceAll(s -> ChatColor.translateAlternateColorCodes('&', s));
 		
-		meta.setDisplayName(Config.tr(name));
+		meta.setDisplayName(Toolkit.translate(name));
 		meta.setLore(lore);
 		item.setItemMeta(meta);
 		
@@ -51,7 +51,7 @@ public class Menu {
 		
 		lore.replaceAll(s -> ChatColor.translateAlternateColorCodes('&', s));
 		
-		meta.setDisplayName(Config.tr(name));
+		meta.setDisplayName(Toolkit.translate(name));
 		meta.setLore(lore);
 		item.setAmount(amount > 0 ? amount : 1);
 		item.setItemMeta(meta);

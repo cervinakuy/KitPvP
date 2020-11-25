@@ -1,5 +1,6 @@
 package com.planetgallium.kitpvp.menu;
 
+import com.cryptomorin.xseries.XMaterial;
 import com.planetgallium.kitpvp.util.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -22,26 +23,26 @@ import java.util.List;
 public class KitMenu {
 
 	private Menu menu;
-	private FileConfiguration menuConfig;
+	private Resources resources;
 	
 	public KitMenu(Resources resources) {
-		this.menuConfig = resources.getMenu();
+		this.resources = resources;
 		create();
 	}
 
 	private void create() {
 
-		this.menu = new Menu(menuConfig.getString("Menu.General.Title"), new KitHolder(), menuConfig.getInt("Menu.General.Size"));
+		this.menu = new Menu(resources.getMenu().getString("Menu.General.Title"), new KitHolder(), resources.getMenu().getInt("Menu.General.Size"));
 
-		ConfigurationSection section = menuConfig.getConfigurationSection("Menu.Items");
+		ConfigurationSection section = resources.getMenu().getConfigurationSection("Menu.Items");
 
 		for (String slot : section.getKeys(false)) {
 
 			String itemPath = "Menu.Items." + slot;
 
-			String name = menuConfig.getString(itemPath + ".Name");
-			Material material = XMaterial.matchXMaterial(menuConfig.getString(itemPath + ".Material")).get().parseMaterial().get();
-			List<String> lore = menuConfig.getStringList(itemPath + ".Lore");
+			String name = resources.getMenu().getString(itemPath + ".Name");
+			Material material = XMaterial.matchXMaterial(resources.getMenu().getString(itemPath + ".Material")).get().parseMaterial();
+			List<String> lore = resources.getMenu().getStringList(itemPath + ".Lore");
 
 			menu.addItem(name, material, lore, Integer.valueOf(slot));
 

@@ -2,11 +2,12 @@ package com.planetgallium.kitpvp.game;
 
 import java.util.*;
 
+import com.cryptomorin.xseries.XMaterial;
+import com.planetgallium.kitpvp.util.Resource;
 import com.planetgallium.kitpvp.util.Toolkit;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -14,9 +15,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.scoreboard.Scoreboard;
 
 import com.planetgallium.kitpvp.Game;
-import com.planetgallium.kitpvp.util.Config;
 import com.planetgallium.kitpvp.util.Resources;
-import com.planetgallium.kitpvp.util.XMaterial;
 
 import me.clip.placeholderapi.PlaceholderAPI;
 
@@ -26,7 +25,7 @@ public class Arena {
 	private Random random;
 
 	private Resources resources;
-	private FileConfiguration config;
+	private Resource config;
 
 	private Map<String, String> hitCache;
 	
@@ -42,7 +41,7 @@ public class Arena {
 		this.random = new Random();
 
 		this.resources = resources;
-		this.config = plugin.getConfig();
+		this.config = resources.getConfig();
 
 		this.hitCache = new HashMap<>();
 		
@@ -60,7 +59,7 @@ public class Arena {
 
 		getKillStreaks().setStreak(p, 0);
 		
-		if (Config.getB("Arena.ClearPotionEffectsOnJoin")) {
+		if (config.getBoolean("Arena.ClearPotionEffectsOnJoin")) {
 			for (PotionEffect effect : p.getActivePotionEffects()) {
 				p.removePotionEffect(effect.getType());
 			}
@@ -72,7 +71,7 @@ public class Arena {
 
 		p.setGameMode(GameMode.SURVIVAL);
 		
-		if (Config.getB("Arena.FancyDeath")) {
+		if (config.getBoolean("Arena.FancyDeath")) {
 			p.setHealth(20.0);
 		}
 		
@@ -101,11 +100,11 @@ public class Arena {
 		
 		getKits().resetKit(p.getName());
 
-		if (Config.getB("Arena.ResetKillStreakOnLeave")) {
+		if (config.getBoolean("Arena.ResetKillStreakOnLeave")) {
 			getKillStreaks().resetStreak(p);
 		}
 		
-//		if (Config.getB("Arena.FancyDeath")) {
+//		if (config.getBoolean("Arena.FancyDeath")) {
 //			p.setHealth(20.0); commenting this out fixes block glitching for some reason
 //		}
 		
@@ -124,7 +123,7 @@ public class Arena {
 	
 	public void deletePlayer(Player p) {
 		
-		if (Config.getB("Arena.ClearInventoryOnLeave")) {
+		if (config.getBoolean("Arena.ClearInventoryOnLeave")) {
 			p.getInventory().clear();
 			p.getInventory().setArmorContents(null);
 		}
@@ -148,7 +147,7 @@ public class Arena {
 				ItemStack item = XMaterial.matchXMaterial(config.getString(itemPath + ".Material")).get().parseItem();
 				ItemMeta meta = item.getItemMeta();
 
-				meta.setDisplayName(Config.tr(config.getString(itemPath + ".Name")));
+				meta.setDisplayName(Toolkit.translate(config.getString(itemPath + ".Name")));
 				item.setItemMeta(meta);
 
 				p.getInventory().setItem(config.getInt(itemPath + ".Slot"), item);
@@ -167,7 +166,7 @@ public class Arena {
 
 		} else {
 
-			p.sendMessage(Config.tr(resources.getMessages().getString("Messages.Error.Arena").replace("%arena%", arenaName)));
+			p.sendMessage(Toolkit.translate(resources.getMessages().getString("Messages.Error.Arena").replace("%arena%", arenaName)));
 
 		}
 
@@ -202,8 +201,8 @@ public class Arena {
 					.replace("%player%", p.getName())
 					.replace("%xp%", String.valueOf(this.getLevels().getExperience(p.getUniqueId())))
 					.replace("%level%", String.valueOf(this.getLevels().getLevel(p.getUniqueId())))
-					.replace("%max_xp%", String.valueOf(resources.getLevels().getInt("Levels.General.Experience.Levelup")))
-					.replace("%max_level%", String.valueOf(resources.getLevels().getInt("Levels.General.Level.Maximum")))
+					.replace("%max_xp%", String.valueOf(resources.getLevels().getInt("Levels.Options.Experience-To-Level-Up")))
+					.replace("%max_level%", String.valueOf(resources.getLevels().getInt("Levels.Options.Maximum-Level")))
 					.replace("%kd%", String.valueOf(this.getStats().getKDRatio(p.getUniqueId())))
 					.replace("%deaths%", String.valueOf(this.getStats().getDeaths(p.getUniqueId())))
 					.replace("%kills%", String.valueOf(this.getStats().getKills(p.getUniqueId())));

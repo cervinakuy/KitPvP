@@ -1,8 +1,8 @@
 package com.planetgallium.kitpvp.item;
 
+import com.cryptomorin.xseries.XMaterial;
 import com.planetgallium.kitpvp.util.Resource;
 import com.planetgallium.kitpvp.util.Toolkit;
-import com.planetgallium.kitpvp.util.XMaterial;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.*;
@@ -27,7 +27,7 @@ public class AttributeWriter {
 
     public static void itemStackToResource(Resource resource, String path, ItemStack item) {
 
-        if (item == null || item.getType() == XMaterial.AIR.parseMaterial().get()) return;
+        if (item == null || item.getType() == XMaterial.AIR.parseMaterial()) return;
 
         ItemMeta meta = item.getItemMeta();
 
@@ -74,10 +74,10 @@ public class AttributeWriter {
 
     private static void serializeDyedArmor(Resource resource, ItemStack item, String path) {
 
-        if (item.getType() == XMaterial.LEATHER_HELMET.parseMaterial().get() ||
-            item.getType() == XMaterial.LEATHER_CHESTPLATE.parseMaterial().get() ||
-            item.getType() == XMaterial.LEATHER_LEGGINGS.parseMaterial().get() ||
-            item.getType() == XMaterial.LEATHER_BOOTS.parseMaterial().get()) {
+        if (item.getType() == XMaterial.LEATHER_HELMET.parseMaterial() ||
+            item.getType() == XMaterial.LEATHER_CHESTPLATE.parseMaterial() ||
+            item.getType() == XMaterial.LEATHER_LEGGINGS.parseMaterial() ||
+            item.getType() == XMaterial.LEATHER_BOOTS.parseMaterial()) {
 
             LeatherArmorMeta dyedMeta = (LeatherArmorMeta) item.getItemMeta();
 
@@ -92,7 +92,7 @@ public class AttributeWriter {
 
     private static void serializeSkull(Resource resource, ItemStack item, String path) {
 
-        if (item.getType() == XMaterial.PLAYER_HEAD.parseMaterial().get()) {
+        if (item.getType() == XMaterial.PLAYER_HEAD.parseMaterial()) {
 
             SkullMeta skullMeta = (SkullMeta) item.getItemMeta();
 
@@ -105,7 +105,7 @@ public class AttributeWriter {
 
     private static void serializeTippedArrows(Resource resource, ItemStack item, String path) {
 
-        if (Toolkit.versionToNumber() >= 19 && item.getType() == XMaterial.TIPPED_ARROW.parseMaterial().get()) {
+        if (Toolkit.versionToNumber() >= 19 && item.getType() == XMaterial.TIPPED_ARROW.parseMaterial()) {
 
             serializeEffects(resource, (PotionMeta) item.getItemMeta(), path);
 
@@ -115,10 +115,10 @@ public class AttributeWriter {
 
     private static void serializePotion(Resource resource, ItemStack item, String path) {
 
-        if (item.getType() == XMaterial.POTION.parseMaterial().get() ||
+        if (item.getType() == XMaterial.POTION.parseMaterial() ||
                 (Toolkit.versionToNumber() >= 19 &&
-                        (item.getType() == XMaterial.SPLASH_POTION.parseMaterial().get() ||
-                        item.getType() == XMaterial.LINGERING_POTION.parseMaterial().get()))) {
+                        (item.getType() == XMaterial.SPLASH_POTION.parseMaterial() ||
+                        item.getType() == XMaterial.LINGERING_POTION.parseMaterial()))) {
 
             if (Toolkit.versionToNumber() == 18) {
 
@@ -181,9 +181,9 @@ public class AttributeWriter {
         if (Toolkit.versionToNumber() < 113) {
 
             if (item.getDurability() > 0 &&
-                    item.getType() != XMaterial.PLAYER_HEAD.parseMaterial().get() &&
-                    item.getType() != XMaterial.POTION.parseMaterial().get() &&
-                    item.getType() != XMaterial.SPLASH_POTION.parseMaterial().get()) {
+                    item.getType() != XMaterial.PLAYER_HEAD.parseMaterial() &&
+                    item.getType() != XMaterial.POTION.parseMaterial() &&
+                    item.getType() != XMaterial.SPLASH_POTION.parseMaterial()) {
 
                 resource.set(path + ".Durability", item.getDurability());
                 resource.save();
@@ -193,9 +193,9 @@ public class AttributeWriter {
         } else if (Toolkit.versionToNumber() >= 113) {
 
             if (item.getItemMeta() instanceof Damageable &&
-                    item.getType() != XMaterial.PLAYER_HEAD.parseMaterial().get() &&
-                    item.getType() != XMaterial.POTION.parseMaterial().get() &&
-                    item.getType() != XMaterial.SPLASH_POTION.parseMaterial().get()) {
+                    item.getType() != XMaterial.PLAYER_HEAD.parseMaterial() &&
+                    item.getType() != XMaterial.POTION.parseMaterial() &&
+                    item.getType() != XMaterial.SPLASH_POTION.parseMaterial()) {
 
                 Damageable damagedMeta = (Damageable) item.getItemMeta();
 

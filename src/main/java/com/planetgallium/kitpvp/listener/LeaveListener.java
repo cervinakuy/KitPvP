@@ -11,12 +11,12 @@ import com.planetgallium.kitpvp.game.Arena;
 
 public class LeaveListener implements Listener {
 
-	private Game game;
+	private Game plugin;
 	private Arena arena;
 	
-	public LeaveListener(Game game, Arena arena) {
-		this.game = game;
-		this.arena = arena;
+	public LeaveListener(Game plugin) {
+		this.plugin = plugin;
+		this.arena = plugin.getArena();
 	}
 	
 	@EventHandler
@@ -26,8 +26,8 @@ public class LeaveListener implements Listener {
 
 		if (Toolkit.inArena(p)) {
 
-			Game.getInstance().getArena().deletePlayer(p);
-			game.getDatabase().saveAndRemovePlayer(p);
+			arena.deletePlayer(p);
+			plugin.getDatabase().saveAndRemovePlayer(p);
 
 		}
 		

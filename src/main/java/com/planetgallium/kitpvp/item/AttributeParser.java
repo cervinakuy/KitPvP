@@ -1,5 +1,10 @@
 package com.planetgallium.kitpvp.item;
 
+import com.cryptomorin.xseries.XEnchantment;
+import com.cryptomorin.xseries.XMaterial;
+import com.cryptomorin.xseries.XPotion;
+import com.cryptomorin.xseries.XSound;
+import com.planetgallium.kitpvp.Game;
 import com.planetgallium.kitpvp.api.Ability;
 import com.planetgallium.kitpvp.util.*;
 import org.bukkit.Color;
@@ -69,7 +74,7 @@ public class AttributeParser {
             String activatorMaterial = resource.getString(pathPrefix + ".Activator.Material");
             String activatorName = resource.getString(pathPrefix + ".Activator.Name");
 
-            ItemStack activator = new ItemStack(XMaterial.matchXMaterial(activatorMaterial).get().parseMaterial().get());
+            ItemStack activator = new ItemStack(XMaterial.matchXMaterial(activatorMaterial).get().parseMaterial());
             ItemMeta abilityMeta = activator.getItemMeta();
             abilityMeta.setDisplayName(activatorName);
             activator.setItemMeta(abilityMeta);
@@ -130,7 +135,7 @@ public class AttributeParser {
         }
 
         if (resource.contains(path + ".Material")) {
-            item.setType(XMaterial.matchXMaterial(resource.getString(path + ".Material")).get().parseMaterial().get());
+            item.setType(XMaterial.matchXMaterial(resource.getString(path + ".Material")).get().parseMaterial());
         }
 
         if (resource.contains(path + ".Amount")) {
@@ -147,7 +152,7 @@ public class AttributeParser {
             String effectsPath = path + ".Effects";
 
             if (Toolkit.versionToNumber() == 18) {
-                if (item.getType() == XMaterial.POTION.parseMaterial().get() || item.getType() == XMaterial.SPLASH_POTION.parseMaterial().get()) {
+                if (item.getType() == XMaterial.POTION.parseMaterial() || item.getType() == XMaterial.SPLASH_POTION.parseMaterial()) {
                     boolean isSplash = resource.getString(effectsPath.replace("Effects", "") + "Type").equals("SPLASH_POTION");
                     Potion potion = Potion.fromItemStack(item);
                     potion.setSplash(isSplash);
@@ -196,7 +201,7 @@ public class AttributeParser {
 
         }
 
-        if (Config.getB("Arena.PreventItemDurabilityDamage")) {
+        if (Game.getInstance().getResources().getConfig().getBoolean("Arena.PreventItemDurabilityDamage")) {
             setUnbreakable(item);
         }
 
@@ -254,7 +259,7 @@ public class AttributeParser {
 
     private static void setSkull(ItemStack item, String skullOwner) {
 
-        item.setType(XMaterial.PLAYER_HEAD.parseMaterial().get());
+        item.setType(XMaterial.PLAYER_HEAD.parseMaterial());
 
         SkullMeta skullMeta = (SkullMeta) item.getItemMeta();
         skullMeta.setOwner(skullOwner);
@@ -265,10 +270,10 @@ public class AttributeParser {
 
     private static void dyeItem(ItemStack item, Color color) {
 
-        if (item.getType() == XMaterial.LEATHER_HELMET.parseMaterial().get() ||
-                item.getType() == XMaterial.LEATHER_CHESTPLATE.parseMaterial().get() ||
-                item.getType() == XMaterial.LEATHER_LEGGINGS.parseMaterial().get() ||
-                item.getType() == XMaterial.LEATHER_BOOTS.parseMaterial().get()) {
+        if (item.getType() == XMaterial.LEATHER_HELMET.parseMaterial() ||
+                item.getType() == XMaterial.LEATHER_CHESTPLATE.parseMaterial() ||
+                item.getType() == XMaterial.LEATHER_LEGGINGS.parseMaterial() ||
+                item.getType() == XMaterial.LEATHER_BOOTS.parseMaterial()) {
 
             LeatherArmorMeta dyedMeta = (LeatherArmorMeta) item.getItemMeta();
             dyedMeta.setColor(color);

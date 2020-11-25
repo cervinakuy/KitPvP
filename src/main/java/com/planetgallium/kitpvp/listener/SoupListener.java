@@ -1,5 +1,7 @@
 package com.planetgallium.kitpvp.listener;
 
+import com.cryptomorin.xseries.XMaterial;
+import com.cryptomorin.xseries.XSound;
 import com.planetgallium.kitpvp.util.*;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -15,12 +17,12 @@ import org.bukkit.scheduler.BukkitRunnable;
 import com.planetgallium.kitpvp.Game;
 
 public class SoupListener implements Listener {
-
-	private FileConfiguration config;
+	
+	private Resource config;
 	private int soupBoost;
 	
 	public SoupListener(Game plugin) {
-		this.config = plugin.getConfig();
+		this.config = plugin.getResources().getConfig();
 		this.soupBoost = plugin.getConfig().getInt("Soups.RegenAmount");
 	}
 	
@@ -54,7 +56,7 @@ public class SoupListener implements Listener {
 									}
 									
 									if (count < config.getInt("Kill.SoupReward.Amount")) {
-										killer.sendMessage(Config.getS("Kill.SoupReward.NoSpace").replace("%amount%", String.valueOf((config.getInt("Kill.SoupReward.Amount") - count))));
+										killer.sendMessage(config.getString("Kill.SoupReward.NoSpace").replace("%amount%", String.valueOf((config.getInt("Kill.SoupReward.Amount") - count))));
 									} else {
 										count = config.getInt("Kill.SoupReward.Amount");
 									}
@@ -62,7 +64,7 @@ public class SoupListener implements Listener {
 									ItemStack soup = XMaterial.MUSHROOM_STEW.parseItem();
 									ItemMeta soupMeta = soup.getItemMeta();
 
-									soupMeta.setDisplayName(Config.getS("Soups.Name"));
+									soupMeta.setDisplayName(config.getString("Soups.Name"));
 									soupMeta.setLore(Toolkit.colorizeList(config.getStringList("Soups.Lore")));
 
 									soup.setItemMeta(soupMeta);
@@ -90,7 +92,7 @@ public class SoupListener implements Listener {
 	@EventHandler
 	public void useSoup(PlayerInteractEvent e) {
 	    
-		if (Config.getB("Soups.Enabled")) {
+		if (config.getBoolean("Soups.Enabled")) {
 			
 			Player p = e.getPlayer();
 			
@@ -98,18 +100,18 @@ public class SoupListener implements Listener {
 
 				if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
 
-					if (Toolkit.getMainHandItem(p).getType() == XMaterial.MUSHROOM_STEW.parseMaterial().get() || Toolkit.getOffhandItem(p).getType() == XMaterial.MUSHROOM_STEW.parseMaterial().get()) {
+					if (Toolkit.getMainHandItem(p).getType() == XMaterial.MUSHROOM_STEW.parseMaterial() || Toolkit.getOffhandItem(p).getType() == XMaterial.MUSHROOM_STEW.parseMaterial()) {
 
 						e.setCancelled(true);
 
 						if (p.getHealth() < 20.0) {
 
 							p.setHealth(p.getHealth() + (double) soupBoost >= 20.0 ? 20.0 : p.getHealth() + (double) soupBoost);
-							p.playSound(p.getLocation(), XSound.matchXSound(Config.getS("Soups.Sound")).get().parseSound(), 1, (float) Config.getI("Soups.Pitch"));
+							p.playSound(p.getLocation(), XSound.matchXSound(config.getString("Soups.Sound")).get().parseSound(), 1, (float) config.getInt("Soups.Pitch"));
 
-							if (Toolkit.getMainHandItem(p).getType() == XMaterial.MUSHROOM_STEW.parseMaterial().get()) {
+							if (Toolkit.getMainHandItem(p).getType() == XMaterial.MUSHROOM_STEW.parseMaterial()) {
 
-								if (Config.getB("Soups.RemoveAfterUse")) {
+								if (config.getBoolean("Soups.RemoveAfterUse")) {
 
 									Toolkit.setMainHandItem(p, new ItemStack(XMaterial.AIR.parseItem()));
 
@@ -119,9 +121,9 @@ public class SoupListener implements Listener {
 
 								}
 
-							} else if (Toolkit.getOffhandItem(p).getType() == XMaterial.MUSHROOM_STEW.parseMaterial().get()) {
+							} else if (Toolkit.getOffhandItem(p).getType() == XMaterial.MUSHROOM_STEW.parseMaterial()) {
 
-								if (Config.getB("Soups.RemoveAfterUse")) {
+								if (config.getBoolean("Soups.RemoveAfterUse")) {
 
 									Toolkit.setOffhandItem(p, new ItemStack(XMaterial.AIR.parseItem()));
 

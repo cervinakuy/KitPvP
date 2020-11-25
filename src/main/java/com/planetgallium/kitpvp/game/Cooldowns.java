@@ -4,35 +4,36 @@ import java.util.UUID;
 
 import com.planetgallium.kitpvp.api.Kit;
 import com.planetgallium.kitpvp.util.Cooldown;
+import com.planetgallium.kitpvp.util.Resource;
 import com.planetgallium.kitpvp.util.Resources;
 
 public class Cooldowns {
 
 	private Arena arena;
-	private Resources resources;
+	private Resource stats;
 	
 	public Cooldowns(Arena arena, Resources resources) {
 		this.arena = arena;
-		this.resources = resources;
+		this.stats = resources.getStats();
 	}
 	
 	public void setCooldown(UUID uuid, String kit) {
 		
 		// TODO: MySQL storing
-		resources.getStats().set("Stats.Players." + uuid + ".Cooldowns." + kit, (System.currentTimeMillis() / 1000));
-		resources.getStats().save();
+		stats.set("Stats.Players." + uuid + ".Cooldowns." + kit, (System.currentTimeMillis() / 1000));
+		stats.save();
 		
 	}
 	
 	public boolean isOnCooldown(UUID uuid, String kit) {
 	
 		// TODO: MySQL usage
-		if (resources.getStats().contains("Stats.Players." + uuid + ".Cooldowns." + kit)) {
+		if (stats.contains("Stats.Players." + uuid + ".Cooldowns." + kit)) {
 			
-			if ((resources.getStats().getInt("Stats.Players." + uuid + ".Cooldowns." + kit) + cooldownToSeconds(kit)) <= (System.currentTimeMillis() / 1000)) {
+			if ((stats.getInt("Stats.Players." + uuid + ".Cooldowns." + kit) + cooldownToSeconds(kit)) <= (System.currentTimeMillis() / 1000)) {
 				
-				resources.getStats().set("Stats.Players." + uuid + ".Cooldowns." + kit, null);
-				resources.getStats().save();
+				stats.set("Stats.Players." + uuid + ".Cooldowns." + kit, null);
+				stats.save();
 				return false;
 				
 			}
@@ -56,7 +57,7 @@ public class Cooldowns {
 	
 	public String getFormattedCooldown(UUID uuid, String kit) {
 		
-		int cooldownSeconds = (int) ((resources.getStats().getInt("Stats.Players." + uuid + ".Cooldowns." + kit) + cooldownToSeconds(kit)) - (System.currentTimeMillis() / 1000));
+		int cooldownSeconds = (int) ((stats.getInt("Stats.Players." + uuid + ".Cooldowns." + kit) + cooldownToSeconds(kit)) - (System.currentTimeMillis() / 1000));
 		
 		int days = 0;
 		int hours = 0;

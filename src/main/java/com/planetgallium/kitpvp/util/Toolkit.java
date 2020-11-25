@@ -3,6 +3,7 @@ package com.planetgallium.kitpvp.util;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.cryptomorin.xseries.XMaterial;
 import com.planetgallium.kitpvp.api.Ability;
 import com.planetgallium.kitpvp.api.Kit;
 import org.bukkit.*;
@@ -23,9 +24,9 @@ public class Toolkit {
 	
 	public static boolean inArena(World world) {
 
-		if (Config.getC().contains("Arenas")) {
+		if (Game.getInstance().getResources().getConfig().contains("Arenas")) {
 
-			if (Config.getC().contains("Arenas." + world.getName())) {
+			if (Game.getInstance().getResources().getConfig().contains("Arenas." + world.getName())) {
 
 				return true;
 
@@ -33,7 +34,7 @@ public class Toolkit {
 
 		} else {
 
-			Bukkit.getConsoleSender().sendMessage(Config.tr("&7[&b&lKIT-PVP&7] &cThere was no spawn found, please set it using /kp addspawn."));
+			Bukkit.getConsoleSender().sendMessage(Toolkit.translate("&7[&b&lKIT-PVP&7] &cThere was no spawn found, please set it using /kp addspawn."));
 
 		}
 
@@ -412,7 +413,7 @@ public class Toolkit {
 
 	public static boolean matchesItemFromConfig(ItemStack itemToCompare, FileConfiguration resource, String path) {
 
-		Material materialFromConfig = XMaterial.matchXMaterial(resource.getString(path + ".Material")).get().parseMaterial().get();
+		Material materialFromConfig = XMaterial.matchXMaterial(resource.getString(path + ".Material")).get().parseMaterial();
 		String nameFromConfig = resource.getString(path + ".Name");
 
 		if (itemToCompare.getType() == materialFromConfig) {

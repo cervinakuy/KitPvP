@@ -1,5 +1,7 @@
 package com.planetgallium.kitpvp.listener;
 
+import com.cryptomorin.xseries.XSound;
+import com.planetgallium.kitpvp.util.*;
 import org.bukkit.Effect;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -20,11 +22,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import com.planetgallium.kitpvp.Game;
 import com.planetgallium.kitpvp.game.Arena;
-import com.planetgallium.kitpvp.util.Config;
-import com.planetgallium.kitpvp.util.Resources;
-import com.planetgallium.kitpvp.util.Title;
-import com.planetgallium.kitpvp.util.Toolkit;
-import com.planetgallium.kitpvp.util.XSound;
 
 import java.util.List;
 
@@ -32,17 +29,19 @@ public class DeathListener implements Listener {
 	
 	private Title title = new Title();
 	private Arena arena;
-	private FileConfiguration config;
 	private Resources resources;
+	private Resource config;
 	
-	public DeathListener(Game plugin, Arena arena) {
-		this.arena = arena;
-		this.config = plugin.getConfig();
+	public DeathListener(Game plugin) {
+		this.arena = plugin.getArena();
 		this.resources = plugin.getResources();
+		this.config = resources.getConfig();
 	}
 	
 	@EventHandler
 	public void onDeath(PlayerDeathEvent e) {
+
+		// investigate possible memory leak when FancyDeath is enabled
 
 		if (Toolkit.inArena(e.getEntity())) {
 
@@ -65,7 +64,7 @@ public class DeathListener implements Listener {
 
 			Toolkit.runCommands(victim, config.getStringList("Death.Commands"), "%victim%", victim.getName());
 
-			broadcast(victim.getWorld(), XSound.matchXSound(Config.getS("Death.Sound.Sound")).get().parseSound(), 1, config.getInt("Death.Sound.Pitch"));
+			broadcast(victim.getWorld(), XSound.matchXSound(config.getString("Death.Sound.Sound")).get().parseSound(), 1, config.getInt("Death.Sound.Pitch"));
 
 		}
 	
@@ -110,7 +109,6 @@ public class DeathListener implements Listener {
 					victim.teleport(deathLocation);
 					victim.setGameMode(GameMode.SPECTATOR);
 
-
 				}
 
 			}.runTaskLater(Game.getInstance(), 1L);
@@ -119,15 +117,15 @@ public class DeathListener implements Listener {
 			
 			new BukkitRunnable() {
 				
-				int time = Config.getI("Death.Title.Time");
+				int time = config.getInt("Death.Title.Time");
 				
 				@Override
 				public void run() {
 
 					if (time != 0) {
 
-						title.sendTitle(victim, Config.getS("Death.Title.Title"), Config.getS("Death.Title.Subtitle").replace("%seconds%", String.valueOf(time)), 0, 20, 20);
-						victim.playSound(victim.getLocation(), XSound.UI_BUTTON_CLICK.parseSound(), 1, 1);
+						title.sendTitle(victim, config.getString("Death.Title.Title"), config.getString("Death.Title.Subtitle").replace("%seconds%", String.valueOf(time)), 0, 20, 20);
+						XSound.play(victim, "UI_BUTTON_CLICK 1 1");
 						time--;
 
 					} else {
@@ -139,7 +137,7 @@ public class DeathListener implements Listener {
 
 						arena.addPlayer(victim, true, config.getBoolean("Arena.GiveItemsOnRespawn"));
 
-						victim.sendMessage(Config.getS("Death.Title.Message"));
+						victim.sendMessage(config.getString("Death.Title.Message"));
 						victim.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 30, 0));
 						victim.playSound(victim.getLocation(), XSound.ENTITY_EXPERIENCE_ORB_PICKUP.parseSound(), 1, 1);
 
@@ -191,7 +189,7 @@ public class DeathListener implements Listener {
 
 //		} else if (cause == DamageCause.ENTITY_ATTACK) {
 //
-//			broadcast(victim.getWorld(), Config.getS("Death.Messages.Player").replace("%victim%", victim.getName()).replace("%killer%", victim.getKiller().getName()));
+//			broadcast(victim.getWorld(), config.getString("Death.Messages.Player").replace("%victim%", victim.getName()).replace("%killer%", victim.getKiller().getName()));
 //			creditWithKill(victim, victim.getKiller());
 
 		} else if (victim.getKiller() != null) {
@@ -224,11 +222,11 @@ public class DeathListener implements Listener {
 		} else if (cause == DamageCause.FALL) {
 
 			broadcast(victim.getWorld(), getDeathMessage(victim, null, "Fall"));
-			
+
 		} else if (cause == DamageCause.FIRE || cause == DamageCause.FIRE_TICK || cause == DamageCause.LAVA) {
 
 			broadcast(victim.getWorld(), getDeathMessage(victim, null, "Fire"));
-			
+
 		} else if (cause == DamageCause.BLOCK_EXPLOSION || cause == DamageCause.ENTITY_EXPLOSION) {
 
 			broadcast(victim.getWorld(), getDeathMessage(victim, null, "Explosion"));
@@ -302,8 +300,10 @@ public class DeathListener implements Listener {
 
 		String deathMessage = config.getString("Death.Messages." + type);
 
-		if (victim.getName().equals(killer.getName())) {
-			deathMessage = config.getString("Death.Messages.Suicide");
+		if (victim != null && killer != null) {
+			if (victim.getName().equals(killer.getName())) {
+				deathMessage = config.getString("Death.Messages.Suicide");
+			}
 		}
 
 		if (victim != null) {

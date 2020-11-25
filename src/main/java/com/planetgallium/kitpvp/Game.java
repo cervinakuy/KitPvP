@@ -1,5 +1,6 @@
 package com.planetgallium.kitpvp;
 
+import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -48,25 +49,22 @@ public class Game extends JavaPlugin implements Listener {
 		PluginManager pm = Bukkit.getPluginManager();
 		pm.registerEvents(this, this);
 		pm.registerEvents(new EventListener(arena), this);
-		pm.registerEvents(new ArenaListener(this, arena, resources), this);
+		pm.registerEvents(new ArenaListener(this), this);
 		pm.registerEvents(new JoinListener(this, arena), this);
 		pm.registerEvents(new LeaveListener(this, arena), this);
-		pm.registerEvents(new ArrowListener(), this);
-		pm.registerEvents(new DeathListener(this, arena), this);
+		pm.registerEvents(new ArrowListener(this), this);
+		pm.registerEvents(new DeathListener(this), this);
 		pm.registerEvents(new HitListener(this), this);
 		pm.registerEvents(new AttackListener(resources), this);
 		pm.registerEvents(new ItemListener(this, arena, resources), this);
 		pm.registerEvents(new SoupListener(this), this);
 		pm.registerEvents(new ChatListener(this), this);
 		pm.registerEvents(new SignListener(arena, resources), this);
-		pm.registerEvents(new AliasCommand(), this);
+		pm.registerEvents(new AliasCommand(this), this);
 		pm.registerEvents(new AbilityListener(arena, resources), this);
 		pm.registerEvents(new TrackerListener(this), this);
-		pm.registerEvents(new MenuListener(arena, resources), this);
+		pm.registerEvents(new MenuListener(this, resources), this);
 		pm.registerEvents(getArena().getKillStreaks(), this);
-		
-		getConfig().options().copyDefaults(true);
-		saveConfig();
 		
 		getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 	    getCommand("kitpvp").setExecutor(new MainCommand(this));
@@ -77,7 +75,7 @@ public class Game extends JavaPlugin implements Listener {
 	    
 		Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&7[&b&lKIT-PVP&7] &7Enabling &bKitPvP &7version &b" + this.getDescription().getVersion() + "&7..."));
 		
-		if (Config.getC().getString("Storage.Type").equalsIgnoreCase("mysql")) {
+		if (resources.getConfig().getString("Storage.Type").equalsIgnoreCase("mysql")) {
 			storageType = "mysql";
 			
 			database.setup();
@@ -106,7 +104,7 @@ public class Game extends JavaPlugin implements Listener {
 			hasPlaceholderAPI = true;
 		}
 		
-		Bukkit.getConsoleSender().sendMessage(Config.tr("&7[&b&lKIT-PVP&7] &aDone!"));
+		Bukkit.getConsoleSender().sendMessage(Toolkit.translate("&7[&b&lKIT-PVP&7] &aDone!"));
 		
 	}
 
@@ -142,18 +140,18 @@ public class Game extends JavaPlugin implements Listener {
 		
 		Player p = e.getPlayer();
 		
-		if (Toolkit.getMainHandItem(p).getType() == XMaterial.matchXMaterial(Config.getS("Items.Leave.Material")).get().parseMaterial().get()) {
+		if (Toolkit.getMainHandItem(p).getType() == XMaterial.matchXMaterial(resources.getConfig().getString("Items.Leave.Material")).get().parseMaterial()) {
 			
-			if (Config.getB("Items.Leave.Enabled")) {
+			if (resources.getConfig().getBoolean("Items.Leave.Enabled")) {
 					
 				if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
 			
-					if (Config.getB("Items.Leave.BungeeCord.Enabled")) {
+					if (resources.getConfig().getBoolean("Items.Leave.BungeeCord.Enabled")) {
 						
 				        ByteArrayDataOutput out = ByteStreams.newDataOutput();
 				        out.writeUTF("Connect");
 				        
-				        String server = Config.getS("Items.Leave.BungeeCord.Server");
+				        String server = resources.getConfig().getString("Items.Leave.BungeeCord.Server");
 				        
 				        out.writeUTF(server);
 				        p.sendPluginMessage(this, "BungeeCord", out.toByteArray());
