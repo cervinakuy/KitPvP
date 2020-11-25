@@ -1,5 +1,6 @@
 package com.planetgallium.kitpvp.listener;
 
+import com.planetgallium.kitpvp.Game;
 import com.planetgallium.kitpvp.api.Ability;
 import com.planetgallium.kitpvp.api.Kit;
 import org.bukkit.entity.Player;
@@ -12,13 +13,13 @@ import com.planetgallium.kitpvp.util.Resources;
 import com.planetgallium.kitpvp.util.Toolkit;
 
 public class AbilityListener implements Listener {
-	
+
 	private Arena arena;
 	private Resources resources;
 	
-	public AbilityListener(Arena arena, Resources resources) {
-		this.arena = arena;
-		this.resources = resources;
+	public AbilityListener(Game plugin) {
+		this.arena = plugin.getArena();
+		this.resources = plugin.getResources();
 	}
 	
 	@EventHandler

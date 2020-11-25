@@ -15,8 +15,8 @@ public class AttackListener implements Listener {
 
 	private Resources resources;
 	
-	public AttackListener(Resources resources) {
-		this.resources = resources;
+	public AttackListener(Game plugin) {
+		this.resources = plugin.getResources();
 	}
 	
 	@EventHandler

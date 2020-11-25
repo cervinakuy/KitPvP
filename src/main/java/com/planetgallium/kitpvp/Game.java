@@ -48,22 +48,22 @@ public class Game extends JavaPlugin implements Listener {
 
 		PluginManager pm = Bukkit.getPluginManager();
 		pm.registerEvents(this, this);
-		pm.registerEvents(new EventListener(arena), this);
+		pm.registerEvents(new EventListener(this), this);
 		pm.registerEvents(new ArenaListener(this), this);
-		pm.registerEvents(new JoinListener(this, arena), this);
-		pm.registerEvents(new LeaveListener(this, arena), this);
+		pm.registerEvents(new JoinListener(this), this);
+		pm.registerEvents(new LeaveListener(this), this);
 		pm.registerEvents(new ArrowListener(this), this);
 		pm.registerEvents(new DeathListener(this), this);
 		pm.registerEvents(new HitListener(this), this);
-		pm.registerEvents(new AttackListener(resources), this);
-		pm.registerEvents(new ItemListener(this, arena, resources), this);
+		pm.registerEvents(new AttackListener(this), this);
+		pm.registerEvents(new ItemListener(this), this);
 		pm.registerEvents(new SoupListener(this), this);
 		pm.registerEvents(new ChatListener(this), this);
-		pm.registerEvents(new SignListener(arena, resources), this);
+		pm.registerEvents(new SignListener(this), this);
 		pm.registerEvents(new AliasCommand(this), this);
-		pm.registerEvents(new AbilityListener(arena, resources), this);
+		pm.registerEvents(new AbilityListener(this), this);
 		pm.registerEvents(new TrackerListener(this), this);
-		pm.registerEvents(new MenuListener(this, resources), this);
+		pm.registerEvents(new MenuListener(this), this);
 		pm.registerEvents(getArena().getKillStreaks(), this);
 		
 		getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");

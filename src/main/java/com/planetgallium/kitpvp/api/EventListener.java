@@ -1,5 +1,6 @@
 package com.planetgallium.kitpvp.api;
 
+import com.planetgallium.kitpvp.Game;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -16,8 +17,8 @@ public class EventListener implements Listener {
 
 	private Arena arena;
 	
-	public EventListener(Arena arena) {
-		this.arena = arena;
+	public EventListener(Game plugin) {
+		this.arena = plugin.getArena();
 	}
 	
 	@EventHandler
