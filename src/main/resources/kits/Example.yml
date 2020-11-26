@@ -65,7 +65,7 @@ Inventory:
         JUMP:
           Amplifier: 1
           Duration: 45
-    8:
+    7:
       Name: '&aAbility Item'
       Lore:
       - '&7This is an ability item'
@@ -75,6 +75,9 @@ Inventory:
       - '&7It must be customized in'
       - '&7the kit file.'
       Material: EMERALD
+    8:
+      Name: '&aSecond Ability Item &7(Unlimited custom abilities per kit!)'
+      Material: GOLD_INGOT
     Fill:
       Name: '&aFill Item'
       Lore:
@@ -99,9 +102,14 @@ Abilities:
         Amplifier: 5
         Duration: 10
     Commands:
-      Commands:
-        - 'console: say Hi %player%, this is an example console command that can be run when you use your ability.'
-        - 'player: me This is an example player command that can be run when you use your ability.'
+      - 'console: say Hi %player%, this is an example console command that can be run when you use your ability.'
+      - 'player: me This is an example player command that can be run when you use your ability.'
+  SecondAbility:
+    Activator:
+      Name: '&aSecond Ability Item (&7Unlimited custom abilities per kit!)'
+      Material: GOLD_INGOT
+    Message:
+      Message: '%prefix% &7KitPvP supports &aunlimited &7custom kits and each with &aunlimited &7custom abilities!'
 Commands:
   - 'console: say These commands can optionally be included in your kit file'
   - 'console: say to be run when the kit is selected'
