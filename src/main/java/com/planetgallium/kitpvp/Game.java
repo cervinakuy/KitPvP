@@ -65,10 +65,6 @@ public class Game extends JavaPlugin implements Listener {
 		
 		getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 	    getCommand("kitpvp").setExecutor(new MainCommand(this));
-	    getCommand("ckit").setExecutor(new KitCommand(resources));
-	    getCommand("cspawn").setExecutor(new SpawnCommand());
-	    getCommand("ckits").setExecutor(new KitsCommand());
-	    getCommand("cstats").setExecutor(new StatsCommand());
 	    
 		Bukkit.getConsoleSender().sendMessage(Toolkit.translate("&7[&b&lKIT-PVP&7] &7Enabling &bKitPvP &7version &b" + this.getDescription().getVersion() + "&7..."));
 		

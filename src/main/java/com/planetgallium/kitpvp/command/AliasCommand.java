@@ -21,26 +21,38 @@ public class AliasCommand implements Listener {
 		Player p = e.getPlayer();
 		String message = e.getMessage();
 
+		String[] words = message.split(" ");
+
 		if (message.equals("/spawn") && config.getBoolean("Commands.Alias.Spawn")) {
-			
+
 			e.setCancelled(true);
-			p.performCommand("cspawn");
-			
-		} else if (message.equals("/kit") && config.getBoolean("Commands.Alias.Kit")) {
-			
-			e.setCancelled(true);
-			p.performCommand("ckit");
-			
+			p.performCommand("kp spawn");
+
 		} else if (message.equals("/kits") && config.getBoolean("Commands.Alias.Kits")) {
-			
+
 			e.setCancelled(true);
-			p.performCommand("ckits");
-			
-		} else if (message.equals("/stats") && config.getBoolean("Commands.Alias.Stats")) {
-			
-			e.setCancelled(true);
-			p.performCommand("cstats");
-			
+			p.performCommand("kp kits");
+
+		} else if (message.startsWith("/kit") && config.getBoolean("Commands.Alias.Kit")) {
+
+			if (words.length == 1) {
+				e.setCancelled(true);
+				p.performCommand("kp kit");
+			} else if (words.length == 2) {
+				e.setCancelled(true);
+				p.performCommand("kp kit " + words[1]);
+			}
+
+		} else if (message.startsWith("/stats") && config.getBoolean("Commands.Alias.Stats")) {
+
+			if (words.length == 1) {
+				e.setCancelled(true);
+				p.performCommand("kp stats");
+			} else if (words.length == 2) {
+				e.setCancelled(true);
+				p.performCommand("kp stats " + words[1]);
+			}
+
 		}
 		
 	}
