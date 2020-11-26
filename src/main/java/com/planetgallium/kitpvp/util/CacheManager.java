@@ -2,14 +2,11 @@ package com.planetgallium.kitpvp.util;
 
 import com.planetgallium.kitpvp.api.Kit;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class CacheManager {
 
-    private static Map<String, Kit> kitCache = new HashMap<>();;
+    private static Map<String, Kit> kitCache = new HashMap<>();
     private static Map<String, Menu> previewMenuCache = new HashMap<>();
     private static List<String> compassUsers = new ArrayList<>();
 

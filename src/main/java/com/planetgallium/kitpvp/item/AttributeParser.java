@@ -181,7 +181,7 @@ public class AttributeParser {
                 }
 
             } else {
-                System.out.println("Not custom");
+
                 PotionType potionType = PotionType.UNCRAFTABLE;
                 boolean isUpgraded = false;
                 boolean isExtended = false;

@@ -1,5 +1,6 @@
 package com.planetgallium.kitpvp.listener;
 
+import com.planetgallium.kitpvp.util.CacheManager;
 import com.planetgallium.kitpvp.util.Resource;
 import com.planetgallium.kitpvp.util.Resources;
 import org.bukkit.entity.Player;
@@ -30,7 +31,7 @@ public class JoinListener implements Listener {
 	public void onJoin(PlayerJoinEvent e) {
 
 		Player p = e.getPlayer();
-		
+
 		// Update checker
 		if (plugin.needsUpdate()) {
 			
