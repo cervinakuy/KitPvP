@@ -104,7 +104,7 @@ public class AttributeParser {
             }
 
             if (resource.contains(pathPrefix + ".Commands")) {
-                for (String command : resource.getStringList(pathPrefix + ".Commands.Commands")) {
+                for (String command : resource.getStringList(pathPrefix + ".Commands")) {
                     ability.addCommand(command);
                 }
             }

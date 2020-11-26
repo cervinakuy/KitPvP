@@ -1,4 +1,4 @@
-# To learn how to add a rank prefix among other features, please
+# To learn about what specific options here mean, please
 # visit the levels.yml documentation on GitHub:
 # https://github.com/cervinakuy/KitPvP/wiki/levels.yml
 
@@ -9,8 +9,7 @@ Levels:
     Experience-Taken-On-Death: 5
     Minimum-Level: 0
     Maximum-Level: 100
-  Commands-On-Level-Up:
-    - 'player: These commands can be disabled by removing this Commands-On-Level-Up section'
+  Commands-On-Level-Up: []
   Levels:
     1:
       Prefix: '&7Level %level%'
