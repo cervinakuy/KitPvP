@@ -2,7 +2,6 @@ package com.planetgallium.kitpvp.command;
 
 import com.planetgallium.kitpvp.Game;
 import com.planetgallium.kitpvp.util.Resource;
-import com.planetgallium.kitpvp.util.Resources;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

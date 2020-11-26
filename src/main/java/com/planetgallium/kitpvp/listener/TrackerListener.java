@@ -53,7 +53,7 @@ public class TrackerListener implements Listener {
 									nearestDistance = Math.round(nearestDistance * 10.0) / 10.0;
 
 									ItemMeta meta = item.getItemMeta();
-									meta.setDisplayName(Toolkit.translate(resources.getConfig().getString("PlayerTracker.Message"))
+									meta.setDisplayName(resources.getConfig().getString("PlayerTracker.Message")
 											.replace("%nearestplayer%", nearestPlayer.getName())
 											.replace("%distance%", String.valueOf(nearestDistance)));
 									item.setItemMeta(meta);
@@ -65,7 +65,7 @@ public class TrackerListener implements Listener {
 								} else {
 
 									ItemMeta meta = item.getItemMeta();
-									meta.setDisplayName(Toolkit.translate(resources.getConfig().getString("PlayerTracker.NoneOnline")));
+									meta.setDisplayName(resources.getConfig().getString("PlayerTracker.NoneOnline"));
 									item.setItemMeta(meta);
 
 									cancel();

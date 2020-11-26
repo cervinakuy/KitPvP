@@ -23,7 +23,7 @@ public class PlayerSelectKitEvent extends Event {
 	public HandlerList getHandlers() { return HANDLERS; }
 
 	public String getEventName() { return "PlayerSelectKitEvent"; }
-	
+
 	public static HandlerList getHandlerList() { return HANDLERS; }
 	
 }

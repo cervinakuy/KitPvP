@@ -13,7 +13,6 @@ import org.bukkit.entity.Player;
 import com.planetgallium.kitpvp.Game;
 import com.planetgallium.kitpvp.game.PlayerData;
 
-
 public class Database {
 
 	private Game game;
@@ -32,7 +31,7 @@ public class Database {
 	public Database(Game game, String path) {
 		this.game = game;
 		
-		this.cache = new HashMap<UUID, PlayerData>();
+		this.cache = new HashMap<>();
 		
 		this.host = game.getConfig().getString(path + ".Host");
 		this.database = game.getConfig().getString(path + ".Database");

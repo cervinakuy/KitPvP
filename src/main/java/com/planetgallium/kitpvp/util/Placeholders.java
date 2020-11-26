@@ -29,9 +29,13 @@ public class Placeholders extends PlaceholderExpansion {
 				case "stats_level": return String.valueOf(arena.getLevels().getLevel(p.getUniqueId()));
 				case "stats_experience": return String.valueOf(arena.getLevels().getExperience(p.getUniqueId()));
 				case "player_killstreak": return String.valueOf(arena.getKillStreaks().getStreak(p.getName()));
-				case "player_kit": return arena.getKits().getKitOfPlayer(p.getName()).getName();
-				case "max_level": return String.valueOf(resources.getLevels().getInt("Levels.General.Level.Maximum"));
-				case "max_xp": return String.valueOf(resources.getLevels().getInt("Levels.General.Experience.Levelup"));
+				case "player_kit":
+					if (arena.getKits().hasKit(p.getName())) {
+						return arena.getKits().getKitOfPlayer(p.getName()).getName();
+					}
+					return resources.getMessages().getString("Messages.Other.NoKit");
+				case "max_level": return String.valueOf(resources.getLevels().getInt("Levels.Options.Maximum-Level"));
+				case "max_xp": return String.valueOf(resources.getLevels().getInt("Levels.Options.Experience-To-Level-Up"));
 			
 			}
 			
@@ -59,13 +63,6 @@ public class Placeholders extends PlaceholderExpansion {
 	public String getIdentifier() {
 		
 		return "kitpvp";
-		
-	}
-	
-	@Override
-	public String getPlugin() {
-		
-		return null;
 		
 	}
 	

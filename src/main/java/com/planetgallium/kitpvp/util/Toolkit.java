@@ -3,9 +3,6 @@ package com.planetgallium.kitpvp.util;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.cryptomorin.xseries.XMaterial;
-import com.planetgallium.kitpvp.api.Ability;
-import com.planetgallium.kitpvp.api.Kit;
 import org.bukkit.*;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Entity;
@@ -15,8 +12,6 @@ import org.bukkit.inventory.ItemStack;
 import com.planetgallium.kitpvp.Game;
 
 import me.clip.placeholderapi.PlaceholderAPI;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.Plugin;
 
@@ -123,12 +118,6 @@ public class Toolkit {
 		}
 
 	}
- 	
- 	public static boolean hasPlaceholders() {
- 		
- 		return Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI");
- 		
- 	}
  	
  	public static int versionToNumber() {
  		
@@ -400,25 +389,6 @@ public class Toolkit {
 		for (String string : list) {
 
 			if (string.startsWith(target)) {
-
-				return true;
-
-			}
-
-		}
-
-		return false;
-
-	}
-
-	public static boolean matchesItemFromConfig(ItemStack itemToCompare, FileConfiguration resource, String path) {
-
-		Material materialFromConfig = XMaterial.matchXMaterial(resource.getString(path + ".Material")).get().parseMaterial();
-		String nameFromConfig = resource.getString(path + ".Name");
-
-		if (itemToCompare.getType() == materialFromConfig) {
-
-			if (Toolkit.translate(itemToCompare.getItemMeta().getDisplayName()).equals(nameFromConfig)) {
 
 				return true;
 

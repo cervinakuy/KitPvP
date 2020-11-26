@@ -55,9 +55,8 @@ public class Arena {
 	
 	public void addPlayer(Player p, boolean toSpawn, boolean giveItems) {
 		
-		getKits().resetKit(p.getName());
-
-		getKillStreaks().setStreak(p, 0);
+		kits.resetKit(p.getName());
+		killstreaks.setStreak(p, 0);
 		
 		if (config.getBoolean("Arena.ClearPotionEffectsOnJoin")) {
 			for (PotionEffect effect : p.getActivePotionEffects()) {
@@ -98,7 +97,7 @@ public class Arena {
 			p.removePotionEffect(effect.getType());
 		}
 		
-		getKits().resetKit(p.getName());
+		kits.resetKit(p.getName());
 
 		if (config.getBoolean("Arena.ResetKillStreakOnLeave")) {
 			getKillStreaks().resetStreak(p);
@@ -147,7 +146,7 @@ public class Arena {
 				ItemStack item = XMaterial.matchXMaterial(config.getString(itemPath + ".Material")).get().parseItem();
 				ItemMeta meta = item.getItemMeta();
 
-				meta.setDisplayName(Toolkit.translate(config.getString(itemPath + ".Name")));
+				meta.setDisplayName(config.getString(itemPath + ".Name"));
 				item.setItemMeta(meta);
 
 				p.getInventory().setItem(config.getInt(itemPath + ".Slot"), item);
@@ -166,7 +165,7 @@ public class Arena {
 
 		} else {
 
-			p.sendMessage(Toolkit.translate(resources.getMessages().getString("Messages.Error.Arena").replace("%arena%", arenaName)));
+			p.sendMessage(resources.getMessages().getString("Messages.Error.Arena").replace("%arena%", arenaName));
 
 		}
 

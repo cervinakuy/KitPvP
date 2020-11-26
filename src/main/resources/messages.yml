@@ -1,7 +1,3 @@
-# MESSAGES FILE - Configure nearly every message in the plugin.
-#
-# Please contact Cervinakuy (the developer) on Spigot if you have any problems.
-
 Messages:
   General:
     Prefix: '&7[&b&lKIT-PVP&7]'
@@ -18,7 +14,7 @@ Messages:
     Time: '%prefix% &7Teleporting you in &b%time% seconds&7.'
     Added: '%prefix% &7Successfully added spawn &b#%number% &7in arena &b&b%arena%&7.'
     Removed: '%prefix% &7Successfully removed the arena &b%arena%&7.'
-    Reload: '%prefix% &7Successfully reloaded the configurations.'
+    Reload: '%prefix% &7Successfully reloaded the configurations and cleared caches.'
     Cleared: '%prefix% &7Your kit has been cleared.'
     ClearedOther: '%prefix% &7You cleared &b%player%''s &7kit.'
   Other:
@@ -43,6 +39,7 @@ Messages:
     KitInvalid: '%prefix% &cYou cannot perform this action because you have a kit selected.'
     Cooldown: '%prefix% &cYou cannot select this kit for another %cooldown%.'
     Offline: '%prefix% &cThe specified player is not online or not in an arena.'
+    Menu: '%prefix% &cFailed to automatically add to the menu, the menu may be full.'
   Stats:
     Message:
     - '&7&m                                &r'

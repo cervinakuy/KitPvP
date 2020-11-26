@@ -10,8 +10,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
 import com.planetgallium.kitpvp.game.Arena;
-import com.planetgallium.kitpvp.util.Toolkit;
-import org.bukkit.inventory.meta.ItemMeta;
+import com.planetgallium.kitpvp.util.Toolkit;;
 
 public class EventListener implements Listener {
 

@@ -5,7 +5,6 @@ import com.planetgallium.kitpvp.game.Arena;
 import com.planetgallium.kitpvp.menu.KitHolder;
 import com.planetgallium.kitpvp.menu.PreviewHolder;
 import com.planetgallium.kitpvp.util.Resource;
-import com.planetgallium.kitpvp.util.Resources;
 import com.planetgallium.kitpvp.util.Toolkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

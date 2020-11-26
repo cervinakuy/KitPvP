@@ -17,10 +17,7 @@ import com.planetgallium.kitpvp.api.EventListener;
 import com.planetgallium.kitpvp.command.*;
 import com.planetgallium.kitpvp.game.Arena;
 import com.planetgallium.kitpvp.listener.*;
-import com.planetgallium.kitpvp.menu.KitMenu;
 import com.planetgallium.kitpvp.util.*;
-
-import net.md_5.bungee.api.ChatColor;
 
 public class Game extends JavaPlugin implements Listener {
 	
@@ -73,7 +70,7 @@ public class Game extends JavaPlugin implements Listener {
 	    getCommand("ckits").setExecutor(new KitsCommand());
 	    getCommand("cstats").setExecutor(new StatsCommand());
 	    
-		Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&7[&b&lKIT-PVP&7] &7Enabling &bKitPvP &7version &b" + this.getDescription().getVersion() + "&7..."));
+		Bukkit.getConsoleSender().sendMessage(Toolkit.translate("&7[&b&lKIT-PVP&7] &7Enabling &bKitPvP &7version &b" + this.getDescription().getVersion() + "&7..."));
 		
 		if (resources.getConfig().getString("Storage.Type").equalsIgnoreCase("mysql")) {
 			storageType = "mysql";
@@ -99,7 +96,7 @@ public class Game extends JavaPlugin implements Listener {
 		}.runTaskAsynchronously(this);
 		
 		if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-			Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "[&b&lKIT-PVP&7] &7Discovered &bPlaceholderAPI&7, now hooking into it."));
+			Bukkit.getConsoleSender().sendMessage(Toolkit.translate("[&b&lKIT-PVP&7] &7Discovered &bPlaceholderAPI&7, now hooking into it."));
 			new Placeholders(this).register();
 			hasPlaceholderAPI = true;
 		}
@@ -120,15 +117,15 @@ public class Game extends JavaPlugin implements Listener {
 		Updater.of(this).resourceId(27107).handleResponse((versionResponse, version) -> {
 			switch (versionResponse) {
 				case FOUND_NEW:
-					Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&7[&b&lKIT-PVP&7] &aNew version found! Please update to v" + version + " on the Spigot page."));
+					Bukkit.getConsoleSender().sendMessage(Toolkit.translate("&7[&b&lKIT-PVP&7] &aNew version found! Please update to v" + version + " on the Spigot page."));
 					needsUpdate = true;
 					updateVersion = version;
 					break;
 				case LATEST:
-					Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&7[&b&lKIT-PVP&7] &7No new update found. You are on the latest version."));
+					Bukkit.getConsoleSender().sendMessage(Toolkit.translate("&7[&b&lKIT-PVP&7] &7No new update found. You are on the latest version."));
 					break;
 				case UNAVAILABLE:
-					Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&7[&b&lKIT-PVP&7] &cUnable to perform an update check."));
+					Bukkit.getConsoleSender().sendMessage(Toolkit.translate("&7[&b&lKIT-PVP&7] &cUnable to perform an update check."));
 					break;
 			}
 		}).check();

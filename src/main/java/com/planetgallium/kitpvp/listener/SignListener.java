@@ -13,8 +13,6 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
-import com.planetgallium.kitpvp.util.Resources;
-
 public class SignListener implements Listener {
 
 	private Arena arena;

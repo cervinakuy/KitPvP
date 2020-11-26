@@ -137,11 +137,11 @@ public class ItemListener implements Listener {
 							useAbilityItem(p, p, item, "Warper");
 
 						} else {
-							p.sendMessage(Toolkit.translate(resources.getMessages().getString("Messages.Other.Players")));
+							p.sendMessage(resources.getMessages().getString("Messages.Other.Players"));
 						}
 
 					} else {
-						p.sendMessage(Toolkit.translate(resources.getMessages().getString("Messages.Other.Players")));
+						p.sendMessage(resources.getMessages().getString("Messages.Other.Players"));
 					}
 
 				}
@@ -540,7 +540,7 @@ public class ItemListener implements Listener {
 							} else {
 
 								e.setCancelled(true);
-								shooter.sendMessage(Toolkit.translate(resources.getMessages().getString("Messages.General.Permission")));
+								shooter.sendMessage(resources.getMessages().getString("Messages.General.Permission"));
 
 							}
 

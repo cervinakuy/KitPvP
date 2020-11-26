@@ -1,7 +1,6 @@
 package com.planetgallium.kitpvp.listener;
 
 import com.planetgallium.kitpvp.game.Arena;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

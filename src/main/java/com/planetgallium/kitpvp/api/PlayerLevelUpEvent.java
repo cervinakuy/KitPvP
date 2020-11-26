@@ -1,7 +1,6 @@
 package com.planetgallium.kitpvp.api;
 
 import org.bukkit.entity.Player;
-import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
@@ -24,7 +23,7 @@ public class PlayerLevelUpEvent extends Event {
 	public HandlerList getHandlers() { return HANDLERS; }
 
 	public String getEventName() { return "PlayerLevelUpEvent"; }
-	
+
 	public static HandlerList getHandlerList() { return HANDLERS; }
 	
 }
