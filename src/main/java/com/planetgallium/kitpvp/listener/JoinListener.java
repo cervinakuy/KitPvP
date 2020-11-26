@@ -28,7 +28,7 @@ public class JoinListener implements Listener {
 	
 	@EventHandler
 	public void onJoin(PlayerJoinEvent e) {
-		
+
 		Player p = e.getPlayer();
 		
 		// Update checker

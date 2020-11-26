@@ -598,8 +598,8 @@ public class ItemListener implements Listener {
 							}
 
 							if (abilities.getBoolean("Abilities.Trickster.Sound.Enabled")) {
-								XSound.play(shooter, abilities.getString("Abilities.Trickster.Sound.Sound") + " 1 " + abilities.getInt("Abilities.Trickster.Sound.Pitch"));
-								XSound.play(damagedPlayer, abilities.getString("Abilities.Trickster.Sound.Sound") + " 1 " + abilities.getInt("Abilities.Trickster.Sound.Pitch"));
+								XSound.play(shooter, abilities.getString("Abilities.Trickster.Sound.Sound") + ", 1, " + abilities.getInt("Abilities.Trickster.Sound.Pitch"));
+								XSound.play(damagedPlayer, abilities.getString("Abilities.Trickster.Sound.Sound") + ", 1, " + abilities.getInt("Abilities.Trickster.Sound.Pitch"));
 							}
 
 						}

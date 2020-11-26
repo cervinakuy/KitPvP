@@ -1,13 +1,13 @@
 package com.planetgallium.kitpvp.listener;
 
 import com.cryptomorin.xseries.XSound;
+import com.cryptomorin.xseries.messages.Titles;
 import com.planetgallium.kitpvp.util.*;
 import org.bukkit.Effect;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.World;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -26,8 +26,7 @@ import com.planetgallium.kitpvp.game.Arena;
 import java.util.List;
 
 public class DeathListener implements Listener {
-	
-	private Title title = new Title();
+
 	private Arena arena;
 	private Resources resources;
 	private Resource config;
@@ -124,8 +123,8 @@ public class DeathListener implements Listener {
 
 					if (time != 0) {
 
-						title.sendTitle(victim, config.getString("Death.Title.Title"), config.getString("Death.Title.Subtitle").replace("%seconds%", String.valueOf(time)), 0, 20, 20);
-						XSound.play(victim, "UI_BUTTON_CLICK 1 1");
+						Titles.sendTitle(victim, 0, 21, 0, config.getString("Death.Title.Title"), config.getString("Death.Title.Subtitle").replace("%seconds%", String.valueOf(time)));
+						XSound.play(victim, "UI_BUTTON_CLICK, 1, 1");
 						time--;
 
 					} else {
@@ -139,7 +138,7 @@ public class DeathListener implements Listener {
 
 						victim.sendMessage(config.getString("Death.Title.Message"));
 						victim.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 30, 0));
-						victim.playSound(victim.getLocation(), XSound.ENTITY_EXPERIENCE_ORB_PICKUP.parseSound(), 1, 1);
+						XSound.play(victim, "ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1");
 
 						Toolkit.runCommands(victim, config.getStringList("Respawn.Commands"), "none", "none");
 

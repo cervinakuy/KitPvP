@@ -2,21 +2,9 @@ package com.planetgallium.kitpvp.menu;
 
 import com.cryptomorin.xseries.XMaterial;
 import com.planetgallium.kitpvp.util.*;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.ClickType;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.scheduler.BukkitRunnable;
-
-import com.planetgallium.kitpvp.Game;
-
-import me.clip.placeholderapi.PlaceholderAPI;
 
 import java.util.List;
 

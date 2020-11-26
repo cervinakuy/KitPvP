@@ -3,9 +3,9 @@ package com.planetgallium.kitpvp.game;
 import java.util.HashMap;
 
 import com.cryptomorin.xseries.XSound;
+import com.cryptomorin.xseries.messages.Titles;
 import com.planetgallium.kitpvp.util.*;
 import org.bukkit.World;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -17,7 +17,6 @@ public class KillStreaks implements Listener {
 
 	private Resources resources;
 	private Resource killConfig;
-	private Title title = new Title();
 	private HashMap<String, Integer> kills = new HashMap<String, Integer>();
 	
 	public KillStreaks(Resources resources) {
@@ -81,7 +80,9 @@ public class KillStreaks implements Listener {
 
 				for (Player local : world.getPlayers()) {
 
-					title.sendTitle(local, killConfig.getString(pathPrefix + ".Title.Title"), killConfig.getString(pathPrefix + ".Title.Subtitle").replace("%player%", username).replace("%streak%", String.valueOf(streakNumber)), 20, 60, 20);
+					Titles.sendTitle(local, 20, 60, 20,
+							killConfig.getString(pathPrefix + ".Title.Title").replace("%player%", username).replace("%streak%", String.valueOf(streakNumber)),
+							killConfig.getString(pathPrefix + ".Title.Subtitle").replace("%player%", username).replace("%streak%", String.valueOf(streakNumber)));
 
 				}
 

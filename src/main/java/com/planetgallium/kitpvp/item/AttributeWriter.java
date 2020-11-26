@@ -12,6 +12,8 @@ import org.bukkit.potion.PotionEffect;
 
 public class AttributeWriter {
 
+    // look into using XItemStack by Crypto
+
     public static void potionEffectToResource(Resource resource, String path, PotionEffect effect) {
 
         if (effect == null) return;
