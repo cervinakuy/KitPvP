@@ -313,6 +313,22 @@ public class Toolkit {
 
 	}
 
+	public static Player getPlayerCaseInsensitive(String username) {
+
+		for (Player player : Bukkit.getOnlinePlayers()) {
+
+			if (player.getName().equalsIgnoreCase(username)) {
+
+				return player;
+
+			}
+
+		}
+
+		return null;
+
+	}
+
 	public static void saveLocationToConfig(Plugin plugin, FileConfiguration config, String path, Location location) {
 
 		config.set(path + ".World", location.getWorld().getName());

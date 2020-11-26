@@ -193,6 +193,25 @@ public class MainCommand implements CommandExecutor {
 
                 return true;
 
+            } else if (args[0].equalsIgnoreCase("stats") && hasPermission(sender, "kp.command.stats.other")) {
+
+                String targetName = args[1];
+                Player target = Toolkit.getPlayerCaseInsensitive(targetName);
+
+                if (target != null) {
+
+                    for (String line : messages.getStringList("Messages.Stats.Message")) {
+
+                        sender.sendMessage(addPlaceholdersIfPossible(target, Toolkit.translate(line)));
+
+                    }
+
+                } else {
+
+                    sender.sendMessage(messages.getString("Messages.Error.Offline"));
+
+                }
+
             }
 
         } else if (args.length == 3) {
@@ -236,8 +255,6 @@ public class MainCommand implements CommandExecutor {
                         p.sendMessage(addPlaceholdersIfPossible(p, Toolkit.translate(line)));
 
                     }
-
-                    XSound.play(p, "ENTITY_ITEM_PICKUP, 1, 1");
 
                 } else if (args[0].equalsIgnoreCase("menu") && hasPermission(sender, "kp.command.menu")) {
 
