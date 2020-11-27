@@ -1,9 +1,6 @@
 # To learn more about the options available and their functionality, please
 # visit the config.yml documentation on GitHub:
 # https://github.com/cervinakuy/KitPvP/wiki/config.yml
-#
-# Valid sound names, material names, among other useful resource such
-# as a guide to using Commands in KitPvP, can all be found on the Wiki.
 
 Items:
   Kits:
