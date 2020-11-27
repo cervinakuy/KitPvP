@@ -38,10 +38,10 @@ public class EventListener implements Listener {
 
 						Ability ability = kit.getAbilityFromActivator(currentItem);
 
-						if (ability != null)
+						if (ability != null) {
 							Bukkit.getPluginManager().callEvent(new PlayerAbilityEvent(p, ability));
-
-						e.setCancelled(true);
+							e.setCancelled(true);
+						}
 
 					}	
 					
