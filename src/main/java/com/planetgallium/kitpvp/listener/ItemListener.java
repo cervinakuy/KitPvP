@@ -180,10 +180,14 @@ public class ItemListener implements Listener {
 						@Override
 						public void run() {
 
-							p.getInventory().setHelmet(previousHelmet);
-							p.getInventory().setChestplate(previousChestplate);
-							p.getInventory().setLeggings(previousLeggings);
-							p.getInventory().setBoots(previousBoots);
+							if (arena.getKits().hasKit(p.getName())) {
+
+								p.getInventory().setHelmet(previousHelmet);
+								p.getInventory().setChestplate(previousChestplate);
+								p.getInventory().setLeggings(previousLeggings);
+								p.getInventory().setBoots(previousBoots);
+
+							}
 
 						}
 
@@ -204,7 +208,7 @@ public class ItemListener implements Listener {
 						@Override
 						public void run() {
 
-							if (t != 0 && p.getGameMode() != GameMode.SPECTATOR) {
+							if (t != 0 && p.getGameMode() != GameMode.SPECTATOR && arena.getKits().hasKit(p.getName())) {
 
 								Entity entity = p.getWorld().spawn(p.getLocation(), TNTPrimed.class);
 								entity.setCustomName(p.getName());
@@ -500,8 +504,6 @@ public class ItemListener implements Listener {
 
 								@Override
 								public void run() {
-
-
 
 									if (arena.getKits().getKitOfPlayer(shooter.getName()) != null) {
 

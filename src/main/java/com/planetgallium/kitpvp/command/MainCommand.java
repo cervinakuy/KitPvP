@@ -345,7 +345,7 @@ public class MainCommand implements CommandExecutor {
                     String arenaName = p.getWorld().getName();
                     int spawnNumber = Toolkit.getNextAvailable(config, "Arenas." + arenaName, 1000, false, 1);
 
-                    Toolkit.saveLocationToConfig(plugin, config, "Arenas." + arenaName + "." + spawnNumber, p.getLocation());
+                    Toolkit.saveLocationToResource(config, "Arenas." + arenaName + "." + spawnNumber, p.getLocation());
 
                     p.sendMessage(messages.getString("Messages.Commands.Added")
                             .replace("%number%", String.valueOf(spawnNumber))
