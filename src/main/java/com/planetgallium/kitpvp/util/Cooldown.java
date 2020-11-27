@@ -43,42 +43,53 @@ public class Cooldown {
 		}
 
 	}
-	
-	@Override
-	public String toString() {
-		
-		String result = "";
-		
-		if (getDays() != 0) result += (getDays() + " days ");
-		if (getHours() != 0) result += (getHours() + " hours ");
-		if (getMinutes() != 0) result += (getMinutes() + " minutes ");
-		if (getSeconds() != 0) result += (getSeconds() + " seconds");
-		
-		if (result.length() > 0 && result.charAt(result.length() - 1) == ' ') {
-			
-			result = result.substring(0, result.length() - 1);
-			
+
+	public String formatted(boolean condensed) {
+
+		if (condensed) {
+
+			String condensedCooldown = "";
+
+			if (getDays() != 0) condensedCooldown += getDays() + "D:";
+			if (getHours() != 0) condensedCooldown += getHours() + "H:";
+			if (getMinutes() != 0) condensedCooldown += getMinutes() + "M:";
+			if (getSeconds() != 0) condensedCooldown += getSeconds() + "S:";
+
+			if (condensedCooldown.endsWith(":")) {
+				condensedCooldown = condensedCooldown.substring(0, condensedCooldown.length() - 1);
+			} else if (condensedCooldown.equals("")) {
+				condensedCooldown = null;
+			}
+
+			return condensedCooldown;
+
+		} else {
+
+			String longCooldown = "";
+
+			if (getDays() != 0) longCooldown += (getDays() + " days ");
+			if (getHours() != 0) longCooldown += (getHours() + " hours ");
+			if (getMinutes() != 0) longCooldown += (getMinutes() + " minutes ");
+			if (getSeconds() != 0) longCooldown += (getSeconds() + " seconds");
+
+			if (longCooldown.length() > 0 && longCooldown.charAt(longCooldown.length() - 1) == ' ') {
+
+				longCooldown = longCooldown.substring(0, longCooldown.length() - 1);
+
+			}
+
+			return longCooldown;
+
 		}
-		
-		return result;
-		
+
 	}
 
-	public void toResource(Resource resource, String path) {
+	public int toSeconds() {
 
-		String condensedCooldown = "";
-
-		if (getDays() != 0) condensedCooldown += getDays() + "D:";
-		if (getHours() != 0) condensedCooldown += getHours() + "H:";
-		if (getMinutes() != 0) condensedCooldown += getMinutes() + "M:";
-		if (getSeconds() != 0) condensedCooldown += getSeconds() + "S:";
-
-		if (condensedCooldown.endsWith(":")) {
-			condensedCooldown = condensedCooldown.substring(0, condensedCooldown.length() - 1);
-		}
-
-		resource.set(path + ".Cooldown", condensedCooldown);
-		resource.save();
+		int daysToSeconds = days * 86400;
+		int hoursToSeconds = hours * 3600;
+		int minutesToSeconds = minutes * 60;
+		return daysToSeconds + hoursToSeconds + minutesToSeconds + seconds;
 
 	}
 	

@@ -34,8 +34,7 @@ Inventory:
       - '&7vanilla enchantment limits.'
       Material: IRON_LEGGINGS
       Enchantments:
-        DEPTH_STRIDER:
-          Level: 10
+        DEPTH_STRIDER: 10
     Boots:
       Name: '&aItem'
       Lore:
@@ -78,6 +77,7 @@ Inventory:
     8:
       Name: '&aSecond Ability Item &7(Unlimited custom abilities per kit!)'
       Material: GOLD_INGOT
+      Amount: 3
     Fill:
       Name: '&aFill Item'
       Lore:
@@ -91,6 +91,8 @@ Abilities:
     Activator:
       Name: '&aAbility Item'
       Material: EMERALD
+    Cooldown:
+      Cooldown: '10S'
     Message:
       Message: '%prefix% &7This is an example ability message.'
     Sound:
@@ -106,7 +108,7 @@ Abilities:
       - 'player: me This is an example player command that can be run when you use your ability.'
   SecondAbility:
     Activator:
-      Name: '&aSecond Ability Item (&7Unlimited custom abilities per kit!)'
+      Name: '&aSecond Ability Item &7(Unlimited custom abilities per kit!)'
       Material: GOLD_INGOT
     Message:
       Message: '%prefix% &7KitPvP supports &aunlimited &7custom kits and each with &aunlimited &7custom abilities!'

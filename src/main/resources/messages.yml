@@ -37,7 +37,8 @@ Messages:
     SelectedOther: '%prefix% &cThe specified player has already selected a kit.'
     Location: '%prefix% &cYou are not in the arena to perform this action.'
     KitInvalid: '%prefix% &cYou cannot perform this action because you have a kit selected.'
-    Cooldown: '%prefix% &cYou cannot select this kit for another %cooldown%.'
+    CooldownKit: '%prefix% &cYou cannot select this kit for another %cooldown%.'
+    CooldownAbility: '%prefix% &cYou cannot use this ability for another %cooldown%.'
     Offline: '%prefix% &cThe specified player is not online or not in an arena.'
     Menu: '%prefix% &cFailed to automatically add to the menu, the menu may be full.'
   Stats:

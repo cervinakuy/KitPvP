@@ -80,6 +80,11 @@ public class AttributeParser {
             activator.setItemMeta(abilityMeta);
             ability.setActivator(activator);
 
+            if (resource.contains(pathPrefix + ".Cooldown")) {
+                String formattedCooldown = resource.getString(pathPrefix + ".Cooldown.Cooldown");
+                ability.setCooldown(new Cooldown(formattedCooldown));
+            }
+
             if (resource.contains(pathPrefix + ".Message")) {
                 String abilityMessage = resource.getString(pathPrefix + ".Message.Message");
                 ability.setMessage(abilityMessage);

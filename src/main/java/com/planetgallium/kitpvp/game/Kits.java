@@ -198,8 +198,11 @@ public class Kits {
             return;
         }
 
-        if (!(p.hasPermission("kp.cooldownbypass") || !arena.getCooldowns().isOnCooldown(p.getUniqueId(), kit.getName()))) {
-            p.sendMessage(messages.getString("Messages.Error.Cooldown").replace("%cooldown%", arena.getCooldowns().getFormattedCooldown(p.getUniqueId(), kit.getName())));
+        // TODO: improve kit cooldown handling plugin-wide
+        if (!(p.hasPermission("kp.cooldownbypass") || !arena.getCooldowns().isOnCooldown(p, kit))) {
+            int timeLastUsedSeconds = resources.getStats().getInt("Stats.Players." + p.getUniqueId() + ".Cooldowns." + kit.getName());
+            int cooldownSeconds = kit.getCooldown().toSeconds();
+            p.sendMessage(messages.getString("Messages.Error.CooldownKit").replace("%cooldown%", arena.getCooldowns().getFormattedCooldown(timeLastUsedSeconds, cooldownSeconds)));
             return;
         }
 

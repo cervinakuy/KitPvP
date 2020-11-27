@@ -23,7 +23,6 @@ Inventory:
     1:
       Name: '&aHealth Pack &7(Right Click)'
       Material: ENDER_CHEST
-      Amount: 3
     8:
       Name: '&aPlayer Tracker &7(Right Click)'
       Material: COMPASS
@@ -35,6 +34,8 @@ Abilities:
     Activator:
       Name: '&aHealth Pack &7(Right Click)'
       Material: ENDER_CHEST
+    Cooldown:
+      Cooldown: '30S'
     Message:
       Message: '%prefix% &7You have used a &bHealth Pack&7.'
     Sound:

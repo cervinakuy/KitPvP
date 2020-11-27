@@ -9,6 +9,7 @@ public class CacheManager {
     private static Map<String, Kit> kitCache = new HashMap<>();
     private static Map<String, Menu> previewMenuCache = new HashMap<>();
     private static List<String> compassUsers = new ArrayList<>();
+    private static Map<String, Map<String, Long>> abilityCooldowns = new HashMap<>();
 
     public static Map<String, Kit> getKitCache() { return kitCache; }
 
@@ -16,10 +17,21 @@ public class CacheManager {
 
     public static List<String> getCompassUsers() { return compassUsers; }
 
+    public static Map<String, Long> getPlayerAbilityCooldowns(String username) {
+
+        if (abilityCooldowns.get(username) == null) {
+            abilityCooldowns.put(username, new HashMap<>());
+        }
+
+        return abilityCooldowns.get(username);
+
+    }
+
     public static void clearCaches() {
         kitCache.clear();
         previewMenuCache.clear();
         compassUsers.clear();
+        abilityCooldowns.clear();
     }
 
 }

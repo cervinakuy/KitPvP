@@ -3,6 +3,7 @@ package com.planetgallium.kitpvp.game;
 import java.util.*;
 
 import com.cryptomorin.xseries.XMaterial;
+import com.planetgallium.kitpvp.util.CacheManager;
 import com.planetgallium.kitpvp.util.Resource;
 import com.planetgallium.kitpvp.util.Toolkit;
 import org.bukkit.Bukkit;
@@ -54,7 +55,9 @@ public class Arena {
 	}
 	
 	public void addPlayer(Player p, boolean toSpawn, boolean giveItems) {
-		
+
+		CacheManager.getPlayerAbilityCooldowns(p.getName()).clear();
+
 		kits.resetKit(p.getName());
 		killstreaks.setStreak(p, 0);
 		
@@ -92,7 +95,9 @@ public class Arena {
 	}
 	
 	public void removePlayer(Player p) {
-		
+
+		CacheManager.getPlayerAbilityCooldowns(p.getName()).clear();
+
 		for (PotionEffect effect : p.getActivePotionEffects()) {
 			p.removePotionEffect(effect.getType());
 		}
@@ -126,6 +131,8 @@ public class Arena {
 			p.getInventory().clear();
 			p.getInventory().setArmorContents(null);
 		}
+
+		CacheManager.getPlayerAbilityCooldowns(p.getName()).clear();
 
 		if (hitCache.containsKey(p.getName())) {
 			hitCache.remove(p.getName());
@@ -161,7 +168,7 @@ public class Arena {
 
 		if (config.contains("Arenas." + arenaName)) {
 
-			p.teleport(Toolkit.getLocationFromConfig(config, "Arenas." + arenaName + "." + generateRandomArenaSpawn(arenaName)));
+			p.teleport(Toolkit.getLocationFromResource(config, "Arenas." + arenaName + "." + generateRandomArenaSpawn(arenaName)));
 
 		} else {
 

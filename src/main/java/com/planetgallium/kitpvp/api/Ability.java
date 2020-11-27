@@ -1,5 +1,6 @@
 package com.planetgallium.kitpvp.api;
 
+import com.planetgallium.kitpvp.util.Cooldown;
 import com.planetgallium.kitpvp.util.Resource;
 import com.planetgallium.kitpvp.util.Toolkit;
 import org.bukkit.Sound;
@@ -14,6 +15,7 @@ public class Ability {
 
     private String name;
     private ItemStack activator;
+    private Cooldown cooldown;
     private String message;
     private Sound sound;
     private int soundPitch;
@@ -33,6 +35,12 @@ public class Ability {
     public void setActivator(ItemStack activator) {
 
         this.activator = activator;
+
+    }
+
+    public void setCooldown(Cooldown cooldown) {
+
+        this.cooldown = cooldown;
 
     }
 
@@ -69,6 +77,7 @@ public class Ability {
 
         resource.set(pathPrefix + ".Activator.Name", Toolkit.toNormalColorCodes(activator.getItemMeta().getDisplayName()));
         resource.set(pathPrefix + ".Activator.Material", activator.getType().toString());
+        resource.set(pathPrefix + ".Cooldown.Cooldown", cooldown.formatted(true));
         resource.set(pathPrefix + ".Message.Message", message);
         resource.set(pathPrefix + ".Sound.Sound", sound.toString());
         resource.set(pathPrefix + ".Sound.Pitch", soundPitch != 0 ? soundPitch : null);
@@ -83,7 +92,7 @@ public class Ability {
             resource.set(pathPrefix + ".Effects." + type + ".Duration", durationSeconds);
         }
 
-        resource.set(pathPrefix + ".Commands.Commands", commands.toArray());
+        resource.set(pathPrefix + ".Commands", commands.toArray());
 
         resource.save();
 
@@ -92,6 +101,8 @@ public class Ability {
     public String getName() { return name; }
 
     public ItemStack getActivator() { return activator; }
+
+    public Cooldown getCooldown() { return cooldown; }
 
     public String getMessage() { return message; }
 

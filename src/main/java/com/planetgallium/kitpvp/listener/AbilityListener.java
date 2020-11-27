@@ -3,6 +3,7 @@ package com.planetgallium.kitpvp.listener;
 import com.planetgallium.kitpvp.Game;
 import com.planetgallium.kitpvp.api.Ability;
 import com.planetgallium.kitpvp.api.Kit;
+import com.planetgallium.kitpvp.util.CacheManager;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -29,20 +30,32 @@ public class AbilityListener implements Listener {
 		Kit kit = arena.getKits().getKitOfPlayer(p.getName());
 		Ability ability = e.getAbility();
 
-		if (p.hasPermission("kp.ability." + kit.getName().toLowerCase())) {
+		if (!p.hasPermission("kp.ability." + kit.getName().toLowerCase())) {
+			p.sendMessage(resources.getMessages().getString("Messages.General.Permission"));
+			return;
+		}
 
-			if (ability.getMessage() != null)
-				p.sendMessage(Toolkit.translate(ability.getMessage()));
+		if (arena.getCooldowns().isOnCooldown(p, ability)) {
+			int timeLastUsedSeconds = CacheManager.getPlayerAbilityCooldowns(p.getName()).get(ability.getName()).intValue();
+			int cooldownSeconds = ability.getCooldown().toSeconds();
+			p.sendMessage(resources.getMessages().getString("Messages.Error.CooldownAbility")
+					.replace("%cooldown%", arena.getCooldowns().getFormattedCooldown(timeLastUsedSeconds, cooldownSeconds)));
+			return;
+		}
 
-			if (ability.getSound() != null)
-				p.playSound(p.getLocation(), ability.getSound(), ability.getSoundVolume(), ability.getSoundPitch());
+		if (ability.getMessage() != null)
+			p.sendMessage(Toolkit.translate(ability.getMessage()));
 
-			if (ability.getEffects().size() > 0)
-				ability.getEffects().stream().forEach(effect -> p.addPotionEffect(effect));
+		if (ability.getSound() != null)
+			p.playSound(p.getLocation(), ability.getSound(), ability.getSoundVolume(), ability.getSoundPitch());
 
-			if (ability.getCommands().size() > 0)
-				Toolkit.runCommands(p, ability.getCommands(), "none", "none");
-			
+		if (ability.getEffects().size() > 0)
+			ability.getEffects().stream().forEach(effect -> p.addPotionEffect(effect));
+
+		if (ability.getCommands().size() > 0)
+			Toolkit.runCommands(p, ability.getCommands(), "none", "none");
+
+		if (ability.getCooldown() == null) {
 			if (Toolkit.getMainHandItem(p).getAmount() == 1) {
 				ItemStack emptyItem = Toolkit.getMainHandItem(p);
 				emptyItem.setAmount(0);
@@ -50,11 +63,8 @@ public class AbilityListener implements Listener {
 			} else {
 				Toolkit.getMainHandItem(p).setAmount(Toolkit.getMainHandItem(p).getAmount() - 1);
 			}
-			
 		} else {
-			
-			p.sendMessage(resources.getMessages().getString("Messages.General.Permission"));
-			
+			arena.getCooldowns().setAbilityCooldown(p.getName(), ability.getName());
 		}
 		
 	}

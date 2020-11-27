@@ -166,13 +166,7 @@ public class Kit {
     public void toResource(Resource resource) {
 
         resource.set("Kit.Permission", permission != null ? permission : "kp.kit." + name);
-        resource.save();
-
-        if (cooldown != null)
-            cooldown.toResource(resource, "Kit");
-        else
-            resource.set("Kit.Cooldown", 0);
-
+        resource.set("Kit.Cooldown", cooldown != null ? cooldown.formatted(true) : 0);
         resource.set("Kit.Level", level);
         resource.save();
 
