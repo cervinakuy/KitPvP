@@ -1,6 +1,6 @@
-# ABILITIES FILE - Customize nearly every aspect of the pre-made abilities.
-#
-# Please contact Cervinakuy (the developer) on Spigot if you have any problems.
+# To learn more about abilities, please
+# visit the abilities.yml documentation on GitHub:
+# https://github.com/cervinakuy/KitPvP/wiki/abilities.yml
 
 Abilities:
   Archer:
