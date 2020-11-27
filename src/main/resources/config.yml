@@ -121,6 +121,7 @@ Arena:
   ResetKillStreakOnLeave: true
   ToSpawnOnJoin: true
   DeathParticles: true
+  PlayerGamemode: "ADVENTURE"
 Other:
   AutomaticallyAddKitToMenu: true
 Spawn:
