@@ -54,8 +54,14 @@ public class DeathListener implements Listener {
 			setDeathMessage(victim);
 			respawnPlayer(victim);
 
-			arena.getStats().addDeath(victim.getUniqueId());
-			arena.getLevels().removeExperience(victim, resources.getLevels().getInt("Levels.Options.Experience-Taken-On-Death"));
+			new BukkitRunnable() {
+
+				@Override
+				public void run() {
+					arena.getStats().addDeath(victim.getUniqueId());
+					arena.getLevels().removeExperience(victim, resources.getLevels().getInt("Levels.Options.Experience-Taken-On-Death"));
+				}
+			}.runTaskAsynchronously(Game.getInstance());
 
 			if (config.getBoolean("Arena.DeathParticle")) {
 				victim.getWorld().playEffect(victim.getLocation().add(0.0D, 1.0D, 0.0D), Effect.STEP_SOUND, 152);
@@ -263,8 +269,13 @@ public class DeathListener implements Listener {
 
 			if (!victim.getName().equals(killer.getName())) {
 
-				arena.getStats().addKill(killer.getUniqueId());
-				arena.getLevels().addExperience(killer, resources.getLevels().getInt("Levels.Options.Experience-Given-On-Kill"));
+				new BukkitRunnable() {
+					@Override
+					public void run() {
+						arena.getStats().addKill(killer.getUniqueId());
+						arena.getLevels().addExperience(killer, resources.getLevels().getInt("Levels.Options.Experience-Given-On-Kill"));
+					}
+				}.runTaskAsynchronously(Game.getInstance());
 
 				List<String> killCommands = config.getStringList("Kill.Commands");
 				killCommands = Toolkit.replaceInList(killCommands, "%victim%", victim.getName());
