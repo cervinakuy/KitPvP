@@ -12,6 +12,7 @@ import org.bukkit.inventory.ItemStack;
 import com.planetgallium.kitpvp.Game;
 
 import me.clip.placeholderapi.PlaceholderAPI;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 
 public class Toolkit {
@@ -408,6 +409,20 @@ public class Toolkit {
 				return true;
 
 			}
+
+		}
+
+		return false;
+
+	}
+
+	public static boolean hasMatchingDisplayName(ItemStack item, String targetDisplayName) {
+
+		ItemMeta meta = item.getItemMeta();
+
+		if (meta != null) {
+
+			return meta.hasDisplayName() && Toolkit.translate(meta.getDisplayName()).equals(targetDisplayName);
 
 		}
 

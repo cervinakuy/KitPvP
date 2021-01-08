@@ -98,7 +98,7 @@ public class ItemListener implements Listener {
 
 			} else if (item.getType() == XMaterial.TNT.parseMaterial()) {
 
-				if (config.getBoolean("TNT.Enabled") && item.hasItemMeta() && item.getItemMeta().getDisplayName().equals(config.getString("TNT.Name"))) {
+				if (config.getBoolean("TNT.Enabled") && Toolkit.hasMatchingDisplayName(item, config.getString("TNT.Name"))) {
 
 					Location handLocation = p.getLocation();
 					handLocation.setY(handLocation.getY() + 1.0);
@@ -235,7 +235,7 @@ public class ItemListener implements Listener {
 
 			} else if (item.getType() == XMaterial.SLIME_BALL.parseMaterial() && item.hasItemMeta()) {
 
-				if (item.getItemMeta().getDisplayName().equals(abilities.getString("Abilities.Archer.Item.NoFire"))) {
+				if (Toolkit.hasMatchingDisplayName(item, abilities.getString("Abilities.Archer.Item.NoFire"))) {
 
 					item.setType(XMaterial.MAGMA_CREAM.parseMaterial());
 					meta.setDisplayName(Toolkit.translate(abilities.getString("Abilities.Archer.Item.Fire")));
@@ -253,7 +253,7 @@ public class ItemListener implements Listener {
 
 			} else if (item.getType() == XMaterial.MAGMA_CREAM.parseMaterial() && item.hasItemMeta()) {
 
-				if (item.getItemMeta().getDisplayName().equals(abilities.getString("Abilities.Archer.Item.Fire"))) {
+				if (Toolkit.hasMatchingDisplayName(item, abilities.getString("Abilities.Archer.Item.Fire"))) {
 
 					item.setType(XMaterial.SLIME_BALL.parseMaterial());
 					meta.setDisplayName(Toolkit.translate(abilities.getString("Abilities.Archer.Item.NoFire")));
@@ -271,7 +271,7 @@ public class ItemListener implements Listener {
 
 			} else if (item.getType() == XMaterial.matchXMaterial(config.getString("Items.Kits.Material")).get().parseMaterial()) {
 
-				if (meta.getDisplayName().equals(config.getString("Items.Kits.Name"))) {
+				if (Toolkit.hasMatchingDisplayName(item, config.getString("Items.Kits.Name")))) {
 
 					Toolkit.runCommands(p, config.getStringList("Items.Kits.Commands"), "none", "none");
 
@@ -297,7 +297,7 @@ public class ItemListener implements Listener {
 
 						if (item.getType() == XMaterial.matchXMaterial(config.getString(itemPath + ".Material")).get().parseMaterial()) {
 
-							if (item.getItemMeta().getDisplayName().equals(Toolkit.translate(config.getString(itemPath + ".Name")))) {
+							if (Toolkit.hasMatchingDisplayName(item, config.getString(itemPath + ".Name"))) {
 
 								Toolkit.runCommands(p, config.getStringList(itemPath + ".Commands"), "none", "none");
 								e.setCancelled(true);
@@ -378,7 +378,7 @@ public class ItemListener implements Listener {
 
 				ItemMeta meta = interactedItem.getItemMeta();
 
-				if (Toolkit.translate(meta.getDisplayName()).equals(abilities.getString("Abilities." + kitName + ".Item.Name"))) {
+				if (Toolkit.hasMatchingDisplayName(interactedItem, abilities.getString("Abilities." + kitName + ".Item.Name"))) {
 
 					if (p.hasPermission("kp.ability." + kitName.toLowerCase())) {
 
@@ -461,7 +461,7 @@ public class ItemListener implements Listener {
 			ItemStack item = p.getInventory().getItem(i);
 			if (item != null) {
 				if (item.getType() == type) {
-					if (Toolkit.translate(item.getItemMeta().getDisplayName()).equals(displayName)) {
+					if (Toolkit.hasMatchingDisplayName(item, displayName)) {
 						return i;
 					}
 				}
