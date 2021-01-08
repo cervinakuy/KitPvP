@@ -306,7 +306,7 @@ public class Kits {
         File folder = new File(plugin.getDataFolder().getAbsolutePath() + "/kits");
         List<String> list = new ArrayList<>();
 
-        for (String fileName : folder.list()) {
+        for (String fileName : Objects.requireNonNull(folder.list())) {
             list.add(fileName.split(".yml")[0]);
         }
 
