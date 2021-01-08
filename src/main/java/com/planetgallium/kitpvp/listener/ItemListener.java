@@ -271,7 +271,7 @@ public class ItemListener implements Listener {
 
 			} else if (item.getType() == XMaterial.matchXMaterial(config.getString("Items.Kits.Material")).get().parseMaterial()) {
 
-				if (Toolkit.hasMatchingDisplayName(item, config.getString("Items.Kits.Name")))) {
+				if (Toolkit.hasMatchingDisplayName(item, config.getString("Items.Kits.Name"))) {
 
 					Toolkit.runCommands(p, config.getStringList("Items.Kits.Commands"), "none", "none");
 
