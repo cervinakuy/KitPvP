@@ -1,7 +1,7 @@
 Messages:
   General:
     Prefix: '&7[&b&lKIT-PVP&7]'
-    Permission: '%prefix% &cYou do not have permission.'
+    Permission: '%prefix% &cYou do not have permission (%permission%).'
     Player: '%prefix% &cYou must be a player to perform this action.'
   Commands:
     Create: '%prefix% &7The kit &b%kit% &7has successfully been created.'

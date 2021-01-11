@@ -460,7 +460,7 @@ public class MainCommand implements CommandExecutor {
         if (sender.hasPermission(permission)) {
             return true;
         }
-        sender.sendMessage(messages.getString("Messages.General.Permission"));
+        sender.sendMessage(messages.getString("Messages.General.Permission").replace("%permission%", permission));
         return false;
 
     }

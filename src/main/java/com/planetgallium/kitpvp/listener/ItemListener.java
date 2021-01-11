@@ -374,21 +374,17 @@ public class ItemListener implements Listener {
 
 		if (arena.getKits().hasKit(p.getName())) {
 
-			if (interactedItem.hasItemMeta()) {
+			if (Toolkit.hasMatchingDisplayName(interactedItem, abilities.getString("Abilities." + kitName + ".Item.Name"))) {
 
-				ItemMeta meta = interactedItem.getItemMeta();
+				String abilityPermission = "kp.ability." + kitName.toLowerCase();
 
-				if (Toolkit.hasMatchingDisplayName(interactedItem, abilities.getString("Abilities." + kitName + ".Item.Name"))) {
+				if (p.hasPermission(abilityPermission)) {
 
-					if (p.hasPermission("kp.ability." + kitName.toLowerCase())) {
+					return true;
 
-						return true;
+				} else {
 
-					} else {
-
-						p.sendMessage(resources.getMessages().getString("Messages.General.Permission"));
-
-					}
+					p.sendMessage(resources.getMessages().getString("Messages.General.Permission").replace("%permission%", abilityPermission));
 
 				}
 
@@ -542,7 +538,7 @@ public class ItemListener implements Listener {
 							} else {
 
 								e.setCancelled(true);
-								shooter.sendMessage(resources.getMessages().getString("Messages.General.Permission"));
+								shooter.sendMessage(resources.getMessages().getString("Messages.General.Permission").replace("%permission%", "kp.ability.trickster"));
 
 							}
 

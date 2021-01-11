@@ -420,7 +420,7 @@ public class Toolkit {
 
 		ItemMeta meta = item.getItemMeta();
 
-		if (meta != null) {
+		if (item.hasItemMeta() && meta != null) {
 
 			return meta.hasDisplayName() && Toolkit.translate(meta.getDisplayName()).equals(targetDisplayName);
 

@@ -188,7 +188,7 @@ public class Kits {
         }
 
         if (!p.hasPermission(kit.getPermission())) {
-            p.sendMessage(messages.getString("Messages.General.Permission"));
+            p.sendMessage(messages.getString("Messages.General.Permission").replace("%permission%", kit.getPermission()));
             return;
         }
 
