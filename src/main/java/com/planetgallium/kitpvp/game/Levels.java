@@ -31,7 +31,7 @@ public class Levels {
 			arena.getStats().addExperience(p.getUniqueId(), experience);
 			
 			if (arena.getLevels().getExperience(p.getUniqueId()) >= levels.getInt("Levels.Options.Experience-To-Level-Up")) {
-				
+
 				arena.getLevels().levelUp(p);
 				Bukkit.getPluginManager().callEvent(new PlayerLevelUpEvent(p, getLevel(p.getUniqueId())));
 				
@@ -71,6 +71,10 @@ public class Levels {
 			p.sendMessage(resources.getMessages().getString("Messages.Other.Level").replace("%level%", newLevel));
 			p.playSound(p.getLocation(), XSound.ENTITY_PLAYER_LEVELUP.parseSound(), 1, 1);
 			
+		} else {
+
+			arena.getStats().setExperience(p.getUniqueId(), 0);
+
 		}
 		
 	}
