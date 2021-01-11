@@ -107,6 +107,12 @@ public class ArenaListener implements Listener {
 	
     	if (Toolkit.inArena(e.getEntity()) && config.getBoolean("Arena.PreventBlockBreaking")) {
 
+    		if (e.getEntityType() == EntityType.PRIMED_TNT) { // enable TNT explosion animation
+    			e.blockList().clear();
+    			e.setCancelled(false);
+    			return;
+			}
+
 			e.setCancelled(true);
 			
 		}
