@@ -4,6 +4,12 @@ import com.planetgallium.kitpvp.Game;
 import com.planetgallium.kitpvp.api.Ability;
 import com.planetgallium.kitpvp.api.Kit;
 import com.planetgallium.kitpvp.util.CacheManager;
+import com.sk89q.worldguard.LocalPlayer;
+import com.sk89q.worldguard.WorldGuard;
+import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+import com.sk89q.worldguard.protection.ApplicableRegionSet;
+import com.sk89q.worldguard.protection.flags.Flags;
+import com.sk89q.worldguard.protection.regions.RegionQuery;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -15,18 +21,32 @@ import com.planetgallium.kitpvp.util.Toolkit;
 
 public class AbilityListener implements Listener {
 
+	private Game plugin;
 	private Arena arena;
 	private Resources resources;
 	
 	public AbilityListener(Game plugin) {
+		this.plugin = plugin;
 		this.arena = plugin.getArena();
 		this.resources = plugin.getResources();
 	}
 	
 	@EventHandler
 	public void onAbility(PlayerAbilityEvent e) {
-		
+
 		Player p = e.getPlayer();
+
+		if (plugin.hasWorldGuard()) {
+			RegionQuery query = WorldGuard.getInstance().getPlatform().getRegionContainer().createQuery();
+			LocalPlayer localPlayer = WorldGuardPlugin.inst().wrapPlayer(e.getPlayer());
+			ApplicableRegionSet set = query.getApplicableRegions(localPlayer.getLocation());
+
+			if (!set.testState(null, Flags.PVP)) {
+				p.sendMessage(resources.getMessages().getString("Messages.Error.PVP"));
+				return;
+			}
+		}
+
 		Kit kit = arena.getKits().getKitOfPlayer(p.getName());
 		Ability ability = e.getAbility();
 

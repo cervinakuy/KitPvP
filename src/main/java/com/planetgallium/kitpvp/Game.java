@@ -32,6 +32,7 @@ public class Game extends JavaPlugin implements Listener {
 	public String storageType;
 	private boolean needsUpdate = false;
 	private boolean hasPlaceholderAPI = false;
+	private boolean hasWorldGuard = false;
 	
 	@Override
 	public void onEnable() {
@@ -95,6 +96,11 @@ public class Game extends JavaPlugin implements Listener {
 			Bukkit.getConsoleSender().sendMessage(Toolkit.translate("[&b&lKIT-PVP&7] &7Discovered &bPlaceholderAPI&7, now hooking into it."));
 			new Placeholders(this).register();
 			hasPlaceholderAPI = true;
+		}
+
+		if (Bukkit.getPluginManager().isPluginEnabled("WorldGuard")) {
+			Bukkit.getConsoleSender().sendMessage(Toolkit.translate("[&b&lKIT-PVP&7] &7Discovered &bWorldGuard&7, now hooking into it."));
+			hasWorldGuard = true;
 		}
 		
 		Bukkit.getConsoleSender().sendMessage(Toolkit.translate("&7[&b&lKIT-PVP&7] &aDone!"));
@@ -162,6 +168,8 @@ public class Game extends JavaPlugin implements Listener {
 	}
 
 	public boolean hasPlaceholderAPI() { return hasPlaceholderAPI; }
+
+	public boolean hasWorldGuard() { return hasWorldGuard; }
 
 	public boolean needsUpdate() { return needsUpdate; }
 	
