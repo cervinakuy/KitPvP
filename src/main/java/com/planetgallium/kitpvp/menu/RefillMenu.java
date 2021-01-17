@@ -12,7 +12,6 @@ public class RefillMenu {
 
     public RefillMenu(Resources resources) {
         this.resources = resources;
-        create();
     }
 
     private void create() {
@@ -29,6 +28,7 @@ public class RefillMenu {
 
     public void open(Player p) {
 
+        create();
         menu.openMenu(p);
 
     }
