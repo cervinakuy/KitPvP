@@ -150,7 +150,7 @@ public class Arena {
 
 			if (config.getBoolean(itemPath + ".Enabled")) {
 
-				ItemStack item = XMaterial.matchXMaterial(config.getString(itemPath + ".Material")).get().parseItem();
+				ItemStack item = new ItemStack(XMaterial.matchXMaterial(config.getString(itemPath + ".Material")).get().parseMaterial());
 				ItemMeta meta = item.getItemMeta();
 
 				meta.setDisplayName(config.getString(itemPath + ".Name"));
