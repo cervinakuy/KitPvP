@@ -86,7 +86,10 @@ public class Resources {
 		scoreboard.addCopyDefaultExemption("Scoreboard.Lines");
 		scoreboard.copyDefaults();
 
+		config.addCopyDefaultExemption("Items.Kits");
+		config.addCopyDefaultExemption("Items.Leave");
 		config.copyDefaults();
+
 		abilities.copyDefaults();
 		signs.copyDefaults();
 		
