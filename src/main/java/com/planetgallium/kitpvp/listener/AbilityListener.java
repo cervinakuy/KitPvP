@@ -36,15 +36,8 @@ public class AbilityListener implements Listener {
 
 		Player p = e.getPlayer();
 
-		if (plugin.hasWorldGuard()) {
-			RegionQuery query = WorldGuard.getInstance().getPlatform().getRegionContainer().createQuery();
-			LocalPlayer localPlayer = WorldGuardPlugin.inst().wrapPlayer(e.getPlayer());
-			ApplicableRegionSet set = query.getApplicableRegions(localPlayer.getLocation());
-
-			if (!set.testState(null, Flags.PVP)) {
-				p.sendMessage(resources.getMessages().getString("Messages.Error.PVP"));
-				return;
-			}
+		if (!arena.isCombatActionPermittedInRegion(p)) {
+			return;
 		}
 
 		Kit kit = arena.getKits().getKitOfPlayer(p.getName());

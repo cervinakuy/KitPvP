@@ -6,6 +6,12 @@ import com.cryptomorin.xseries.XMaterial;
 import com.planetgallium.kitpvp.util.CacheManager;
 import com.planetgallium.kitpvp.util.Resource;
 import com.planetgallium.kitpvp.util.Toolkit;
+import com.sk89q.worldguard.LocalPlayer;
+import com.sk89q.worldguard.WorldGuard;
+import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+import com.sk89q.worldguard.protection.ApplicableRegionSet;
+import com.sk89q.worldguard.protection.flags.Flags;
+import com.sk89q.worldguard.protection.regions.RegionQuery;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.configuration.ConfigurationSection;
@@ -97,6 +103,7 @@ public class Arena {
 	public void removePlayer(Player p) {
 
 		CacheManager.getPlayerAbilityCooldowns(p.getName()).clear();
+		CacheManager.getWitchPotionUsers().remove(p.getName());
 
 		for (PotionEffect effect : p.getActivePotionEffects()) {
 			p.removePotionEffect(effect.getType());
@@ -233,6 +240,23 @@ public class Arena {
 		}
 
 		return spawnKeys.get(random.nextInt(spawnKeys.size()));
+
+	}
+
+	public boolean isCombatActionPermittedInRegion(Player p) {
+
+		if (plugin.hasWorldGuard()) {
+			RegionQuery query = WorldGuard.getInstance().getPlatform().getRegionContainer().createQuery();
+			LocalPlayer localPlayer = WorldGuardPlugin.inst().wrapPlayer(p);
+			ApplicableRegionSet set = query.getApplicableRegions(localPlayer.getLocation());
+
+			if (!set.testState(null, Flags.PVP)) {
+				p.sendMessage(resources.getMessages().getString("Messages.Error.PVP"));
+				return false;
+			}
+		}
+
+		return true;
 
 	}
 

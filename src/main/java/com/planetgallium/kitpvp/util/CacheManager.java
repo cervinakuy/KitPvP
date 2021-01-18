@@ -10,12 +10,15 @@ public class CacheManager {
     private static Map<String, Menu> previewMenuCache = new HashMap<>();
     private static List<String> compassUsers = new ArrayList<>();
     private static Map<String, Map<String, Long>> abilityCooldowns = new HashMap<>();
+    private static Set<String> witchPotionUsers = new HashSet<>();
 
     public static Map<String, Kit> getKitCache() { return kitCache; }
 
     public static Map<String, Menu> getPreviewMenuCache() { return previewMenuCache; }
 
     public static List<String> getCompassUsers() { return compassUsers; }
+
+    public static Set<String> getWitchPotionUsers() { return witchPotionUsers; }
 
     public static Map<String, Long> getPlayerAbilityCooldowns(String username) {
 
