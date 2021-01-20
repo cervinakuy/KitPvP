@@ -250,10 +250,11 @@ public class Arena {
 			LocalPlayer localPlayer = WorldGuardPlugin.inst().wrapPlayer(p);
 			ApplicableRegionSet set = query.getApplicableRegions(localPlayer.getLocation());
 
-			if (!set.testState(null, Flags.PVP)) {
-				p.sendMessage(resources.getMessages().getString("Messages.Error.PVP"));
-				return false;
+			if (set.testState(null, Flags.PVP)) {
+				return true;
 			}
+			p.sendMessage(resources.getMessages().getString("Messages.Error.PVP"));
+			return false;
 		}
 
 		return true;
