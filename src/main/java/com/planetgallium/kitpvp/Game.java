@@ -138,7 +138,11 @@ public class Game extends JavaPlugin implements Listener {
 	public void onInteract(PlayerInteractEvent e) {
 		
 		Player p = e.getPlayer();
-		
+
+		if (!resources.getConfig().contains("Items.Leave")) {
+			return;
+		}
+
 		if (Toolkit.getMainHandItem(p).getType() == XMaterial.matchXMaterial(resources.getConfig().getString("Items.Leave.Material")).get().parseMaterial()) {
 			
 			if (resources.getConfig().getBoolean("Items.Leave.Enabled")) {
