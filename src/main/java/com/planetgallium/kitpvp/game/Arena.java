@@ -3,15 +3,7 @@ package com.planetgallium.kitpvp.game;
 import java.util.*;
 
 import com.cryptomorin.xseries.XMaterial;
-import com.planetgallium.kitpvp.util.CacheManager;
-import com.planetgallium.kitpvp.util.Resource;
-import com.planetgallium.kitpvp.util.Toolkit;
-import com.sk89q.worldguard.LocalPlayer;
-import com.sk89q.worldguard.WorldGuard;
-import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
-import com.sk89q.worldguard.protection.ApplicableRegionSet;
-import com.sk89q.worldguard.protection.flags.Flags;
-import com.sk89q.worldguard.protection.regions.RegionQuery;
+import com.planetgallium.kitpvp.util.*;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.configuration.ConfigurationSection;
@@ -22,7 +14,6 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.scoreboard.Scoreboard;
 
 import com.planetgallium.kitpvp.Game;
-import com.planetgallium.kitpvp.util.Resources;
 
 import me.clip.placeholderapi.PlaceholderAPI;
 
@@ -246,15 +237,14 @@ public class Arena {
 	public boolean isCombatActionPermittedInRegion(Player p) {
 
 		if (plugin.hasWorldGuard()) {
-			RegionQuery query = WorldGuard.getInstance().getPlatform().getRegionContainer().createQuery();
-			LocalPlayer localPlayer = WorldGuardPlugin.inst().wrapPlayer(p);
-			ApplicableRegionSet set = query.getApplicableRegions(localPlayer.getLocation());
 
-			if (set.testState(null, Flags.PVP)) {
+			if (WorldGuardAPI.getInstance().allows(p, WorldGuardFlag.PVP.getFlag())) {
 				return true;
 			}
+
 			p.sendMessage(resources.getMessages().getString("Messages.Error.PVP"));
 			return false;
+
 		}
 
 		return true;
