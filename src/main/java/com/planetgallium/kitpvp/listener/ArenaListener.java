@@ -138,11 +138,16 @@ public class ArenaListener implements Listener {
 
 				}
 
-			} else if (e.getEntity() instanceof Damageable && e.getEntity().getType() != EntityType.PLAYER) {
+			} else if (e.getEntity() instanceof Damageable) {
 
 				if (e.getDamager().getType() == EntityType.PRIMED_TNT) {
 
-					e.setCancelled(true);
+					if (e.getEntity() instanceof ArmorStand || !(e.getEntity() instanceof LivingEntity)) {
+						// for preventing breakage of paintings, item frames, etc.
+
+						e.setCancelled(true);
+
+					}
 
 				}
 
