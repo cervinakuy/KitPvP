@@ -96,6 +96,13 @@ public class Resources {
 		for (String fileName : kits.keySet()) {
 			kits.get(fileName).load();
 		}
+
+		// load new kits that have been added through file system (when doing /kp reload)
+		for (String fileName : getKitList()) {
+			if (!kits.containsKey(fileName)) {
+				kits.put(fileName, new Resource(plugin, "kits/" + fileName));
+			}
+		}
 		
 	}
 	
