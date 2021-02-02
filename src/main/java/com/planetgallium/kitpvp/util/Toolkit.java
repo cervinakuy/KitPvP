@@ -3,6 +3,7 @@ package com.planetgallium.kitpvp.util;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.*;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Entity;
@@ -423,6 +424,30 @@ public class Toolkit {
 		if (item.hasItemMeta() && meta != null) {
 
 			return meta.hasDisplayName() && Toolkit.translate(meta.getDisplayName()).equals(targetDisplayName);
+
+		}
+
+		return false;
+
+	}
+
+	public static boolean matchesConfigItem(ItemStack item, Resource resource, String path) {
+
+		ItemMeta itemMeta = item.getItemMeta();
+		String configItemName = resource.getString(path + ".Name");
+		String configItemMaterial = resource.getString(path + ".Material");
+
+		if (item.getType() == XMaterial.matchXMaterial(configItemMaterial).get().parseMaterial()) {
+
+			if (itemMeta != null && itemMeta.hasDisplayName()) {
+
+				if (Toolkit.translate(itemMeta.getDisplayName()).equals(configItemName)) {
+
+					return true;
+
+				}
+
+			}
 
 		}
 

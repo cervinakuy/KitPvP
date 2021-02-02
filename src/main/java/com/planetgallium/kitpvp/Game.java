@@ -143,28 +143,28 @@ public class Game extends JavaPlugin implements Listener {
 			return;
 		}
 
-		if (Toolkit.getMainHandItem(p).getType() == XMaterial.matchXMaterial(resources.getConfig().getString("Items.Leave.Material")).get().parseMaterial()) {
-			
+		if (Toolkit.matchesConfigItem(Toolkit.getMainHandItem(p), resources.getConfig(), "Items.Leave")) {
+
 			if (resources.getConfig().getBoolean("Items.Leave.Enabled")) {
-					
+
 				if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
-			
+
 					if (resources.getConfig().getBoolean("Items.Leave.BungeeCord.Enabled")) {
-						
-				        ByteArrayDataOutput out = ByteStreams.newDataOutput();
-				        out.writeUTF("Connect");
-				        
-				        String server = resources.getConfig().getString("Items.Leave.BungeeCord.Server");
-				        
-				        out.writeUTF(server);
-				        p.sendPluginMessage(this, "BungeeCord", out.toByteArray());
-				        
+
+						ByteArrayDataOutput out = ByteStreams.newDataOutput();
+						out.writeUTF("Connect");
+
+						String server = resources.getConfig().getString("Items.Leave.BungeeCord.Server");
+
+						out.writeUTF(server);
+						p.sendPluginMessage(this, "BungeeCord", out.toByteArray());
+
 					}
-					
+
+					e.setCancelled(true);
+
 				}
 
-				e.setCancelled(true);
-				
 			}
 
 		}
