@@ -73,6 +73,7 @@ public class MainCommand implements CommandExecutor {
                 sender.sendMessage(Toolkit.translate("&7- &b/kp clear &7Clears your current kit."));
                 sender.sendMessage(Toolkit.translate("&7- &b/kp clear [player] &7Clears a kit for a player."));
                 sender.sendMessage(Toolkit.translate("&7- &b/kp stats &7View your stats."));
+                sender.sendMessage(Toolkit.translate("&7- &b/kp stats [player] &7View the stats of another player."));
                 sender.sendMessage(Toolkit.translate("&7- &b/kp menu &7Displays the kits menu."));
                 sender.sendMessage(Toolkit.translate("&7- &b/kp import &7Imports all stats from the MySQL database."));
                 sender.sendMessage(Toolkit.translate("&7- &b/kp export &7Exports all stats to the MySQL database."));
@@ -459,7 +460,7 @@ public class MainCommand implements CommandExecutor {
         if (sender.hasPermission(permission)) {
             return true;
         }
-        sender.sendMessage(messages.getString("Messages.General.Permission"));
+        sender.sendMessage(messages.getString("Messages.General.Permission").replace("%permission%", permission));
         return false;
 
     }

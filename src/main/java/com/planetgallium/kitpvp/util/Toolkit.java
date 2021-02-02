@@ -12,8 +12,8 @@ import org.bukkit.inventory.ItemStack;
 import com.planetgallium.kitpvp.Game;
 
 import me.clip.placeholderapi.PlaceholderAPI;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.permissions.PermissionAttachmentInfo;
-import org.bukkit.plugin.Plugin;
 
 public class Toolkit {
 	
@@ -400,15 +400,29 @@ public class Toolkit {
 
 	}
 
-	public static boolean containsAnyThatStartWith(List<String> list, String target) {
+	public static boolean containsAnyThatStartWith(List<String> list, String valueToTest) {
 
 		for (String string : list) {
 
-			if (string.startsWith(target)) {
+			if (valueToTest.startsWith(string)) {
 
 				return true;
 
 			}
+
+		}
+
+		return false;
+
+	}
+
+	public static boolean hasMatchingDisplayName(ItemStack item, String targetDisplayName) {
+
+		ItemMeta meta = item.getItemMeta();
+
+		if (item.hasItemMeta() && meta != null) {
+
+			return meta.hasDisplayName() && Toolkit.translate(meta.getDisplayName()).equals(targetDisplayName);
 
 		}
 

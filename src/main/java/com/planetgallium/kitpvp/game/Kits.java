@@ -188,7 +188,7 @@ public class Kits {
         }
 
         if (!p.hasPermission(kit.getPermission())) {
-            p.sendMessage(messages.getString("Messages.General.Permission"));
+            p.sendMessage(messages.getString("Messages.General.Permission").replace("%permission%", kit.getPermission()));
             return;
         }
 
@@ -228,12 +228,10 @@ public class Kits {
             arena.getCooldowns().setCooldown(p.getUniqueId(), kit.getName());
         }
 
-        if (resources.getKit(kit.getName()) != null) {
-            Resource kitResource = resources.getKit(kit.getName());
-            if (kitResource.contains("Commands")) {
-                List<String> commands = kitResource.getStringList("Commands");
-                Toolkit.runCommands(p, commands, "none", "none");
-            }
+        Resource kitResource = resources.getKit(kit.getName());
+        if (kitResource != null && kitResource.contains("Commands")) {
+            List<String> commands = kitResource.getStringList("Commands");
+            Toolkit.runCommands(p, commands, "none", "none");
         }
 
     }
@@ -264,6 +262,10 @@ public class Kits {
     public Kit getKitOfPlayer(String playerName) {
 
         String kitName = kits.get(playerName);
+        if (kitName == null) {
+            return null;
+        }
+
         return loadKitFromCacheOrCreate(kitName);
 
     }
@@ -275,13 +277,11 @@ public class Kits {
                 Resource kit = resources.getKit(kitName);
                 try {
                     CacheManager.getKitCache().put(kitName, createKitFromResource(kit));
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                } catch (NoSuchMethodException e) {
-                    e.printStackTrace();
-                } catch (InvocationTargetException e) {
+                } catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
                     e.printStackTrace();
                 }
+            } else {
+                Bukkit.getConsoleSender().sendMessage("&7[&b&lKIT-PVP&7] &cNo kit with name " + kitName + " found in the kits folder. Try reloading the server.");
             }
         }
 
@@ -306,7 +306,7 @@ public class Kits {
         File folder = new File(plugin.getDataFolder().getAbsolutePath() + "/kits");
         List<String> list = new ArrayList<>();
 
-        for (String fileName : folder.list()) {
+        for (String fileName : Objects.requireNonNull(folder.list())) {
             list.add(fileName.split(".yml")[0]);
         }
 

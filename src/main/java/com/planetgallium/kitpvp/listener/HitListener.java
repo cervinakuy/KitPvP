@@ -24,7 +24,7 @@ public class HitListener implements Listener {
 		this.resources = plugin.getResources();
 		this.config = resources.getConfig();
 
-		String soundString = config.getString("Combat.HitSound.Sound") + " 1 " + config.getInt("Combat.HitSound.Pitch");
+		String soundString = config.getString("Combat.HitSound.Sound") + ", 1, " + config.getInt("Combat.HitSound.Pitch");
 		this.hitSound = XSound.parse(null, Bukkit.getWorlds().get(0).getSpawnLocation(), soundString, false).join();
 	}
 

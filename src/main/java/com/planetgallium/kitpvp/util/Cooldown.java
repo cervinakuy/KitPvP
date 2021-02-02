@@ -24,19 +24,19 @@ public class Cooldown {
 
 			if (units[i].toUpperCase().endsWith("D")) {
 
-				days = Integer.valueOf(units[i].split("D")[0]);
+				days = Integer.parseInt(units[i].split("D")[0]);
 
 			} else if (units[i].toUpperCase().endsWith("H")) {
 
-				hours = Integer.valueOf(units[i].split("H")[0]);
+				hours = Integer.parseInt(units[i].split("H")[0]);
 
 			} else if (units[i].toUpperCase().endsWith("M")) {
 
-				minutes = Integer.valueOf(units[i].split("M")[0]);
+				minutes = Integer.parseInt(units[i].split("M")[0]);
 
 			} else if (units[i].toUpperCase().endsWith("S")) {
 
-				seconds = Integer.valueOf(units[i].split("S")[0]);
+				seconds = Integer.parseInt(units[i].split("S")[0]);
 
 			}
 

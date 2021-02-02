@@ -11,6 +11,8 @@ Levels:
     Maximum-Level: 100
   Commands-On-Level-Up: []
   Levels:
+    0:
+      Prefix: '&7Level %level%'
     1:
       Prefix: '&7Level %level%'
     2:

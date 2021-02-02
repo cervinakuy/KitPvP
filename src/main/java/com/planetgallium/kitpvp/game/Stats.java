@@ -26,7 +26,7 @@ public class Stats {
 			if (!stats.contains("Stats.Players." + uuid + ".Username")) {
 				
 				stats.set("Stats.Players." + uuid + ".Username", username);
-				stats.set("Stats.Players." + uuid + ".Level", 0);
+				stats.set("Stats.Players." + uuid + ".Level", resources.getLevels().getInt("Levels.Options.Minimum-Level"));
 				stats.set("Stats.Players." + uuid + ".Experience", 0);
 				stats.set("Stats.Players." + uuid + ".Kills", 0);
 				stats.set("Stats.Players." + uuid + ".Deaths", 0);

@@ -1,7 +1,7 @@
 Messages:
   General:
     Prefix: '&7[&b&lKIT-PVP&7]'
-    Permission: '%prefix% &cYou do not have permission.'
+    Permission: '%prefix% &cYou do not have permission (%permission%).'
     Player: '%prefix% &cYou must be a player to perform this action.'
   Commands:
     Create: '%prefix% &7The kit &b%kit% &7has successfully been created.'
@@ -41,6 +41,7 @@ Messages:
     CooldownAbility: '%prefix% &cYou cannot use this ability for another %cooldown%.'
     Offline: '%prefix% &cThe specified player is not online or not in an arena.'
     Menu: '%prefix% &cFailed to automatically add to the menu, the menu may be full.'
+    PVP: '%prefix% &cPVP is not permitted in this region.'
   Stats:
     Message:
     - '&7&m                                &r'

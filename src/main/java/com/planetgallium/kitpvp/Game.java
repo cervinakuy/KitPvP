@@ -32,6 +32,7 @@ public class Game extends JavaPlugin implements Listener {
 	public String storageType;
 	private boolean needsUpdate = false;
 	private boolean hasPlaceholderAPI = false;
+	private boolean hasWorldGuard = false;
 	
 	@Override
 	public void onEnable() {
@@ -96,6 +97,11 @@ public class Game extends JavaPlugin implements Listener {
 			new Placeholders(this).register();
 			hasPlaceholderAPI = true;
 		}
+
+		if (Bukkit.getPluginManager().isPluginEnabled("WorldGuard")) {
+			Bukkit.getConsoleSender().sendMessage(Toolkit.translate("[&b&lKIT-PVP&7] &7Discovered &bWorldGuard&7, now hooking into it."));
+			hasWorldGuard = true;
+		}
 		
 		Bukkit.getConsoleSender().sendMessage(Toolkit.translate("&7[&b&lKIT-PVP&7] &aDone!"));
 		
@@ -132,7 +138,11 @@ public class Game extends JavaPlugin implements Listener {
 	public void onInteract(PlayerInteractEvent e) {
 		
 		Player p = e.getPlayer();
-		
+
+		if (!resources.getConfig().contains("Items.Leave")) {
+			return;
+		}
+
 		if (Toolkit.getMainHandItem(p).getType() == XMaterial.matchXMaterial(resources.getConfig().getString("Items.Leave.Material")).get().parseMaterial()) {
 			
 			if (resources.getConfig().getBoolean("Items.Leave.Enabled")) {
@@ -162,6 +172,8 @@ public class Game extends JavaPlugin implements Listener {
 	}
 
 	public boolean hasPlaceholderAPI() { return hasPlaceholderAPI; }
+
+	public boolean hasWorldGuard() { return hasWorldGuard; }
 
 	public boolean needsUpdate() { return needsUpdate; }
 	

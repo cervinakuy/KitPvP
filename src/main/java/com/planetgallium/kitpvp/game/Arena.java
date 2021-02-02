@@ -3,9 +3,7 @@ package com.planetgallium.kitpvp.game;
 import java.util.*;
 
 import com.cryptomorin.xseries.XMaterial;
-import com.planetgallium.kitpvp.util.CacheManager;
-import com.planetgallium.kitpvp.util.Resource;
-import com.planetgallium.kitpvp.util.Toolkit;
+import com.planetgallium.kitpvp.util.*;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.configuration.ConfigurationSection;
@@ -16,7 +14,6 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.scoreboard.Scoreboard;
 
 import com.planetgallium.kitpvp.Game;
-import com.planetgallium.kitpvp.util.Resources;
 
 import me.clip.placeholderapi.PlaceholderAPI;
 
@@ -97,6 +94,7 @@ public class Arena {
 	public void removePlayer(Player p) {
 
 		CacheManager.getPlayerAbilityCooldowns(p.getName()).clear();
+		CacheManager.getWitchPotionUsers().remove(p.getName());
 
 		for (PotionEffect effect : p.getActivePotionEffects()) {
 			p.removePotionEffect(effect.getType());
@@ -150,7 +148,7 @@ public class Arena {
 
 			if (config.getBoolean(itemPath + ".Enabled")) {
 
-				ItemStack item = XMaterial.matchXMaterial(config.getString(itemPath + ".Material")).get().parseItem();
+				ItemStack item = new ItemStack(XMaterial.matchXMaterial(config.getString(itemPath + ".Material")).get().parseMaterial());
 				ItemMeta meta = item.getItemMeta();
 
 				meta.setDisplayName(config.getString(itemPath + ".Name"));
@@ -233,6 +231,23 @@ public class Arena {
 		}
 
 		return spawnKeys.get(random.nextInt(spawnKeys.size()));
+
+	}
+
+	public boolean isCombatActionPermittedInRegion(Player p) {
+
+		if (plugin.hasWorldGuard()) {
+
+			if (WorldGuardAPI.getInstance().allows(p, WorldGuardFlag.PVP.getFlag())) {
+				return true;
+			}
+
+			p.sendMessage(resources.getMessages().getString("Messages.Error.PVP"));
+			return false;
+
+		}
+
+		return true;
 
 	}
 

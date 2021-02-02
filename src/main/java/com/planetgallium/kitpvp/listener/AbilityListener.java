@@ -15,23 +15,31 @@ import com.planetgallium.kitpvp.util.Toolkit;
 
 public class AbilityListener implements Listener {
 
+	private Game plugin;
 	private Arena arena;
 	private Resources resources;
 	
 	public AbilityListener(Game plugin) {
+		this.plugin = plugin;
 		this.arena = plugin.getArena();
 		this.resources = plugin.getResources();
 	}
 	
 	@EventHandler
 	public void onAbility(PlayerAbilityEvent e) {
-		
+
 		Player p = e.getPlayer();
+
+		if (!arena.isCombatActionPermittedInRegion(p)) {
+			return;
+		}
+
 		Kit kit = arena.getKits().getKitOfPlayer(p.getName());
 		Ability ability = e.getAbility();
 
-		if (!p.hasPermission("kp.ability." + kit.getName().toLowerCase())) {
-			p.sendMessage(resources.getMessages().getString("Messages.General.Permission"));
+		String abilityPermission = "kp.ability." + kit.getName().toLowerCase();
+		if (!p.hasPermission(abilityPermission)) {
+			p.sendMessage(resources.getMessages().getString("Messages.General.Permission").replace("%permission%", abilityPermission));
 			return;
 		}
 

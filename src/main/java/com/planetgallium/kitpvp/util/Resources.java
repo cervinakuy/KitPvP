@@ -41,7 +41,6 @@ public class Resources {
 			kits.put("Ninja.yml", new Resource(plugin, "kits/Ninja.yml"));
 			kits.put("Thunderbolt.yml", new Resource(plugin, "kits/Thunderbolt.yml"));
 			kits.put("Vampire.yml", new Resource(plugin, "kits/Vampire.yml"));
-			kits.put("Witch.yml", new Resource(plugin, "kits/Witch.yml"));
 			kits.put("Rhino.yml", new Resource(plugin, "kits/Rhino.yml"));
 			kits.put("Example.yml", new Resource(plugin, "kits/Example.yml"));
 			kits.put("Trickster.yml", new Resource(plugin, "kits/Trickster.yml"));
@@ -87,12 +86,22 @@ public class Resources {
 		scoreboard.addCopyDefaultExemption("Scoreboard.Lines");
 		scoreboard.copyDefaults();
 
+		config.addCopyDefaultExemption("Items.Kits");
+		config.addCopyDefaultExemption("Items.Leave");
 		config.copyDefaults();
+
 		abilities.copyDefaults();
 		signs.copyDefaults();
 		
 		for (String fileName : kits.keySet()) {
 			kits.get(fileName).load();
+		}
+
+		// load new kits that have been added through file system (when doing /kp reload)
+		for (String fileName : getKitList()) {
+			if (!kits.containsKey(fileName)) {
+				kits.put(fileName, new Resource(plugin, "kits/" + fileName));
+			}
 		}
 		
 	}

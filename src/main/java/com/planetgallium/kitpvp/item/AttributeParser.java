@@ -124,7 +124,7 @@ public class AttributeParser {
 
     public static ItemStack getItemStackFromPath(Resource resource, String path) throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
 
-        if (!resource.contains(path)) return new ItemStack(Material.AIR);
+        if (!resource.contains(path)) return null;
 
         ItemStack item = XMaterial.matchXMaterial(FALLBACK_ITEM_MATERIAL).parseItem();
         ItemMeta meta = item.getItemMeta();

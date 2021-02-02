@@ -77,7 +77,9 @@ public class Ability {
 
         resource.set(pathPrefix + ".Activator.Name", Toolkit.toNormalColorCodes(activator.getItemMeta().getDisplayName()));
         resource.set(pathPrefix + ".Activator.Material", activator.getType().toString());
-        resource.set(pathPrefix + ".Cooldown.Cooldown", cooldown != null ? cooldown.formatted(true) : null);
+        if (cooldown != null) {
+            resource.set(pathPrefix + ".Cooldown.Cooldown", cooldown.formatted(true));
+        }
         resource.set(pathPrefix + ".Message.Message", message);
         resource.set(pathPrefix + ".Sound.Sound", sound.toString());
         resource.set(pathPrefix + ".Sound.Pitch", soundPitch != 0 ? soundPitch : null);

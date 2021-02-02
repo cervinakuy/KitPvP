@@ -5,6 +5,7 @@ import java.util.Random;
 import com.cryptomorin.xseries.XMaterial;
 import com.cryptomorin.xseries.XSound;
 import com.planetgallium.kitpvp.api.Kit;
+import com.planetgallium.kitpvp.util.CacheManager;
 import com.planetgallium.kitpvp.util.Resource;
 import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
@@ -85,12 +86,14 @@ public class ItemListener implements Listener {
 
 					Potion potion = new Potion(pickPotion(), 1);
 					potion.setSplash(true);
-
+//
 					ItemStack potionStack = potion.toItemStack(1);
-					ItemMeta potionMeta = potionStack.getItemMeta();
+//					ItemMeta potionMeta = potionStack.getItemMeta();
+//
+//					potionMeta.setLocalizedName("WitchPotion");
+//					potionStack.setItemMeta(potionMeta);
 
-					potionMeta.setLocalizedName("WitchPotion");
-					potionStack.setItemMeta(potionMeta);
+					CacheManager.getWitchPotionUsers().add(p.getName());
 
 					Toolkit.setMainHandItem(p, potionStack);
 
@@ -98,7 +101,11 @@ public class ItemListener implements Listener {
 
 			} else if (item.getType() == XMaterial.TNT.parseMaterial()) {
 
-				if (config.getBoolean("TNT.Enabled") && item.hasItemMeta() && item.getItemMeta().getDisplayName().equals(config.getString("TNT.Name"))) {
+				if (config.getBoolean("TNT.Enabled") && Toolkit.hasMatchingDisplayName(item, config.getString("TNT.Name"))) {
+
+					if (!arena.isCombatActionPermittedInRegion(p)) {
+						return;
+					}
 
 					Location handLocation = p.getLocation();
 					handLocation.setY(handLocation.getY() + 1.0);
@@ -235,7 +242,7 @@ public class ItemListener implements Listener {
 
 			} else if (item.getType() == XMaterial.SLIME_BALL.parseMaterial() && item.hasItemMeta()) {
 
-				if (item.getItemMeta().getDisplayName().equals(abilities.getString("Abilities.Archer.Item.NoFire"))) {
+				if (Toolkit.hasMatchingDisplayName(item, abilities.getString("Abilities.Archer.Item.NoFire"))) {
 
 					item.setType(XMaterial.MAGMA_CREAM.parseMaterial());
 					meta.setDisplayName(Toolkit.translate(abilities.getString("Abilities.Archer.Item.Fire")));
@@ -253,7 +260,7 @@ public class ItemListener implements Listener {
 
 			} else if (item.getType() == XMaterial.MAGMA_CREAM.parseMaterial() && item.hasItemMeta()) {
 
-				if (item.getItemMeta().getDisplayName().equals(abilities.getString("Abilities.Archer.Item.Fire"))) {
+				if (Toolkit.hasMatchingDisplayName(item, abilities.getString("Abilities.Archer.Item.Fire"))) {
 
 					item.setType(XMaterial.SLIME_BALL.parseMaterial());
 					meta.setDisplayName(Toolkit.translate(abilities.getString("Abilities.Archer.Item.NoFire")));
@@ -269,9 +276,10 @@ public class ItemListener implements Listener {
 
 				}
 
-			} else if (item.getType() == XMaterial.matchXMaterial(config.getString("Items.Kits.Material")).get().parseMaterial()) {
+			} else if (config.contains("Items.Kits") &&
+					item.getType() == XMaterial.matchXMaterial(config.getString("Items.Kits.Material")).get().parseMaterial()) {
 
-				if (meta.getDisplayName().equals(config.getString("Items.Kits.Name"))) {
+				if (Toolkit.hasMatchingDisplayName(item, config.getString("Items.Kits.Name"))) {
 
 					Toolkit.runCommands(p, config.getStringList("Items.Kits.Commands"), "none", "none");
 
@@ -297,7 +305,7 @@ public class ItemListener implements Listener {
 
 						if (item.getType() == XMaterial.matchXMaterial(config.getString(itemPath + ".Material")).get().parseMaterial()) {
 
-							if (item.getItemMeta().getDisplayName().equals(Toolkit.translate(config.getString(itemPath + ".Name")))) {
+							if (Toolkit.hasMatchingDisplayName(item, config.getString(itemPath + ".Name"))) {
 
 								Toolkit.runCommands(p, config.getStringList(itemPath + ".Commands"), "none", "none");
 								e.setCancelled(true);
@@ -374,21 +382,19 @@ public class ItemListener implements Listener {
 
 		if (arena.getKits().hasKit(p.getName())) {
 
-			if (interactedItem.hasItemMeta()) {
+			if (Toolkit.hasMatchingDisplayName(interactedItem, abilities.getString("Abilities." + kitName + ".Item.Name"))) {
 
-				ItemMeta meta = interactedItem.getItemMeta();
+				String abilityPermission = "kp.ability." + kitName.toLowerCase();
 
-				if (Toolkit.translate(meta.getDisplayName()).equals(abilities.getString("Abilities." + kitName + ".Item.Name"))) {
+				if (p.hasPermission(abilityPermission)) {
 
-					if (p.hasPermission("kp.ability." + kitName.toLowerCase())) {
-
+					if (arena.isCombatActionPermittedInRegion(p)) {
 						return true;
-
-					} else {
-
-						p.sendMessage(resources.getMessages().getString("Messages.General.Permission"));
-
 					}
+
+				} else {
+
+					p.sendMessage(resources.getMessages().getString("Messages.General.Permission").replace("%permission%", abilityPermission));
 
 				}
 
@@ -461,7 +467,7 @@ public class ItemListener implements Listener {
 			ItemStack item = p.getInventory().getItem(i);
 			if (item != null) {
 				if (item.getType() == type) {
-					if (Toolkit.translate(item.getItemMeta().getDisplayName()).equals(displayName)) {
+					if (Toolkit.hasMatchingDisplayName(item, displayName)) {
 						return i;
 					}
 				}
@@ -483,31 +489,25 @@ public class ItemListener implements Listener {
 
 				if (e.getEntity().getType() == EntityType.SPLASH_POTION) {
 
-					if (itemThrown.getItemMeta().getLocalizedName().equals("WitchPotion")) {
+					if (CacheManager.getWitchPotionUsers().contains(shooter.getName())) {
 
 						int slot = shooter.getInventory().getHeldItemSlot();
-
 						Kit playerKit = arena.getKits().getKitOfPlayer(shooter.getName());
 
-						if (playerKit.getName().equals("Witch")) {
+						if (playerKit.getName().equalsIgnoreCase("Witch")) {
 
 							Potion potion = new Potion(pickPotion(), 1);
 							potion.setSplash(true);
 
 							ItemStack potionStack = potion.toItemStack(1);
-							ItemMeta potionMeta = potionStack.getItemMeta();
-
-							potionMeta.setLocalizedName("WitchPotion");
-							potionStack.setItemMeta(potionMeta);
 
 							new BukkitRunnable() {
 
 								@Override
 								public void run() {
 
-									if (arena.getKits().getKitOfPlayer(shooter.getName()) != null) {
-
-										if (arena.getKits().getKitOfPlayer(shooter.getName()).getName().equals("Witch")) {
+									if (arena.getKits().getKitOfPlayer(shooter.getName()).getName().equals("Witch")) {
+										if (CacheManager.getWitchPotionUsers().contains(shooter.getName())) {
 
 											shooter.getInventory().setItem(slot, potionStack);
 
@@ -515,8 +515,7 @@ public class ItemListener implements Listener {
 												shooter.sendMessage(Toolkit.translate(abilities.getString("Abilities.Witch.Message.Message")));
 											}
 
-											shooter.playSound(shooter.getLocation(), XSound.matchXSound(abilities.getString("Abilities.Witch.Sound.Sound")).get().parseSound(), 1, abilities.getInt("Abliities.Witch.Sound.Pitch"));
-
+											XSound.play(shooter, abilities.getString("Abilities.Witch.Sound.Sound") + ", 1, " + abilities.getInt("Abliities.Witch.Sound.Pitch"));
 										}
 
 									}
@@ -531,20 +530,15 @@ public class ItemListener implements Listener {
 
 				} else if (e.getEntity().getType() == EntityType.EGG) {
 
-					if (arena.getKits().getKitOfPlayer(shooter.getName()).equals("Trickster")) {
+					if (arena.getKits().getKitOfPlayer(shooter.getName()).getName().equals("Trickster")) {
 
 						if (isAbilityItem(shooter, "Trickster", itemThrown)) {
 
-							if (shooter.hasPermission("kp.ability.trickster")) {
+							e.getEntity().setCustomName("pellet");
 
-								e.getEntity().setCustomName("pellet");
+						} else {
 
-							} else {
-
-								e.setCancelled(true);
-								shooter.sendMessage(resources.getMessages().getString("Messages.General.Permission"));
-
-							}
+							e.setCancelled(true);
 
 						}
 
