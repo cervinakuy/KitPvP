@@ -506,17 +506,20 @@ public class ItemListener implements Listener {
 								@Override
 								public void run() {
 
-									if (arena.getKits().getKitOfPlayer(shooter.getName()).getName().equals("Witch")) {
-										if (CacheManager.getWitchPotionUsers().contains(shooter.getName())) {
+									if (!arena.getKits().hasKit(shooter.getName()) ||
+										!arena.getKits().getKitOfPlayer(shooter.getName()).getName().equals("Witch")) {
+										return;
+									}
 
-											shooter.getInventory().setItem(slot, potionStack);
+									if (CacheManager.getWitchPotionUsers().contains(shooter.getName())) {
 
-											if (abilities.getBoolean("Abilities.Witch.Message.Enabled")) {
-												shooter.sendMessage(Toolkit.translate(abilities.getString("Abilities.Witch.Message.Message")));
-											}
+										shooter.getInventory().setItem(slot, potionStack);
 
-											XSound.play(shooter, abilities.getString("Abilities.Witch.Sound.Sound") + ", 1, " + abilities.getInt("Abliities.Witch.Sound.Pitch"));
+										if (abilities.getBoolean("Abilities.Witch.Message.Enabled")) {
+											shooter.sendMessage(Toolkit.translate(abilities.getString("Abilities.Witch.Message.Message")));
 										}
+
+										XSound.play(shooter, abilities.getString("Abilities.Witch.Sound.Sound") + ", 1, " + abilities.getInt("Abliities.Witch.Sound.Pitch"));
 
 									}
 
