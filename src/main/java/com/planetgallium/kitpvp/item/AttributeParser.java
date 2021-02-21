@@ -18,10 +18,7 @@ import org.bukkit.potion.*;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class AttributeParser {
 
@@ -227,7 +224,13 @@ public class AttributeParser {
             ConfigurationSection section = resource.getConfigurationSection(path + ".Enchantments");
 
             for (String enchantmentName : section.getKeys(false)) {
-                Enchantment enchantment = XEnchantment.matchXEnchantment(enchantmentName).get().parseEnchantment();
+                Enchantment enchantment = FALLBACK_ITEM_ENCHANTMENT;
+                Optional<XEnchantment> enchantmentFromConfig = XEnchantment.matchXEnchantment(enchantmentName.toUpperCase());
+                if (enchantmentFromConfig.isPresent()) {
+                    enchantment = enchantmentFromConfig.get().parseEnchantment();
+                } else {
+                    Toolkit.printToConsole(String.format("&7[&b&lKIT-PVP&7] &cUnknown enchantment [%s], defaulting to [THORNS].", enchantmentName));
+                }
                 int amplifier = resource.getInt(path + ".Enchantments." + enchantmentName);
 
                 enchantments.put(enchantment != null ? enchantment : FALLBACK_ITEM_ENCHANTMENT,

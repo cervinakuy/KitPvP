@@ -455,4 +455,10 @@ public class Toolkit {
 
 	}
 
+	public static void printToConsole(String message) {
+
+		Bukkit.getConsoleSender().sendMessage(Toolkit.translate(message));
+
+	}
+
 }
