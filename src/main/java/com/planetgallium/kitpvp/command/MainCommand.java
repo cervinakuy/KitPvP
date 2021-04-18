@@ -185,6 +185,8 @@ public class MainCommand implements CommandExecutor {
 
             } else if (args[0].equalsIgnoreCase("stats") && hasPermission(sender, "kp.command.stats.other")) {
 
+                // TODO: now with database you can get anyone's stats regardless if online. implement
+
                 String targetName = args[1];
                 Player target = Toolkit.getPlayerCaseInsensitive(targetName);
 
@@ -245,11 +247,6 @@ public class MainCommand implements CommandExecutor {
                         p.sendMessage(addPlaceholdersIfPossible(p, Toolkit.translate(line)));
 
                     }
-
-                } else if (args[0].equalsIgnoreCase("test")) {
-
-                    Potion test = new Potion(PotionType.JUMP, 2);
-                    p.getInventory().addItem(test.toItemStack(1));
 
                 } else if (args[0].equalsIgnoreCase("menu") && hasPermission(sender, "kp.command.menu")) {
 
@@ -377,15 +374,15 @@ public class MainCommand implements CommandExecutor {
 
                     String arenaName = args[1];
 
-                    if (!arena.getKits().hasKit(p.getName())) {
-
-                        arena.toSpawn(p, arenaName);
-
-                    } else {
-
-                        p.sendMessage(messages.getString("Messages.Error.KitInvalid"));
-
+                    if (resources.getConfig().getBoolean("Arena.PreventArenaSignUseWithKit")) {
+                        if (arena.getKits().hasKit(p.getName())) {
+                            p.sendMessage(messages.getString("Messages.Error.KitInvalid"));
+                            return true;
+                        }
                     }
+
+                    arena.toSpawn(p, arenaName);
+                    return true;
 
                 } else if (args[0].equalsIgnoreCase("preview") && hasPermission(sender, "kp.command.preview")) {
 

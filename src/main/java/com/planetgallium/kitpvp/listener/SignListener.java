@@ -3,81 +3,53 @@ package com.planetgallium.kitpvp.listener;
 import com.planetgallium.kitpvp.Game;
 import com.planetgallium.kitpvp.game.Arena;
 import com.planetgallium.kitpvp.util.Resource;
-import org.bukkit.Location;
+import com.planetgallium.kitpvp.util.Toolkit;
+import org.bukkit.ChatColor;
 import org.bukkit.block.Sign;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class SignListener implements Listener {
 
-	private Arena arena;
-	private Resource messages;
-	private Resource signs;
+	private final Arena arena;
+	private final Resource messages;
+	private final Resource signs;
+	private final List<String> regularSignTypes;
+	private final List<String> customSignTypes;
 
 	public SignListener(Game plugin) {
 		this.arena = plugin.getArena();
 		this.messages = plugin.getResources().getMessages();
 		this.signs = plugin.getResources().getSigns();
+		this.regularSignTypes = new ArrayList<>(Arrays.asList("clear", "menu", "stats", "refill"));
+		this.customSignTypes = new ArrayList<>(Arrays.asList("kit", "arena"));
 	}
 	
 	@EventHandler
 	public void onSignChange(SignChangeEvent e) {
 
-		if (e.getLine(0).equalsIgnoreCase("[KitPvP]")) {
+		if (e.getLine(0) != null && e.getLine(0).equalsIgnoreCase("[KitPvP]")) {
 			
 			Player p = e.getPlayer();
-			
-			if (e.getLine(1).equalsIgnoreCase("kit")) {
-				
-				String kitName = e.getLine(2);
-				
-				renameSign(e, "Signs.Kit", "%kit%", kitName);
-				saveSign("Kit", e.getBlock().getLocation(), "Kit", kitName);
-				
-				p.sendMessage(messages.getString("Messages.Other.Sign"));
-				
-			} else if (e.getLine(1).equalsIgnoreCase("clear")) {
-				
-				renameSign(e, "Signs.Clear", null, null);
-				saveSign("Clear", e.getBlock().getLocation(), null, null);
-				
-				p.sendMessage(messages.getString("Messages.Other.Sign"));
-				
-			} else if (e.getLine(1).equalsIgnoreCase("menu")) {
-				
-				renameSign(e, "Signs.Menu", null, null);
-				saveSign("Menu", e.getBlock().getLocation(), null, null);
-				
-				p.sendMessage(messages.getString("Messages.Other.Sign"));
-				
-			} else if (e.getLine(1).equalsIgnoreCase("stats")) {
-				
-				renameSign(e, "Signs.Stats", null, null);
-				saveSign("Stats", e.getBlock().getLocation(), null, null);
-				
-				p.sendMessage(messages.getString("Messages.Other.Sign"));
-				
-			} else if (e.getLine(1).equalsIgnoreCase("refill")) {
-				
-				renameSign(e, "Signs.Refill", null, null);
-				saveSign("Refill", e.getBlock().getLocation(), null, null);
-				
-				p.sendMessage(messages.getString("Messages.Other.Sign"));
-				
-			} else if (e.getLine(1).equalsIgnoreCase("arena")) {
+			String signType = e.getLine(1);
 
-				String arenaName = e.getLine(2);
-
-				renameSign(e, "Signs.Arena", "%arena%", arenaName);
-				saveSign("Arena", e.getBlock().getLocation(), "Arena", arenaName);
-
+			if (regularSignTypes.contains(signType)) {
+				renameSign(e, "Signs." + Toolkit.capitalizeFirstChar(signType), null, null);
 				p.sendMessage(messages.getString("Messages.Other.Sign"));
-
+			} else if (customSignTypes.contains(signType)) {
+				String placeholderKey = "%" + signType + "%";
+				String placeholderValue = e.getLine(2);
+				renameSign(e, "Signs." + Toolkit.capitalizeFirstChar(signType), placeholderKey, placeholderValue);
+				p.sendMessage(messages.getString("Messages.Other.Sign"));
 			}
 			
 		}
@@ -86,78 +58,47 @@ public class SignListener implements Listener {
 	
 	@EventHandler
 	public void onSignUse(PlayerInteractEvent e) {
-		
+
+		// Logic behind this specific sign feature implementation: to avoid storing signs, most signs will
+		// either match what is specified in the config 100%, or essentially 95%, where the other 5% may be one word
+		// that is different (for instance a specified kit name, or arena name).
+		// If there isn't a 100% match, a search for that one word delta will be started and subsequently used if found.
+
 		if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
 			
-			if (e.getClickedBlock().getState() instanceof Sign) {
-				
+			if (e.getClickedBlock() != null && e.getClickedBlock().getState() instanceof Sign) {
+
+				ConfigurationSection signsSection = signs.getConfigurationSection("Signs");
 				Sign sign = (Sign) e.getClickedBlock().getState();
-				int signIndex = findSign(sign.getLocation());
 				Player p = e.getPlayer();
 
-				if (sign.getLine(0).equals(signs.getString("Signs.Kit.Line-1")) ||
-						sign.getLine(0).equals(signs.getString("Signs.Clear.Line-1")) ||
-						sign.getLine(0).equals(signs.getString("Signs.Menu.Line-1")) ||
-						sign.getLine(0).equals(signs.getString("Signs.Stats.Line-1")) ||
-						sign.getLine(0).equals(signs.getString("Signs.Refill.Line-1")) ||
-						sign.getLine(0).equals(signs.getString("Signs.Arena.Line-1"))) {
+				for (String signType : signsSection.getKeys(false)) {
+					if (signType.equals("Locations")) break;
 
-					if (signsMatch(sign.getLines(), "Signs.Menu", null, null)) {
+					List<String[]> mismatchedLines = new ArrayList<>();
 
-						arena.getMenus().getKitMenu().open(p);
-						
-					} else if (signsMatch(sign.getLines(), "Signs.Clear", null, null)) {
-						
-						p.performCommand("kp clear");
-						
-					} else if (signsMatch(sign.getLines(), "Signs.Stats", null, null)) {
-						
-						p.performCommand("kp stats");
-						
-					} else if (signsMatch(sign.getLines(), "Signs.Refill", null, null)) {
-						
-						arena.getMenus().getRefillMenu().open(p);
-						
-					} else if (signsMatch(sign.getLines(), "Signs.Kit", "%kit%",
-							signs.getString("Signs.Locations." + signIndex + ".Kit"))) {
-						
-						p.performCommand("kp kit " + signs.getString("Signs.Locations." + signIndex + ".Kit"));
-						
-					} else if (signsMatch(sign.getLines(), "Signs.Arena", "%arena%",
-							signs.getString("Signs.Locations." + signIndex + ".Arena"))) {
+					for (int i = 0; i < 3; i++) {
+						String signLine = sign.getLine(i);
+						String configSignLine = signs.getString("Signs." + signType + ".Line-" + (i + 1));
 
-						p.performCommand("kp arena " + signs.getString("Signs.Locations." + signIndex + ".Arena"));
-
+						if (!signLine.equals(configSignLine)) {
+							mismatchedLines.add(new String[]{configSignLine, signLine});
+						}
 					}
 
-					
+					if (mismatchedLines.size() == 0) { // exact match
+						executeSign(p, signType, null);
+						break;
+					} else if (mismatchedLines.size() == 1) { // one line (line with kit name or arena name) doesn't match
+						executeSign(p, signType, getWordDelta(mismatchedLines));
+						break;
+					}
+
 				}
 				
 			}
 			
 		}
-		
-	}
-
-	@EventHandler
-	public void onSignBreak(BlockBreakEvent e) {
-
-		deleteSign(e.getBlock().getLocation());
-
-	}
-	
-	private void saveSign(String type, Location location, String option, String optionValue) {
-		
-		int start = findStart();
-		
-		signs.set("Signs.Locations." + start + ".Type", type);
-		signs.set("Signs.Locations." + start + "." + option, optionValue != null ? optionValue : null);
-		signs.set("Signs.Locations." + start + ".World", location.getWorld().getName());
-		signs.set("Signs.Locations." + start + ".X", location.getBlock().getX());
-		signs.set("Signs.Locations." + start + ".Y", location.getBlock().getY());
-		signs.set("Signs.Locations." + start + ".Z", location.getBlock().getZ());
-		
-		signs.save();
 		
 	}
 	
@@ -176,79 +117,48 @@ public class SignListener implements Listener {
 		
 	}
 
-	private boolean signsMatch(String[] sign, String path, String placeholder, String placeholderValue) {
+	private String getWordDelta(List<String[]> mismatchedLines) {
 
-		for (int i = 0; i < 3; i++) {
+		List<String> wordDelta = new ArrayList<>();
 
-			if (sign[i] != null && sign[i].length() > 0) {
+		String rawConfigSignLine = ChatColor.stripColor(mismatchedLines.get(0)[0]);
+		String rawSignLine = ChatColor.stripColor(mismatchedLines.get(0)[1]);
 
-				String line = signs.getString(path + ".Line-" + (i + 1));
+		String[] rawSignLineWords = rawSignLine.split(" ");
+		String[] rawConfigSignLineWords = rawConfigSignLine.split(" ");
 
-				if (placeholder != null && placeholderValue != null)
-					line = line.replace(placeholder, placeholderValue);
+		for (int i = 0; i < rawConfigSignLineWords.length; i++) {
+			String rawConfigSignWord = rawConfigSignLineWords[i];
+			String rawSignLineWord = rawSignLineWords[i];
 
-				if (!sign[i].equals(line)) {
-
-					return false;
-
-				}
-
+			if (!rawConfigSignWord.equals(rawSignLineWord)) {
+				wordDelta.add(rawSignLineWord);
 			}
-
 		}
 
-		return true;
+		// if too many words differ, sign is not a match, return null
+		return wordDelta.size() > 1 ? null : wordDelta.get(0);
 
 	}
-	
-	private int findSign(Location location) {
-		
-		for (int i = 1; i <= 100; i++) {
-			
-			if (location.getWorld().getName().equals(signs.getString("Signs.Locations." + i + ".World"))) {
-				
-				if (location.getX() == signs.getInt("Signs.Locations." + i + ".X")) {
-					
-					if (location.getY() == signs.getInt("Signs.Locations." + i + ".Y")) {
-						
-						if (location.getZ() == signs.getInt("Signs.Locations." + i + ".Z")) {
-							
-							return i;
-							
-						}
-						
-					}
-					
-				}
-				
-			}
-			
+
+	private void executeSign(Player p, String type, String placeholder) {
+
+		switch (type.toLowerCase()) {
+			case "refill":
+				arena.getMenus().getRefillMenu().open(p);
+				break;
+			case "clear": case "menu": case "stats":
+				p.performCommand("kp " + type);
+				break;
+			case "kit":
+				String kitName = placeholder;
+				p.performCommand("kp kit " + kitName);
+				break;
+			case "arena":
+				String arenaName = placeholder;
+				p.performCommand("kp arena " + arenaName);
+				break;
 		}
-		
-		return 0;
-		
-	}
-	
-	private int findStart() {
-		
-		for (int i = 1; i <= 100; i++) {
-			
-			if (!signs.contains("Signs.Locations." + i)) {
-				
-				return i;
-				
-			}
-			
-		}
-		
-		return 0;
-		
-	}
-
-	private void deleteSign(Location location) {
-
-		signs.set("Signs.Locations." + findSign(location), null);
-		signs.save();
 
 	}
 	

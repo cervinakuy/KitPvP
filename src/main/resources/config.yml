@@ -105,6 +105,7 @@ Arena:
   PreventChestOpen: true
   PreventFallDamage: false
   PreventDeathDrops: true
+  PreventArenaSignUseWithKit: true
   KeepWeatherAtSunny: true
   GiveItemsOnClear: true
   GiveItemsOnRespawn: true
