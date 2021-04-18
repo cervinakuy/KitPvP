@@ -29,7 +29,7 @@ public class TrackerListener implements Listener {
 		Player player = event.getPlayer();
 		
 		if (Toolkit.inArena(player)) {
-			
+
 			ItemStack item = player.getInventory().getItem(event.getNewSlot());
 
 			if (item != null && item.getType() == XMaterial.COMPASS.parseMaterial()) {
@@ -41,40 +41,43 @@ public class TrackerListener implements Listener {
 						@Override
 						public void run() {
 
-							if (player != null) {
+							if (!player.isOnline()) {
+								CacheManager.getCompassUsers().remove(player.getName());
+								cancel();
+								return;
+							}
 
-								String[] nearestData = Toolkit.getNearestPlayer(player, resources.getConfig().getInt("PlayerTracker.TrackBelowY"));
+							String[] nearestData = Toolkit.getNearestPlayer(player, resources.getConfig().getInt("PlayerTracker.TrackBelowY"));
 
-								if (player.getWorld().getPlayers().size() > 1 && nearestData != null) {
+							if (player.getWorld().getPlayers().size() > 1 && nearestData != null) {
 
-									Player nearestPlayer = Bukkit.getPlayer(nearestData[0]);
-									double nearestDistance = Double.parseDouble(nearestData[1]);
+								Player nearestPlayer = Bukkit.getPlayer(nearestData[0]);
+								double nearestDistance = Double.parseDouble(nearestData[1]);
 
-									nearestDistance = Math.round(nearestDistance * 10.0) / 10.0;
-
-									ItemMeta meta = item.getItemMeta();
-									meta.setDisplayName(resources.getConfig().getString("PlayerTracker.Message")
-											.replace("%nearestplayer%", nearestPlayer.getName())
-											.replace("%distance%", String.valueOf(nearestDistance)));
-									item.setItemMeta(meta);
-
-									player.setCompassTarget(nearestPlayer.getLocation());
-
-									CacheManager.getCompassUsers().add(player.getName());
-
-								} else {
-
-									ItemMeta meta = item.getItemMeta();
-									meta.setDisplayName(resources.getConfig().getString("PlayerTracker.NoneOnline"));
-									item.setItemMeta(meta);
-
+								if (nearestPlayer == null || !nearestPlayer.isOnline()) {
+									CacheManager.getCompassUsers().remove(player.getName());
 									cancel();
-
+									return;
 								}
+
+								nearestDistance = Math.round(nearestDistance * 10.0) / 10.0;
+
+								ItemMeta meta = item.getItemMeta();
+								meta.setDisplayName(resources.getConfig().getString("PlayerTracker.Message")
+										.replace("%nearestplayer%", nearestPlayer.getName())
+										.replace("%distance%", String.valueOf(nearestDistance)));
+								item.setItemMeta(meta);
+
+								player.setCompassTarget(nearestPlayer.getLocation());
+
+								CacheManager.getCompassUsers().add(player.getName());
 
 							} else {
 
-								CacheManager.getCompassUsers().remove(player.getName());
+								ItemMeta meta = item.getItemMeta();
+								meta.setDisplayName(resources.getConfig().getString("PlayerTracker.NoneOnline"));
+								item.setItemMeta(meta);
+
 								cancel();
 
 							}
