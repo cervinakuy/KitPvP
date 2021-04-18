@@ -494,7 +494,7 @@ public class ItemListener implements Listener {
 						int slot = shooter.getInventory().getHeldItemSlot();
 						Kit playerKit = arena.getKits().getKitOfPlayer(shooter.getName());
 
-						if (playerKit.getName().equalsIgnoreCase("Witch")) {
+						if (playerKit != null && playerKit.getName().equalsIgnoreCase("Witch")) {
 
 							Potion potion = new Potion(pickPotion(), 1);
 							potion.setSplash(true);
@@ -534,17 +534,9 @@ public class ItemListener implements Listener {
 				} else if (e.getEntity().getType() == EntityType.EGG) {
 
 					if (arena.getKits().getKitOfPlayer(shooter.getName()).getName().equals("Trickster")) {
-
 						if (isAbilityItem(shooter, "Trickster", itemThrown)) {
-
 							e.getEntity().setCustomName("pellet");
-
-						} else {
-
-							e.setCancelled(true);
-
 						}
-
 					}
 
 				}
@@ -588,6 +580,11 @@ public class ItemListener implements Listener {
 
 							Player shooter = (Player) egg.getShooter();
 							Location shooterLocation = shooter.getLocation();
+
+							if (!arena.isCombatActionPermittedInRegion(damagedPlayer)) {
+								shooter.sendMessage(resources.getMessages().getString("Messages.Error.PVP"));
+								return;
+							}
 
 							shooter.teleport(damagedPlayer);
 							damagedPlayer.teleport(shooterLocation);
