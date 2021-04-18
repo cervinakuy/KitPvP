@@ -43,8 +43,7 @@ public class JoinListener implements Listener {
 			
 		}
 
-		plugin.getDatabase().addPlayer(p);
-		arena.getStats().createPlayer(p.getName(), p.getUniqueId());
+		arena.getStats().createPlayer(p);
 		
 		if (Toolkit.inArena(p)) {
 			

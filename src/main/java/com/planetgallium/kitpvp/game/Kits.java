@@ -9,6 +9,7 @@ import com.planetgallium.kitpvp.api.Kit;
 import com.planetgallium.kitpvp.api.PlayerSelectKitEvent;
 import com.planetgallium.kitpvp.item.AttributeParser;
 import com.planetgallium.kitpvp.util.*;
+import com.zp4rker.localdb.Table;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -45,6 +46,7 @@ public class Kits {
         kitToCreate.toResource(kitResource);
 
         resources.addResource(kitToCreate.getName() + ".yml", kitResource);
+        plugin.getDatabase().addKitCooldownTable(kitName);
 
         if (plugin.getConfig().getBoolean("Other.AutomaticallyAddKitToMenu")) {
 
@@ -198,11 +200,9 @@ public class Kits {
             return;
         }
 
-        // TODO: improve kit cooldown handling plugin-wide
-        if (!(p.hasPermission("kp.cooldownbypass") || !arena.getCooldowns().isOnCooldown(p, kit))) {
-            int timeLastUsedSeconds = resources.getStats().getInt("Stats.Players." + p.getUniqueId() + ".Cooldowns." + kit.getName());
-            int cooldownSeconds = kit.getCooldown().toSeconds();
-            p.sendMessage(messages.getString("Messages.Error.CooldownKit").replace("%cooldown%", arena.getCooldowns().getFormattedCooldown(timeLastUsedSeconds, cooldownSeconds)));
+        Cooldown cooldownRemaining = arena.getCooldowns().getRemainingCooldown(p, kit);
+        if (!p.hasPermission("kp.cooldownbypass") || cooldownRemaining.toSeconds() > 0) {
+            p.sendMessage(messages.getString("Messages.Error.CooldownKit").replace("%cooldown%", cooldownRemaining.formatted(false)));
             return;
         }
 
@@ -224,8 +224,9 @@ public class Kits {
         Bukkit.getPluginManager().callEvent(new PlayerSelectKitEvent(player, kit));
         setKit(p.getName(), kit.getName());
 
-        if (kit.getCooldown() != null && !p.hasPermission("kp.cooldownbypass")) {
-            arena.getCooldowns().setCooldown(p.getUniqueId(), kit.getName());
+        Cooldown kitCooldown = kit.getCooldown();
+        if (kitCooldown != null && kitCooldown.toSeconds() > 0 && !p.hasPermission("kp.cooldownbypass")) {
+            arena.getCooldowns().setKitCooldown(p.getUniqueId(), kit.getName());
         }
 
         Resource kitResource = resources.getKit(kit.getName());
@@ -233,6 +234,13 @@ public class Kits {
             List<String> commands = kitResource.getStringList("Commands");
             Toolkit.runCommands(p, commands, "none", "none");
         }
+
+    }
+
+    public void deleteKit(String kitName) {
+
+        resources.removeResource(kitName + ".yml");
+        plugin.getDatabase().deleteKitCooldownTable(kitName);
 
     }
 
@@ -273,7 +281,7 @@ public class Kits {
     private Kit loadKitFromCacheOrCreate(String kitName) {
 
         if (!CacheManager.getKitCache().containsKey(kitName)) {
-            if (getKitList().contains(kitName)) {
+            if (resources.getKitList(false).contains(kitName)) {
                 Resource kit = resources.getKit(kitName);
                 try {
                     CacheManager.getKitCache().put(kitName, createKitFromResource(kit));
@@ -281,7 +289,7 @@ public class Kits {
                     e.printStackTrace();
                 }
             } else {
-                Bukkit.getConsoleSender().sendMessage("&7[&b&lKIT-PVP&7] &cNo kit with name " + kitName + " found in the kits folder. Try reloading the server.");
+                Toolkit.printToConsole("&7[&b&lKIT-PVP&7] &cNo kit with name " + kitName + " found in the kits folder. Try reloading the server.");
             }
         }
 
@@ -297,20 +305,7 @@ public class Kits {
 
     public boolean isKit(String kitName) {
 
-        return getKitList().contains(kitName);
-
-    }
-
-    public List<String> getKitList() {
-
-        File folder = new File(plugin.getDataFolder().getAbsolutePath() + "/kits");
-        List<String> list = new ArrayList<>();
-
-        for (String fileName : Objects.requireNonNull(folder.list())) {
-            list.add(fileName.split(".yml")[0]);
-        }
-
-        return list;
+        return resources.getKitList(false).contains(kitName);
 
     }
 

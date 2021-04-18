@@ -19,20 +19,20 @@ import me.clip.placeholderapi.PlaceholderAPI;
 
 public class Arena {
 
-	private Game plugin;
-	private Random random;
+	private final Game plugin;
+	private final Random random;
 
-	private Resources resources;
-	private Resource config;
+	private final Resources resources;
+	private final Resource config;
 
-	private Map<String, String> hitCache;
-	
-	private Stats stats;
-	private Kits kits;
-	private KillStreaks killstreaks;
-	private Levels levels;
-	private Cooldowns cooldowns;
-	private Menus menus;
+	private final Map<String, String> hitCache;
+
+	private final Stats stats;
+	private final Kits kits;
+	private final KillStreaks killstreaks;
+	private final Levels levels;
+	private final Cooldowns cooldowns;
+	private final Menus menus;
 	
 	public Arena(Game plugin, Resources resources) {
 		this.plugin = plugin;
@@ -42,12 +42,12 @@ public class Arena {
 		this.config = resources.getConfig();
 
 		this.hitCache = new HashMap<>();
-		
-		this.stats = new Stats(plugin, resources);
+
+		this.stats = new Stats(plugin);
 		this.kits = new Kits(plugin, this);
 		this.killstreaks = new KillStreaks(resources);
 		this.levels = new Levels(this, resources);
-		this.cooldowns = new Cooldowns(this, resources);
+		this.cooldowns = new Cooldowns(plugin);
 		this.menus = new Menus(resources);
 	}
 	
@@ -117,9 +117,7 @@ public class Arena {
 			updateScoreboards(p, true);
 		}
 
-		if (hitCache.containsKey(p.getName())) {
-			hitCache.remove(p.getName());
-		}
+		hitCache.remove(p.getName());
 		
 	}
 	
@@ -132,9 +130,7 @@ public class Arena {
 
 		CacheManager.getPlayerAbilityCooldowns(p.getName()).clear();
 
-		if (hitCache.containsKey(p.getName())) {
-			hitCache.remove(p.getName());
-		}
+		hitCache.remove(p.getName());
 		
 	}
 	
@@ -201,37 +197,69 @@ public class Arena {
 			text = PlaceholderAPI.setPlaceholders(p, text);
 		}
 
-		text = text.replace("%streak%", String.valueOf(this.getKillStreaks().getStreak(p.getName())))
-					.replace("%player%", p.getName())
-					.replace("%xp%", String.valueOf(this.getLevels().getExperience(p.getUniqueId())))
-					.replace("%level%", String.valueOf(this.getLevels().getLevel(p.getUniqueId())))
-					.replace("%max_xp%", String.valueOf(resources.getLevels().getInt("Levels.Options.Experience-To-Level-Up")))
-					.replace("%max_level%", String.valueOf(resources.getLevels().getInt("Levels.Options.Maximum-Level")))
-					.replace("%kd%", String.valueOf(this.getStats().getKDRatio(p.getUniqueId())))
-					.replace("%deaths%", String.valueOf(this.getStats().getDeaths(p.getUniqueId())))
-					.replace("%kills%", String.valueOf(this.getStats().getKills(p.getUniqueId())));
+		return replacePlaceholderIfPresent(text, p);
 
-		if (getKits().getKitOfPlayer(p.getName()) != null) {
-			text = text.replace("%kit%", getKits().getKitOfPlayer(p.getName()).getName());
-		} else {
-			text = text.replace("%kit%", "None");
+	}
+
+	public String replacePlaceholderIfPresent(String s, Player p) {
+
+		// The reason I'm doing all these if statements rather than a more concise code solution is to reduce
+		// the amount of data that is unnecessarily fetched (ex by using .replace) to improve performance
+		// no longer constantly fetching stats from database for EACH line of scoreboard on update and player join
+
+		if (s.contains("%streak%")) {
+			s = s.replace("%streak%", String.valueOf(getKillStreaks().getStreak(p.getName())));
 		}
 
-		return text;
+		if (s.contains("%player%")) {
+			s = s.replace("%player%", p.getName());
+		}
+
+		if (s.contains("%xp%")) {
+			s = s.replace("%xp%", String.valueOf(getLevels().getExperience(p.getUniqueId())));
+		}
+
+		if (s.contains("%level%")) {
+			s = s.replace("%level%", String.valueOf(levels.getLevel(p.getUniqueId())));
+		}
+
+		if (s.contains("%max_xp%")) {
+			s = s.replace("%max_xp%", String.valueOf(resources.getLevels().getInt("Levels.Options.Experience-To-Level-Up")));
+		}
+
+		if (s.contains("%max_level%")) {
+			s = s.replace("%max_level%", String.valueOf(resources.getLevels().getInt("Levels.Options.Maximum-Level")));
+		}
+
+		if (s.contains("%kd%")) {
+			s = s.replace("%kd%", String.valueOf(getStats().getKDRatio(p.getUniqueId())));
+		}
+
+		if (s.contains("%kills%")) {
+			s = s.replace("%kills%", String.valueOf(getStats().getKills(p.getUniqueId())));
+		}
+
+		if (s.contains("%deaths%")) {
+			s = s.replace("%deaths%", String.valueOf(getStats().getDeaths(p.getUniqueId())));
+		}
+
+		if (s.contains("%kit%")) {
+			if (getKits().getKitOfPlayer(p.getName()) != null) {
+				s = s.replace("%kit%", getKits().getKitOfPlayer(p.getName()).getName());
+			} else {
+				s = s.replace("%kit%", "None");
+			}
+		}
+
+		return s;
 
 	}
 
 	public String generateRandomArenaSpawn(String arenaName) {
-
 		ConfigurationSection section = config.getConfigurationSection("Arenas." + arenaName);
-		List<String> spawnKeys = new ArrayList<String>();
-
-		for (String identifier : section.getKeys(false)) {
-			spawnKeys.add(identifier);
-		}
+		List<String> spawnKeys = new ArrayList<>(section.getKeys(false));
 
 		return spawnKeys.get(random.nextInt(spawnKeys.size()));
-
 	}
 
 	public boolean isCombatActionPermittedInRegion(Player p) {
@@ -252,7 +280,7 @@ public class Arena {
 	}
 
 	public Map<String, String> getHitCache() { return hitCache; }
-	
+
 	public Stats getStats() { return stats; }
 	
 	public Kits getKits() { return kits; }

@@ -15,6 +15,29 @@ public class Cooldown {
 		this.seconds = seconds;
 		
 	}
+	
+	public Cooldown(int seconds) {
+
+		if (seconds / 86400 > 0) {
+			this.days = seconds / 86400;
+			seconds -= (days * 86400);
+		}
+
+		if (seconds / 3600 > 0) {
+			this.hours = seconds / 3600;
+			seconds -= (hours * 3600);
+		}
+
+		if (seconds / 60 > 0) {
+			this.minutes = seconds / 60;
+			seconds -= (minutes * 60);
+		}
+
+		if (seconds > 0) {
+			this.seconds = seconds;
+		}
+		
+	}
 
 	public Cooldown(String formattedCooldown) {
 

@@ -2,97 +2,63 @@ package com.planetgallium.kitpvp.game;
 
 import java.util.UUID;
 
+import com.planetgallium.kitpvp.Game;
 import com.planetgallium.kitpvp.api.Ability;
 import com.planetgallium.kitpvp.api.Kit;
 import com.planetgallium.kitpvp.util.CacheManager;
 import com.planetgallium.kitpvp.util.Cooldown;
-import com.planetgallium.kitpvp.util.Resource;
-import com.planetgallium.kitpvp.util.Resources;
+import com.zp4rker.localdb.DataType;
 import org.bukkit.entity.Player;
 
 public class Cooldowns {
 
-	private Arena arena;
-	private Resource stats;
+	private Infobase database;
 	
-	public Cooldowns(Arena arena, Resources resources) {
-		this.arena = arena;
-		this.stats = resources.getStats();
+	public Cooldowns(Game plugin) {
+		this.database = plugin.getDatabase();
 	}
 
 	public void setAbilityCooldown(String playerName, String abilityName) {
-
 		CacheManager.getPlayerAbilityCooldowns(playerName).put(abilityName, (System.currentTimeMillis() / 1000));
-
 	}
 
-	public void setCooldown(UUID uuid, String kit) {
-		
-		// TODO: MySQL storing
-		stats.set("Stats.Players." + uuid + ".Cooldowns." + kit, (System.currentTimeMillis() / 1000));
-		stats.save();
-		
+	public void setKitCooldown(UUID uuid, String kitName) {
+		database.setData(kitName + "_cooldowns", "last_used", (System.currentTimeMillis() / 1000), DataType.INTEGER, uuid.toString());
+		System.out.println("Done");
 	}
 
-	public boolean isOnCooldown(Player p, Object type) {
+	public Cooldown getRemainingCooldown(Player p, Object type) {
 
 		long currentTimeSeconds = (System.currentTimeMillis() / 1000);
 		int timeLastUsedSeconds = 0;
-		int cooldownSeconds = 0;
+		int actionCooldownSeconds = 0;
+		Cooldown noCooldown = new Cooldown(0, 0, 0, 0);
 
 		if (type instanceof Kit) {
 
 			Kit kit = (Kit) type;
-			if (kit.getCooldown() == null) return false;
-			timeLastUsedSeconds = stats.getInt("Stats.Players." + p.getUniqueId() + ".Cooldowns." + kit.getName());
-			cooldownSeconds = kit.getCooldown().toSeconds();
+			if (kit.getCooldown() == null) return noCooldown;
+
+			Object timeLastUsedResult = database.getData(kit.getName() + "_cooldowns", "last_used", p.getUniqueId().toString());
+			if (timeLastUsedResult != null) {
+				timeLastUsedSeconds = (int) timeLastUsedResult;
+			}
+			actionCooldownSeconds = kit.getCooldown().toSeconds();
 
 		} else if (type instanceof Ability) {
 
 			Ability ability = (Ability) type;
 			if (ability.getCooldown() == null ||
 					!CacheManager.getPlayerAbilityCooldowns(p.getName()).containsKey(ability.getName()))
-				return false;
+				return noCooldown;
+
 			timeLastUsedSeconds = CacheManager.getPlayerAbilityCooldowns(p.getName()).get(ability.getName()).intValue();
-			cooldownSeconds = ability.getCooldown().toSeconds();
+			actionCooldownSeconds = ability.getCooldown().toSeconds();
 
-		} else {
-			return false;
 		}
 
-		return timeLastUsedSeconds + cooldownSeconds >= currentTimeSeconds;
-
-	}
-
-	public String getFormattedCooldown(int useTimeSeconds, int cooldownSeconds) {
-
-		int timeRemainingSeconds = (int) (useTimeSeconds + cooldownSeconds - (System.currentTimeMillis() / 1000));
-
-		int days = 0;
-		int hours = 0;
-		int minutes = 0;
-		int seconds = 0;
-
-		if (timeRemainingSeconds / 86400 > 0) {
-			days = timeRemainingSeconds / 86400;
-			timeRemainingSeconds -= (days * 86400);
-		}
-
-		if (timeRemainingSeconds / 3600 > 0) {
-			hours = timeRemainingSeconds / 3600;
-			timeRemainingSeconds -= (hours * 3600);
-		}
-
-		if (timeRemainingSeconds / 60 > 0) {
-			minutes = timeRemainingSeconds / 60;
-			timeRemainingSeconds -= (minutes * 60);
-		}
-
-		if (timeRemainingSeconds > 0) {
-			seconds = timeRemainingSeconds;
-		}
-
-		return new Cooldown(days, hours, minutes, seconds).formatted(false);
+		int cooldownRemainingSeconds = (int) (timeLastUsedSeconds + actionCooldownSeconds - currentTimeSeconds);
+		return new Cooldown(cooldownRemainingSeconds);
 
 	}
 	

@@ -1,7 +1,8 @@
 package com.planetgallium.kitpvp;
 
-import com.cryptomorin.xseries.XMaterial;
+import com.planetgallium.kitpvp.game.Infobase;
 import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -25,11 +26,10 @@ public class Game extends JavaPlugin implements Listener {
 	private static String prefix;
 
 	private Arena arena;
-	private Database database;
+	private Infobase database;
 	private Resources resources = new Resources(this);
 	
 	private String updateVersion = "Error";
-	public String storageType;
 	private boolean needsUpdate = false;
 	private boolean hasPlaceholderAPI = false;
 	private boolean hasWorldGuard = false;
@@ -38,10 +38,9 @@ public class Game extends JavaPlugin implements Listener {
 	public void onEnable() {
 		
 		instance = this;
-
 		resources.load();
 		prefix = resources.getMessages().getString("Messages.General.Prefix");
-		database = new Database(this, "Storage.MySQL");
+		database = new Infobase(this);
 		arena = new Arena(this, resources);
 
 		PluginManager pm = Bukkit.getPluginManager();
@@ -69,16 +68,6 @@ public class Game extends JavaPlugin implements Listener {
 	    
 		Bukkit.getConsoleSender().sendMessage(Toolkit.translate("&7[&b&lKIT-PVP&7] &7Enabling &bKitPvP &7version &b" + this.getDescription().getVersion() + "&7..."));
 		
-		if (resources.getConfig().getString("Storage.Type").equalsIgnoreCase("mysql")) {
-			storageType = "mysql";
-			
-			database.setup();
-			database.holdConnection();
-			database.createData();
-		} else {
-			storageType = "yaml";
-		}
-		
 		new Metrics(this);
 		
 		new BukkitRunnable() {
@@ -105,13 +94,6 @@ public class Game extends JavaPlugin implements Listener {
 		
 		Bukkit.getConsoleSender().sendMessage(Toolkit.translate("&7[&b&lKIT-PVP&7] &aDone!"));
 		
-	}
-
-	@Override
-	public void onDisable() {
-		for (Player all : Bukkit.getOnlinePlayers()) {
-			database.saveAndRemovePlayer(all);
-		}
 	}
 
 	private void checkUpdate() {
@@ -159,6 +141,15 @@ public class Game extends JavaPlugin implements Listener {
 						out.writeUTF(server);
 						p.sendPluginMessage(this, "BungeeCord", out.toByteArray());
 
+					} else if (resources.getConfig().getBoolean("Items.Leave.Multiworld.Enabled")) {
+
+						String worldName = resources.getConfig().getString("Items.Leave.Multiworld.World");
+						World world = Bukkit.getWorld(worldName);
+						if (world != null) {
+							p.teleport(world.getSpawnLocation());
+						} else {
+							p.sendMessage(Toolkit.translate("&7[&b&lKIT-PVP&7] &cWorld %world% not found. Configure properly in the config.yml.").replace("%world%", worldName));
+						}
 					}
 
 					e.setCancelled(true);
@@ -182,8 +173,8 @@ public class Game extends JavaPlugin implements Listener {
 	public static Game getInstance() { return instance; }
 	
 	public Arena getArena() { return arena; }
-	
-	public Database getDatabase() { return database; }
+
+	public Infobase getDatabase() { return database; }
 	
 	public static String getPrefix() { return prefix; }
 	

@@ -21,7 +21,6 @@ public class Resources {
 	private Resource menu;
 	private Resource messages;
 	private Resource scoreboard;
-	private Resource stats;
 	private Resource signs;
 	
 	public Resources(Game plugin) {
@@ -53,10 +52,9 @@ public class Resources {
 		menu = new Resource(plugin, "menu.yml");
 		messages = new Resource(plugin, "messages.yml");
 		scoreboard = new Resource(plugin, "scoreboard.yml");
-		stats = new Resource(plugin, "stats.yml");
 		signs = new Resource(plugin, "signs.yml");
 
-		for (String fileName : this.getKitList()) {
+		for (String fileName : this.getKitList(true)) {
 			kits.put(fileName, new Resource(plugin, "kits/" + fileName));
 		}
 		
@@ -71,7 +69,6 @@ public class Resources {
 		menu.load();
 		messages.load();
 		scoreboard.load();
-		stats.load();
 		signs.load();
 
 		messages.addCopyDefaultExemption("Messages.Stats.Message");
@@ -86,8 +83,8 @@ public class Resources {
 		scoreboard.addCopyDefaultExemption("Scoreboard.Lines");
 		scoreboard.copyDefaults();
 
-		config.addCopyDefaultExemption("Items.Kits");
-		config.addCopyDefaultExemption("Items.Leave");
+		config.addCopyDefaultExemption("Items.Kits.Commands");
+		config.addCopyDefaultExemption("Items.Leave.Commands");
 		config.copyDefaults();
 
 		abilities.copyDefaults();
@@ -98,7 +95,7 @@ public class Resources {
 		}
 
 		// load new kits that have been added through file system (when doing /kp reload)
-		for (String fileName : getKitList()) {
+		for (String fileName : getKitList(true)) {
 			if (!kits.containsKey(fileName)) {
 				kits.put(fileName, new Resource(plugin, "kits/" + fileName));
 			}
@@ -121,7 +118,6 @@ public class Resources {
 		menu.save();
 		messages.save();
 		scoreboard.save();
-		stats.save();
 		signs.save();
 		
 		for (String key : kits.keySet()) {
@@ -154,14 +150,17 @@ public class Resources {
 
 	}
 
-	private List<String> getKitList() {
+	public List<String> getKitList(boolean withFileEndings) {
 
 		File folder = new File(plugin.getDataFolder().getAbsolutePath() + "/kits");
+		List<String> kitList = new ArrayList<>();
 
-		if (folder.exists()) {
-			return new ArrayList<String>(Arrays.asList(folder.list()));
+		if (folder.exists() && folder.list() != null) {
+			for (String fileName : folder.list()) {
+				kitList.add(withFileEndings ? fileName : fileName.split(".yml")[0]);
+			}
 		}
-		return new ArrayList<String>();
+		return kitList;
 
 	}
 
@@ -178,8 +177,6 @@ public class Resources {
 	public Resource getMessages() { return messages; }
 	
 	public Resource getScoreboard() { return scoreboard; }
-	
-	public Resource getStats() { return stats; }
 	
 	public Resource getSigns() { return signs; }
 	

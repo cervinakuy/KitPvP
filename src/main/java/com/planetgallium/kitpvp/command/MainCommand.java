@@ -14,21 +14,24 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionType;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainCommand implements CommandExecutor {
 
-    private List<String> spawnUsers = new ArrayList<String>();
+    private List<String> spawnUsers = new ArrayList<>();
 
-    private Game plugin;
-    private Arena arena;
-    private Resources resources;
-    private Resource config;
-    private Resource messages;
+    private final Game plugin;
+    private final Arena arena;
+    private final Resources resources;
+    private final Resource config;
+    private final Resource messages;
 
     public MainCommand(Game game) {
         this.plugin = game;
@@ -75,8 +78,7 @@ public class MainCommand implements CommandExecutor {
                 sender.sendMessage(Toolkit.translate("&7- &b/kp stats &7View your stats."));
                 sender.sendMessage(Toolkit.translate("&7- &b/kp stats [player] &7View the stats of another player."));
                 sender.sendMessage(Toolkit.translate("&7- &b/kp menu &7Displays the kits menu."));
-                sender.sendMessage(Toolkit.translate("&7- &b/kp import &7Imports all stats from the MySQL database."));
-                sender.sendMessage(Toolkit.translate("&7- &b/kp export &7Exports all stats to the MySQL database."));
+                sender.sendMessage(Toolkit.translate("&7- &b/kp export &7Exports all stats to the database."));
                 sender.sendMessage(Toolkit.translate(" "));
                 sender.sendMessage(Toolkit.translate("&3&m                                                                               "));
                 return true;
@@ -104,34 +106,21 @@ public class MainCommand implements CommandExecutor {
                 sender.sendMessage(Toolkit.translate("&7[&b&lKIT-PVP&7] &aSupport Discord: &7https://discord.gg/GtXQKZ6"));
                 sender.sendMessage(Toolkit.translate("&7[&b&lKIT-PVP&7] &aPlugin List: &7" + names));
 
-            } else if (args[0].equalsIgnoreCase("import") && hasPermission(sender, "kp.command.import")) {
-
-                if (plugin.getDatabase().isEnabled()) {
-
-                    sender.sendMessage(Toolkit.translate("%prefix% &7Importing data, please wait..."));
-                    plugin.getDatabase().importData(resources);
-                    sender.sendMessage(Toolkit.translate("%prefix% &aDatabase data has successfully been exported to the stats.yml."));
-
-                } else {
-
-                    sender.sendMessage(Toolkit.translate("%prefix% &cImporting is unnecessary, you can switch your storage type and import."));
-
-                }
-
-                return true;
-
             } else if (args[0].equalsIgnoreCase("export") && hasPermission(sender, "kp.command.export")) {
 
-                if (plugin.getDatabase().isEnabled()) {
+                File statsFile = new File(plugin.getDataFolder().getAbsolutePath() + "/stats.yml");
 
-                    sender.sendMessage(Toolkit.translate("%prefix% &7Exporting data, please wait..."));
-                    plugin.getDatabase().exportData(resources);
+                if (statsFile.exists()) {
+                    sender.sendMessage(Toolkit.translate("%prefix% &7Exporting data, this may take a while..."));
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            plugin.getDatabase().exportStats();
+                        }
+                    }.runTaskAsynchronously(plugin);
                     sender.sendMessage(Toolkit.translate("%prefix% &aStats successfully exported to database."));
-
                 } else {
-
-                    sender.sendMessage(Toolkit.translate("%prefix% &cYou are using YAML storage, so exporting is not possible. Change your settings in the config.yml"));
-
+                    sender.sendMessage(Toolkit.translate("%prefix% &cNo stats.yml was found to export from."));
                 }
 
                 return true;
@@ -140,7 +129,7 @@ public class MainCommand implements CommandExecutor {
 
                 String message = "";
 
-                for (String kitName : arena.getKits().getKitList()) {
+                for (String kitName : resources.getKitList(false)) {
                     String[] fileName = kitName.split(".yml", 2);
                     message += fileName[0] + ", ";
                 }
@@ -182,7 +171,7 @@ public class MainCommand implements CommandExecutor {
 
                 if (arena.getKits().isKit(kitName)) {
 
-                    resources.removeResource(kitName + ".yml");
+                    arena.getKits().deleteKit(kitName);
                     sender.sendMessage(messages.getString("Messages.Commands.Delete")
                             .replace("%kit%", kitName));
 
@@ -256,6 +245,11 @@ public class MainCommand implements CommandExecutor {
                         p.sendMessage(addPlaceholdersIfPossible(p, Toolkit.translate(line)));
 
                     }
+
+                } else if (args[0].equalsIgnoreCase("test")) {
+
+                    Potion test = new Potion(PotionType.JUMP, 2);
+                    p.getInventory().addItem(test.toItemStack(1));
 
                 } else if (args[0].equalsIgnoreCase("menu") && hasPermission(sender, "kp.command.menu")) {
 

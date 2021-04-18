@@ -54,7 +54,7 @@ public class DeathListener implements Listener {
 			setDeathMessage(victim);
 			respawnPlayer(victim);
 
-			arena.getStats().addDeath(victim.getUniqueId());
+			arena.getStats().addDeaths(victim.getUniqueId(), 1);
 			arena.getLevels().removeExperience(victim, resources.getLevels().getInt("Levels.Options.Experience-Taken-On-Death"));
 
 			if (config.getBoolean("Arena.DeathParticle")) {
@@ -94,7 +94,11 @@ public class DeathListener implements Listener {
 	}
 
 	private void respawnPlayer(Player victim) {
-		
+
+		if (!victim.isOnline()) {
+			return;
+		}
+
 		if (config.getBoolean("Arena.FancyDeath")) {
 
 			Location deathLocation = victim.getLocation();
@@ -263,7 +267,7 @@ public class DeathListener implements Listener {
 
 			if (!victim.getName().equals(killer.getName())) {
 
-				arena.getStats().addKill(killer.getUniqueId());
+				arena.getStats().addKills(killer.getUniqueId(), 1);
 				arena.getLevels().addExperience(killer, resources.getLevels().getInt("Levels.Options.Experience-Given-On-Kill"));
 
 				List<String> killCommands = config.getStringList("Kill.Commands");
