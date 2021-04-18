@@ -4,6 +4,7 @@ import java.io.*;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import com.planetgallium.kitpvp.Game;
 import org.bukkit.ChatColor;
@@ -105,9 +106,12 @@ public class Resource extends YamlConfiguration {
 		if (string != null) {
 			string = ChatColor.translateAlternateColorCodes('&',
 					string.replace("%prefix%", Game.getPrefix() == null ? "" : Game.getPrefix()));
+		} else {
+			string = "String not found";
+			Toolkit.printToConsole(String.format("&7[&b&lKIT-PVP&7] &cString with path %s was not found.", path));
 		}
 
-        return string;
+		return string;
     }
 
     @Override

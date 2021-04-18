@@ -381,7 +381,7 @@ public class Toolkit {
 
 	public static String translate(String s) {
 
-		return ChatColor.translateAlternateColorCodes('&', s);
+		return ChatColor.translateAlternateColorCodes('&', s.replace("%prefix%", Game.getPrefix()));
 
 	}
 
