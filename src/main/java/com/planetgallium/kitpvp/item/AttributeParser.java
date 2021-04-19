@@ -151,56 +151,7 @@ public class AttributeParser {
         //              CUSTOM ATTRIBUTES            //
 
         if (resource.contains(path + ".Effects")) {
-            String effectsPath = path + ".Effects";
-
-            if (Toolkit.versionToNumber() == 18) {
-                if (item.getType() == XMaterial.POTION.parseMaterial() || item.getType() == XMaterial.SPLASH_POTION.parseMaterial()) {
-                    boolean isSplash = resource.getString(effectsPath.replace("Effects", "") + "Type").equals("SPLASH_POTION");
-                    Potion potion = Potion.fromItemStack(item);
-                    potion.setSplash(isSplash);
-
-                    item = potion.toItemStack(item.getAmount());
-                }
-            }
-
-            boolean isCustom = !resource.contains(effectsPath + "." + resource.getConfigurationSection(effectsPath).getKeys(false).toArray()[0] + ".Upgraded");
-
-            PotionMeta potionMeta = (PotionMeta) item.getItemMeta();
-
-            if (isCustom) {
-
-                List<PotionEffect> effects = new ArrayList<>();
-
-                for (String effectName : resource.getConfigurationSection(effectsPath).getKeys(false)) {
-                    PotionEffectType effectType = PotionEffectType.getByName(effectName);
-                    int duration = resource.getInt(effectsPath + "." + effectName + ".Duration") * 20;
-                    int amplifier = resource.getInt(effectsPath + "." + effectName + ".Amplifier");
-                    effects.add(new PotionEffect(effectType, duration, amplifier - 1));
-                }
-
-                for (PotionEffect effect : effects) {
-                    potionMeta.addCustomEffect(effect, true);
-                }
-
-            } else {
-
-                PotionType potionType = PotionType.UNCRAFTABLE;
-                boolean isUpgraded = false;
-                boolean isExtended = false;
-
-                for (String potionName : resource.getConfigurationSection(effectsPath).getKeys(false)) {
-                    potionType = PotionType.valueOf(resource.getString(effectsPath.replace("Effects", "") + "Type"));
-                    isUpgraded = resource.getBoolean(effectsPath + "." + potionName + ".Upgraded");
-                    isExtended = resource.getBoolean(effectsPath + "." + potionName + ".Extended");
-                }
-
-                PotionData potionData = new PotionData(potionType, isExtended, isUpgraded);
-                potionMeta.setBasePotionData(potionData);
-
-            }
-
-            item.setItemMeta(potionMeta);
-
+            item = setEffectsFromPath(item, resource, path);
         }
 
         if (Game.getInstance().getResources().getConfig().getBoolean("Arena.PreventItemDurabilityDamage")) {
@@ -313,6 +264,87 @@ public class AttributeParser {
             item.getItemMeta().setUnbreakable(true);
 
         }
+
+    }
+
+    private static ItemStack setEffectsFromPath(ItemStack item, Resource resource, String path) {
+
+        String effectsPath = path + ".Effects";
+        String firstChildEffectName = resource.getConfigurationSection(effectsPath).getKeys(false).toArray()[0].toString();
+        String firstChildPath = path + ".Effects." + firstChildEffectName;
+        boolean isCustom = resource.contains(firstChildPath + ".Duration");
+
+        if (Toolkit.versionToNumber() == 18 && !isCustom) {
+            return setVanillaEffectsFromPath(item, resource, effectsPath);
+        }
+
+        if (isCustom) {
+            setCustomEffectsFromPath(item, resource, effectsPath);
+        } else {
+            setVanillaEffectsFromPath(item, resource, effectsPath);
+        }
+
+        return item;
+
+    }
+
+    private static ItemStack setVanillaEffectsFromPath(ItemStack item, Resource resource, String path) {
+
+        PotionMeta potionMeta = (PotionMeta) item.getItemMeta();
+
+        String firstChildEffectName = resource.getConfigurationSection(path).getKeys(false).toArray()[0].toString();
+        String firstChildPath = path + "." + firstChildEffectName;
+
+        PotionType potionType = XPotion.matchXPotion(firstChildEffectName).get().getPotionType();
+        boolean isUpgraded = resource.getBoolean(firstChildPath + ".Upgraded");
+        boolean isExtended = resource.getBoolean(firstChildPath + ".Extended");
+
+        if (Toolkit.versionToNumber() == 18) {
+            boolean isSplash = resource.getString(path.replace("Effects", "") + ".Type").equals("SPLASH_POTION");
+            Potion potion = Potion.fromItemStack(item);
+            potion.setSplash(isSplash);
+            potion.setType(potionType);
+            potion.setLevel(getVanillaLevel(potionType, isUpgraded));
+            if (isExtended) potion.setHasExtendedDuration(true);
+
+            return potion.toItemStack(item.getAmount());
+        } else if (Toolkit.versionToNumber() >= 19) {
+            potionMeta.setBasePotionData(new PotionData(potionType, isUpgraded, isExtended));
+        }
+
+        item.setItemMeta(potionMeta);
+
+        return item;
+
+    }
+
+    private static void setCustomEffectsFromPath(ItemStack item, Resource resource, String path) {
+
+        PotionMeta potionMeta = (PotionMeta) item.getItemMeta();
+
+        for (String effectName : resource.getConfigurationSection(path).getKeys(false)) {
+            String specificPath = path + "." + effectName;
+            potionMeta.addCustomEffect(new PotionEffect(PotionEffectType.getByName(effectName),
+                    resource.getInt(specificPath + ".Duration") * 20,
+                    resource.getInt(specificPath + ".Amplifier") - 1), true);
+        }
+
+        item.setItemMeta(potionMeta);
+
+    }
+
+    private static int getVanillaLevel(PotionType type, boolean isUpgraded) {
+
+        switch (type) {
+            case INVISIBILITY: case FIRE_RESISTANCE: case NIGHT_VISION:
+                case SLOWNESS: case WATER_BREATHING: case WEAKNESS:
+                return 1;
+            case INSTANT_DAMAGE: case INSTANT_HEAL: case JUMP: case POISON:
+                case REGEN: case SPEED: case STRENGTH:
+                return isUpgraded ? 2 : 1;
+        }
+
+        return 1;
 
     }
 

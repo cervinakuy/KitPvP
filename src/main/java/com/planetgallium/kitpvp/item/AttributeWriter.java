@@ -48,32 +48,6 @@ public class AttributeWriter {
 
     }
 
-    private static void serializeEffects(Resource resource, PotionMeta meta, String path) {
-
-        PotionData data = meta.getBasePotionData();
-
-        if (meta.getCustomEffects().size() > 0) {
-
-            for (PotionEffect potion : meta.getCustomEffects()) {
-
-                resource.set(path + ".Effects." + potion.getType().getName() + ".Amplifier", potion.getAmplifier() + 1);
-                resource.set(path + ".Effects." + potion.getType().getName() + ".Duration", potion.getDuration() / 20);
-                resource.save();
-
-            }
-
-        } else {
-
-            String effectName = data.getType().getEffectType().getName();
-            resource.set(path + ".Type", data.getType().toString());
-            resource.set(path + ".Effects." + effectName + ".Upgraded", data.isUpgraded());
-            resource.set(path + ".Effects." + effectName + ".Extended", data.isExtended());
-            resource.save();
-
-        }
-
-    }
-
     private static void serializeDyedArmor(Resource resource, ItemStack item, String path) {
 
         if (item.getType() == XMaterial.LEATHER_HELMET.parseMaterial() ||
@@ -109,7 +83,49 @@ public class AttributeWriter {
 
         if (Toolkit.versionToNumber() >= 19 && item.getType() == XMaterial.TIPPED_ARROW.parseMaterial()) {
 
-            serializeEffects(resource, (PotionMeta) item.getItemMeta(), path);
+            serializeEffects(resource, item, path);
+
+        }
+
+    }
+
+    private static void serializeEffects(Resource resource, ItemStack item, String path) {
+
+        PotionMeta meta = (PotionMeta) item.getItemMeta();
+        String effectPath = path + ".Effects";
+
+        if (meta.getCustomEffects().size() > 0) {
+
+            for (PotionEffect effect : meta.getCustomEffects()) {
+                resource.set(effectPath + "." + effect.getType().getName() + ".Amplifier", effect.getAmplifier() + 1);
+                resource.set(effectPath + "." + effect.getType().getName() + ".Duration", effect.getDuration() / 20);
+                resource.save();
+            }
+
+        } else {
+
+            if (Toolkit.versionToNumber() == 18) {
+
+                Potion potionStack = Potion.fromItemStack(item);
+
+                resource.set(path + ".Type", potionStack.isSplash() ? "SPLASH_POTION" : "POTION");
+                resource.save();
+
+                resource.set(path + ".Effects." + potionStack.getType() + ".Upgraded", potionStack.getLevel() > 0);
+                resource.set(path + ".Effects." + potionStack.getType() + ".Extended", potionStack.hasExtendedDuration());
+                resource.save();
+
+            } else if (Toolkit.versionToNumber() >= 19) {
+
+                PotionData data = meta.getBasePotionData();
+
+                String effectName = data.getType().getEffectType().getName();
+//            resource.set(path + ".Type", data.getType().toString());
+                resource.set(effectPath + "." + effectName + ".Upgraded", data.isUpgraded());
+                resource.set(effectPath + "." + effectName + ".Extended", data.isExtended());
+                resource.save();
+
+            }
 
         }
 
@@ -122,41 +138,7 @@ public class AttributeWriter {
                         (item.getType() == XMaterial.SPLASH_POTION.parseMaterial() ||
                         item.getType() == XMaterial.LINGERING_POTION.parseMaterial()))) {
 
-            if (Toolkit.versionToNumber() == 18) {
-
-                Potion potionStack = Potion.fromItemStack(item);
-                PotionMeta potionMeta = (PotionMeta) item.getItemMeta();
-
-                resource.set(path + ".Type", potionStack.isSplash() ? "SPLASH_POTION" : "POTION");
-                resource.save();
-
-                if (potionMeta.getCustomEffects().size() > 0) {
-
-                    for (PotionEffect effect : potionMeta.getCustomEffects()) {
-
-                        resource.set(path + ".Effects." + effect.getType().getName() + ".Amplifier", effect.getAmplifier() + 1);
-                        resource.set(path + ".Effects." + effect.getType().getName() + ".Duration", effect.getDuration() / 20);
-                        resource.save();
-
-                    }
-
-                } else {
-
-                    for (PotionEffect effect : potionStack.getEffects()) {
-
-                        resource.set(path + ".Effects." + effect.getType().getName() + ".Amplifier", effect.getAmplifier() + 1);
-                        resource.set(path + ".Effects." + effect.getType().getName() + ".Duration", effect.getDuration() / 20);
-                        resource.save();
-
-                    }
-
-                }
-
-            } else if (Toolkit.versionToNumber() >= 19) {
-
-                serializeEffects(resource, (PotionMeta) item.getItemMeta(), path);
-
-            }
+            serializeEffects(resource, item, path);
 
         }
 
