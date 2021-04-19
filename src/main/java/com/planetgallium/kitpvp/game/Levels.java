@@ -1,7 +1,6 @@
 package com.planetgallium.kitpvp.game;
 
 import java.util.List;
-import java.util.UUID;
 
 import com.cryptomorin.xseries.XSound;
 import com.planetgallium.kitpvp.util.Resource;
@@ -14,9 +13,9 @@ import com.planetgallium.kitpvp.util.Toolkit;
 
 public class Levels {
 	
-	private Arena arena;
-	private Resources resources;
-	private Resource levels;
+	private final Arena arena;
+	private final Resources resources;
+	private final Resource levels;
 	
 	public Levels(Arena arena, Resources resources) {
 		this.arena = arena;
@@ -28,12 +27,12 @@ public class Levels {
 		
 		if (levels.getBoolean("Levels.Levels.Enabled")) {
 			
-			arena.getStats().addExperience(p.getUniqueId(), experience);
+			arena.getStats().addExperience(p.getUniqueId().toString(), experience);
 			
-			if (arena.getLevels().getExperience(p.getUniqueId()) >= levels.getInt("Levels.Options.Experience-To-Level-Up")) {
+			if (arena.getLevels().getExperience(p.getUniqueId().toString()) >= levels.getInt("Levels.Options.Experience-To-Level-Up")) {
 
 				arena.getLevels().levelUp(p);
-				Bukkit.getPluginManager().callEvent(new PlayerLevelUpEvent(p, getLevel(p.getUniqueId())));
+				Bukkit.getPluginManager().callEvent(new PlayerLevelUpEvent(p, getLevel(p.getUniqueId().toString())));
 				
 			}
 			
@@ -45,7 +44,7 @@ public class Levels {
 		
 		if (levels.getBoolean("Levels.Levels.Enabled")) {
 		
-			arena.getStats().removeExperience(p.getUniqueId(), experience);
+			arena.getStats().removeExperience(p.getUniqueId().toString(), experience);
 			
 		}
 		
@@ -53,12 +52,12 @@ public class Levels {
 	
 	public void levelUp(Player p) {
 		
-		if (arena.getStats().getLevel(p.getUniqueId()) != levels.getInt("Levels.Options.Maximum-Level")) {
+		if (arena.getStats().getLevel(p.getUniqueId().toString()) != levels.getInt("Levels.Options.Maximum-Level")) {
 			
-			arena.getStats().setLevel(p.getUniqueId(), arena.getLevels().getLevel(p.getUniqueId()) + 1);
-			arena.getStats().setExperience(p.getUniqueId(), 0);
+			arena.getStats().setLevel(p.getUniqueId().toString(), arena.getLevels().getLevel(p.getUniqueId().toString()) + 1);
+			arena.getStats().setExperience(p.getUniqueId().toString(), 0);
 
-			String newLevel = String.valueOf(getLevel(p.getUniqueId()));
+			String newLevel = String.valueOf(getLevel(p.getUniqueId().toString()));
 
 			List<String> levelUpCommands = levels.getStringList("Levels.Commands-On-Level-Up");
 			Toolkit.runCommands(p, levelUpCommands, "%level%", newLevel);
@@ -73,22 +72,18 @@ public class Levels {
 			
 		} else {
 
-			arena.getStats().setExperience(p.getUniqueId(), 0);
+			arena.getStats().setExperience(p.getUniqueId().toString(), 0);
 
 		}
 		
 	}
 	
-	public int getLevel(UUID uuid) {
-		
+	public int getLevel(String uuid) {
 		return arena.getStats().getLevel(uuid);
-		
 	}
 	
-	public int getExperience(UUID uuid) {
-		
+	public int getExperience(String uuid) {
 		return arena.getStats().getExperience(uuid);
-		
 	}
 	
 }

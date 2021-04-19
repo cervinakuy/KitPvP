@@ -137,6 +137,22 @@ public class Infobase {
 
     }
 
+    public String usernameToUUID(String tableName, String username) {
+
+        Table table = getTableByName(tableName);
+        if (table == null) return null;
+
+        Column usernameColumn = new Column("username", DataType.STRING);
+        usernameColumn.setValue(username);
+
+        List<List<Column>> results = table.search(usernameColumn);
+        if (results.size() > 0 && results.get(0).size() > 0) {
+            return (String) table.search(usernameColumn).get(0).get(0).getValue();
+        }
+        return null;
+
+    }
+
     public void cleanupUnusedKitCooldownTables() {
 
         for (Table table : database.getTables()) {

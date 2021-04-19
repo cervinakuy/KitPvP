@@ -197,30 +197,30 @@ public class Arena {
 			text = PlaceholderAPI.setPlaceholders(p, text);
 		}
 
-		return replacePlaceholderIfPresent(text, p);
+		return replacePlaceholderIfPresent(text, p.getName(), p.getUniqueId().toString());
 
 	}
 
-	public String replacePlaceholderIfPresent(String s, Player p) {
+	public String replacePlaceholderIfPresent(String s, String username, String uuid) {
 
 		// The reason I'm doing all these if statements rather than a more concise code solution is to reduce
 		// the amount of data that is unnecessarily fetched (ex by using .replace) to improve performance
 		// no longer constantly fetching stats from database for EACH line of scoreboard on update and player join
 
 		if (s.contains("%streak%")) {
-			s = s.replace("%streak%", String.valueOf(getKillStreaks().getStreak(p.getName())));
+			s = s.replace("%streak%", String.valueOf(getKillStreaks().getStreak(username)));
 		}
 
 		if (s.contains("%player%")) {
-			s = s.replace("%player%", p.getName());
+			s = s.replace("%player%", username);
 		}
 
 		if (s.contains("%xp%")) {
-			s = s.replace("%xp%", String.valueOf(getLevels().getExperience(p.getUniqueId())));
+			s = s.replace("%xp%", String.valueOf(getLevels().getExperience(uuid)));
 		}
 
 		if (s.contains("%level%")) {
-			s = s.replace("%level%", String.valueOf(levels.getLevel(p.getUniqueId())));
+			s = s.replace("%level%", String.valueOf(levels.getLevel(uuid)));
 		}
 
 		if (s.contains("%max_xp%")) {
@@ -232,20 +232,20 @@ public class Arena {
 		}
 
 		if (s.contains("%kd%")) {
-			s = s.replace("%kd%", String.valueOf(getStats().getKDRatio(p.getUniqueId())));
+			s = s.replace("%kd%", String.valueOf(getStats().getKDRatio(uuid)));
 		}
 
 		if (s.contains("%kills%")) {
-			s = s.replace("%kills%", String.valueOf(getStats().getKills(p.getUniqueId())));
+			s = s.replace("%kills%", String.valueOf(getStats().getKills(uuid.toString())));
 		}
 
 		if (s.contains("%deaths%")) {
-			s = s.replace("%deaths%", String.valueOf(getStats().getDeaths(p.getUniqueId())));
+			s = s.replace("%deaths%", String.valueOf(getStats().getDeaths(uuid)));
 		}
 
 		if (s.contains("%kit%")) {
-			if (getKits().getKitOfPlayer(p.getName()) != null) {
-				s = s.replace("%kit%", getKits().getKitOfPlayer(p.getName()).getName());
+			if (getKits().getKitOfPlayer(username) != null) {
+				s = s.replace("%kit%", getKits().getKitOfPlayer(username).getName());
 			} else {
 				s = s.replace("%kit%", "None");
 			}

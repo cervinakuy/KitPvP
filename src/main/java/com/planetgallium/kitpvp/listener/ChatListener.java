@@ -27,7 +27,7 @@ public class ChatListener implements Listener {
 			
 			Player p = e.getPlayer();
 
-			String playerLevel = String.valueOf(arena.getLevels().getLevel(p.getUniqueId()));
+			String playerLevel = String.valueOf(arena.getLevels().getLevel(p.getUniqueId().toString()));
 			String levelPrefix = resources.getLevels().getString("Levels.Levels." + playerLevel + ".Prefix")
 					.replace("%level%", playerLevel);
 

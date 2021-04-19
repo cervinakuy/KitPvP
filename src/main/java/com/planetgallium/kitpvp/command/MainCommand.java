@@ -5,7 +5,6 @@ import com.planetgallium.kitpvp.Game;
 import com.planetgallium.kitpvp.api.Kit;
 import com.planetgallium.kitpvp.game.Arena;
 import com.planetgallium.kitpvp.util.*;
-import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -14,9 +13,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
@@ -185,23 +182,18 @@ public class MainCommand implements CommandExecutor {
 
             } else if (args[0].equalsIgnoreCase("stats") && hasPermission(sender, "kp.command.stats.other")) {
 
-                // TODO: now with database you can get anyone's stats regardless if online. implement
-
                 String targetName = args[1];
-                Player target = Toolkit.getPlayerCaseInsensitive(targetName);
+                String targetUUID = plugin.getDatabase().usernameToUUID("stats", targetName);
 
-                if (target != null) {
+                // kp setkills cervinakuy 10
+                // kp setdeaths cervinakuy 89
+                // kp setexperience cervinakuy 10
+                // kp setlevel cervinakuy 10
 
-                    for (String line : messages.getStringList("Messages.Stats.Message")) {
-
-                        sender.sendMessage(addPlaceholdersIfPossible(target, Toolkit.translate(line)));
-
-                    }
-
+                if (targetUUID != null) {
+                    sendStatsMessage(sender, targetName, targetUUID);
                 } else {
-
                     sender.sendMessage(messages.getString("Messages.Error.Offline"));
-
                 }
 
             }
@@ -242,11 +234,7 @@ public class MainCommand implements CommandExecutor {
 
                 if (args[0].equalsIgnoreCase("stats") && hasPermission(sender, "kp.command.stats")) {
 
-                    for (String line : messages.getStringList("Messages.Stats.Message")) {
-
-                        p.sendMessage(addPlaceholdersIfPossible(p, Toolkit.translate(line)));
-
-                    }
+                    sendStatsMessage(p, p.getName(), p.getUniqueId().toString());
 
                 } else if (args[0].equalsIgnoreCase("menu") && hasPermission(sender, "kp.command.menu")) {
 
@@ -473,19 +461,11 @@ public class MainCommand implements CommandExecutor {
 
     }
 
-    private String addPlaceholdersIfPossible(Player p, String text) {
+    private void sendStatsMessage(CommandSender receiver, String username, String targetUUID) {
 
-        if (plugin.hasPlaceholderAPI()) {
-            text = PlaceholderAPI.setPlaceholders(p, text);
+        for (String line : messages.getStringList("Messages.Stats.Message")) {
+            receiver.sendMessage(arena.replacePlaceholderIfPresent(line, username, targetUUID));
         }
-
-        text = text.replace("%player%", p.getName())
-                .replace("%kills%", String.valueOf(arena.getStats().getKills(p.getUniqueId())))
-                .replace("%deaths%", String.valueOf(arena.getStats().getDeaths(p.getUniqueId())))
-                .replace("%level%", String.valueOf(arena.getLevels().getLevel(p.getUniqueId())))
-                .replace("%experience%", String.valueOf(arena.getLevels().getExperience(p.getUniqueId())));
-
-        return text;
 
     }
 

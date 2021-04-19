@@ -195,7 +195,7 @@ public class Kits {
         }
 
         if (!(Toolkit.getPermissionAmount(p, "kp.levelbypass.", 0) >= kit.getLevel() ||
-                arena.getLevels().getLevel(p.getUniqueId()) >= kit.getLevel())) {
+                arena.getLevels().getLevel(p.getUniqueId().toString()) >= kit.getLevel())) {
             p.sendMessage(messages.getString("Messages.Other.Needed").replace("%level%", String.valueOf(kit.getLevel())));
             return;
         }

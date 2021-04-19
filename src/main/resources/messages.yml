@@ -39,7 +39,7 @@ Messages:
     KitInvalid: '%prefix% &cYou cannot perform this action because you have a kit selected.'
     CooldownKit: '%prefix% &cYou cannot select this kit for another %cooldown%.'
     CooldownAbility: '%prefix% &cYou cannot use this ability for another %cooldown%.'
-    Offline: '%prefix% &cThe specified player is not online or not in an arena.'
+    Offline: '%prefix% &cThe specified player could not be found.'
     Menu: '%prefix% &cFailed to automatically add to the menu, the menu may be full.'
     PVP: '%prefix% &cPVP is not permitted in this region.'
   Stats:
@@ -48,7 +48,7 @@ Messages:
     - ' '
     - ' &b&lStats for %player%'
     - ' &aLevel: &7%level%/100'
-    - ' &aExperience: &7%experience%/100'
+    - ' &aExperience: &7%xp%/100'
     - ' &aKills: &7%kills%'
     - ' &aDeaths: &7%deaths%'
     - ' '
