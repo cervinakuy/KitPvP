@@ -42,6 +42,8 @@ public class Cooldowns {
 			Object timeLastUsedResult = database.getData(kit.getName() + "_cooldowns", "last_used", p.getUniqueId().toString());
 			if (timeLastUsedResult != null) {
 				timeLastUsedSeconds = (int) timeLastUsedResult;
+			} else {
+				return noCooldown;
 			}
 			actionCooldownSeconds = kit.getCooldown().toSeconds();
 
