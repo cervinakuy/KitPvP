@@ -34,7 +34,6 @@ public class SQLite {
         this.connection = getSQLConnection();
     }
 
-
     public Connection getSQLConnection() {
         File file;
         if (inDF) {

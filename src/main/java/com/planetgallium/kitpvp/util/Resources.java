@@ -2,7 +2,6 @@ package com.planetgallium.kitpvp.util;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,22 +10,18 @@ import com.planetgallium.kitpvp.Game;
 
 public class Resources {
 
-	private Game plugin;
-	private Map<String, Resource> kits;
+	private final Game plugin;
+	private final Map<String, Resource> kits;
 
-	private Resource config;
-	private Resource abilities;
-	private Resource killstreaks;
-	private Resource levels;
-	private Resource menu;
-	private Resource messages;
-	private Resource scoreboard;
-	private Resource signs;
+	private final Resource config, abilities, killstreaks,
+							levels, menu, messages, scoreboard, signs;
 	
 	public Resources(Game plugin) {
 		
 		this.plugin = plugin;
 		this.kits = new HashMap<>();
+
+		Toolkit.printToConsole("&7[&b&lKIT-PVP&7] &7Loading configuration files...");
 
 		if (!plugin.getDataFolder().exists()) {
 			kits.put("Fighter.yml", new Resource(plugin, "kits/Fighter.yml"));
@@ -54,9 +49,13 @@ public class Resources {
 		scoreboard = new Resource(plugin, "scoreboard.yml");
 		signs = new Resource(plugin, "signs.yml");
 
+		Toolkit.printToConsole("&7[&b&lKIT-PVP&7] &7Loading kit files...");
+
 		for (String fileName : this.getKitList(true)) {
 			kits.put(fileName, new Resource(plugin, "kits/" + fileName));
 		}
+
+		load();
 		
 	}
 	
@@ -104,9 +103,7 @@ public class Resources {
 	}
 	
 	public void reload() {
-		
 		load();
-		
 	}
 	
 	public void save() {
@@ -127,27 +124,20 @@ public class Resources {
 	}
 
 	public void addResource(String fileName, Resource resource) {
-
 		kits.put(fileName, resource);
 		kits.get(fileName).load();
-
 	}
 	
 	public void removeResource(String fileName) {
-
 		kits.get(fileName).getFile().delete();
 		kits.remove(fileName);
-		
 	}
 
 	public Resource getKit(String kitName) {
-
 		if (kits.containsKey(kitName + ".yml")) {
 			return kits.get(kitName + ".yml");
 		}
-
 		return null;
-
 	}
 
 	public List<String> getKitList(boolean withFileEndings) {
