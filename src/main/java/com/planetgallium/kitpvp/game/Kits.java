@@ -195,7 +195,7 @@ public class Kits {
         }
 
         if (!(Toolkit.getPermissionAmount(p, "kp.levelbypass.", 0) >= kit.getLevel() ||
-                arena.getLevels().getLevel(p.getUniqueId().toString()) >= kit.getLevel())) {
+                arena.getStats().getStat("level", p.getName()) >= kit.getLevel())) {
             p.sendMessage(messages.getString("Messages.Other.Needed").replace("%level%", String.valueOf(kit.getLevel())));
             return;
         }
@@ -226,7 +226,7 @@ public class Kits {
 
         Cooldown kitCooldown = kit.getCooldown();
         if (kitCooldown != null && kitCooldown.toSeconds() > 0 && !p.hasPermission("kp.cooldownbypass")) {
-            arena.getCooldowns().setKitCooldown(p.getUniqueId(), kit.getName());
+            arena.getCooldowns().setKitCooldown(p.getName(), kit.getName());
         }
 
         Resource kitResource = resources.getKit(kit.getName());

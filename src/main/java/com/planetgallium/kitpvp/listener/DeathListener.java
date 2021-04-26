@@ -54,8 +54,8 @@ public class DeathListener implements Listener {
 			setDeathMessage(victim);
 			respawnPlayer(victim);
 
-			arena.getStats().addDeaths(victim.getUniqueId().toString(), 1);
-			arena.getLevels().removeExperience(victim, resources.getLevels().getInt("Levels.Options.Experience-Taken-On-Death"));
+			arena.getStats().addToStat("deaths", victim.getName(), 1);
+			arena.getStats().removeExperience(victim.getName(), resources.getLevels().getInt("Levels.Options.Experience-Taken-On-Death"));
 
 			if (config.getBoolean("Arena.DeathParticle")) {
 				victim.getWorld().playEffect(victim.getLocation().add(0.0D, 1.0D, 0.0D), Effect.STEP_SOUND, 152);
@@ -267,8 +267,8 @@ public class DeathListener implements Listener {
 
 			if (!victim.getName().equals(killer.getName())) {
 
-				arena.getStats().addKills(killer.getUniqueId().toString(), 1);
-				arena.getLevels().addExperience(killer, resources.getLevels().getInt("Levels.Options.Experience-Given-On-Kill"));
+				arena.getStats().addToStat("kills", killer.getName(), 1);
+				arena.getStats().addExperience(killer, resources.getLevels().getInt("Levels.Options.Experience-Given-On-Kill"));
 
 				List<String> killCommands = config.getStringList("Kill.Commands");
 				killCommands = Toolkit.replaceInList(killCommands, "%victim%", victim.getName());

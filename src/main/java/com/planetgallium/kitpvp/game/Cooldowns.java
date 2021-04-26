@@ -22,9 +22,8 @@ public class Cooldowns {
 		CacheManager.getPlayerAbilityCooldowns(playerName).put(abilityName, (System.currentTimeMillis() / 1000));
 	}
 
-	public void setKitCooldown(UUID uuid, String kitName) {
-		database.setData(kitName + "_cooldowns", "last_used", (System.currentTimeMillis() / 1000), DataType.INTEGER, uuid.toString());
-		System.out.println("Done");
+	public void setKitCooldown(String username, String kitName) {
+		database.setData(kitName + "_cooldowns", "last_used", (System.currentTimeMillis() / 1000), DataType.INTEGER, username);
 	}
 
 	public Cooldown getRemainingCooldown(Player p, Object type) {
@@ -39,7 +38,7 @@ public class Cooldowns {
 			Kit kit = (Kit) type;
 			if (kit.getCooldown() == null) return noCooldown;
 
-			Object timeLastUsedResult = database.getData(kit.getName() + "_cooldowns", "last_used", p.getUniqueId().toString());
+			Object timeLastUsedResult = database.getData(kit.getName() + "_cooldowns", "last_used", p.getName());
 			if (timeLastUsedResult != null) {
 				timeLastUsedSeconds = (int) timeLastUsedResult;
 			} else {

@@ -27,10 +27,10 @@ public class Arena {
 
 	private final Map<String, String> hitCache;
 
+	private final Leaderboards leaderboards;
 	private final Stats stats;
 	private final Kits kits;
 	private final KillStreaks killstreaks;
-	private final Levels levels;
 	private final Cooldowns cooldowns;
 	private final Menus menus;
 	
@@ -43,10 +43,10 @@ public class Arena {
 
 		this.hitCache = new HashMap<>();
 
-		this.stats = new Stats(plugin);
+		this.leaderboards = new Leaderboards(plugin);
+		this.stats = new Stats(plugin, this);
 		this.kits = new Kits(plugin, this);
 		this.killstreaks = new KillStreaks(resources);
-		this.levels = new Levels(this, resources);
 		this.cooldowns = new Cooldowns(plugin);
 		this.menus = new Menus(resources);
 	}
@@ -197,11 +197,11 @@ public class Arena {
 			text = PlaceholderAPI.setPlaceholders(p, text);
 		}
 
-		return replacePlaceholderIfPresent(text, p.getName(), p.getUniqueId().toString());
+		return replacePlaceholderIfPresent(text, p.getName());
 
 	}
 
-	public String replacePlaceholderIfPresent(String s, String username, String uuid) {
+	public String replacePlaceholderIfPresent(String s, String username) {
 
 		// The reason I'm doing all these if statements rather than a more concise code solution is to reduce
 		// the amount of data that is unnecessarily fetched (ex by using .replace) to improve performance
@@ -216,11 +216,11 @@ public class Arena {
 		}
 
 		if (s.contains("%xp%")) {
-			s = s.replace("%xp%", String.valueOf(getLevels().getExperience(uuid)));
+			s = s.replace("%xp%", String.valueOf(stats.getStat("experience", username)));
 		}
 
 		if (s.contains("%level%")) {
-			s = s.replace("%level%", String.valueOf(levels.getLevel(uuid)));
+			s = s.replace("%level%", String.valueOf(stats.getStat("level", username)));
 		}
 
 		if (s.contains("%max_xp%")) {
@@ -232,15 +232,15 @@ public class Arena {
 		}
 
 		if (s.contains("%kd%")) {
-			s = s.replace("%kd%", String.valueOf(getStats().getKDRatio(uuid)));
+			s = s.replace("%kd%", String.valueOf(getStats().getKDRatio(username)));
 		}
 
 		if (s.contains("%kills%")) {
-			s = s.replace("%kills%", String.valueOf(getStats().getKills(uuid.toString())));
+			s = s.replace("%kills%", String.valueOf(stats.getStat("kills", username)));
 		}
 
 		if (s.contains("%deaths%")) {
-			s = s.replace("%deaths%", String.valueOf(getStats().getDeaths(uuid)));
+			s = s.replace("%deaths%", String.valueOf(stats.getStat("deaths", username)));
 		}
 
 		if (s.contains("%kit%")) {
@@ -282,12 +282,12 @@ public class Arena {
 	public Map<String, String> getHitCache() { return hitCache; }
 
 	public Stats getStats() { return stats; }
+
+	public Leaderboards getLeaderboards() { return leaderboards; }
 	
 	public Kits getKits() { return kits; }
 	
 	public KillStreaks getKillStreaks() { return killstreaks; }
-	
-	public Levels getLevels() { return levels; }
 	
 	public Cooldowns getCooldowns() { return cooldowns; }
 

@@ -6,11 +6,14 @@ import java.util.*;
 
 public class CacheManager {
 
+    private static Map<String, String> usernameToUUID = new HashMap<>();
     private static Map<String, Kit> kitCache = new HashMap<>();
     private static Map<String, Menu> previewMenuCache = new HashMap<>();
     private static List<String> compassUsers = new ArrayList<>();
     private static Map<String, Map<String, Long>> abilityCooldowns = new HashMap<>();
     private static Set<String> witchPotionUsers = new HashSet<>();
+
+    public static Map<String, String> getUUIDCache() { return usernameToUUID; }
 
     public static Map<String, Kit> getKitCache() { return kitCache; }
 

@@ -1,9 +1,7 @@
 package com.planetgallium.kitpvp.game;
 
 import com.planetgallium.kitpvp.Game;
-import com.planetgallium.kitpvp.util.Resource;
-import com.planetgallium.kitpvp.util.Resources;
-import com.planetgallium.kitpvp.util.Toolkit;
+import com.planetgallium.kitpvp.util.*;
 import com.zp4rker.localdb.Column;
 import com.zp4rker.localdb.DataType;
 import com.zp4rker.localdb.Database;
@@ -20,9 +18,13 @@ public class Infobase {
     private final Database database;
     private final Map<String, Table> kitCooldownTables;
 
-    // TODO: add cooldown table when kit is created
-    // TODO: eventually fork localDB and add these helper methods ig?
-    // TODO: use this to make leaderboards (use table.search for a kills column for example)
+    // TODO: implement database plan as specified via email
+    // TODO: possibly build some of these methods into Table, or Database? maybe publish separately
+    // TODO: as your own but with original credits to use in future projects or help other ppl?
+    // TODO: caching for levels in stats fetching? That way when players are talking in chat
+    // the level isn't constantly being fetche dform the database
+    // TODO: fix needing to provide username and UUID in parameters. It should only be username, and then translated
+    // to UUID in the final fetch stages that get in this class
 
     public Infobase(Game plugin) {
 
@@ -57,7 +59,7 @@ public class Infobase {
 
     public void createPlayerStats(Player p) {
 
-        if (databaseTableContainsUUID("stats", p.getUniqueId().toString())) {
+        if (databaseTableContainsPlayer("stats", p.getName())) {
             return;
         }
 
@@ -102,7 +104,12 @@ public class Infobase {
             deaths.setValue(playerSection.getInt("Deaths"));
             experience.setValue(playerSection.getInt("Experience"));
             level.setValue(playerSection.getInt("Level"));
-            statsTable.insert(uuidColumn, username, kills, deaths, experience, level);
+
+            if (statsTable.containsColumn(uuidColumn)) {
+                statsTable.update(uuidColumn, username, kills, deaths, experience, level);
+            } else {
+                statsTable.insert(uuidColumn, username, kills, deaths, experience, level);
+            }
         }
 
         statsResource.getFile().delete();
@@ -125,10 +132,12 @@ public class Infobase {
         cleanupUnusedKitCooldownTables();
     }
 
-    public boolean databaseTableContainsUUID(String tableName, String uuid) {
+    public boolean databaseTableContainsPlayer(String tableName, String username) {
 
         Table table = getTableByName(tableName);
         if (table == null) return false;
+
+        String uuid = usernameToUUID(username);
 
         Column uuidColumn = new Column("uuid", DataType.STRING, 0);
         uuidColumn.setValue(uuid);
@@ -137,21 +146,47 @@ public class Infobase {
 
     }
 
-    public String usernameToUUID(String tableName, String username) {
+    public String usernameToUUID(String username) {
 
-        Table table = getTableByName(tableName);
-        if (table == null) return null;
-
-        Column usernameColumn = new Column("username", DataType.STRING);
-        usernameColumn.setValue(username);
-
-        List<List<Column>> results = table.search(usernameColumn);
-        if (results.size() > 0 && results.get(0).size() > 0) {
-            return (String) table.search(usernameColumn).get(0).get(0).getValue();
-        }
-        return null;
+        return CacheManager.getUUIDCache().get(username);
 
     }
+
+//    public String usernameToUUID(String tableName, String username) {
+//
+//        // make cache for this in CacheManager hashmap?
+//
+//        Table table = getTableByName(tableName);
+//        if (table == null) return null;
+//
+//        Column usernameColumn = new Column("username", DataType.STRING);
+//        usernameColumn.setValue(username);
+//
+//        List<List<Column>> results = table.search(usernameColumn);
+//        if (results.size() > 0 && results.get(0).size() > 0) {
+//            return (String) table.search(usernameColumn).get(0).get(0).getValue();
+//        }
+//        return null;
+//
+//    }
+
+//    public String uuidToUsername(String tableName, String uuid) {
+//
+//        // make cache for this?
+//
+//        Table table = getTableByName(tableName);
+//        if (table == null) return null;
+//
+//        Column uuidColumn = new Column("uuid", DataType.STRING);
+//        uuidColumn.setValue(uuid);
+//
+//        List<List<Column>> results = table.search(uuidColumn);
+//        if (results.size() > 0 && results.get(0).size() > 0) {
+//            return (String) table.search(uuidColumn).get(0).get(1).getValue();
+//        }
+//        return null;
+//
+//    }
 
     public void cleanupUnusedKitCooldownTables() {
 
@@ -167,11 +202,11 @@ public class Infobase {
 
     }
 
-    public String getTopNStat(int n, String identifier) {
+    public List<PlayerEntry> getTopNStats(String identifier, int n) {
 
-        // update topN results when a player dies
+        Column usernameColumn = new Column("username", DataType.STRING);
         Column numberColumn = new Column(identifier, DataType.INTEGER);
-        return getTableByName("stats").getTopN(numberColumn, n).get(n - 1);
+        return getTableByName("stats").getTopN(numberColumn, usernameColumn, n);
 
     }
 
@@ -216,10 +251,12 @@ public class Infobase {
 
     }
 
-    public void setData(String tableName, String identifier, Object data, DataType type, String uuid) {
+    public void setData(String tableName, String identifier, Object data, DataType type, String username) {
 
         Table table = getTableByName(tableName);
         if (table == null) return;
+
+        String uuid = usernameToUUID(username);
 
         Column dataColumn = new Column(identifier.toLowerCase(), type, 0);
         dataColumn.setValue(data);
@@ -227,7 +264,7 @@ public class Infobase {
         Column uuidColumn = new Column("uuid", DataType.STRING, 0);
         uuidColumn.setValue(uuid);
 
-        if (databaseTableContainsUUID(tableName, uuid)) {
+        if (databaseTableContainsPlayer(tableName, uuid)) {
             table.update(uuidColumn, dataColumn);
         } else {
             table.insert(uuidColumn, dataColumn);
@@ -235,9 +272,11 @@ public class Infobase {
 
     }
 
-    public Object getData(String tableName, String identifier, String uuid) {
+    public Object getData(String tableName, String identifier, String username) {
 
-        if (databaseTableContainsUUID(tableName, uuid)) {
+        String uuid = usernameToUUID(username);
+
+        if (databaseTableContainsPlayer(tableName, username)) {
             return getColumnByName(tableName, identifier, uuid).getValue();
         }
         return null;

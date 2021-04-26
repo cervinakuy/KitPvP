@@ -23,11 +23,11 @@ import com.planetgallium.kitpvp.util.*;
 public class Game extends JavaPlugin implements Listener {
 	
 	private static Game instance;
-	private static String prefix;
+	private static String prefix = "None";
 
 	private Arena arena;
 	private Infobase database;
-	private Resources resources = new Resources(this);
+	private Resources resources;
 	
 	private String updateVersion = "Error";
 	private boolean needsUpdate = false;
@@ -36,9 +36,11 @@ public class Game extends JavaPlugin implements Listener {
 	
 	@Override
 	public void onEnable() {
-		
+
+		Toolkit.printToConsole("&7[&b&lKIT-PVP&7] &7Enabling &bKitPvP &7version &b" + this.getDescription().getVersion() + "&7...");
+
 		instance = this;
-		resources.load();
+		resources = new Resources(this);
 		prefix = resources.getMessages().getString("Messages.General.Prefix");
 		database = new Infobase(this);
 		arena = new Arena(this, resources);
@@ -65,34 +67,28 @@ public class Game extends JavaPlugin implements Listener {
 		
 		getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 	    getCommand("kitpvp").setExecutor(new MainCommand(this));
-	    
-		Bukkit.getConsoleSender().sendMessage(Toolkit.translate("&7[&b&lKIT-PVP&7] &7Enabling &bKitPvP &7version &b" + this.getDescription().getVersion() + "&7..."));
 		
 		new Metrics(this);
 		
 		new BukkitRunnable() {
-			
 			@Override
 			public void run() {
-				
 				checkUpdate();
-				
 			}
-			
 		}.runTaskAsynchronously(this);
 		
 		if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-			Bukkit.getConsoleSender().sendMessage(Toolkit.translate("[&b&lKIT-PVP&7] &7Discovered &bPlaceholderAPI&7, now hooking into it."));
+			Bukkit.getConsoleSender().sendMessage(Toolkit.translate("[&b&lKIT-PVP&7] &7Hooking into &bPlaceholderAPI&7..."));
 			new Placeholders(this).register();
 			hasPlaceholderAPI = true;
 		}
 
 		if (Bukkit.getPluginManager().isPluginEnabled("WorldGuard")) {
-			Bukkit.getConsoleSender().sendMessage(Toolkit.translate("[&b&lKIT-PVP&7] &7Discovered &bWorldGuard&7, now hooking into it."));
+			Bukkit.getConsoleSender().sendMessage(Toolkit.translate("[&b&lKIT-PVP&7] &7Hooking into &bWorldGuard&7..."));
 			hasWorldGuard = true;
 		}
-		
-		Bukkit.getConsoleSender().sendMessage(Toolkit.translate("&7[&b&lKIT-PVP&7] &aDone!"));
+
+		Toolkit.printToConsole("&7[&b&lKIT-PVP&7] &aDone!");
 		
 	}
 

@@ -6,7 +6,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
+import com.planetgallium.kitpvp.util.PlayerEntry;
 import com.zp4rker.localdb.db.SQLite;
 
 public class Table {
@@ -159,12 +161,30 @@ public class Table {
         return result;
     }
 
-    public List<String> getTopN(Column column, int n) {
-        // will return an ordered list of usernames
-        // (0) Shredder72  - 700
-        // (1) cervinakuy  - 600
-        // etc.
-        return null;
+    public List<PlayerEntry> getTopN(Column sortColumn, Column returnColumn, int n) {
+        // Admittedly this method is more tailored towards KitPvP leaderboards, but can be repurposed for other uses
+        String query = "SELECT %return_column_name%, %sort_column_name% FROM %table_name% ORDER BY %sort_column_name% DESC LIMIT %n%"
+                .replace("%return_column_name%", returnColumn.getName())
+                .replace("%table_name%", getName())
+                .replace("%sort_column_name%", sortColumn.getName())
+                .replace("%n%", String.valueOf(n));
+        List<PlayerEntry> topNResults = new ArrayList<>();
+
+        try {
+            PreparedStatement statement = sqLite.getSQLConnection().prepareStatement(query);
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                topNResults.add(new PlayerEntry(resultSet.getString(returnColumn.getName()),
+                                                resultSet.getInt(sortColumn.getName())));
+            }
+            sqLite.close(statement, resultSet);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return topNResults;
     }
     
     public List<List<Column>> search(Column column) {
