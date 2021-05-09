@@ -89,19 +89,37 @@ public class Stats {
     }
 
     public void addToStat(String identifier, String username, int amount) {
-        int updatedAmount = (int) database.getData("stats", identifier, username) + amount;
+        int updatedAmount = getStat(identifier, username) + amount;
         setStat(identifier, username, updatedAmount);
     }
 
     public void setStat(String identifier, String username, int data) {
-        // valid identifier: "kills", "deaths", "level", "experience"
-        if (!database.databaseTableContainsPlayer("stats", username)) return;
-        database.setData("stats", identifier, data, DataType.INTEGER, username);
-        leaderboards.updateCache(identifier, new PlayerEntry(username, data));
+        if (isPlayerRegistered(username)) {
+            PlayerData playerData = getOrCreateStatsCache(username);
+            playerData.setDataByIdentifier(identifier, data);
+
+            database.setData("stats", identifier, data, DataType.INTEGER, username);
+            leaderboards.updateCache(identifier, new PlayerEntry(username, data));
+        } else {
+            Toolkit.printToConsole(String.format("&7[&b&lKIT-PVP&7] &cFailed to set stats of player %s; not in database.", username));
+        }
     }
 
     public int getStat(String identifier, String username) {
-        return (int) database.getData("stats", identifier, username);
+        return getOrCreateStatsCache(username).getDataByIdentifier(identifier);
+    }
+
+    public PlayerData getOrCreateStatsCache(String username) {
+        if (!CacheManager.getStatsCache().containsKey(username)) {
+            int kills = (int) database.getData("stats", "kills", username);
+            int deaths = (int) database.getData("stats", "deaths", username);
+            int experience = (int) database.getData("stats", "experience", username);
+            int level = (int) database.getData("stats", "level", username);
+            PlayerData playerData = new PlayerData(kills, deaths, experience, level);
+
+            CacheManager.getStatsCache().put(username, playerData);
+        }
+        return CacheManager.getStatsCache().get(username);
     }
 
 }

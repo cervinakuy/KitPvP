@@ -19,12 +19,8 @@ public class Infobase {
     private final Map<String, Table> kitCooldownTables;
 
     // TODO: implement database plan as specified via email
-    // TODO: possibly build some of these methods into Table, or Database? maybe publish separately
-    // TODO: as your own but with original credits to use in future projects or help other ppl?
-    // TODO: caching for levels in stats fetching? That way when players are talking in chat
-    // the level isn't constantly being fetche dform the database
-    // TODO: fix needing to provide username and UUID in parameters. It should only be username, and then translated
-    // to UUID in the final fetch stages that get in this class
+    // TODO: make as generic as possible to make it applicable to other projects even ones unrelated to minecraft
+    // TODO: add caching for cooldowns
 
     public Infobase(Game plugin) {
 
@@ -52,7 +48,9 @@ public class Infobase {
         }
 
         for (String kitCooldownTableName : kitCooldownTables.keySet()) {
-            database.addTable(kitCooldownTables.get(kitCooldownTableName));
+            if (!kitCooldownTableName.startsWith(".")) { // ignore hidden files
+                database.addTable(kitCooldownTables.get(kitCooldownTableName));
+            }
         }
 
     }
@@ -148,45 +146,26 @@ public class Infobase {
 
     public String usernameToUUID(String username) {
 
-        return CacheManager.getUUIDCache().get(username);
+        if (CacheManager.getUUIDCache().containsKey(username)) {
+            return CacheManager.getUUIDCache().get(username);
+        }
+
+        Table table = getTableByName("stats");
+        if (table == null) return null;
+
+        Column usernameColumn = new Column("username", DataType.STRING);
+        usernameColumn.setValue(username);
+
+        List<List<Column>> results = table.search(usernameColumn);
+        if (results.size() > 0 && results.get(0).size() > 0) {
+            String uuid = (String) table.search(usernameColumn).get(0).get(0).getValue();
+            CacheManager.getUUIDCache().put(username, uuid);
+            return uuid;
+        }
+
+        return null;
 
     }
-
-//    public String usernameToUUID(String tableName, String username) {
-//
-//        // make cache for this in CacheManager hashmap?
-//
-//        Table table = getTableByName(tableName);
-//        if (table == null) return null;
-//
-//        Column usernameColumn = new Column("username", DataType.STRING);
-//        usernameColumn.setValue(username);
-//
-//        List<List<Column>> results = table.search(usernameColumn);
-//        if (results.size() > 0 && results.get(0).size() > 0) {
-//            return (String) table.search(usernameColumn).get(0).get(0).getValue();
-//        }
-//        return null;
-//
-//    }
-
-//    public String uuidToUsername(String tableName, String uuid) {
-//
-//        // make cache for this?
-//
-//        Table table = getTableByName(tableName);
-//        if (table == null) return null;
-//
-//        Column uuidColumn = new Column("uuid", DataType.STRING);
-//        uuidColumn.setValue(uuid);
-//
-//        List<List<Column>> results = table.search(uuidColumn);
-//        if (results.size() > 0 && results.get(0).size() > 0) {
-//            return (String) table.search(uuidColumn).get(0).get(1).getValue();
-//        }
-//        return null;
-//
-//    }
 
     public void cleanupUnusedKitCooldownTables() {
 
@@ -264,7 +243,7 @@ public class Infobase {
         Column uuidColumn = new Column("uuid", DataType.STRING, 0);
         uuidColumn.setValue(uuid);
 
-        if (databaseTableContainsPlayer(tableName, uuid)) {
+        if (databaseTableContainsPlayer(tableName, username)) {
             table.update(uuidColumn, dataColumn);
         } else {
             table.insert(uuidColumn, dataColumn);
@@ -275,10 +254,10 @@ public class Infobase {
     public Object getData(String tableName, String identifier, String username) {
 
         String uuid = usernameToUUID(username);
-
         if (databaseTableContainsPlayer(tableName, username)) {
             return getColumnByName(tableName, identifier, uuid).getValue();
         }
+
         return null;
 
     }
