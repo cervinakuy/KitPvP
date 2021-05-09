@@ -18,6 +18,7 @@ public class PlayerEntry {
     public void setData(int newData) { this.data = newData; }
 
     public String getUsername() { return username; }
+
     public int getData() { return data; }
 
 }

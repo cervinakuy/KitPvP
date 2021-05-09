@@ -6,7 +6,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 import com.planetgallium.kitpvp.util.PlayerEntry;
 import com.zp4rker.localdb.db.SQLite;
