@@ -533,7 +533,8 @@ public class ItemListener implements Listener {
 
 				} else if (e.getEntity().getType() == EntityType.EGG) {
 
-					if (arena.getKits().getKitOfPlayer(shooter.getName()).getName().equals("Trickster")) {
+					if (arena.getKits().hasKit(shooter.getName()) &&
+							arena.getKits().getKitOfPlayer(shooter.getName()).getName().equals("Trickster")) {
 						if (isAbilityItem(shooter, "Trickster", itemThrown)) {
 							e.getEntity().setCustomName("pellet");
 						}
