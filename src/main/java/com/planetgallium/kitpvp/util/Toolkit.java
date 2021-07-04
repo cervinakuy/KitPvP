@@ -90,6 +90,12 @@ public class Toolkit {
 		for (String commandString : commands) {
 
 			String[] commandPhrase = commandString.split(":", 2);
+
+			if (commandPhrase.length == 1) {
+				Toolkit.printToConsole("&7[&b&lKIT-PVP&7] &cIncorrect command format. Please see: &fhttps://bit.ly/kp-command-format");
+				return;
+			}
+
 			commandPhrase[1] = commandPhrase[1].trim();
 
 			String sender = commandPhrase[0];
@@ -102,6 +108,11 @@ public class Toolkit {
 			} else if (sender.equals("player")) {
 
 				p.performCommand(addPlaceholdersIfPossible(p, command.replace("%player%", p.getName()).replace(replaceFrom, replaceTo)));
+
+			} else {
+
+				Toolkit.printToConsole("&7[&b&lKIT-PVP&7] &cIncorrect command format. Please see: &fhttps://bit.ly/kp-command-format");
+				return;
 
 			}
 
