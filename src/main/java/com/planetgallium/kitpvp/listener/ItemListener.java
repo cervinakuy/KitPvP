@@ -86,7 +86,7 @@ public class ItemListener implements Listener {
 
 					Potion potion = new Potion(pickPotion(), 1);
 					potion.setSplash(true);
-//
+
 					ItemStack potionStack = potion.toItemStack(1);
 //					ItemMeta potionMeta = potionStack.getItemMeta();
 //
@@ -276,7 +276,11 @@ public class ItemListener implements Listener {
 
 				}
 
-			} else if (config.contains("Items.Kits") &&
+			}
+
+			/* Kit Item and custom Arena Items */
+
+			if (config.contains("Items.Kits") &&
 					item.getType() == XMaterial.matchXMaterial(config.getString("Items.Kits.Material")).get().parseMaterial()) {
 
 				if (Toolkit.hasMatchingDisplayName(item, config.getString("Items.Kits.Name"))) {
@@ -284,9 +288,7 @@ public class ItemListener implements Listener {
 					Toolkit.runCommands(p, config.getStringList("Items.Kits.Commands"), "none", "none");
 
 					if (config.getBoolean("Items.Kits.Menu")) {
-
 						arena.getMenus().getKitMenu().open(p);
-
 					}
 
 					e.setCancelled(true);
