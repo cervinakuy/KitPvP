@@ -123,25 +123,29 @@ public class Toolkit {
 	}
  	
  	public static int versionToNumber() {
- 		
- 		if (Bukkit.getVersion().contains("1.8")) {
- 			return 18;
- 		} else if (Bukkit.getVersion().contains("1.9")) {
- 			return 19;
- 		} else if (Bukkit.getVersion().contains("1.10")) {
- 			return 110;
- 		} else if (Bukkit.getVersion().contains("1.11")) {
- 			return 111;
- 		} else if (Bukkit.getVersion().contains("1.12")) {
- 			return 112;
- 		} else if (Bukkit.getVersion().contains("1.13")) {
- 			return 113;
- 		} else if (Bukkit.getVersion().contains("1.14")) {
- 			return 114;
- 		} else if (Bukkit.getVersion().contains("1.15")) {
- 			return 115;
- 		} else if (Bukkit.getVersion().contains("1.16")) {
- 			return 116;
+
+		String version = Bukkit.getVersion();
+
+		if (version.contains("1.8")) {
+			return 18;
+		} else if (version.contains("1.9")) {
+			return 19;
+		} else if (version.contains("1.10")) {
+			return 110;
+		} else if (version.contains("1.11")) {
+			return 111;
+		} else if (version.contains("1.12")) {
+			return 112;
+		} else if (version.contains("1.13")) {
+			return 113;
+		} else if (version.contains("1.14")) {
+			return 114;
+		} else if (version.contains("1.15")) {
+			return 115;
+		} else if (version.contains("1.16")) {
+			return 116;
+		} else if (version.contains("1.17")) {
+			return 117;
 		}
  		return 500;
  		
