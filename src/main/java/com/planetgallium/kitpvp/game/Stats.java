@@ -53,7 +53,7 @@ public class Stats {
     public void addExperience(Player p, int experience) {
         if (levels.getBoolean("Levels.Levels.Enabled")) {
             setStat("experience", p.getName(), experience);
-            if (getStat("experience", p.getName()) >= levels.getInt("Levels.Options.Experience-To-Level-Up")) {
+            if (getStat("experience", p.getName()) >= getRegularOrRelativeNeededExperience(p.getName())) {
                 levelUp(p);
                 Bukkit.getPluginManager().callEvent(new PlayerLevelUpEvent(p, getStat("level", p.getName())));
             }
@@ -109,7 +109,7 @@ public class Stats {
         return getOrCreateStatsCache(username).getDataByIdentifier(identifier);
     }
 
-    public PlayerData getOrCreateStatsCache(String username) {
+    private PlayerData getOrCreateStatsCache(String username) {
         if (!CacheManager.getStatsCache().containsKey(username)) {
             int kills = (int) database.getData("stats", "kills", username);
             int deaths = (int) database.getData("stats", "deaths", username);
@@ -120,6 +120,17 @@ public class Stats {
             CacheManager.getStatsCache().put(username, playerData);
         }
         return CacheManager.getStatsCache().get(username);
+    }
+
+    public int getRegularOrRelativeNeededExperience(String username) {
+
+        int level = getStat("level", username);
+
+        if (levels.contains("Levels.Levels." + level + ".Experience-To-Level-Up")) {
+            return levels.getInt("Levels.Levels." + level + ".Experience-To-Level-Up");
+        }
+        return levels.getInt("Levels.Options.Experience-To-Level-Up");
+
     }
 
 }

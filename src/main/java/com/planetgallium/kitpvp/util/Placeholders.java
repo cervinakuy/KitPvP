@@ -7,14 +7,29 @@ import com.planetgallium.kitpvp.game.Arena;
 
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Placeholders extends PlaceholderExpansion {
 
 	private final Arena arena;
 	private final Resources resources;
+	private final Map<String, String> placeholderAPItoBuiltIn;
 	
 	public Placeholders(Game plugin) {
 		this.arena = plugin.getArena();
 		this.resources = plugin.getResources();
+		this.placeholderAPItoBuiltIn = new HashMap<>();
+
+		placeholderAPItoBuiltIn.put("stats_kills", "%kills%");
+		placeholderAPItoBuiltIn.put("stats_deaths", "%deaths%");
+		placeholderAPItoBuiltIn.put("stats_kdr", "%kdr%");
+		placeholderAPItoBuiltIn.put("stats_experience", "%xp%");
+		placeholderAPItoBuiltIn.put("stats_level", "%level%");
+		placeholderAPItoBuiltIn.put("player_killstreak", "%streak%");
+		placeholderAPItoBuiltIn.put("player_kit", "%kit%");
+		placeholderAPItoBuiltIn.put("max_level", "%max_level%");
+		placeholderAPItoBuiltIn.put("max_xp", "%max_xp%");
 	}
 	
 	@Override
@@ -41,28 +56,16 @@ public class Placeholders extends PlaceholderExpansion {
 
 			return isUsernamePlaceholder ? entry.getUsername() : String.valueOf(entry.getData());
 
-		} else {
-			String username = p.getName();
-
-			switch (identifier) {
-				case "stats_kills": return String.valueOf(arena.getStats().getStat("kills", username));
-				case "stats_deaths": return String.valueOf(arena.getStats().getStat("deaths", username));
-				case "stats_kdr": return String.valueOf(arena.getStats().getKDRatio(username));
-				case "stats_level": return String.valueOf(arena.getStats().getStat("level", username));
-				case "stats_experience": return String.valueOf(arena.getStats().getStat("experience", username));
-				case "player_killstreak": return String.valueOf(arena.getKillStreaks().getStreak(username));
-				case "player_kit":
-					if (arena.getKits().hasKit(username)) {
-						return arena.getKits().getKitOfPlayer(username).getName();
-					}
-					return resources.getMessages().getString("Messages.Other.NoKit");
-				case "max_level": return String.valueOf(resources.getLevels().getInt("Levels.Options.Maximum-Level"));
-				case "max_xp": return String.valueOf(resources.getLevels().getInt("Levels.Options.Experience-To-Level-Up"));
-			}
 		}
 
-		return null;
+		return translatePlaceholderAPIPlaceholders(identifier, p.getName());
 		
+	}
+
+	public String translatePlaceholderAPIPlaceholders(String placeholderAPIIdentifier, String username) {
+
+		return arena.replaceBuiltInPlaceholdersIfPresent(placeholderAPItoBuiltIn.get(placeholderAPIIdentifier), username);
+
 	}
 	
 	@Override

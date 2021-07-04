@@ -197,11 +197,11 @@ public class Arena {
 			text = PlaceholderAPI.setPlaceholders(p, text);
 		}
 
-		return replacePlaceholderIfPresent(text, p.getName());
+		return replaceBuiltInPlaceholdersIfPresent(text, p.getName());
 
 	}
 
-	public String replacePlaceholderIfPresent(String s, String username) {
+	public String replaceBuiltInPlaceholdersIfPresent(String s, String username) {
 
 		// The reason I'm doing all these if statements rather than a more concise code solution is to reduce
 		// the amount of data that is unnecessarily fetched (ex by using .replace) to improve performance
@@ -224,7 +224,7 @@ public class Arena {
 		}
 
 		if (s.contains("%max_xp%")) {
-			s = s.replace("%max_xp%", String.valueOf(resources.getLevels().getInt("Levels.Options.Experience-To-Level-Up")));
+			s = s.replace("%max_xp%", String.valueOf(stats.getRegularOrRelativeNeededExperience(username)));
 		}
 
 		if (s.contains("%max_level%")) {

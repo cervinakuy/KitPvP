@@ -77,6 +77,7 @@ public class Resources {
 		menu.copyDefaults();
 
 		levels.addCopyDefaultExemption("Levels.Levels.10.Commands");
+		levels.addCopyDefaultExemption("Levels.Levels.10.Experience-To-Level-Up");
 		levels.copyDefaults();
 
 		scoreboard.addCopyDefaultExemption("Scoreboard.Lines");

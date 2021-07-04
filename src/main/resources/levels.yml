@@ -36,6 +36,7 @@ Levels:
       Commands:
         - 'console: say Congratulations to %player% for reaching Level %level%!'
         - 'console: Commands on level can be edited via the levels.yml'
+      Experience-To-Level-Up: 98
     11:
       Prefix: '&7Level %level%'
     12:
