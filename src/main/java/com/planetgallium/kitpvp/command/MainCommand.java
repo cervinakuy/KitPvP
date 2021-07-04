@@ -491,6 +491,8 @@ public class MainCommand implements CommandExecutor {
         p.getInventory().setArmorContents(null);
         p.getInventory().clear();
 
+        Toolkit.setMaxHealth(p, 20);
+
         for (PotionEffect effect : p.getActivePotionEffects()) {
             p.removePotionEffect(effect.getType());
         }

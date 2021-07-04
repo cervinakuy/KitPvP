@@ -21,6 +21,7 @@ public class Kit {
     private String permission;
     private Cooldown cooldown;
     private int level;
+    private int health;
 
     private Map<Integer, ItemStack> inventory;
     private List<PotionEffect> effects;
@@ -44,76 +45,56 @@ public class Kit {
     }
 
     public void setPermission(String permission) {
-
         this.permission = permission;
-
     }
 
     public void setCooldown(Cooldown cooldown) {
-
         this.cooldown = cooldown;
-
     }
 
     public void setLevel(int level) {
-
         this.level = level;
+    }
 
+    public void setHealth(int health) {
+        this.health = health;
     }
 
     public void setInventoryItem(int slot, ItemStack item) {
-
         inventory.put(slot, item);
-
     }
 
     public void addEffect(PotionEffectType type, int amplifierNonZeroBased, int durationSeconds) {
-
         PotionEffect effect = new PotionEffect(type, durationSeconds * 20, amplifierNonZeroBased - 1);
         effects.add(effect);
-
     }
 
     public void addAbility(Ability ability) {
-
         abilities.add(ability);
-
     }
 
     public void setHelmet(ItemStack helmet) {
-
         this.helmet = helmet;
-
     }
 
     public void setChestplate(ItemStack chestplate) {
-
         this.chestplate = chestplate;
-
     }
 
     public void setLeggings(ItemStack leggings) {
-
         this.leggings = leggings;
-
     }
 
     public void setBoots(ItemStack boots) {
-
         this.boots = boots;
-
     }
 
     public void setOffhand(ItemStack offhand) {
-
         this.offhand = offhand;
-
     }
 
     public void setFill(ItemStack fill) {
-
         this.fill = fill;
-
     }
 
     public Ability getAbilityFromActivator(ItemStack activator) {
@@ -145,6 +126,8 @@ public class Kit {
         if (leggings != null) player.getInventory().setLeggings(leggings);
         if (boots != null) player.getInventory().setBoots(boots);
 
+        Toolkit.setMaxHealth(player, health);
+
         for (int i = 0; i < 36; i++) {
             if (inventory.get(i) != null) {
                 player.getInventory().setItem(i, inventory.get(i));
@@ -168,6 +151,7 @@ public class Kit {
         resource.set("Kit.Permission", permission != null ? permission : "kp.kit." + name);
         resource.set("Kit.Cooldown", cooldown != null ? cooldown.formatted(true) : 0);
         resource.set("Kit.Level", level);
+        resource.set("Kit.Health", health);
         resource.save();
 
         AttributeWriter.itemStackToResource(resource, "Inventory.Armor.Helmet", helmet);
@@ -199,6 +183,8 @@ public class Kit {
     public Cooldown getCooldown() { return cooldown; }
 
     public int getLevel() { return level; }
+
+    public int getHealth() { return health; }
 
     public Map<Integer, ItemStack> getInventory() { return inventory; }
 

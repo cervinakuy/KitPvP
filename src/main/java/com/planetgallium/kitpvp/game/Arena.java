@@ -71,6 +71,7 @@ public class Arena {
 		p.setGameMode(GameMode.SURVIVAL);
 		
 		if (config.getBoolean("Arena.FancyDeath")) {
+			Toolkit.setMaxHealth(p, 20);
 			p.setHealth(20.0);
 		}
 		

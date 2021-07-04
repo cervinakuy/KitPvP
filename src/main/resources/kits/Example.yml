@@ -2,6 +2,7 @@ Kit:
   Permission: kp.kit.example
   Level: 0
   Cooldown: 1D:12H:10M:30S
+  Health: 6
 Inventory:
   Armor:
     Helmet:

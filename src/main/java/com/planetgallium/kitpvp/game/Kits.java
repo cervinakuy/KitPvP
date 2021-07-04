@@ -94,6 +94,8 @@ public class Kits {
         kit.setLeggings(p.getInventory().getLeggings());
         kit.setBoots(p.getInventory().getBoots());
 
+        kit.setHealth(Toolkit.getMaxHealth(p));
+
         for (PotionEffect effect : p.getActivePotionEffects()) {
             PotionEffectType type = effect.getType();
             int amplifier = effect.getAmplifier();
@@ -155,6 +157,8 @@ public class Kits {
         kit.setPermission(resource.getString("Kit.Permission"));
         kit.setLevel(resource.getInt("Kit.Level"));
         kit.setCooldown(new Cooldown(resource.getString("Kit.Cooldown")));
+
+        kit.setHealth(resource.getInt("Kit.Health"));
 
         kit.setHelmet(AttributeParser.getItemStackFromPath(resource, "Inventory.Armor.Helmet"));
         kit.setChestplate(AttributeParser.getItemStackFromPath(resource, "Inventory.Armor.Chestplate"));

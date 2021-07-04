@@ -5,6 +5,8 @@ import java.util.List;
 
 import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.*;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -368,6 +370,31 @@ public class Toolkit {
 
 	public static String capitalizeFirstChar(String word) {
 		return word.substring(0, 1).toUpperCase() + word.substring(1);
+	}
+
+	public static void setMaxHealth(Player p, int amount) {
+
+		if (Toolkit.versionToNumber() >= 19) {
+			AttributeInstance healthAttribute = p.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+			assert healthAttribute != null;
+			healthAttribute.setBaseValue(amount);
+			return;
+		}
+
+		p.setMaxHealth(amount);
+
+	}
+
+	public static int getMaxHealth(Player p) {
+
+		if (Toolkit.versionToNumber() >= 19) {
+			AttributeInstance healthAttribute = p.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+			assert healthAttribute != null;
+			return (int) healthAttribute.getValue();
+		}
+
+		return (int) p.getMaxHealth();
+
 	}
 
 }
