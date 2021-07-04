@@ -158,7 +158,7 @@ public class Kits {
         kit.setLevel(resource.getInt("Kit.Level"));
         kit.setCooldown(new Cooldown(resource.getString("Kit.Cooldown")));
 
-        kit.setHealth(resource.getInt("Kit.Health"));
+        kit.setHealth(resource.contains("Kit.Health") ? resource.getInt("Kit.Health") : 20);
 
         kit.setHelmet(AttributeParser.getItemStackFromPath(resource, "Inventory.Armor.Helmet"));
         kit.setChestplate(AttributeParser.getItemStackFromPath(resource, "Inventory.Armor.Chestplate"));
