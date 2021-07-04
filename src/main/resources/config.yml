@@ -84,6 +84,8 @@ Soups:
 TNT:
   Name: '&aThrowable TNT &7(Right Click)'
   Enabled: true
+KitMenuBackArrowCommands:
+- 'player: kp menu'
 Commands:
   Alias:
     Spawn: false
