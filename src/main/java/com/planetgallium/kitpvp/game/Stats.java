@@ -52,6 +52,7 @@ public class Stats {
 
     public void addExperience(Player p, int experience) {
         if (levels.getBoolean("Levels.Levels.Enabled")) {
+            experience *= getStat("xpMultiplier", p.getName());
             setStat("experience", p.getName(), experience);
             if (getStat("experience", p.getName()) >= getRegularOrRelativeNeededExperience(p.getName())) {
                 levelUp(p);
@@ -115,7 +116,8 @@ public class Stats {
             int deaths = (int) database.getData("stats", "deaths", username);
             int experience = (int) database.getData("stats", "experience", username);
             int level = (int) database.getData("stats", "level", username);
-            PlayerData playerData = new PlayerData(kills, deaths, experience, level);
+            int xpMultiplier = (int) database.getData("stats", "xpMultiplier", username);
+            PlayerData playerData = new PlayerData(kills, deaths, experience, level, xpMultiplier);
 
             CacheManager.getStatsCache().put(username, playerData);
         }

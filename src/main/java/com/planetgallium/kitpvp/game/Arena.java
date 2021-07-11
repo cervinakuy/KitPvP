@@ -1,9 +1,11 @@
 package com.planetgallium.kitpvp.game;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
-import com.cryptomorin.xseries.XMaterial;
-import com.planetgallium.kitpvp.util.*;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.configuration.ConfigurationSection;
@@ -13,7 +15,14 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.scoreboard.Scoreboard;
 
+import com.cryptomorin.xseries.XMaterial;
 import com.planetgallium.kitpvp.Game;
+import com.planetgallium.kitpvp.util.CacheManager;
+import com.planetgallium.kitpvp.util.Resource;
+import com.planetgallium.kitpvp.util.Resources;
+import com.planetgallium.kitpvp.util.Toolkit;
+import com.planetgallium.kitpvp.util.WorldGuardAPI;
+import com.planetgallium.kitpvp.util.WorldGuardFlag;
 
 import me.clip.placeholderapi.PlaceholderAPI;
 
@@ -242,6 +251,10 @@ public class Arena {
 
 		if (s.contains("%deaths%")) {
 			s = s.replace("%deaths%", String.valueOf(stats.getStat("deaths", username)));
+		}
+
+		if (s.contains("%xpMultiplier%")) {
+			s = s.replace("%xpMultiplier%", String.valueOf(stats.getStat("xpMultiplier", username)));
 		}
 
 		if (s.contains("%kit%")) {

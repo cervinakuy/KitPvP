@@ -26,6 +26,7 @@ public class Placeholders extends PlaceholderExpansion {
 		placeholderAPItoBuiltIn.put("stats_kdr", "%kdr%");
 		placeholderAPItoBuiltIn.put("stats_experience", "%xp%");
 		placeholderAPItoBuiltIn.put("stats_level", "%level%");
+		placeholderAPItoBuiltIn.put("stats_xpMultiplier", "%xpMultiplier%");
 		placeholderAPItoBuiltIn.put("player_killstreak", "%streak%");
 		placeholderAPItoBuiltIn.put("player_kit", "%kit%");
 		placeholderAPItoBuiltIn.put("max_level", "%max_level%");
