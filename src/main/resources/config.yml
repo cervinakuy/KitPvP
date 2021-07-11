@@ -18,9 +18,6 @@ Items:
     BungeeCord:
       Server: Hub
       Enabled: false
-    Multiworld:
-      World: Hub
-      Enabled: true
     Commands: []
 Chat:
   Format: '%level% &e%player% &f%message%'
