@@ -93,7 +93,7 @@ public class MenuListener implements Listener {
 
                         @Override
                         public void run() {
-                            Toolkit.runCommands(p, config.getStringList("KitMenuBackArrowCommands"), "none", "none");
+                            Toolkit.runCommands(p, config.getStringList("PreviewMenuBackArrowCommands"), "none", "none");
                         }
 
                     }.runTaskLater(Game.getInstance(), 1L);
