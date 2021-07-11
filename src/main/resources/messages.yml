@@ -54,5 +54,6 @@ Messages:
     - ' &aExperience: &7%xp%/%max_xp%'
     - ' &aKills: &7%kills%'
     - ' &aDeaths: &7%deaths%'
+    - ' &aXP Multiplier: &7%xpMultiplier%'
     - ' '
     - '&7&m                                &r'

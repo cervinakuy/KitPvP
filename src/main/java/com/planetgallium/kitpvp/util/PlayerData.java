@@ -2,13 +2,14 @@ package com.planetgallium.kitpvp.util;
 
 public class PlayerData {
 
-    private int kills, deaths, experience, level;
+    private int kills, deaths, experience, level, xpMultiplier;
 
-    public PlayerData(int kills, int deaths, int experience, int level) {
+    public PlayerData(int kills, int deaths, int experience, int level, int xpMultiplier) {
         this.kills = kills;
         this.deaths = deaths;
         this.experience = experience;
         this.level = level;
+        this.xpMultiplier = xpMultiplier;
     }
 
     public int getDataByIdentifier(String identifier) {
@@ -17,6 +18,7 @@ public class PlayerData {
             case "deaths": return getDeaths();
             case "experience": return getExperience();
             case "level": return getLevel();
+            case "xpMultiplier": return getXpMultiplier();
         }
         return -1;
     }
@@ -27,6 +29,7 @@ public class PlayerData {
             case "deaths": setDeaths(data); break;
             case "experience": setExperience(data); break;
             case "level": setLevel(data); break;
+            case "xpMultiplier": setLevel(data); break;
         }
     }
 
@@ -38,6 +41,8 @@ public class PlayerData {
 
     private void setLevel(int amount) { this.level = amount; }
 
+    public void setXpMultiplier(int xpMultiplier) { this.xpMultiplier = xpMultiplier; }
+
     private int getKills() { return kills; }
 
     private int getDeaths() { return deaths; }
@@ -45,5 +50,9 @@ public class PlayerData {
     private int getExperience() { return experience; }
 
     private int getLevel() { return level; }
+
+    public int getXpMultiplier() { return xpMultiplier; }
+    
+    
 
 }

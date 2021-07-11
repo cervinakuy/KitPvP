@@ -37,7 +37,8 @@ public class Infobase {
         Column deaths = new Column("deaths", DataType.INTEGER, 0);
         Column experience = new Column("experience", DataType.INTEGER, 0);
         Column level = new Column("level", DataType.INTEGER, 0);
-        Table statsTable = new Table("stats", uuid, username, kills, deaths, experience, level);
+        Column xpMultiplier = new Column("xpMultiplier", DataType.INTEGER, 0);
+        Table statsTable = new Table("stats", uuid, username, kills, deaths, experience, level, xpMultiplier);
 
         // Cooldowns
         Column last_used = new Column("last_used", DataType.INTEGER, 0);
@@ -68,6 +69,7 @@ public class Infobase {
         Column deaths = new Column("deaths", DataType.INTEGER, 0);
         Column experience = new Column("experience", DataType.INTEGER, 0);
         Column level = new Column("level", DataType.INTEGER, 0);
+        Column xpMultiplier = new Column("xpMultiplier", DataType.INTEGER, 1);
 
         uuid.setValue(p.getUniqueId().toString());
         username.setValue(p.getName());
@@ -76,7 +78,7 @@ public class Infobase {
         experience.setValue(0);
         level.setValue(resources.getLevels().getInt("Levels.Options.Minimum-Level"));
 
-        getTableByName("stats").insert(uuid, username, kills, deaths, experience, level);
+        getTableByName("stats").insert(uuid, username, kills, deaths, experience, level, xpMultiplier);
 
     }
 
@@ -93,6 +95,7 @@ public class Infobase {
         Column deaths = new Column("deaths", DataType.INTEGER);
         Column experience = new Column("experience", DataType.INTEGER);
         Column level = new Column("level", DataType.INTEGER);
+        Column xpMultiplier = new Column("xpMultiplier", DataType.INTEGER);
         Table statsTable = getTableByName("stats");
 
         for (String uuid : statsSection.getKeys(false)) {
@@ -103,11 +106,12 @@ public class Infobase {
             deaths.setValue(playerSection.getInt("Deaths"));
             experience.setValue(playerSection.getInt("Experience"));
             level.setValue(playerSection.getInt("Level"));
+            xpMultiplier.setValue(playerSection.getInt("XPMultiplier"));
 
             if (statsTable.containsColumn(uuidColumn)) {
-                statsTable.update(uuidColumn, username, kills, deaths, experience, level);
+                statsTable.update(uuidColumn, username, kills, deaths, experience, level, xpMultiplier);
             } else {
-                statsTable.insert(uuidColumn, username, kills, deaths, experience, level);
+                statsTable.insert(uuidColumn, username, kills, deaths, experience, level, xpMultiplier);
             }
         }
 
