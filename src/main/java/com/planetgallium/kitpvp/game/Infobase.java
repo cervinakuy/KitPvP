@@ -9,6 +9,7 @@ import com.zp4rker.localdb.Table;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
+import java.io.File;
 import java.util.*;
 
 public class Infobase {
@@ -110,7 +111,10 @@ public class Infobase {
             }
         }
 
-        statsResource.getFile().delete();
+        File renamedStatsFile = new File("old_stats.yml");
+        if (!statsResource.getFile().renameTo(renamedStatsFile)) {
+            Toolkit.printToConsole("&7[&b&lKIT-PVP&7] &cThere was a problem renaming stats.yml to old_stats.yml.");
+        }
 
     }
 
