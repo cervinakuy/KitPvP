@@ -239,7 +239,7 @@ public class MainCommand implements CommandExecutor {
 
 		if (statsIdentifier.equalsIgnoreCase("kills") || statsIdentifier.equalsIgnoreCase("deaths")
 			|| statsIdentifier.equalsIgnoreCase("level")
-			|| statsIdentifier.equalsIgnoreCase("experience") || statsIdentifier.equalsIgnoreCase("xpModifier")) {
+			|| statsIdentifier.equalsIgnoreCase("experience") || statsIdentifier.equalsIgnoreCase("xpMultiplier")) {
 
 		    if (StringUtils.isNumeric(possibleAmount)) {
 
@@ -249,6 +249,50 @@ public class MainCommand implements CommandExecutor {
 
 			    int amount = Integer.parseInt(possibleAmount);
 			    arena.getStats().setStat(statsIdentifier, playerName, amount);
+			    sender.sendMessage(resources.getMessages().getString("Messages.Commands.SetStats")
+				    .replace("%player%", playerName).replace("%amount%", String.valueOf(amount))
+				    .replace("%type%", statsIdentifier));
+			    return true;
+
+			} else {
+			    sender.sendMessage(resources.getMessages().getString("Messages.Error.Offline"));
+			}
+
+		    } else {
+
+			sender.sendMessage(resources.getMessages().getString("Messages.Error.InvalidNumber")
+				.replace("%number%", possibleAmount));
+
+		    }
+
+		} else {
+
+		    sender.sendMessage(resources.getMessages().getString("Messages.Error.InvalidType")
+			    .replace("%type%", statsIdentifier)
+			    .replace("%types%", "kills, deaths, level, experience, xpMultiplier"));
+
+		}
+
+		return true;
+
+	    } else if (args[0].equalsIgnoreCase("addstats") && hasPermission(sender, "kp.command.addstats")) {
+
+		String playerName = args[1];
+		String statsIdentifier = args[2];
+		String possibleAmount = args[3];
+
+		if (statsIdentifier.equalsIgnoreCase("kills") || statsIdentifier.equalsIgnoreCase("deaths")
+			|| statsIdentifier.equalsIgnoreCase("level")
+			|| statsIdentifier.equalsIgnoreCase("experience") || statsIdentifier.equalsIgnoreCase("xpMultiplier")) {
+
+		    if (StringUtils.isNumeric(possibleAmount)) {
+
+			String playerUUID = plugin.getDatabase().usernameToUUID(playerName);
+
+			if (playerUUID != null) {
+
+			    int amount = Integer.parseInt(possibleAmount);
+			    arena.getStats().addToStat(statsIdentifier, playerName, amount);
 			    sender.sendMessage(resources.getMessages().getString("Messages.Commands.SetStats")
 				    .replace("%player%", playerName).replace("%amount%", String.valueOf(amount))
 				    .replace("%type%", statsIdentifier));
