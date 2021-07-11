@@ -22,6 +22,8 @@ public class Leaderboards {
         registerCache("kills", 25);
         registerCache("deaths", 25);
         registerCache("level", 25);
+
+        // TODO: implement PriorityQueue to manage cached Leaderboards... currently you're basically recreating it lol...
     }
 
     private void registerCache(String key, int size) {

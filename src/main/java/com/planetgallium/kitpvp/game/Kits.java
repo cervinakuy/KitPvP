@@ -23,12 +23,12 @@ import java.util.*;
 
 public class Kits {
 
-    private Game plugin;
-    private Arena arena;
-    private Resources resources;
-    private Resource messages;
+    private final Game plugin;
+    private final Arena arena;
+    private final Resources resources;
+    private final Resource messages;
 
-    private Map<String, String> kits;
+    private final Map<String, String> kits;
 
     public Kits(Game plugin, Arena arena) {
         this.arena = arena;

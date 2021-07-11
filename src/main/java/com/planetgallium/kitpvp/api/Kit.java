@@ -17,15 +17,15 @@ import java.util.Map;
 
 public class Kit {
 
-    private String name;
+    private final String name;
     private String permission;
     private Cooldown cooldown;
     private int level;
     private int health;
 
-    private Map<Integer, ItemStack> inventory;
-    private List<PotionEffect> effects;
-    private List<Ability> abilities;
+    private final Map<Integer, ItemStack> inventory;
+    private final List<PotionEffect> effects;
+    private final List<Ability> abilities;
 
     private ItemStack helmet;
     private ItemStack chestplate;
