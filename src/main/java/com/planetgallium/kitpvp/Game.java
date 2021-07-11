@@ -137,15 +137,6 @@ public class Game extends JavaPlugin implements Listener {
 						out.writeUTF(server);
 						p.sendPluginMessage(this, "BungeeCord", out.toByteArray());
 
-					} else if (resources.getConfig().getBoolean("Items.Leave.Multiworld.Enabled")) {
-
-						String worldName = resources.getConfig().getString("Items.Leave.Multiworld.World");
-						World world = Bukkit.getWorld(worldName);
-						if (world != null) {
-							p.teleport(world.getSpawnLocation());
-						} else {
-							p.sendMessage(Toolkit.translate("&7[&b&lKIT-PVP&7] &cWorld %world% not found. Configure properly in the config.yml.").replace("%world%", worldName));
-						}
 					}
 
 					e.setCancelled(true);
