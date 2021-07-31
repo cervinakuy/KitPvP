@@ -35,10 +35,10 @@ import com.planetgallium.kitpvp.util.Toolkit;
 
 public class ItemListener implements Listener {
 	
-	private Arena arena;
-	private Resources resources;
-	private Resource config;
-	private Resource abilities;
+	private final Arena arena;
+	private final Resources resources;
+	private final Resource config;
+	private final Resource abilities;
 	
 	public ItemListener(Game plugin) {
 		this.arena = plugin.getArena();
