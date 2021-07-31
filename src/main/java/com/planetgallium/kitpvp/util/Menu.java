@@ -13,12 +13,10 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 public class Menu {
 
-	private String title;
-	
-	private int size;
-	
-	private Inventory menu;
-	private InventoryHolder owner;
+	private final String title;
+	private final int size;
+	private final Inventory menu;
+	private final InventoryHolder owner;
 	
 	public Menu(String title, InventoryHolder owner, int size) {
 		

@@ -5,7 +5,7 @@ import com.planetgallium.kitpvp.Game;
 import com.planetgallium.kitpvp.api.Kit;
 import com.planetgallium.kitpvp.game.Arena;
 import com.planetgallium.kitpvp.util.*;
-import me.clip.placeholderapi.PlaceholderAPI;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -17,18 +17,19 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainCommand implements CommandExecutor {
 
-    private List<String> spawnUsers = new ArrayList<String>();
+    private final List<String> spawnUsers = new ArrayList<>();
 
-    private Game plugin;
-    private Arena arena;
-    private Resources resources;
-    private Resource config;
-    private Resource messages;
+    private final Game plugin;
+    private final Arena arena;
+    private final Resources resources;
+    private final Resource config;
+    private final Resource messages;
 
     public MainCommand(Game game) {
         this.plugin = game;
@@ -58,25 +59,25 @@ public class MainCommand implements CommandExecutor {
                 sender.sendMessage(Toolkit.translate(" "));
                 sender.sendMessage(Toolkit.translate("&7- &b/kp &7Displays information about KitPvP."));
                 sender.sendMessage(Toolkit.translate("&7- &b/kp help &7Displays the help message."));
-                sender.sendMessage(Toolkit.translate("&7- &b/kp reload &7Reloads the configuration."));
+                sender.sendMessage(Toolkit.translate("&7- &b/kp reload &7Reloads the configuration files."));
                 sender.sendMessage(Toolkit.translate("&7- &b/kp debug &7Prints debug information."));
                 sender.sendMessage(Toolkit.translate("&7- &b/kp addspawn &7Adds a spawn to an arena."));
+                sender.sendMessage(Toolkit.translate("&7- &b/kp arena <arena> &7Teleports you to a different arena."));
                 sender.sendMessage(Toolkit.translate("&7- &b/kp delarena &7Removes an arena."));
-                sender.sendMessage(Toolkit.translate("&7- &b/kp spawn &7Teleports you to the Spawn in your current arena."));
-                sender.sendMessage(Toolkit.translate("&7- &b/kp arena [arena] &7Teleport to a different KitPvP arena."));
-                sender.sendMessage(Toolkit.translate("&7- &b/kp create [kitname] &7Creates a kit from your inventory."));
-                sender.sendMessage(Toolkit.translate("&7- &b/kp delete [kitname] &7Deletes an existing kit."));
-                sender.sendMessage(Toolkit.translate("&7- &b/kp preview [kitname] &7Preview the contents of a kit."));
-                sender.sendMessage(Toolkit.translate("&7- &b/kp kit [kitname] &7Select a kit."));
-                sender.sendMessage(Toolkit.translate("&7- &b/kp kit [kitname] [player] &7Attempts to select a kit for a player."));
+                sender.sendMessage(Toolkit.translate("&7- &b/kp spawn &7Teleports you to the local arena spawn."));
+                sender.sendMessage(Toolkit.translate("&7- &b/kp create <kitName> &7Creates a kit from your inventory."));
+                sender.sendMessage(Toolkit.translate("&7- &b/kp delete <kitName> &7Deletes an existing kit."));
+                sender.sendMessage(Toolkit.translate("&7- &b/kp preview <kitName> &7Preview the contents of a kit."));
                 sender.sendMessage(Toolkit.translate("&7- &b/kp kits &7Lists all available kits."));
+                sender.sendMessage(Toolkit.translate("&7- &b/kp kit <kitName> &7Select a kit."));
+                sender.sendMessage(Toolkit.translate("&7- &b/kp kit <kitName> <player> &7Attempts to select a kit for a player."));
                 sender.sendMessage(Toolkit.translate("&7- &b/kp clear &7Clears your current kit."));
-                sender.sendMessage(Toolkit.translate("&7- &b/kp clear [player] &7Clears a kit for a player."));
+                sender.sendMessage(Toolkit.translate("&7- &b/kp clear <player> &7Clears a kit for a player."));
                 sender.sendMessage(Toolkit.translate("&7- &b/kp stats &7View your stats."));
-                sender.sendMessage(Toolkit.translate("&7- &b/kp stats [player] &7View the stats of another player."));
+                sender.sendMessage(Toolkit.translate("&7- &b/kp stats <player> &7View the stats of another player."));
                 sender.sendMessage(Toolkit.translate("&7- &b/kp menu &7Displays the kits menu."));
-                sender.sendMessage(Toolkit.translate("&7- &b/kp import &7Imports all stats from the MySQL database."));
-                sender.sendMessage(Toolkit.translate("&7- &b/kp export &7Exports all stats to the MySQL database."));
+                sender.sendMessage(Toolkit.translate("&7- &b/kp setstats <player> <type> <amount> &7Change stats of a player."));
+                sender.sendMessage(Toolkit.translate("&7- &b/kp export &7Exports all stats to the new storage format."));
                 sender.sendMessage(Toolkit.translate(" "));
                 sender.sendMessage(Toolkit.translate("&3&m                                                                               "));
                 return true;
@@ -99,39 +100,26 @@ public class MainCommand implements CommandExecutor {
                 }
 
                 sender.sendMessage(Toolkit.translate("&7[&b&lKIT-PVP&7] &aServer Version: &7" + Bukkit.getBukkitVersion()) + " " + (Bukkit.getVersion().contains("Spigot") ? "(Spigot)" : "(Other)"));
-                sender.sendMessage(Toolkit.translate("&7[&b&lKIT-PVP&7] &aPlugin Version: " + plugin.getDescription().getVersion()) + " " + (plugin.needsUpdate() ? "&c(Requires Update)" : "&a(Latest Version)"));
+                sender.sendMessage(Toolkit.translate("&7[&b&lKIT-PVP&7] &aPlugin Version: " + plugin.getDescription().getVersion() + " " + (plugin.needsUpdate() ? "&c(Requires Update)" : "&a(Latest Version)")));
                 sender.sendMessage(Toolkit.translate("&7[&b&lKIT-PVP&7] &aSpawn Set: " + (config.contains("Arenas") ? "&aConfigured" : "&cUnconfigured")));
-                sender.sendMessage(Toolkit.translate("&7[&b&lKIT-PVP&7] &aSupport Discord: &7https://discord.gg/GtXQKZ6"));
+                sender.sendMessage(Toolkit.translate("&7[&b&lKIT-PVP&7] &aSupport Discord: &7https://discord.gg/Hfej6UR8Bk"));
                 sender.sendMessage(Toolkit.translate("&7[&b&lKIT-PVP&7] &aPlugin List: &7" + names));
-
-            } else if (args[0].equalsIgnoreCase("import") && hasPermission(sender, "kp.command.import")) {
-
-                if (plugin.getDatabase().isEnabled()) {
-
-                    sender.sendMessage(Toolkit.translate("%prefix% &7Importing data, please wait..."));
-                    plugin.getDatabase().importData(resources);
-                    sender.sendMessage(Toolkit.translate("%prefix% &aDatabase data has successfully been exported to the stats.yml."));
-
-                } else {
-
-                    sender.sendMessage(Toolkit.translate("%prefix% &cImporting is unnecessary, you can switch your storage type and import."));
-
-                }
-
-                return true;
 
             } else if (args[0].equalsIgnoreCase("export") && hasPermission(sender, "kp.command.export")) {
 
-                if (plugin.getDatabase().isEnabled()) {
+                File statsFile = new File(plugin.getDataFolder().getAbsolutePath() + "/stats.yml");
 
-                    sender.sendMessage(Toolkit.translate("%prefix% &7Exporting data, please wait..."));
-                    plugin.getDatabase().exportData(resources);
+                if (statsFile.exists()) {
+                    sender.sendMessage(Toolkit.translate("%prefix% &7Exporting data, this may take a while..."));
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            plugin.getDatabase().exportStats();
+                        }
+                    }.runTaskAsynchronously(plugin);
                     sender.sendMessage(Toolkit.translate("%prefix% &aStats successfully exported to database."));
-
                 } else {
-
-                    sender.sendMessage(Toolkit.translate("%prefix% &cYou are using YAML storage, so exporting is not possible. Change your settings in the config.yml"));
-
+                    sender.sendMessage(Toolkit.translate("%prefix% &cNo stats.yml was found to export from."));
                 }
 
                 return true;
@@ -140,7 +128,7 @@ public class MainCommand implements CommandExecutor {
 
                 String message = "";
 
-                for (String kitName : arena.getKits().getKitList()) {
+                for (String kitName : resources.getKitList(false)) {
                     String[] fileName = kitName.split(".yml", 2);
                     message += fileName[0] + ", ";
                 }
@@ -181,15 +169,11 @@ public class MainCommand implements CommandExecutor {
                 String kitName = args[1];
 
                 if (arena.getKits().isKit(kitName)) {
-
-                    resources.removeResource(kitName + ".yml");
+                    arena.getKits().deleteKit(kitName);
                     sender.sendMessage(messages.getString("Messages.Commands.Delete")
                             .replace("%kit%", kitName));
-
                 } else {
-
                     sender.sendMessage(messages.getString("Messages.Error.Lost"));
-
                 }
 
                 return true;
@@ -197,20 +181,11 @@ public class MainCommand implements CommandExecutor {
             } else if (args[0].equalsIgnoreCase("stats") && hasPermission(sender, "kp.command.stats.other")) {
 
                 String targetName = args[1];
-                Player target = Toolkit.getPlayerCaseInsensitive(targetName);
 
-                if (target != null) {
-
-                    for (String line : messages.getStringList("Messages.Stats.Message")) {
-
-                        sender.sendMessage(addPlaceholdersIfPossible(target, Toolkit.translate(line)));
-
-                    }
-
+                if (plugin.getDatabase().databaseTableContainsPlayer("stats", targetName)) {
+                    sendStatsMessage(sender, targetName);
                 } else {
-
                     sender.sendMessage(messages.getString("Messages.Error.Offline"));
-
                 }
 
             }
@@ -241,6 +216,56 @@ public class MainCommand implements CommandExecutor {
 
             }
 
+        } else if (args.length == 4) {
+
+            if (args[0].equalsIgnoreCase("setstats") && hasPermission(sender, "kp.command.setstats")) {
+
+                String playerName = args[1];
+                String statsIdentifier = args[2];
+                String possibleAmount = args[3];
+
+                if (statsIdentifier.equalsIgnoreCase("kills") ||
+                        statsIdentifier.equalsIgnoreCase("deaths") ||
+                        statsIdentifier.equalsIgnoreCase("level") ||
+                        statsIdentifier.equalsIgnoreCase("experience")) {
+
+                    if (StringUtils.isNumeric(possibleAmount)) {
+
+                        String playerUUID = plugin.getDatabase().usernameToUUID(playerName);
+
+                        if (playerUUID != null) {
+
+                            int amount = Integer.parseInt(possibleAmount);
+                            arena.getStats().setStat(statsIdentifier, playerName, amount);
+                            sender.sendMessage(resources.getMessages().getString("Messages.Commands.SetStats")
+                                                       .replace("%player%", playerName)
+                                                       .replace("%amount%", String.valueOf(amount))
+                                                       .replace("%type%", statsIdentifier));
+                            return true;
+
+                        } else {
+                            sender.sendMessage(resources.getMessages().getString("Messages.Error.Offline"));
+                        }
+
+                    } else {
+
+                        sender.sendMessage(resources.getMessages().getString("Messages.Error.InvalidNumber")
+                                                   .replace("%number%", possibleAmount));
+
+                    }
+
+                } else {
+
+                    sender.sendMessage(resources.getMessages().getString("Messages.Error.InvalidType")
+                                               .replace("%type%", statsIdentifier)
+                                               .replace("%types%", "kills, deaths, level, experience"));
+
+                }
+
+                return true;
+
+            }
+
         }
 
         if (sender instanceof Player) {
@@ -251,11 +276,7 @@ public class MainCommand implements CommandExecutor {
 
                 if (args[0].equalsIgnoreCase("stats") && hasPermission(sender, "kp.command.stats")) {
 
-                    for (String line : messages.getStringList("Messages.Stats.Message")) {
-
-                        p.sendMessage(addPlaceholdersIfPossible(p, Toolkit.translate(line)));
-
-                    }
+                    sendStatsMessage(p, p.getName());
 
                 } else if (args[0].equalsIgnoreCase("menu") && hasPermission(sender, "kp.command.menu")) {
 
@@ -383,15 +404,15 @@ public class MainCommand implements CommandExecutor {
 
                     String arenaName = args[1];
 
-                    if (!arena.getKits().hasKit(p.getName())) {
-
-                        arena.toSpawn(p, arenaName);
-
-                    } else {
-
-                        p.sendMessage(messages.getString("Messages.Error.KitInvalid"));
-
+                    if (resources.getConfig().getBoolean("Arena.PreventArenaSignUseWithKit")) {
+                        if (arena.getKits().hasKit(p.getName())) {
+                            p.sendMessage(messages.getString("Messages.Error.KitInvalid"));
+                            return true;
+                        }
                     }
+
+                    arena.toSpawn(p, arenaName);
+                    return true;
 
                 } else if (args[0].equalsIgnoreCase("preview") && hasPermission(sender, "kp.command.preview")) {
 
@@ -470,6 +491,9 @@ public class MainCommand implements CommandExecutor {
         p.getInventory().setArmorContents(null);
         p.getInventory().clear();
 
+        Toolkit.setMaxHealth(p, 20);
+        p.setHealth(20.0);
+
         for (PotionEffect effect : p.getActivePotionEffects()) {
             p.removePotionEffect(effect.getType());
         }
@@ -482,19 +506,11 @@ public class MainCommand implements CommandExecutor {
 
     }
 
-    private String addPlaceholdersIfPossible(Player p, String text) {
+    private void sendStatsMessage(CommandSender receiver, String username) {
 
-        if (plugin.hasPlaceholderAPI()) {
-            text = PlaceholderAPI.setPlaceholders(p, text);
+        for (String line : messages.getStringList("Messages.Stats.Message")) {
+            receiver.sendMessage(arena.replaceBuiltInPlaceholdersIfPresent(line, username));
         }
-
-        text = text.replace("%player%", p.getName())
-                .replace("%kills%", String.valueOf(arena.getStats().getKills(p.getUniqueId())))
-                .replace("%deaths%", String.valueOf(arena.getStats().getDeaths(p.getUniqueId())))
-                .replace("%level%", String.valueOf(arena.getLevels().getLevel(p.getUniqueId())))
-                .replace("%experience%", String.valueOf(arena.getLevels().getExperience(p.getUniqueId())));
-
-        return text;
 
     }
 

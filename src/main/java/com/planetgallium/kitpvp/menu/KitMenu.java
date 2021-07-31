@@ -43,9 +43,7 @@ public class KitMenu {
 	}
 
 	public void open(Player p) {
-
 		menu.openMenu(p);
-
 	}
 	
 }

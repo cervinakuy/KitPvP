@@ -1,6 +1,6 @@
 package com.planetgallium.kitpvp;
 
-import com.cryptomorin.xseries.XMaterial;
+import com.planetgallium.kitpvp.game.Infobase;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -22,26 +22,26 @@ import com.planetgallium.kitpvp.util.*;
 public class Game extends JavaPlugin implements Listener {
 	
 	private static Game instance;
-	private static String prefix;
+	private static String prefix = "None";
 
 	private Arena arena;
-	private Database database;
-	private Resources resources = new Resources(this);
+	private Infobase database;
+	private Resources resources;
 	
 	private String updateVersion = "Error";
-	public String storageType;
 	private boolean needsUpdate = false;
 	private boolean hasPlaceholderAPI = false;
 	private boolean hasWorldGuard = false;
 	
 	@Override
 	public void onEnable() {
-		
-		instance = this;
 
-		resources.load();
+		Toolkit.printToConsole("&7[&b&lKIT-PVP&7] &7Enabling &bKitPvP &7version &b" + this.getDescription().getVersion() + "&7...");
+
+		instance = this;
+		resources = new Resources(this);
 		prefix = resources.getMessages().getString("Messages.General.Prefix");
-		database = new Database(this, "Storage.MySQL");
+		database = new Infobase(this);
 		arena = new Arena(this, resources);
 
 		PluginManager pm = Bukkit.getPluginManager();
@@ -66,52 +66,29 @@ public class Game extends JavaPlugin implements Listener {
 		
 		getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 	    getCommand("kitpvp").setExecutor(new MainCommand(this));
-	    
-		Bukkit.getConsoleSender().sendMessage(Toolkit.translate("&7[&b&lKIT-PVP&7] &7Enabling &bKitPvP &7version &b" + this.getDescription().getVersion() + "&7..."));
-		
-		if (resources.getConfig().getString("Storage.Type").equalsIgnoreCase("mysql")) {
-			storageType = "mysql";
-			
-			database.setup();
-			database.holdConnection();
-			database.createData();
-		} else {
-			storageType = "yaml";
-		}
 		
 		new Metrics(this);
 		
 		new BukkitRunnable() {
-			
 			@Override
 			public void run() {
-				
 				checkUpdate();
-				
 			}
-			
 		}.runTaskAsynchronously(this);
 		
 		if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-			Bukkit.getConsoleSender().sendMessage(Toolkit.translate("[&b&lKIT-PVP&7] &7Discovered &bPlaceholderAPI&7, now hooking into it."));
+			Bukkit.getConsoleSender().sendMessage(Toolkit.translate("[&b&lKIT-PVP&7] &7Hooking into &bPlaceholderAPI&7..."));
 			new Placeholders(this).register();
 			hasPlaceholderAPI = true;
 		}
 
 		if (Bukkit.getPluginManager().isPluginEnabled("WorldGuard")) {
-			Bukkit.getConsoleSender().sendMessage(Toolkit.translate("[&b&lKIT-PVP&7] &7Discovered &bWorldGuard&7, now hooking into it."));
+			Bukkit.getConsoleSender().sendMessage(Toolkit.translate("[&b&lKIT-PVP&7] &7Hooking into &bWorldGuard&7..."));
 			hasWorldGuard = true;
 		}
-		
-		Bukkit.getConsoleSender().sendMessage(Toolkit.translate("&7[&b&lKIT-PVP&7] &aDone!"));
-		
-	}
 
-	@Override
-	public void onDisable() {
-		for (Player all : Bukkit.getOnlinePlayers()) {
-			database.saveAndRemovePlayer(all);
-		}
+		Toolkit.printToConsole("&7[&b&lKIT-PVP&7] &aDone!");
+		
 	}
 
 	private void checkUpdate() {
@@ -143,28 +120,28 @@ public class Game extends JavaPlugin implements Listener {
 			return;
 		}
 
-		if (Toolkit.getMainHandItem(p).getType() == XMaterial.matchXMaterial(resources.getConfig().getString("Items.Leave.Material")).get().parseMaterial()) {
-			
+		if (Toolkit.matchesConfigItem(Toolkit.getMainHandItem(p), resources.getConfig(), "Items.Leave")) {
+
 			if (resources.getConfig().getBoolean("Items.Leave.Enabled")) {
-					
+
 				if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
-			
+
 					if (resources.getConfig().getBoolean("Items.Leave.BungeeCord.Enabled")) {
-						
-				        ByteArrayDataOutput out = ByteStreams.newDataOutput();
-				        out.writeUTF("Connect");
-				        
-				        String server = resources.getConfig().getString("Items.Leave.BungeeCord.Server");
-				        
-				        out.writeUTF(server);
-				        p.sendPluginMessage(this, "BungeeCord", out.toByteArray());
-				        
+
+						ByteArrayDataOutput out = ByteStreams.newDataOutput();
+						out.writeUTF("Connect");
+
+						String server = resources.getConfig().getString("Items.Leave.BungeeCord.Server");
+
+						out.writeUTF(server);
+						p.sendPluginMessage(this, "BungeeCord", out.toByteArray());
+
 					}
-					
+
+					e.setCancelled(true);
+
 				}
 
-				e.setCancelled(true);
-				
 			}
 
 		}
@@ -182,8 +159,8 @@ public class Game extends JavaPlugin implements Listener {
 	public static Game getInstance() { return instance; }
 	
 	public Arena getArena() { return arena; }
-	
-	public Database getDatabase() { return database; }
+
+	public Infobase getDatabase() { return database; }
 	
 	public static String getPrefix() { return prefix; }
 	

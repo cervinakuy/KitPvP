@@ -35,10 +35,10 @@ import com.planetgallium.kitpvp.util.Toolkit;
 
 public class ItemListener implements Listener {
 	
-	private Arena arena;
-	private Resources resources;
-	private Resource config;
-	private Resource abilities;
+	private final Arena arena;
+	private final Resources resources;
+	private final Resource config;
+	private final Resource abilities;
 	
 	public ItemListener(Game plugin) {
 		this.arena = plugin.getArena();
@@ -86,7 +86,7 @@ public class ItemListener implements Listener {
 
 					Potion potion = new Potion(pickPotion(), 1);
 					potion.setSplash(true);
-//
+
 					ItemStack potionStack = potion.toItemStack(1);
 //					ItemMeta potionMeta = potionStack.getItemMeta();
 //
@@ -276,7 +276,11 @@ public class ItemListener implements Listener {
 
 				}
 
-			} else if (config.contains("Items.Kits") &&
+			}
+
+			/* Kit Item and custom Arena Items */
+
+			if (config.contains("Items.Kits") &&
 					item.getType() == XMaterial.matchXMaterial(config.getString("Items.Kits.Material")).get().parseMaterial()) {
 
 				if (Toolkit.hasMatchingDisplayName(item, config.getString("Items.Kits.Name"))) {
@@ -284,9 +288,7 @@ public class ItemListener implements Listener {
 					Toolkit.runCommands(p, config.getStringList("Items.Kits.Commands"), "none", "none");
 
 					if (config.getBoolean("Items.Kits.Menu")) {
-
 						arena.getMenus().getKitMenu().open(p);
-
 					}
 
 					e.setCancelled(true);
@@ -494,7 +496,7 @@ public class ItemListener implements Listener {
 						int slot = shooter.getInventory().getHeldItemSlot();
 						Kit playerKit = arena.getKits().getKitOfPlayer(shooter.getName());
 
-						if (playerKit.getName().equalsIgnoreCase("Witch")) {
+						if (playerKit != null && playerKit.getName().equalsIgnoreCase("Witch")) {
 
 							Potion potion = new Potion(pickPotion(), 1);
 							potion.setSplash(true);
@@ -506,17 +508,20 @@ public class ItemListener implements Listener {
 								@Override
 								public void run() {
 
-									if (arena.getKits().getKitOfPlayer(shooter.getName()).getName().equals("Witch")) {
-										if (CacheManager.getWitchPotionUsers().contains(shooter.getName())) {
+									if (!arena.getKits().hasKit(shooter.getName()) ||
+										!arena.getKits().getKitOfPlayer(shooter.getName()).getName().equals("Witch")) {
+										return;
+									}
 
-											shooter.getInventory().setItem(slot, potionStack);
+									if (CacheManager.getWitchPotionUsers().contains(shooter.getName())) {
 
-											if (abilities.getBoolean("Abilities.Witch.Message.Enabled")) {
-												shooter.sendMessage(Toolkit.translate(abilities.getString("Abilities.Witch.Message.Message")));
-											}
+										shooter.getInventory().setItem(slot, potionStack);
 
-											XSound.play(shooter, abilities.getString("Abilities.Witch.Sound.Sound") + ", 1, " + abilities.getInt("Abliities.Witch.Sound.Pitch"));
+										if (abilities.getBoolean("Abilities.Witch.Message.Enabled")) {
+											shooter.sendMessage(Toolkit.translate(abilities.getString("Abilities.Witch.Message.Message")));
 										}
+
+										XSound.play(shooter, abilities.getString("Abilities.Witch.Sound.Sound") + ", 1, " + abilities.getInt("Abliities.Witch.Sound.Pitch"));
 
 									}
 
@@ -530,18 +535,11 @@ public class ItemListener implements Listener {
 
 				} else if (e.getEntity().getType() == EntityType.EGG) {
 
-					if (arena.getKits().getKitOfPlayer(shooter.getName()).getName().equals("Trickster")) {
-
+					if (arena.getKits().hasKit(shooter.getName()) &&
+							arena.getKits().getKitOfPlayer(shooter.getName()).getName().equals("Trickster")) {
 						if (isAbilityItem(shooter, "Trickster", itemThrown)) {
-
 							e.getEntity().setCustomName("pellet");
-
-						} else {
-
-							e.setCancelled(true);
-
 						}
-
 					}
 
 				}
@@ -585,6 +583,11 @@ public class ItemListener implements Listener {
 
 							Player shooter = (Player) egg.getShooter();
 							Location shooterLocation = shooter.getLocation();
+
+							if (!arena.isCombatActionPermittedInRegion(damagedPlayer)) {
+								shooter.sendMessage(resources.getMessages().getString("Messages.Error.PVP"));
+								return;
+							}
 
 							shooter.teleport(damagedPlayer);
 							damagedPlayer.teleport(shooterLocation);

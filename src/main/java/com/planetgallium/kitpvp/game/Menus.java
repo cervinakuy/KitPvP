@@ -7,9 +7,9 @@ import com.planetgallium.kitpvp.util.Resources;
 
 public class Menus {
 
-    private KitMenu kitMenu;
-    private PreviewMenu previewMenu;
-    private RefillMenu refillMenu;
+    private final KitMenu kitMenu;
+    private final PreviewMenu previewMenu;
+    private final RefillMenu refillMenu;
 
     public Menus(Resources resources) {
         this.kitMenu = new KitMenu(resources);

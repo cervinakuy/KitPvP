@@ -4,7 +4,6 @@ import com.cryptomorin.xseries.XSound;
 import com.planetgallium.kitpvp.Game;
 import com.planetgallium.kitpvp.game.Arena;
 import com.planetgallium.kitpvp.util.Resource;
-import com.planetgallium.kitpvp.util.Resources;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -14,15 +13,13 @@ import com.planetgallium.kitpvp.util.Toolkit;
 
 public class HitListener implements Listener {
 
-	private Arena arena;
-	private Resources resources;
-	private Resource config;
-	private XSound.Record hitSound;
+	private final Arena arena;
+	private final Resource config;
+	private final XSound.Record hitSound;
 
 	public HitListener(Game plugin) {
 		this.arena = plugin.getArena();
-		this.resources = plugin.getResources();
-		this.config = resources.getConfig();
+		this.config = plugin.getResources().getConfig();
 
 		String soundString = config.getString("Combat.HitSound.Sound") + ", 1, " + config.getInt("Combat.HitSound.Pitch");
 		this.hitSound = XSound.parse(null, Bukkit.getWorlds().get(0).getSpawnLocation(), soundString, false).join();

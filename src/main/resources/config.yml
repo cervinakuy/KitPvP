@@ -17,7 +17,7 @@ Items:
     Slot: 8
     BungeeCord:
       Server: Hub
-      Enabled: true
+      Enabled: false
     Commands: []
 Chat:
   Format: '%level% &e%player% &f%message%'
@@ -81,22 +81,14 @@ Soups:
 TNT:
   Name: '&aThrowable TNT &7(Right Click)'
   Enabled: true
+PreviewMenuBackArrowCommands:
+- 'player: kp menu'
 Commands:
   Alias:
     Spawn: false
     Kit: false
     Kits: false
     Stats: false
-#either put MySQl or YAML
-Storage:
-  Type: YAML
-  MySQL:
-    Host: planetgallium.com
-    Database: kitpvp
-    Table: kitpvp_userdata
-    Port: 3306
-    Username: walrus
-    Password: supersecretpassword
 Arena:
   ClearPotionEffectsOnJoin: true
   ClearInventoryOnJoin: true
@@ -112,6 +104,7 @@ Arena:
   PreventChestOpen: true
   PreventFallDamage: false
   PreventDeathDrops: true
+  PreventArenaSignUseWithKit: true
   KeepWeatherAtSunny: true
   GiveItemsOnClear: true
   GiveItemsOnRespawn: true

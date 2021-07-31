@@ -19,20 +19,20 @@ import me.clip.placeholderapi.PlaceholderAPI;
 
 public class Arena {
 
-	private Game plugin;
-	private Random random;
+	private final Game plugin;
+	private final Random random;
 
-	private Resources resources;
-	private Resource config;
+	private final Resources resources;
+	private final Resource config;
 
-	private Map<String, String> hitCache;
-	
-	private Stats stats;
-	private Kits kits;
-	private KillStreaks killstreaks;
-	private Levels levels;
-	private Cooldowns cooldowns;
-	private Menus menus;
+	private final Map<String, String> hitCache;
+
+	private final Leaderboards leaderboards;
+	private final Stats stats;
+	private final Kits kits;
+	private final KillStreaks killstreaks;
+	private final Cooldowns cooldowns;
+	private final Menus menus;
 	
 	public Arena(Game plugin, Resources resources) {
 		this.plugin = plugin;
@@ -42,12 +42,12 @@ public class Arena {
 		this.config = resources.getConfig();
 
 		this.hitCache = new HashMap<>();
-		
-		this.stats = new Stats(plugin, resources);
+
+		this.leaderboards = new Leaderboards(plugin);
+		this.stats = new Stats(plugin, this);
 		this.kits = new Kits(plugin, this);
 		this.killstreaks = new KillStreaks(resources);
-		this.levels = new Levels(this, resources);
-		this.cooldowns = new Cooldowns(this, resources);
+		this.cooldowns = new Cooldowns(plugin);
 		this.menus = new Menus(resources);
 	}
 	
@@ -69,7 +69,8 @@ public class Arena {
 		}
 
 		p.setGameMode(GameMode.SURVIVAL);
-		
+		Toolkit.setMaxHealth(p, 20);
+
 		if (config.getBoolean("Arena.FancyDeath")) {
 			p.setHealth(20.0);
 		}
@@ -117,9 +118,7 @@ public class Arena {
 			updateScoreboards(p, true);
 		}
 
-		if (hitCache.containsKey(p.getName())) {
-			hitCache.remove(p.getName());
-		}
+		hitCache.remove(p.getName());
 		
 	}
 	
@@ -132,9 +131,7 @@ public class Arena {
 
 		CacheManager.getPlayerAbilityCooldowns(p.getName()).clear();
 
-		if (hitCache.containsKey(p.getName())) {
-			hitCache.remove(p.getName());
-		}
+		hitCache.remove(p.getName());
 		
 	}
 	
@@ -201,37 +198,69 @@ public class Arena {
 			text = PlaceholderAPI.setPlaceholders(p, text);
 		}
 
-		text = text.replace("%streak%", String.valueOf(this.getKillStreaks().getStreak(p.getName())))
-					.replace("%player%", p.getName())
-					.replace("%xp%", String.valueOf(this.getLevels().getExperience(p.getUniqueId())))
-					.replace("%level%", String.valueOf(this.getLevels().getLevel(p.getUniqueId())))
-					.replace("%max_xp%", String.valueOf(resources.getLevels().getInt("Levels.Options.Experience-To-Level-Up")))
-					.replace("%max_level%", String.valueOf(resources.getLevels().getInt("Levels.Options.Maximum-Level")))
-					.replace("%kd%", String.valueOf(this.getStats().getKDRatio(p.getUniqueId())))
-					.replace("%deaths%", String.valueOf(this.getStats().getDeaths(p.getUniqueId())))
-					.replace("%kills%", String.valueOf(this.getStats().getKills(p.getUniqueId())));
+		return replaceBuiltInPlaceholdersIfPresent(text, p.getName());
 
-		if (getKits().getKitOfPlayer(p.getName()) != null) {
-			text = text.replace("%kit%", getKits().getKitOfPlayer(p.getName()).getName());
-		} else {
-			text = text.replace("%kit%", "None");
+	}
+
+	public String replaceBuiltInPlaceholdersIfPresent(String s, String username) {
+
+		// The reason I'm doing all these if statements rather than a more concise code solution is to reduce
+		// the amount of data that is unnecessarily fetched (ex by using .replace) to improve performance
+		// no longer constantly fetching stats from database for EACH line of scoreboard on update and player join
+
+		if (s.contains("%streak%")) {
+			s = s.replace("%streak%", String.valueOf(getKillStreaks().getStreak(username)));
 		}
 
-		return text;
+		if (s.contains("%player%")) {
+			s = s.replace("%player%", username);
+		}
+
+		if (s.contains("%xp%")) {
+			s = s.replace("%xp%", String.valueOf(stats.getStat("experience", username)));
+		}
+
+		if (s.contains("%level%")) {
+			s = s.replace("%level%", String.valueOf(stats.getStat("level", username)));
+		}
+
+		if (s.contains("%max_xp%")) {
+			s = s.replace("%max_xp%", String.valueOf(stats.getRegularOrRelativeNeededExperience(username)));
+		}
+
+		if (s.contains("%max_level%")) {
+			s = s.replace("%max_level%", String.valueOf(resources.getLevels().getInt("Levels.Options.Maximum-Level")));
+		}
+
+		if (s.contains("%kd%")) {
+			s = s.replace("%kd%", String.valueOf(getStats().getKDRatio(username)));
+		}
+
+		if (s.contains("%kills%")) {
+			s = s.replace("%kills%", String.valueOf(stats.getStat("kills", username)));
+		}
+
+		if (s.contains("%deaths%")) {
+			s = s.replace("%deaths%", String.valueOf(stats.getStat("deaths", username)));
+		}
+
+		if (s.contains("%kit%")) {
+			if (getKits().getKitOfPlayer(username) != null) {
+				s = s.replace("%kit%", getKits().getKitOfPlayer(username).getName());
+			} else {
+				s = s.replace("%kit%", "None");
+			}
+		}
+
+		return s;
 
 	}
 
 	public String generateRandomArenaSpawn(String arenaName) {
-
 		ConfigurationSection section = config.getConfigurationSection("Arenas." + arenaName);
-		List<String> spawnKeys = new ArrayList<String>();
-
-		for (String identifier : section.getKeys(false)) {
-			spawnKeys.add(identifier);
-		}
+		List<String> spawnKeys = new ArrayList<>(section.getKeys(false));
 
 		return spawnKeys.get(random.nextInt(spawnKeys.size()));
-
 	}
 
 	public boolean isCombatActionPermittedInRegion(Player p) {
@@ -252,14 +281,14 @@ public class Arena {
 	}
 
 	public Map<String, String> getHitCache() { return hitCache; }
-	
+
 	public Stats getStats() { return stats; }
+
+	public Leaderboards getLeaderboards() { return leaderboards; }
 	
 	public Kits getKits() { return kits; }
 	
 	public KillStreaks getKillStreaks() { return killstreaks; }
-	
-	public Levels getLevels() { return levels; }
 	
 	public Cooldowns getCooldowns() { return cooldowns; }
 

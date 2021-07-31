@@ -11,6 +11,7 @@ import org.bukkit.World;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByBlockEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
@@ -27,9 +28,9 @@ import java.util.List;
 
 public class DeathListener implements Listener {
 
-	private Arena arena;
-	private Resources resources;
-	private Resource config;
+	private final Arena arena;
+	private final Resources resources;
+	private final Resource config;
 	
 	public DeathListener(Game plugin) {
 		this.arena = plugin.getArena();
@@ -54,8 +55,8 @@ public class DeathListener implements Listener {
 			setDeathMessage(victim);
 			respawnPlayer(victim);
 
-			arena.getStats().addDeath(victim.getUniqueId());
-			arena.getLevels().removeExperience(victim, resources.getLevels().getInt("Levels.Options.Experience-Taken-On-Death"));
+			arena.getStats().addToStat("deaths", victim.getName(), 1);
+			arena.getStats().removeExperience(victim.getName(), resources.getLevels().getInt("Levels.Options.Experience-Taken-On-Death"));
 
 			if (config.getBoolean("Arena.DeathParticle")) {
 				victim.getWorld().playEffect(victim.getLocation().add(0.0D, 1.0D, 0.0D), Effect.STEP_SOUND, 152);
@@ -94,7 +95,11 @@ public class DeathListener implements Listener {
 	}
 
 	private void respawnPlayer(Player victim) {
-		
+
+		if (!victim.isOnline()) {
+			return;
+		}
+
 		if (config.getBoolean("Arena.FancyDeath")) {
 
 			Location deathLocation = victim.getLocation();
@@ -241,19 +246,21 @@ public class DeathListener implements Listener {
 	private Entity getShooter(EntityDamageEvent e) {
 
 		EntityDamageByEntityEvent shotEvent = (EntityDamageByEntityEvent) e;
-
 		Projectile damager = (Projectile) shotEvent.getDamager();
-		Entity shooter = (Entity) damager.getShooter();
 
-		return shooter;
+		return (Entity) damager.getShooter();
 
 	}
 
 	private Entity getExplodedEntity(EntityDamageEvent e) {
 
-		EntityDamageByEntityEvent blownUpEvent = (EntityDamageByEntityEvent) e;
-
-		return blownUpEvent.getDamager();
+//		if (e instanceof EntityDamageByBlockEvent) {
+//			EntityDamageByBlockEvent blownUpEvent2 = (EntityDamageByBlockEvent) e;
+//			return blownUpEvent2.getDamager();
+		/*} else if (e instanceof EntityDamageByEntityEvent) { */
+			EntityDamageByEntityEvent blownUpEvent = (EntityDamageByEntityEvent) e;
+			return blownUpEvent.getDamager();
+		/*}*/
 
 	}
 
@@ -263,8 +270,8 @@ public class DeathListener implements Listener {
 
 			if (!victim.getName().equals(killer.getName())) {
 
-				arena.getStats().addKill(killer.getUniqueId());
-				arena.getLevels().addExperience(killer, resources.getLevels().getInt("Levels.Options.Experience-Given-On-Kill"));
+				arena.getStats().addToStat("kills", killer.getName(), 1);
+				arena.getStats().addExperience(killer, resources.getLevels().getInt("Levels.Options.Experience-Given-On-Kill"));
 
 				List<String> killCommands = config.getStringList("Kill.Commands");
 				killCommands = Toolkit.replaceInList(killCommands, "%victim%", victim.getName());
@@ -305,13 +312,15 @@ public class DeathListener implements Listener {
 			}
 		}
 
-		if (victim != null) {
-			deathMessage = deathMessage.replace("%victim%", victim.getName());
-		}
-
 		if (killer != null) {
 			deathMessage = deathMessage.replace("%killer%", killer.getName())
 					.replace("%killer_health%", String.valueOf(Toolkit.round(killer.getHealth(), 2)));
+		} else {
+			deathMessage = config.getString("Death.Messages.Unknown"); // if killer is null (left the server, or some other unknown reason)
+		}
+
+		if (victim != null) {
+			deathMessage = deathMessage.replace("%victim%", victim.getName());
 		}
 
 		return deathMessage;
@@ -319,31 +328,19 @@ public class DeathListener implements Listener {
 	}
 
 	private void broadcast(World world, String message) {
-		
 		if (config.getBoolean("Death.Messages.Enabled")) {
-
 			for (Player all : world.getPlayers()) {
-				
 				all.sendMessage(Toolkit.translate(message));
-				
 			}
-			
 		}
-		
 	}
 
 	private void broadcast(World world, Sound sound, int volume, int pitch) {
-		
 		if (config.getBoolean("Death.Sound.Enabled")) {
-			
 			for (Player all : world.getPlayers()) {
-				
-				all.playSound(all.getLocation(), XSound.matchXSound(sound.toString()).get().parseSound(), volume, pitch);
-				
+				XSound.play(all, String.format("%s, %d, %d", sound.toString(), volume, pitch));
 			}
-			
 		}
-		
 	}
 
 }
