@@ -496,7 +496,7 @@ public class ItemListener implements Listener {
 						int slot = shooter.getInventory().getHeldItemSlot();
 						Kit playerKit = arena.getKits().getKitOfPlayer(shooter.getName());
 
-						if (playerKit != null && playerKit.getName().equalsIgnoreCase("Witch")) {
+						if (playerKit != null) {
 
 							Potion potion = new Potion(pickPotion(), 1);
 							potion.setSplash(true);
@@ -509,21 +509,17 @@ public class ItemListener implements Listener {
 								public void run() {
 
 									if (!arena.getKits().hasKit(shooter.getName()) ||
-										!arena.getKits().getKitOfPlayer(shooter.getName()).getName().equals("Witch")) {
+											!CacheManager.getWitchPotionUsers().contains(shooter.getName())) {
 										return;
 									}
 
-									if (CacheManager.getWitchPotionUsers().contains(shooter.getName())) {
+									shooter.getInventory().setItem(slot, potionStack);
 
-										shooter.getInventory().setItem(slot, potionStack);
-
-										if (abilities.getBoolean("Abilities.Witch.Message.Enabled")) {
-											shooter.sendMessage(Toolkit.translate(abilities.getString("Abilities.Witch.Message.Message")));
-										}
-
-										XSound.play(shooter, abilities.getString("Abilities.Witch.Sound.Sound") + ", 1, " + abilities.getInt("Abliities.Witch.Sound.Pitch"));
-
+									if (abilities.getBoolean("Abilities.Witch.Message.Enabled")) {
+										shooter.sendMessage(Toolkit.translate(abilities.getString("Abilities.Witch.Message.Message")));
 									}
+
+									XSound.play(shooter, abilities.getString("Abilities.Witch.Sound.Sound") + ", 1, " + abilities.getInt("Abliities.Witch.Sound.Pitch"));
 
 								}
 
