@@ -50,9 +50,10 @@ public class Stats {
         }
     }
 
-    public void addExperience(Player p, int experience) {
+    public void addExperience(Player p, int experienceToAdd) {
         if (levels.getBoolean("Levels.Levels.Enabled")) {
-            setStat("experience", p.getName(), experience);
+            int currentExperience = getStat("experience", p.getName());
+            setStat("experience", p.getName(), currentExperience + experienceToAdd);
             if (getStat("experience", p.getName()) >= getRegularOrRelativeNeededExperience(p.getName())) {
                 levelUp(p);
                 Bukkit.getPluginManager().callEvent(new PlayerLevelUpEvent(p, getStat("level", p.getName())));
