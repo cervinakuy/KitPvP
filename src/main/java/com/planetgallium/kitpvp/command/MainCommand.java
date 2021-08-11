@@ -488,8 +488,6 @@ public class MainCommand implements CommandExecutor {
 
     private void clearKit(Player p) {
 
-        CacheManager.getWitchPotionUsers().remove(p.getName());
-
         p.getInventory().setArmorContents(null);
         p.getInventory().clear();
 

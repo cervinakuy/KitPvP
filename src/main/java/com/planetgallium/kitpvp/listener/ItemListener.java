@@ -1,11 +1,12 @@
 package com.planetgallium.kitpvp.listener;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import com.cryptomorin.xseries.XMaterial;
 import com.cryptomorin.xseries.XSound;
 import com.planetgallium.kitpvp.api.Kit;
-import com.planetgallium.kitpvp.util.CacheManager;
 import com.planetgallium.kitpvp.util.Resource;
 import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
@@ -84,18 +85,7 @@ public class ItemListener implements Listener {
 
 				if (isAbilityItem(p, "Witch", item)) {
 
-					Potion potion = new Potion(pickPotion(), 1);
-					potion.setSplash(true);
-
-					ItemStack potionStack = potion.toItemStack(1);
-//					ItemMeta potionMeta = potionStack.getItemMeta();
-//
-//					potionMeta.setLocalizedName("WitchPotion");
-//					potionStack.setItemMeta(potionMeta);
-
-					CacheManager.getWitchPotionUsers().add(p.getName());
-
-					Toolkit.setMainHandItem(p, potionStack);
+					Toolkit.setMainHandItem(p, createWitchPotion());
 
 				}
 
@@ -491,25 +481,22 @@ public class ItemListener implements Listener {
 
 				if (e.getEntity().getType() == EntityType.SPLASH_POTION) {
 
-					if (CacheManager.getWitchPotionUsers().contains(shooter.getName())) {
+					if (itemThrown.hasItemMeta() && itemThrown.getItemMeta().hasLore() &&
+							itemThrown.getItemMeta().getLore().get(0).equals("§8X")) {
 
 						int slot = shooter.getInventory().getHeldItemSlot();
 						Kit playerKit = arena.getKits().getKitOfPlayer(shooter.getName());
 
 						if (playerKit != null) {
 
-							Potion potion = new Potion(pickPotion(), 1);
-							potion.setSplash(true);
-
-							ItemStack potionStack = potion.toItemStack(1);
+							ItemStack potionStack = createWitchPotion();
 
 							new BukkitRunnable() {
 
 								@Override
 								public void run() {
 
-									if (!arena.getKits().hasKit(shooter.getName()) ||
-											!CacheManager.getWitchPotionUsers().contains(shooter.getName())) {
+									if (!arena.getKits().hasKit(shooter.getName())) {
 										return;
 									}
 
@@ -544,6 +531,23 @@ public class ItemListener implements Listener {
 			
 		}
 		
+	}
+
+	private ItemStack createWitchPotion() {
+
+		Potion potion = new Potion(pickPotion(), 1);
+		potion.setSplash(true);
+
+		ItemStack potionStack = potion.toItemStack(1);
+		ItemMeta potionMeta = potionStack.getItemMeta();
+
+		List<String> lore = new ArrayList<>();
+		lore.add(Toolkit.translate("&8X"));
+		potionMeta.setLore(lore);
+
+		potionStack.setItemMeta(potionMeta);
+		return potionStack;
+
 	}
 	
 	@EventHandler
