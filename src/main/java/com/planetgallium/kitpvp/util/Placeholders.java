@@ -23,7 +23,7 @@ public class Placeholders extends PlaceholderExpansion {
 
 		placeholderAPItoBuiltIn.put("stats_kills", "%kills%");
 		placeholderAPItoBuiltIn.put("stats_deaths", "%deaths%");
-		placeholderAPItoBuiltIn.put("stats_kdr", "%kdr%");
+		placeholderAPItoBuiltIn.put("stats_kd", "%kd%");
 		placeholderAPItoBuiltIn.put("stats_experience", "%xp%");
 		placeholderAPItoBuiltIn.put("stats_level", "%level%");
 		placeholderAPItoBuiltIn.put("player_killstreak", "%streak%");
@@ -63,6 +63,12 @@ public class Placeholders extends PlaceholderExpansion {
 	}
 
 	public String translatePlaceholderAPIPlaceholders(String placeholderAPIIdentifier, String username) {
+
+		if (!placeholderAPItoBuiltIn.containsKey(placeholderAPIIdentifier)) {
+			Toolkit.printToConsole(String.format("&7[&b&lKIT-PVP&7] &cUnknown placeholder identifier [%s]. Please see plugin page.",
+												 placeholderAPIIdentifier));
+			return "invalid-placeholder";
+		}
 
 		return arena.replaceBuiltInPlaceholdersIfPresent(placeholderAPItoBuiltIn.get(placeholderAPIIdentifier), username);
 
