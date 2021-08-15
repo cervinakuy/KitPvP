@@ -9,7 +9,6 @@ public class CacheManager {
     private static final Map<String, String> usernameToUUID = new HashMap<>();
     private static final Map<String, Kit> kitCache = new HashMap<>();
     private static final Map<String, Menu> previewMenuCache = new HashMap<>();
-    private static final Set<String> compassUsers = new HashSet<>();
     private static final Map<String, Map<String, Long>> abilityCooldowns = new HashMap<>();
     private static final Map<String, PlayerData> statsCache = new HashMap<>();
 
@@ -18,8 +17,6 @@ public class CacheManager {
     public static Map<String, Kit> getKitCache() { return kitCache; }
 
     public static Map<String, Menu> getPreviewMenuCache() { return previewMenuCache; }
-
-    public static Set<String> getCompassUsers() { return compassUsers; }
 
     public static Map<String, PlayerData> getStatsCache() { return statsCache; }
 
@@ -36,7 +33,6 @@ public class CacheManager {
     public static void clearCaches() {
         kitCache.clear();
         previewMenuCache.clear();
-        compassUsers.clear();
         abilityCooldowns.clear();
         // stats, usernameToUUID, and cache isn't here as of right now
     }

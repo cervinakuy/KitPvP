@@ -1,6 +1,7 @@
 package com.planetgallium.kitpvp.listener;
 
 import com.cryptomorin.xseries.XMaterial;
+import com.planetgallium.kitpvp.game.Arena;
 import com.planetgallium.kitpvp.util.Resources;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -16,10 +17,12 @@ import com.planetgallium.kitpvp.util.Toolkit;
 public class TrackerListener implements Listener {
 
 	private final Game plugin;
+	private final Arena arena;
 	private final Resources resources;
 	
 	public TrackerListener(Game plugin) {
 		this.plugin = plugin;
+		this.arena = plugin.getArena();
 		this.resources = plugin.getResources();
 	}
 	
@@ -40,7 +43,8 @@ public class TrackerListener implements Listener {
 				@Override
 				public void run() {
 
-					if (!player.isOnline()) { // if the player using the compass leaves the server
+					// if the player using the compass leaves the server or no longer has a kit
+					if (!player.isOnline() || !arena.getKits().hasKit(player.getName())) {
 						cancel();
 						return;
 					}
