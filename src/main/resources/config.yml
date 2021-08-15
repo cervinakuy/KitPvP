@@ -69,6 +69,7 @@ PlayerTracker:
   Message: '&b&lTarget: &3%nearestplayer% &b&lDistance: &3%distance%'
   NoneOnline: '&cNo Players Online'
   TrackBelowY: 128
+  RefreshOnlyWhenHeld: true
 Soups:
   Name: '&aRegenerative Soups &7(Right Click)'
   RegenAmount: 6
