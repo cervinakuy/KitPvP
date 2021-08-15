@@ -95,7 +95,6 @@ public class Arena {
 	public void removePlayer(Player p) {
 
 		CacheManager.getPlayerAbilityCooldowns(p.getName()).clear();
-		CacheManager.getWitchPotionUsers().remove(p.getName());
 
 		for (PotionEffect effect : p.getActivePotionEffects()) {
 			p.removePotionEffect(effect.getType());

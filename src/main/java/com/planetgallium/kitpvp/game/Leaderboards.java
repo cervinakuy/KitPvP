@@ -36,6 +36,11 @@ public class Leaderboards {
         if (!isValidCacheType(key)) return;
 
         List<PlayerEntry> leaderboard = getLeaderboard(key);
+
+        if (leaderboard.size() == 0) {
+            return;
+        }
+        
         PlayerEntry lowestRankingPlayer = leaderboard.get(leaderboard.size() - 1);
 
         // If updated player entry has a higher data value than the lowest ranking player in a leaderboard
