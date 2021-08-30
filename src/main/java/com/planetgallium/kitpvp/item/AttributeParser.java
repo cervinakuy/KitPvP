@@ -317,7 +317,7 @@ public class AttributeParser {
 
             return potion.toItemStack(item.getAmount());
         } else if (Toolkit.versionToNumber() >= 19) {
-            potionMeta.setBasePotionData(new PotionData(potionType, isUpgraded, isExtended));
+            potionMeta.setBasePotionData(new PotionData(potionType, isExtended, isUpgraded));
         }
 
         item.setItemMeta(potionMeta);
