@@ -100,9 +100,6 @@ public class Game extends JavaPlugin implements Listener {
 					needsUpdate = true;
 					updateVersion = version;
 					break;
-				case LATEST:
-					Bukkit.getConsoleSender().sendMessage(Toolkit.translate("&7[&b&lKIT-PVP&7] &7No new update found. You are on the latest version."));
-					break;
 				case UNAVAILABLE:
 					Bukkit.getConsoleSender().sendMessage(Toolkit.translate("&7[&b&lKIT-PVP&7] &cUnable to perform an update check."));
 					break;
