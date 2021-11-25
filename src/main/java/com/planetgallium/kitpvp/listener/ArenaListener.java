@@ -251,23 +251,23 @@ public class ArenaListener implements Listener {
 		
 	}
 	
-	@EventHandler
-	public void onPearl(PlayerTeleportEvent e) {
-		
-		Player p = e.getPlayer();
-		
-		if (Toolkit.inArena(p)) {
-			
-			if (e.getCause() == TeleportCause.ENDER_PEARL) {
-				
-				e.setCancelled(true);
-				p.teleport(e.getTo());
-				
-			}
-			
-		}
-		
-	}
+//	@EventHandler
+//	public void onPearl(PlayerTeleportEvent e) {
+//
+//		Player p = e.getPlayer();
+//
+//		if (Toolkit.inArena(p)) {
+//
+//			if (e.getCause() == TeleportCause.ENDER_PEARL) {
+//
+//				e.setCancelled(true);
+//				p.teleport(e.getTo());
+//
+//			}
+//
+//		}
+//
+//	}
 
 	@EventHandler
 	public void onHangingEntityBreakByTNT(HangingBreakEvent e) {
