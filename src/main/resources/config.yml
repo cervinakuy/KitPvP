@@ -111,6 +111,7 @@ Arena:
   GiveItemsOnRespawn: true
   GiveItemsOnJoin: true
   NoKitProtection: true
+  NoKitPreventHunger: true
   FancyDeath: true
   ResetKillStreakOnLeave: true
   ToSpawnOnJoin: true
