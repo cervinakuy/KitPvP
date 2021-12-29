@@ -297,6 +297,24 @@ public class Toolkit {
 
 	}
 
+	// TODO: eventually merge the below two methods into one
+	public static double getPermissionAmountDouble(Player player, String permissionPrefix, double defaultValue) {
+		double highestPermissionValue = 0.0;
+		for (PermissionAttachmentInfo attachmentInfo : player.getEffectivePermissions()) {
+			String permission = attachmentInfo.getPermission();
+			if (permission.startsWith(permissionPrefix)) {
+				// strips from some.permission.49 to just 49
+				double permissionValue = Double.parseDouble(permission.substring(permissionPrefix.length()));
+				if (permissionValue > highestPermissionValue) {
+					highestPermissionValue = permissionValue;
+				}
+			}
+		}
+
+		return highestPermissionValue == 0.0 ? defaultValue : highestPermissionValue;
+
+	}
+
 	public static int getPermissionAmount(Player player, String permissionPrefix, int defaultValue) {
 //		String permissionPrefix = "some.permission.here.";
 		if (!player.isOp()) {
