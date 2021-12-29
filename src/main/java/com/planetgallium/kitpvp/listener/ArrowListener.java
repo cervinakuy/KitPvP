@@ -64,7 +64,9 @@ public class ArrowListener implements Listener {
 					}
 					
 					// ARROW RETURN
-					
+
+					ItemStack arrowToAdd = new ItemStack(Material.ARROW);
+
 					if (config.getBoolean("Combat.ArrowReturn.Enabled")) {
 						
 						for (ItemStack items : shooter.getInventory().getContents()) {
@@ -72,10 +74,9 @@ public class ArrowListener implements Listener {
 							if (items != null && items.getType() == XMaterial.ARROW.parseMaterial() && items.getAmount() < 64) {
 								
 								if (shooter.hasPermission("kp.arrowreturn")) {
-									
-									ItemStack arrowInv = new ItemStack(Material.ARROW);
-									shooter.getInventory().addItem(arrowInv);
-									shooter.getInventory().addItem(arrowInv);
+
+									shooter.getInventory().addItem(arrowToAdd);
+									shooter.getInventory().addItem(arrowToAdd);
 				
 									return;
 									
@@ -89,7 +90,12 @@ public class ArrowListener implements Listener {
 			     		       
 			        		shooter.sendMessage(config.getString("Combat.ArrowReturn.NoSpace"));
 			        			
-			        	}
+			        	} else {
+
+							shooter.getInventory().addItem(arrowToAdd);
+							shooter.getInventory().addItem(arrowToAdd);
+
+						}
 						
 					}
 						

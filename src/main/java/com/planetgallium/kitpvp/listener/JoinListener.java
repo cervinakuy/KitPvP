@@ -1,6 +1,5 @@
 package com.planetgallium.kitpvp.listener;
 
-import com.planetgallium.kitpvp.util.CacheManager;
 import com.planetgallium.kitpvp.util.Resource;
 import com.planetgallium.kitpvp.util.Resources;
 import org.bukkit.entity.Player;
@@ -15,10 +14,10 @@ import com.planetgallium.kitpvp.util.Toolkit;
 
 public class JoinListener implements Listener {
 
-	private Game plugin;
-	private Arena arena;
-	private Resources resources;
-	private Resource config;
+	private final Game plugin;
+	private final Arena arena;
+	private final Resources resources;
+	private final Resource config;
 	
 	public JoinListener(Game plugin) {
 		this.plugin = plugin;
@@ -26,7 +25,7 @@ public class JoinListener implements Listener {
 		this.resources = plugin.getResources();
 		this.config = resources.getConfig();
 	}
-	
+
 	@EventHandler
 	public void onJoin(PlayerJoinEvent e) {
 
