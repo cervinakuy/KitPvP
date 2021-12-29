@@ -56,7 +56,10 @@ public class Arena {
 		CacheManager.getPlayerAbilityCooldowns(p.getName()).clear();
 
 		kits.resetKit(p.getName());
-		killstreaks.setStreak(p, 0);
+
+		if (config.getBoolean("Arena.ResetKillStreakOnLeave")) {
+			killstreaks.setStreak(p, 0);
+		}
 		
 		if (config.getBoolean("Arena.ClearPotionEffectsOnJoin")) {
 			for (PotionEffect effect : p.getActivePotionEffects()) {

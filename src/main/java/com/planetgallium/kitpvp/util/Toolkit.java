@@ -146,6 +146,8 @@ public class Toolkit {
 			return 116;
 		} else if (version.contains("1.17")) {
 			return 117;
+		} else if (version.contains("1.18")) {
+			return 118;
 		}
  		return 500;
  		
@@ -294,6 +296,24 @@ public class Toolkit {
 		}
 
 		return Toolkit.translate(text);
+
+	}
+
+	// TODO: eventually merge the below two methods into one
+	public static double getPermissionAmountDouble(Player player, String permissionPrefix, double defaultValue) {
+		double highestPermissionValue = 0.0;
+		for (PermissionAttachmentInfo attachmentInfo : player.getEffectivePermissions()) {
+			String permission = attachmentInfo.getPermission();
+			if (permission.startsWith(permissionPrefix)) {
+				// strips from some.permission.49 to just 49
+				double permissionValue = Double.parseDouble(permission.substring(permissionPrefix.length()));
+				if (permissionValue > highestPermissionValue) {
+					highestPermissionValue = permissionValue;
+				}
+			}
+		}
+
+		return highestPermissionValue == 0.0 ? defaultValue : highestPermissionValue;
 
 	}
 
