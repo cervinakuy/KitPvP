@@ -146,6 +146,8 @@ public class Toolkit {
 			return 116;
 		} else if (version.contains("1.17")) {
 			return 117;
+		} else if (version.contains("1.18")) {
+			return 118;
 		}
  		return 500;
  		
