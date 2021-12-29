@@ -22,7 +22,7 @@ public class HitListener implements Listener {
 		this.config = plugin.getResources().getConfig();
 
 		String soundString = config.getString("Combat.HitSound.Sound") + ", 1, " + config.getInt("Combat.HitSound.Pitch");
-		this.hitSound = XSound.parse(null, Bukkit.getWorlds().get(0).getSpawnLocation(), soundString, false).join();
+		this.hitSound = XSound.parse(soundString);
 	}
 
 	@EventHandler
@@ -38,8 +38,8 @@ public class HitListener implements Listener {
 				arena.getHitCache().put(damagedPlayer.getName(), damager.getName());
 
 				if (config.getBoolean("Combat.HitSound.Enabled")) {
-					hitSound.play(damagedPlayer.getLocation());
-					hitSound.play(damager.getLocation());
+					hitSound.forPlayer(damagedPlayer).play();
+					hitSound.forPlayer(damager).play();
 				}
 
 			}
