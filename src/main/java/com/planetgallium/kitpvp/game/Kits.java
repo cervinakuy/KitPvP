@@ -140,7 +140,7 @@ public class Kits {
 
         sampleAbility.setMessage("%prefix% &7You have used your ability.");
         sampleAbility.setSound(XSound.BLOCK_NOTE_BLOCK_PLING.parseSound(), 1, 1);
-        sampleAbility.addEffect(XPotion.SPEED.parsePotionEffectType(), 1, 10);
+        sampleAbility.addEffect(XPotion.SPEED.getPotionEffectType(), 1, 10);
         sampleAbility.addCommand("console: This command is run from the console, you can use %player%");
         sampleAbility.addCommand("player: This command is run from the player, you can use %player%");
 

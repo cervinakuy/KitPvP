@@ -41,7 +41,7 @@ public class AttributeParser {
         if (effectsSection != null) {
 
             for (String effectName : effectsSection.getKeys(false)) {
-                PotionEffectType type = XPotion.matchXPotion(effectName).get().parsePotionEffectType();
+                PotionEffectType type = XPotion.matchXPotion(effectName).get().getPotionEffectType();
                 int amplifier = resource.getInt(path + "." + effectName + ".Amplifier");
                 int duration = resource.getInt(path + "." + effectName + ".Duration");
 
@@ -98,7 +98,7 @@ public class AttributeParser {
                 ConfigurationSection effectSection = resource.getConfigurationSection(pathPrefix + ".Effects");
 
                 for (String effectName : effectSection.getKeys(false)) {
-                    PotionEffectType effectType = XPotion.matchXPotion(effectName).get().parsePotionEffectType();
+                    PotionEffectType effectType = XPotion.matchXPotion(effectName).get().getPotionEffectType();
                     int amplifier = resource.getInt(pathPrefix + ".Effects." + effectName + ".Amplifier");
                     int duration = resource.getInt(pathPrefix + ".Effects." + effectName + ".Duration");
                     ability.addEffect(effectType, amplifier, duration);
@@ -186,7 +186,7 @@ public class AttributeParser {
                 Enchantment enchantment = FALLBACK_ITEM_ENCHANTMENT;
                 Optional<XEnchantment> enchantmentFromConfig = XEnchantment.matchXEnchantment(enchantmentName.toUpperCase());
                 if (enchantmentFromConfig.isPresent()) {
-                    enchantment = enchantmentFromConfig.get().parseEnchantment();
+                    enchantment = enchantmentFromConfig.get().getEnchant();
                 } else {
                     Toolkit.printToConsole(String.format("&7[&b&lKIT-PVP&7] &cUnknown enchantment [%s], defaulting to [THORNS].", enchantmentName));
                 }
