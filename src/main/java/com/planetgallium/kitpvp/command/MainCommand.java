@@ -238,9 +238,9 @@ public class MainCommand implements CommandExecutor {
                             int amount = Integer.parseInt(possibleAmount);
                             arena.getStats().setStat(statsIdentifier, playerName, amount);
                             sender.sendMessage(resources.getMessages().getString("Messages.Commands.SetStats")
-                                                       .replace("%player%", playerName)
-                                                       .replace("%amount%", String.valueOf(amount))
-                                                       .replace("%type%", statsIdentifier));
+                                    .replace("%player%", playerName)
+                                    .replace("%amount%", String.valueOf(amount))
+                                    .replace("%type%", statsIdentifier));
                             return true;
 
                         } else {
@@ -250,15 +250,15 @@ public class MainCommand implements CommandExecutor {
                     } else {
 
                         sender.sendMessage(resources.getMessages().getString("Messages.Error.InvalidNumber")
-                                                   .replace("%number%", possibleAmount));
+                                .replace("%number%", possibleAmount));
 
                     }
 
                 } else {
 
                     sender.sendMessage(resources.getMessages().getString("Messages.Error.InvalidType")
-                                               .replace("%type%", statsIdentifier)
-                                               .replace("%types%", "kills, deaths, level, experience"));
+                            .replace("%type%", statsIdentifier)
+                            .replace("%types%", "kills, deaths, level, experience"));
 
                 }
 
@@ -304,20 +304,19 @@ public class MainCommand implements CommandExecutor {
 
                                     time--;
 
-                                    if (time != 0) {
+                                    if (beforeLocation.getBlockX() != p.getLocation().getBlockX() ||
+                                            beforeLocation.getBlockY() != p.getLocation().getBlockY() ||
+                                            beforeLocation.getBlockZ() != p.getLocation().getBlockZ() ||
+                                            p.isDead()) {
+                                        p.sendMessage(messages.getString("Messages.Error.Moved"));
+                                        spawnUsers.remove(p.getName());
+                                        cancel();
+                                    } else if (time != 0) {
 
                                         if (p.getGameMode() != GameMode.SPECTATOR) {
 
                                             p.sendMessage(messages.getString("Messages.Commands.Time").replace("%time%", String.valueOf(time)));
                                             XSound.play(p, "BLOCK_NOTE_BLOCK_SNARE, 1, 1");
-
-                                            if (beforeLocation.getBlockX() != p.getLocation().getBlockX() || beforeLocation.getBlockY() != p.getLocation().getBlockY() || beforeLocation.getBlockZ() != p.getLocation().getBlockZ()) {
-
-                                                p.sendMessage(messages.getString("Messages.Error.Moved"));
-                                                spawnUsers.remove(p.getName());
-                                                cancel();
-
-                                            }
 
                                         } else {
 
