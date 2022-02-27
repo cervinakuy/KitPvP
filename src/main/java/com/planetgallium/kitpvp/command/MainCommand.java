@@ -327,7 +327,6 @@ public class MainCommand implements CommandExecutor {
                                         }
 
                                     } else {
-
                                         p.sendMessage(messages.getString("Messages.Commands.Teleport"));
 
                                         arena.toSpawn(p, p.getWorld().getName());
@@ -492,7 +491,9 @@ public class MainCommand implements CommandExecutor {
         p.getInventory().clear();
 
         Toolkit.setMaxHealth(p, 20);
-        p.setHealth(20.0);
+        if (!p.isDead()) {
+            p.setHealth(20.0);
+        }
 
         for (PotionEffect effect : p.getActivePotionEffects()) {
             p.removePotionEffect(effect.getType());
