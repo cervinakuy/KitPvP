@@ -65,8 +65,10 @@ public class Game extends JavaPlugin implements Listener {
 		pm.registerEvents(getArena().getKillStreaks(), this);
 		
 		getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
-	    getCommand("kitpvp").setExecutor(new MainCommand(this));
-		
+		MainCommand mainCommand = new MainCommand(this);
+		pm.registerEvents(mainCommand, this);
+		getCommand("kitpvp").setExecutor(mainCommand);
+
 		new Metrics(this);
 		
 		new BukkitRunnable() {

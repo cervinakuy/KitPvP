@@ -12,7 +12,13 @@ import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -21,7 +27,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainCommand implements CommandExecutor {
+public class MainCommand implements CommandExecutor, Listener {
 
     private final List<String> spawnUsers = new ArrayList<>();
 
@@ -307,7 +313,8 @@ public class MainCommand implements CommandExecutor {
                                     if (beforeLocation.getBlockX() != p.getLocation().getBlockX() ||
                                             beforeLocation.getBlockY() != p.getLocation().getBlockY() ||
                                             beforeLocation.getBlockZ() != p.getLocation().getBlockZ() ||
-                                            p.isDead()) {
+                                            p.isDead() ||
+                                            !spawnUsers.contains(p.getName())) {
                                         p.sendMessage(messages.getString("Messages.Error.Moved"));
                                         spawnUsers.remove(p.getName());
                                         cancel();
@@ -472,6 +479,15 @@ public class MainCommand implements CommandExecutor {
         }
         return false;
 
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void cancelSpawnTeleport(EntityDamageEvent event) {
+        Entity entity = event.getEntity();
+        if (entity instanceof Player) {
+            Player player = (Player) entity;
+            spawnUsers.remove(player.getName());
+        }
     }
 
     private boolean hasPermission(CommandSender sender, String permission) {
