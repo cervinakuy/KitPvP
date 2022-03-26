@@ -21,7 +21,7 @@ public class Database {
         this.tables = new ArrayList<>();
 
         if (!host.equals("none")) {
-            // TODO: how to make things async?
+            // TODO: make things async?
             // MySQL
             Properties properties = new Properties();
             properties.setProperty("dataSourceClassName", "org.mariadb.jdbc.MariaDbDataSource");
@@ -33,8 +33,17 @@ public class Database {
 
             HikariConfig config = new HikariConfig(properties);
             config.setMaximumPoolSize(10);
+            config.setDriverClassName("org.mariadb.jdbc.Driver");
+            config.setJdbcUrl("jdbc:mariadb://localhost:3306/db");
+            config.addDataSourceProperty("user", "root");
+            config.addDataSourceProperty("password", "myPassword");
+            //config.setJdbcUrl("jdbc:mariadb://localhost:3306/db");
+            //config.addDataSourceProperty("user", "root");
+            //config.addDataSourceProperty("password", "myPassword");
+            //config.setAutoCommit(false);
 
             this.dataSource = new HikariDataSource(config);
+
         } else {
             // SQLite
             SQLiteDataSource sqLiteDataSource = new SQLiteDataSource();

@@ -20,9 +20,7 @@ public class Record {
      * Adds data to a row. If a column is already present, its data will
      * be updated.
      */
-    public void addData(String columnName, DataType dataType, Object data) {
-        // TODO: look into this being useless or potentially something that could cause problems
-        // or it may be a cool feature idk
+    public void addOrUpdateData(String columnName, DataType dataType, Object data) {
         Field field = new Field(columnName, dataType, data);
         int fieldIndex = getFieldIndexByName(columnName);
         if (fieldIndex == -1) {

@@ -10,10 +10,13 @@ import java.util.List;
 
 public class Table {
 
-    private final static String CREATE_TABLE_QUERY = "CREATE TABLE IF NOT EXISTS {table_name}" +
+    private final static String CREATE_TABLE_QUERY = "CREATE TABLE IF NOT EXISTS {table_name};" +
             "({columns_with_data_types}, PRIMARY KEY ({primary_key}));";
-    public final static String DELETE_TABLE_QUERY = "DROP TABLE IF EXISTS {table_name}";
+    public final static String DELETE_TABLE_QUERY = "DROP TABLE IF EXISTS {table_name};";
     private final static String INSERT_RECORD_QUERY = "INSERT INTO {table_name} ({columns}) VALUES ({values});";
+    private final static String UPDATE_RECORD_QUERY = "UPDATE {table_name} SET {columns_with_values} " +
+            "WHERE {primary_key}={primary_key_value};";
+    private final static String SEARCH_RECORD_QUERY = "SELECT * FROM {table_name} WHERE {column_to_search_name}=?;";
     private final static String GET_RECORD_QUERY = "SELECT * FROM {table_name} WHERE `{primary_field_name}`=?;";
     private final static String DELETE_RECORD_QUERY = "DELETE FROM {table_name} WHERE `{primary_field_name}`=?;";
 
@@ -41,9 +44,15 @@ public class Table {
     }
 
     public void insertRecord(Field ... fields) {
+        if (!fields[0].getName().equals(primaryKey.getName())) {
+            System.out.printf("[Database] Failed to insert record; primary key %s does not match table key\n",
+                    fields[0].getName());
+            return;
+        }
+
         Record record = new Record();
         for (Field field : fields) {
-            record.addData(field.getName(), field.getDataType(), field.getValue());
+            record.addOrUpdateData(field.getName(), field.getDataType(), field.getValue());
         }
         insertRecord(record);
     }
@@ -75,6 +84,72 @@ public class Table {
 
     }
 
+    /**
+     * Updates an existing record (row).
+     * If the fields parameter contains the primary key field (ex: uuid), it will update its key value to that
+     * given in the fields
+     * It will NOT change the primary key column for all database entries in any way
+     */
+    public void updateRecord(Field keyOfRecordToUpdate, Field ... fields) {
+        if (!containsPrimaryKey(fields)) {
+            String updateQuery = Table.UPDATE_RECORD_QUERY.replace("{table_name}", this.getName())
+                    .replace("{columns_with_values}", formatFieldNamesWithValues(fields))
+                    .replace("{primary_key}", primaryKey.getName())
+                    .replace("{primary_key_value}", keyOfRecordToUpdate.getValue().toString());
+            try (Connection connection = dataSource.getConnection() ;
+                 PreparedStatement statement = connection.prepareStatement(updateQuery)) {
+                statement.executeUpdate();
+            } catch (SQLException exception) {
+                exception.printStackTrace();
+            }
+        } else {
+            Record newUpdatedRecord = getRecord(keyOfRecordToUpdate);
+            for (Field field : fields) {
+                newUpdatedRecord.addOrUpdateData(field.getName(), field.getDataType(), field.getValue());
+            }
+
+            deleteRecord(keyOfRecordToUpdate);
+            insertRecord(newUpdatedRecord);
+        }
+    }
+
+    /**
+     * Searches the database for any records with the matching field value. For example, the field value
+     * could be a username "cervinakuy", of which there should only be 1 record that contains that username
+     * value. Alternatively, could return a list of multiple elements with all matching records. For example,
+     * searching the database with the field name "kills" and value 6 would return all the records that have
+     * 6 kills.
+     *
+     * Do NOT use if fieldToSearchFor is the primary key. In that case, use getRecord instead
+     */
+    public List<Record> searchRecords(Field fieldToSearchFor) {
+        List<Record> matchingRecords = new ArrayList<>();
+        if (fieldToSearchFor.getName().equals(this.getPrimaryKey().getName())) {
+            return matchingRecords; // should use getRecord instead
+        }
+
+        String searchQuery = Table.SEARCH_RECORD_QUERY.replace("{table_name}", this.getName())
+                .replace("{column_to_search_name}", fieldToSearchFor.getName());
+        try (Connection connection = dataSource.getConnection() ;
+             PreparedStatement statement = connection.prepareStatement(searchQuery)) {
+            setStatementParameterToType(statement, 1, fieldToSearchFor);
+
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                Record recordResult = new Record();
+                for (int i = 0; i < masterRecord.getFields().size(); i++) {
+                    Field field = masterRecord.getFields().get(i);
+                    recordResult.addOrUpdateData(field.getName(), field.getDataType(), setObjectType(field, resultSet));
+                }
+                matchingRecords.add(recordResult);
+            }
+
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
+        return matchingRecords;
+    }
+
     public Record getRecord(Field keyToRecord) {
         if (!verifyPrimaryKey(this, keyToRecord)) return null;
 
@@ -86,23 +161,13 @@ public class Table {
 
             ResultSet resultSet = statement.executeQuery();
             Record recordToReturn = new Record();
-            if (!resultSet.next()) { // ResultSet (meaning usually database/table) is empty
-                return null;
-            }
-
-            for (int i = 0; i < masterRecord.getFields().size(); i++) {
-                Field field = masterRecord.getFields().get(i);
-                Object data = null;
-                if (field.getDataType() == DataType.STRING) {
-                    data = resultSet.getString(field.getName());
-                } else if (field.getDataType() == DataType.INTEGER) {
-                    data = resultSet.getInt(field.getName());
-                } else if (field.getDataType() == DataType.FLOAT) {
-                    data = resultSet.getFloat(field.getName());
+            if (resultSet.next()) {
+                for (int i = 0; i < masterRecord.getFields().size(); i++) {
+                    Field field = masterRecord.getFields().get(i);
+                    recordToReturn.addOrUpdateData(field.getName(), field.getDataType(), setObjectType(field, resultSet));
                 }
-                recordToReturn.addData(field.getName(), field.getDataType(), data);
+                return recordToReturn;
             }
-            return recordToReturn;
         } catch (SQLException exception) {
             exception.printStackTrace();
         }
@@ -144,6 +209,34 @@ public class Table {
         return result.length() > 0 ? result.substring(2) : result;
     }
 
+    /**
+     * Converts fields with values (ex: kills=16, experience=85, etc) to one string
+     * "kills=16 experience=85"
+     * to be used in SQL statements
+     */
+    private String formatFieldNamesWithValues(Field ... fields) {
+        String result = "";
+        for (Field field : fields) {
+            result += String.format(", %s=%s", field.getName(), field.getValue().toString());
+        }
+        return result.length() > 0 ? result.substring(2) : result;
+    }
+
+    private Object setObjectType(Field field, ResultSet resultSet) throws SQLException {
+        DataType dataType = field.getDataType();
+        String fieldName = field.getName();
+        Object data = null;
+
+        if (dataType == DataType.STRING) {
+            data = resultSet.getString(fieldName);
+        } else if (dataType == DataType.INTEGER) {
+            data = resultSet.getInt(fieldName);
+        } else if (dataType == DataType.FLOAT) {
+            data = resultSet.getFloat(fieldName);
+        }
+        return data;
+    }
+
     private void setStatementParameterToType(PreparedStatement statement, int parameterIndex, Field primaryKey)
             throws SQLException {
         DataType dataType = primaryKey.getDataType();
@@ -165,6 +258,15 @@ public class Table {
             return false;
         }
         return true;
+    }
+
+    private boolean containsPrimaryKey(Field ... fields) {
+        for (Field field : fields) {
+            if (field.getName().equals(primaryKey.getName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public String getName() { return name; }
