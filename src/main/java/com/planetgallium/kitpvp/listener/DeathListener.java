@@ -284,11 +284,10 @@ public class DeathListener implements Listener {
 						@Override
 						public void run() {
 
-							if (killer instanceof Player) {
 
 								arena.updateScoreboards(killer, false);
 
-							}
+							
 
 						}
 
