@@ -28,11 +28,13 @@ import java.util.List;
 
 public class DeathListener implements Listener {
 
+	private final Game plugin;
 	private final Arena arena;
 	private final Resources resources;
 	private final Resource config;
 	
 	public DeathListener(Game plugin) {
+		this.plugin = plugin;
 		this.arena = plugin.getArena();
 		this.resources = plugin.getResources();
 		this.config = resources.getConfig();
@@ -42,7 +44,6 @@ public class DeathListener implements Listener {
 	public void onDeath(PlayerDeathEvent e) {
 
 		// investigate possible memory leak when FancyDeath is enabled
-
 		if (Toolkit.inArena(e.getEntity())) {
 
 			Player victim = e.getEntity();
@@ -57,6 +58,7 @@ public class DeathListener implements Listener {
 
 			arena.getStats().addToStat("deaths", victim.getName(), 1);
 			arena.getStats().removeExperience(victim.getName(), resources.getLevels().getInt("Levels.Options.Experience-Taken-On-Death"));
+			arena.getStats().pushCachedStatsToDatabase(victim.getName()); // cached stats are pushed to database on death
 
 			if (config.getBoolean("Arena.DeathParticle")) {
 				victim.getWorld().playEffect(victim.getLocation().add(0.0D, 1.0D, 0.0D), Effect.STEP_SOUND, 152);
@@ -64,7 +66,10 @@ public class DeathListener implements Listener {
 
 			Toolkit.runCommands(victim, config.getStringList("Death.Commands"), "%victim%", victim.getName());
 
-			broadcast(victim.getWorld(), XSound.matchXSound(config.getString("Death.Sound.Sound")).get().parseSound(), 1, config.getInt("Death.Sound.Pitch"));
+			broadcast(victim.getWorld(),
+					XSound.matchXSound(config.getString("Death.Sound.Sound")).get().parseSound(),
+					1,
+					config.getInt("Death.Sound.Pitch"));
 
 		}
 	
@@ -72,26 +77,18 @@ public class DeathListener implements Listener {
 
 	@EventHandler
 	public void onRespawn(PlayerRespawnEvent e) {
-
 		if (Toolkit.inArena(e.getPlayer())) {
-
 			if (!config.getBoolean("Arena.FancyDeath")) {
-
 				Player p = e.getPlayer();
 
 				new BukkitRunnable() {
-
 					@Override
 					public void run() {
 						arena.toSpawn(p, p.getWorld().getName());
 					}
-
-				}.runTaskLater(Game.getInstance(), 1L);
-
+				}.runTaskLater(plugin, 1L);
 			}
-
 		}
-
 	}
 
 	private void respawnPlayer(Player victim) {
@@ -115,7 +112,7 @@ public class DeathListener implements Listener {
 
 				}
 
-			}.runTaskLater(Game.getInstance(), 1L);
+			}.runTaskLater(plugin, 1L);
 
 			arena.removePlayer(victim);
 			
@@ -153,7 +150,7 @@ public class DeathListener implements Listener {
 
 				}
 				
-			}.runTaskTimer(Game.getInstance(), 0L, 20L);
+			}.runTaskTimer(plugin, 0L, 20L);
 			
 		} else {
 
@@ -174,13 +171,18 @@ public class DeathListener implements Listener {
 
 				}
 
-			}.runTaskLater(Game.getInstance(), 1L);
+			}.runTaskLater(plugin, 1L);
 			
 		}
 		
 	}
 
 	private void setDeathMessage(Player victim) {
+
+		if (victim.getLastDamageCause() == null) {
+			broadcast(victim.getWorld(), getDeathMessage(victim, null, "Unknown"));
+			return;
+		}
 
 		DamageCause cause = victim.getLastDamageCause().getCause();
 
@@ -265,11 +267,8 @@ public class DeathListener implements Listener {
 	}
 
 	private void creditWithKill(Player victim, Player killer) {
-
 		if (victim != null && killer != null) {
-
 			if (!victim.getName().equals(killer.getName())) {
-
 				arena.getStats().addToStat("kills", killer.getName(), 1);
 				arena.getStats().addExperience(killer, resources.getLevels().getInt("Levels.Options.Experience-Given-On-Kill"));
 
@@ -278,28 +277,15 @@ public class DeathListener implements Listener {
 				Toolkit.runCommands(killer, killCommands, "%killer%", killer.getName());
 
 				if (resources.getScoreboard().getBoolean("Scoreboard.General.Enabled")) {
-
 					new BukkitRunnable() {
-
 						@Override
 						public void run() {
-
-							if (killer instanceof Player) {
-
-								arena.updateScoreboards(killer, false);
-
-							}
-
+							arena.updateScoreboards(killer, false);
 						}
-
-					}.runTaskLater(Game.getInstance(), 20L);
-
+					}.runTaskLater(plugin, 20L);
 				}
-
 			}
-
 		}
-
 	}
 
 	private String getDeathMessage(Player victim, Player killer, String type) {

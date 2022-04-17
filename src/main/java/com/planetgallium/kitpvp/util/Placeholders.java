@@ -1,5 +1,6 @@
 package com.planetgallium.kitpvp.util;
 
+import com.planetgallium.database.TopEntry;
 import com.planetgallium.kitpvp.Game;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.entity.Player;
@@ -51,10 +52,10 @@ public class Placeholders extends PlaceholderExpansion {
 				Toolkit.printToConsole("%prefix% &cFailed to properly parse placeholder, expected number but received: " + possibleTopValue);
 			}
 
-			PlayerEntry entry = arena.getLeaderboards().getTopN(topType, topValue);
+			TopEntry entry = arena.getLeaderboards().getTopN(topType, topValue);
 			boolean isUsernamePlaceholder = topIdentifier.equals("player");
 
-			return isUsernamePlaceholder ? entry.getUsername() : String.valueOf(entry.getData());
+			return isUsernamePlaceholder ? entry.getIdentifier() : String.valueOf(entry.getValue());
 
 		}
 

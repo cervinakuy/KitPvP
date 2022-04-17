@@ -1,13 +1,15 @@
 package com.planetgallium.kitpvp.game;
 
 import com.cryptomorin.xseries.XSound;
+import com.planetgallium.database.DataType;
+import com.planetgallium.database.TopEntry;
 import com.planetgallium.kitpvp.Game;
 import com.planetgallium.kitpvp.api.PlayerLevelUpEvent;
 import com.planetgallium.kitpvp.util.*;
-import com.zp4rker.localdb.DataType;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Stats {
@@ -16,26 +18,39 @@ public class Stats {
     private final Resources resources;
     private final Resource levels;
     private final Leaderboards leaderboards;
+    private final List<String> statIdentifiers;
+
+    // TODO: determine if repetitive calls to isPlayerRegistered is necessary. Maybe database always handles it anyway
 
     public Stats(Game plugin, Arena arena) {
         this.database = plugin.getDatabase();
         this.resources = plugin.getResources();
         this.levels = plugin.getResources().getLevels();
         this.leaderboards = arena.getLeaderboards();
+        this.statIdentifiers = new ArrayList<>();
+        statIdentifiers.add("kills");
+        statIdentifiers.add("deaths");
+        statIdentifiers.add("experience");
+        statIdentifiers.add("level");
     }
 
     public void createPlayer(Player p) {
         CacheManager.getUUIDCache().put(p.getName(), p.getUniqueId().toString());
-        if (!isPlayerRegistered(p.getName())) {
-            database.createPlayerStats(p);
-        }
+        database.createPlayerStatsIfNew(p);
     }
 
-    public boolean isPlayerRegistered(String username) {
-        return database.databaseTableContainsPlayer("stats", username);
+    private boolean isPlayerRegistered(String username) {
+        if (CacheManager.getStatsCache().containsKey(username)) { // try to use cache first to be faster
+            return true;
+        }
+        return database.isPlayerRegistered(username);
     }
 
     public double getKDRatio(String username) {
+        if (!isPlayerRegistered(username)) {
+            return 0.0;
+        }
+
         if (getStat("deaths", username) != 0) {
             double divided = (double) getStat("kills", username) / getStat("deaths", username);
             return Toolkit.round(divided, 2);
@@ -44,13 +59,21 @@ public class Stats {
     }
 
     public void removeExperience(String username, int amount) {
-        if (levels.getBoolean("Levels.Levels.Enabled") && isPlayerRegistered(username)) {
+        if (!isPlayerRegistered(username)) {
+            return;
+        }
+
+        if (levels.getBoolean("Levels.Levels.Enabled")) {
             int currentExperience = getStat("experience", username);
             setStat("experience", username, currentExperience >= amount ? currentExperience - amount : 0);
         }
     }
 
     public void addExperience(Player p, int experienceToAdd) {
+        if (!isPlayerRegistered(p.getName())) {
+            return;
+        }
+
         if (levels.getBoolean("Levels.Levels.Enabled")) {
             int currentExperience = getStat("experience", p.getName());
             int newExperience = applyPossibleXPMultiplier(p, currentExperience + experienceToAdd);
@@ -68,6 +91,9 @@ public class Stats {
     }
 
     public void levelUp(Player p) {
+        if (!isPlayerRegistered(p.getName())) {
+            return;
+        }
 
         String username = p.getName();
 
@@ -92,7 +118,6 @@ public class Stats {
         } else {
             setStat("experience", username, 0);
         }
-
     }
 
     public void addToStat(String identifier, String username, int amount) {
@@ -101,22 +126,36 @@ public class Stats {
     }
 
     public void setStat(String identifier, String username, int data) {
-        if (isPlayerRegistered(username)) {
-            PlayerData playerData = getOrCreateStatsCache(username);
-            playerData.setDataByIdentifier(identifier, data);
+        if (!isPlayerRegistered(username)) {
+            return;
+        }
 
-            database.setData("stats", identifier, data, DataType.INTEGER, username);
-            leaderboards.updateCache(identifier, new PlayerEntry(username, data));
-        } else {
-            Toolkit.printToConsole(String.format("&7[&b&lKIT-PVP&7] &cFailed to set stats of player %s; not in database.", username));
+        getOrCreateStatsCache(username).setDataByIdentifier(identifier, data);
+        leaderboards.updateRankings(identifier, new TopEntry(username, data));
+    }
+
+    public void pushCachedStatsToDatabase(String username) {
+        PlayerData cachedPlayerData = getOrCreateStatsCache(username);
+
+        for (String statIdentifier : statIdentifiers) {
+            int data = cachedPlayerData.getDataByIdentifier(statIdentifier);
+            database.setData("stats", statIdentifier, data, DataType.INTEGER, username);
         }
     }
 
     public int getStat(String identifier, String username) {
+        if (!isPlayerRegistered(username)) {
+            return -1;
+        }
+
         return getOrCreateStatsCache(username).getDataByIdentifier(identifier);
     }
 
     private PlayerData getOrCreateStatsCache(String username) {
+        if (!isPlayerRegistered(username)) {
+            return new PlayerData(-1, -1, -1, -1);
+        }
+
         if (!CacheManager.getStatsCache().containsKey(username)) {
             int kills = (int) database.getData("stats", "kills", username);
             int deaths = (int) database.getData("stats", "deaths", username);
@@ -130,14 +169,12 @@ public class Stats {
     }
 
     public int getRegularOrRelativeNeededExperience(String username) {
-
         int level = getStat("level", username);
 
         if (levels.contains("Levels.Levels." + level + ".Experience-To-Level-Up")) {
             return levels.getInt("Levels.Levels." + level + ".Experience-To-Level-Up");
         }
         return levels.getInt("Levels.Options.Experience-To-Level-Up");
-
     }
 
 }
