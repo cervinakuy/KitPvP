@@ -8,12 +8,14 @@ import com.planetgallium.kitpvp.api.PlayerLevelUpEvent;
 import com.planetgallium.kitpvp.util.*;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Stats {
 
+    private final Game plugin;
     private final Infobase database;
     private final Resources resources;
     private final Resource levels;
@@ -23,6 +25,7 @@ public class Stats {
     // TODO: determine if repetitive calls to isPlayerRegistered is necessary. Maybe database always handles it anyway
 
     public Stats(Game plugin, Arena arena) {
+        this.plugin = plugin;
         this.database = plugin.getDatabase();
         this.resources = plugin.getResources();
         this.levels = plugin.getResources().getLevels();
@@ -135,12 +138,17 @@ public class Stats {
     }
 
     public void pushCachedStatsToDatabase(String username) {
-        PlayerData cachedPlayerData = getOrCreateStatsCache(username);
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                PlayerData cachedPlayerData = getOrCreateStatsCache(username);
 
-        for (String statIdentifier : statIdentifiers) {
-            int data = cachedPlayerData.getDataByIdentifier(statIdentifier);
-            database.setData("stats", statIdentifier, data, DataType.INTEGER, username);
-        }
+                for (String statIdentifier : statIdentifiers) {
+                    int data = cachedPlayerData.getDataByIdentifier(statIdentifier);
+                    database.setData("stats", statIdentifier, data, DataType.INTEGER, username);
+                }
+            }
+        }.runTaskAsynchronously(plugin);
     }
 
     public int getStat(String identifier, String username) {
