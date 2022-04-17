@@ -90,6 +90,14 @@ Commands:
     Kit: false
     Kits: false
     Stats: false
+Storage:
+  Type: sqlite
+  MySQL:
+    Host: 127.0.0.1
+    Port: 3306
+    Database: kitpvp
+    Username: root
+    Password: password
 Arena:
   ClearPotionEffectsOnJoin: true
   ClearInventoryOnJoin: true
@@ -115,6 +123,8 @@ Arena:
   ResetKillStreakOnLeave: true
   ToSpawnOnJoin: true
   DeathParticles: true
+  AbilitiesRequireKit: true
+  IgnoreOccupiedSlotsOnKit: true
 Other:
   AutomaticallyAddKitToMenu: true
 Spawn:

@@ -30,8 +30,8 @@ public class Record {
         }
     }
 
-    public Object getFieldValue(String columnName) {
-        Field field = getFieldByName(columnName);
+    public Object getFieldValue(String fieldName) {
+        Field field = getFieldByName(fieldName);
         if (field != null) {
             return field.getValue();
         }
@@ -56,5 +56,7 @@ public class Record {
     }
 
     public List<Field> getFields() { return fields; }
+
+    public List<Field> getFieldsWithoutPrimaryKey() { return fields.subList(1, fields.size()); }
 
 }

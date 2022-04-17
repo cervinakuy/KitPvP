@@ -1,7 +1,7 @@
 package com.planetgallium.database;
 
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
+import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource;
+import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 import org.sqlite.SQLiteDataSource;
 
 import javax.sql.DataSource;
@@ -10,51 +10,60 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 public class Database {
 
-    private final DataSource dataSource;
+    private DataSource dataSource;
     private final List<Table> tables;
+
+    public Database(String localDatabaseFileName) {
+        this("none", -1, localDatabaseFileName, "none", "none");
+    }
 
     public Database(String host, int port, String database, String username, String password) {
         this.tables = new ArrayList<>();
 
         if (!host.equals("none")) {
-            // TODO: make things async?
-            // MySQL
-            Properties properties = new Properties();
-            properties.setProperty("dataSourceClassName", "org.mariadb.jdbc.MariaDbDataSource");
-            properties.setProperty("dataSource.serverName", host);
-            properties.setProperty("dataSource.portNumber", String.valueOf(port));
-            properties.setProperty("dataSource.user", username);
-            properties.setProperty("dataSource.password", password);
-            properties.setProperty("dataSource.databaseName", database);
-
-            HikariConfig config = new HikariConfig(properties);
-            config.setMaximumPoolSize(10);
-            config.setDriverClassName("org.mariadb.jdbc.Driver");
-            config.setJdbcUrl("jdbc:mariadb://localhost:3306/db");
-            config.addDataSourceProperty("user", "root");
-            config.addDataSourceProperty("password", "myPassword");
-            //config.setJdbcUrl("jdbc:mariadb://localhost:3306/db");
-            //config.addDataSourceProperty("user", "root");
-            //config.addDataSourceProperty("password", "myPassword");
-            //config.setAutoCommit(false);
-
-            this.dataSource = new HikariDataSource(config);
-
+            setupMySQL(host, port, database, username, password);
         } else {
-            // SQLite
-            SQLiteDataSource sqLiteDataSource = new SQLiteDataSource();
-            sqLiteDataSource.setUrl("jdbc:sqlite:" + database);
-
-            this.dataSource = sqLiteDataSource;
+            setupSQLite(database);
         }
     }
 
-    public Database(String localDatabaseFileName) {
-        this("none", -1, localDatabaseFileName, "none", "none");
+    private void setupMySQL(String host, int port, String database, String username, String password) {
+        MysqlDataSource dataSource = new MysqlConnectionPoolDataSource(); // new MysqlDataSource();
+        dataSource.setServerName(host);
+        dataSource.setPortNumber(port);
+        dataSource.setCreateDatabaseIfNotExist(true); // idk
+        dataSource.setDatabaseName(database);
+        dataSource.setUser(username);
+        dataSource.setPassword(password);
+
+        this.dataSource = dataSource;
+
+        try {
+            testDatabaseConnection();
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+            System.out.println("[Database] Connection to MySQL database failed. Using SQLite instead...");
+            setupSQLite("storage.db");
+        }
+    }
+
+    private void setupSQLite(String databaseFileName) {
+        SQLiteDataSource sqLiteDataSource = new SQLiteDataSource();
+        sqLiteDataSource.setUrl("jdbc:sqlite:" + databaseFileName);
+
+        this.dataSource = sqLiteDataSource;
+    }
+
+    private void testDatabaseConnection() throws SQLException {
+        try (Connection connection = dataSource.getConnection()) {
+            if (!connection.isValid(1)) {
+                throw new SQLException("Could not establish database connection");
+            }
+        }
+
     }
 
     public Table createTable(String tableName, Record masterRecord) {
@@ -88,5 +97,7 @@ public class Database {
         }
         return null;
     }
+
+    public List<Table> getTables() { return tables; }
 
 }

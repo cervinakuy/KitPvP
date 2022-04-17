@@ -10,15 +10,17 @@ import java.util.List;
 
 public class Table {
 
-    private final static String CREATE_TABLE_QUERY = "CREATE TABLE IF NOT EXISTS {table_name};" +
+    private final static String CREATE_TABLE_QUERY = "CREATE TABLE IF NOT EXISTS {table_name} " +
             "({columns_with_data_types}, PRIMARY KEY ({primary_key}));";
     public final static String DELETE_TABLE_QUERY = "DROP TABLE IF EXISTS {table_name};";
     private final static String INSERT_RECORD_QUERY = "INSERT INTO {table_name} ({columns}) VALUES ({values});";
     private final static String UPDATE_RECORD_QUERY = "UPDATE {table_name} SET {columns_with_values} " +
-            "WHERE {primary_key}={primary_key_value};";
+            "WHERE `{primary_key}`='{primary_key_value}';";
     private final static String SEARCH_RECORD_QUERY = "SELECT * FROM {table_name} WHERE {column_to_search_name}=?;";
     private final static String GET_RECORD_QUERY = "SELECT * FROM {table_name} WHERE `{primary_field_name}`=?;";
     private final static String DELETE_RECORD_QUERY = "DELETE FROM {table_name} WHERE `{primary_field_name}`=?;";
+    private final static String TOP_N_RECORD_QUERY = "SELECT {return_column_name}, {sort_column_name} FROM " +
+            "{table_name} ORDER BY {sort_column_name} DESC LIMIT {n};";
 
     private final DataSource dataSource;
 
@@ -69,6 +71,7 @@ public class Table {
         String insertRecordQuery = Table.INSERT_RECORD_QUERY.replace("{table_name}", this.getName())
                 .replace("{columns}", columns)
                 .replace("{values}", values);
+        System.out.println("Insert: [" + insertRecordQuery + "]");
         try (Connection connection = dataSource.getConnection() ;
              PreparedStatement statement = connection.prepareStatement(insertRecordQuery)) {
 
@@ -84,6 +87,8 @@ public class Table {
 
     }
 
+    // TODO: modify updateRecord to become updateRecord(Record rec), and make separate method to change primary
+    // key value. Or overload so that you can have updateReocrd(key, field .. fields) and updateRecord(rec)
     /**
      * Updates an existing record (row).
      * If the fields parameter contains the primary key field (ex: uuid), it will update its key value to that
@@ -96,6 +101,7 @@ public class Table {
                     .replace("{columns_with_values}", formatFieldNamesWithValues(fields))
                     .replace("{primary_key}", primaryKey.getName())
                     .replace("{primary_key_value}", keyOfRecordToUpdate.getValue().toString());
+            System.out.println("Update q: [" + updateQuery + "]");
             try (Connection connection = dataSource.getConnection() ;
                  PreparedStatement statement = connection.prepareStatement(updateQuery)) {
                 statement.executeUpdate();
@@ -139,7 +145,8 @@ public class Table {
                 Record recordResult = new Record();
                 for (int i = 0; i < masterRecord.getFields().size(); i++) {
                     Field field = masterRecord.getFields().get(i);
-                    recordResult.addOrUpdateData(field.getName(), field.getDataType(), setObjectType(field, resultSet));
+                    recordResult.addOrUpdateData(field.getName(), field.getDataType(),
+                            setObjectType(field, resultSet));
                 }
                 matchingRecords.add(recordResult);
             }
@@ -164,7 +171,8 @@ public class Table {
             if (resultSet.next()) {
                 for (int i = 0; i < masterRecord.getFields().size(); i++) {
                     Field field = masterRecord.getFields().get(i);
-                    recordToReturn.addOrUpdateData(field.getName(), field.getDataType(), setObjectType(field, resultSet));
+                    recordToReturn.addOrUpdateData(field.getName(), field.getDataType(),
+                            setObjectType(field, resultSet));
                 }
                 return recordToReturn;
             }
@@ -188,6 +196,26 @@ public class Table {
         }
     }
 
+    public List<TopEntry> getTopN(Field sortField, Field returnField, int n) {
+        String topNQuery = Table.TOP_N_RECORD_QUERY.replace("{table_name}", this.getName())
+                .replace("{return_column_name}", returnField.getName())
+                .replace("{sort_column_name}", sortField.getName())
+                .replace("{n}", String.valueOf(n));
+
+        List<TopEntry> topNResults = new ArrayList<>();
+        try (Connection connection = dataSource.getConnection() ;
+             PreparedStatement statement = connection.prepareStatement(topNQuery)) {
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                topNResults.add(new TopEntry(resultSet.getString(returnField.getName()),
+                        resultSet.getInt(sortField.getName())));
+            }
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
+        return topNResults;
+    }
+
     private List<String> recordFieldsToList(Record record, boolean fieldNames) {
         List<String> fields = new ArrayList<>();
         for (Field field : record.getFields()) {
@@ -205,6 +233,10 @@ public class Table {
         String result = "";
         for (Field field : record.getFields()) {
             result += String.format(", %s %s", field.getName(), field.getSQLDataType());
+            if (field.getDataType() == DataType.FIXED_STRING ||
+                    field.getDataType() == DataType.STRING) {
+                result += String.format("(%d)", field.getLimit()); // for "VARCHAR(25)" or "CHAR(25)" for example
+            }
         }
         return result.length() > 0 ? result.substring(2) : result;
     }

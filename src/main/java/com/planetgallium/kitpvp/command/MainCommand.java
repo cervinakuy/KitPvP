@@ -100,7 +100,7 @@ public class MainCommand implements CommandExecutor {
                 }
 
                 sender.sendMessage(Toolkit.translate("&7[&b&lKIT-PVP&7] &aServer Version: &7" + Bukkit.getBukkitVersion()) + " " + (Bukkit.getVersion().contains("Spigot") ? "(Spigot)" : "(Other)"));
-                sender.sendMessage(Toolkit.translate("&7[&b&lKIT-PVP&7] &aPlugin Version: " + plugin.getDescription().getVersion() + " " + (plugin.needsUpdate() ? "&c(Requires Update)" : "&a(Latest Version)")));
+                sender.sendMessage(Toolkit.translate("&7[&b&lKIT-PVP&7] &aPlugin Version: &7" + plugin.getDescription().getVersion() + " " + (plugin.needsUpdate() ? "&c(Requires Update)" : "&a(Latest Version)")));
                 sender.sendMessage(Toolkit.translate("&7[&b&lKIT-PVP&7] &aSpawn Set: " + (config.contains("Arenas") ? "&aConfigured" : "&cUnconfigured")));
                 sender.sendMessage(Toolkit.translate("&7[&b&lKIT-PVP&7] &aSupport Discord: &7https://discord.gg/Hfej6UR8Bk"));
                 sender.sendMessage(Toolkit.translate("&7[&b&lKIT-PVP&7] &aPlugin List: &7" + names));
@@ -182,7 +182,7 @@ public class MainCommand implements CommandExecutor {
 
                 String targetName = args[1];
 
-                if (plugin.getDatabase().databaseTableContainsPlayer("stats", targetName)) {
+                if (plugin.getDatabase().isPlayerRegistered(targetName)) {
                     sendStatsMessage(sender, targetName);
                 } else {
                     sender.sendMessage(messages.getString("Messages.Error.Offline"));
@@ -237,6 +237,8 @@ public class MainCommand implements CommandExecutor {
 
                             int amount = Integer.parseInt(possibleAmount);
                             arena.getStats().setStat(statsIdentifier, playerName, amount);
+                            arena.getStats().pushCachedStatsToDatabase(playerName);
+
                             sender.sendMessage(resources.getMessages().getString("Messages.Commands.SetStats")
                                                        .replace("%player%", playerName)
                                                        .replace("%amount%", String.valueOf(amount))
