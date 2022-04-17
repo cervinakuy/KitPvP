@@ -2,6 +2,7 @@ package com.planetgallium.kitpvp.util;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.*;
@@ -19,7 +20,9 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 
 public class Toolkit {
-	
+
+	private static final Material FALLBACK_MATERIAL = Material.BEDROCK;
+
 	public static boolean inArena(World world) {
 
 		if (Game.getInstance().getResources().getConfig().contains("Arenas")) {
@@ -410,7 +413,6 @@ public class Toolkit {
 	}
 
 	public static int getMaxHealth(Player p) {
-
 		if (Toolkit.versionToNumber() >= 19) {
 			AttributeInstance healthAttribute = p.getAttribute(Attribute.GENERIC_MAX_HEALTH);
 			assert healthAttribute != null;
@@ -418,7 +420,17 @@ public class Toolkit {
 		}
 
 		return (int) p.getMaxHealth();
+	}
 
+	public static ItemStack safeStack(String materialName) {
+		Optional<XMaterial> materialOptional = XMaterial.matchXMaterial(materialName);
+		if (materialOptional.isPresent()) {
+			Material material = materialOptional.get().parseMaterial();
+			if (material != null) {
+				return new ItemStack(material);
+			}
+		}
+		return new ItemStack(Toolkit.FALLBACK_MATERIAL);
 	}
 
 }

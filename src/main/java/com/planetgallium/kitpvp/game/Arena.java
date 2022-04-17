@@ -2,7 +2,6 @@ package com.planetgallium.kitpvp.game;
 
 import java.util.*;
 
-import com.cryptomorin.xseries.XMaterial;
 import com.planetgallium.kitpvp.util.*;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -125,16 +124,14 @@ public class Arena {
 	}
 	
 	public void deletePlayer(Player p) {
-		
 		if (config.getBoolean("Arena.ClearInventoryOnLeave")) {
 			p.getInventory().clear();
 			p.getInventory().setArmorContents(null);
 		}
 
 		CacheManager.getPlayerAbilityCooldowns(p.getName()).clear();
-
 		hitCache.remove(p.getName());
-		
+		stats.pushCachedStatsToDatabase(p.getName());
 	}
 	
 	public void giveItems(Player p) {
@@ -146,8 +143,7 @@ public class Arena {
 			String itemPath = "Items." + identifier;
 
 			if (config.getBoolean(itemPath + ".Enabled")) {
-
-				ItemStack item = new ItemStack(XMaterial.matchXMaterial(config.getString(itemPath + ".Material")).get().parseMaterial());
+				ItemStack item = Toolkit.safeStack(config.getString(itemPath + ".Material"));
 				ItemMeta meta = item.getItemMeta();
 
 				meta.setDisplayName(config.getString(itemPath + ".Name"));
@@ -162,23 +158,21 @@ public class Arena {
 	}
 
 	public void toSpawn(Player p, String arenaName) {
-
 		if (config.contains("Arenas." + arenaName)) {
-
-			p.teleport(Toolkit.getLocationFromResource(config, "Arenas." + arenaName + "." + generateRandomArenaSpawn(arenaName)));
-
+			p.teleport(Toolkit.getLocationFromResource(config,
+					"Arenas." + arenaName + "." + generateRandomArenaSpawn(arenaName)));
 		} else {
-
-			p.sendMessage(resources.getMessages().getString("Messages.Error.Arena").replace("%arena%", arenaName));
-
+			p.sendMessage(resources.getMessages().getString("Messages.Error.Arena")
+					.replace("%arena%", arenaName));
 		}
-
 	}
 	
 	public void updateScoreboards(Player p, boolean hide) {
 		
 		Scoreboard board = Bukkit.getScoreboardManager().getNewScoreboard();
-		Infoboard scoreboard = new Infoboard(board, resources.getScoreboard().getString("Scoreboard.General.Title"));
+		String scoreboardTitle = addPlaceholdersIfPossible(p,
+				resources.getScoreboard().getString("Scoreboard.General.Title"));
+		Infoboard scoreboard = new Infoboard(board, scoreboardTitle);
 		
 		if (!hide) {
 
@@ -231,7 +225,8 @@ public class Arena {
 		}
 
 		if (s.contains("%max_level%")) {
-			s = s.replace("%max_level%", String.valueOf(resources.getLevels().getInt("Levels.Options.Maximum-Level")));
+			s = s.replace("%max_level%",
+					String.valueOf(resources.getLevels().getInt("Levels.Options.Maximum-Level")));
 		}
 
 		if (s.contains("%kd%")) {
