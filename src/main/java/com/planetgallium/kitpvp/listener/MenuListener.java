@@ -19,11 +19,13 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 public class MenuListener implements Listener {
 
+    private final Game plugin;
     private final Arena arena;
     private final Resource config;
     private final Resource menuConfig;
 
     public MenuListener(Game plugin) {
+        this.plugin = plugin;
         this.arena = plugin.getArena();
         this.config = plugin.getResources().getConfig();
         this.menuConfig = plugin.getResources().getMenu();
@@ -75,7 +77,7 @@ public class MenuListener implements Listener {
                                     Toolkit.runCommands(p, menuConfig.getStringList(itemPath + ".Commands." + clickType), "none", "none");
                                 }
 
-                            }.runTaskLater(Game.getInstance(), 1L);
+                            }.runTaskLater(plugin, 1L);
 
                         }
 
@@ -96,7 +98,7 @@ public class MenuListener implements Listener {
                             Toolkit.runCommands(p, config.getStringList("PreviewMenuBackArrowCommands"), "none", "none");
                         }
 
-                    }.runTaskLater(Game.getInstance(), 1L);
+                    }.runTaskLater(plugin, 1L);
 
                 } else {
 

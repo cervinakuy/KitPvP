@@ -16,9 +16,11 @@ import com.planetgallium.kitpvp.util.Toolkit;
 
 public class ArrowListener implements Listener {
 
+	private Game plugin;
 	private Resource config;
 
 	public ArrowListener(Game plugin) {
+		this.plugin = plugin;
 		this.config = plugin.getResources().getConfig();
 	}
 
@@ -59,7 +61,7 @@ public class ArrowListener implements Listener {
 								
 							}
 							
-						}.runTaskLater(Game.getInstance(), 2L);
+						}.runTaskLater(plugin, 2L);
 						
 					}
 					

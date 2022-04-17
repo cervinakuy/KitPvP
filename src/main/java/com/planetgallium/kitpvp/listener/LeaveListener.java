@@ -11,7 +11,7 @@ import com.planetgallium.kitpvp.game.Arena;
 
 public class LeaveListener implements Listener {
 
-	private Arena arena;
+	private final Arena arena;
 	
 	public LeaveListener(Game plugin) {
 		this.arena = plugin.getArena();
@@ -19,13 +19,10 @@ public class LeaveListener implements Listener {
 	
 	@EventHandler
 	public void onLeave(PlayerQuitEvent e) {
-		
 		Player p = e.getPlayer();
-
 		if (Toolkit.inArena(p)) {
 			arena.deletePlayer(p);
 		}
-		
 	}
 	
 }

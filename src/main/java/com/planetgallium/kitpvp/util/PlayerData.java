@@ -2,6 +2,8 @@ package com.planetgallium.kitpvp.util;
 
 public class PlayerData {
 
+    // TODO: change to using a Map<String, Integer>???
+
     private int kills, deaths, experience, level;
 
     public PlayerData(int kills, int deaths, int experience, int level) {

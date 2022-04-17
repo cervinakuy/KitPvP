@@ -1,18 +1,16 @@
 package com.planetgallium.kitpvp.game;
 
-import java.util.UUID;
-
+import com.planetgallium.database.DataType;
 import com.planetgallium.kitpvp.Game;
 import com.planetgallium.kitpvp.api.Ability;
 import com.planetgallium.kitpvp.api.Kit;
 import com.planetgallium.kitpvp.util.CacheManager;
 import com.planetgallium.kitpvp.util.Cooldown;
-import com.zp4rker.localdb.DataType;
 import org.bukkit.entity.Player;
 
 public class Cooldowns {
 
-	private Infobase database;
+	private final Infobase database;
 	
 	public Cooldowns(Game plugin) {
 		this.database = plugin.getDatabase();

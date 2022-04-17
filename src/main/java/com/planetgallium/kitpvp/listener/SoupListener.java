@@ -16,11 +16,13 @@ import org.bukkit.scheduler.BukkitRunnable;
 import com.planetgallium.kitpvp.Game;
 
 public class SoupListener implements Listener {
-	
-	private Resource config;
-	private int soupBoost;
+
+	private final Game plugin;
+	private final Resource config;
+	private final int soupBoost;
 	
 	public SoupListener(Game plugin) {
+		this.plugin = plugin;
 		this.config = plugin.getResources().getConfig();
 		this.soupBoost = plugin.getConfig().getInt("Soups.RegenAmount");
 	}
@@ -76,7 +78,7 @@ public class SoupListener implements Listener {
 								
 							}
 							
-						}.runTaskLater(Game.getInstance(), config.getInt("Kill.SoupReward.Delay") * 20);
+						}.runTaskLater(plugin, config.getInt("Kill.SoupReward.Delay") * 20);
 						
 					}
 					
