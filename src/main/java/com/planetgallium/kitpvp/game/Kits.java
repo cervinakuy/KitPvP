@@ -9,7 +9,6 @@ import com.planetgallium.kitpvp.api.Kit;
 import com.planetgallium.kitpvp.api.PlayerSelectKitEvent;
 import com.planetgallium.kitpvp.item.AttributeParser;
 import com.planetgallium.kitpvp.util.*;
-import com.zp4rker.localdb.Table;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -17,7 +16,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
@@ -177,6 +175,8 @@ public class Kits {
 
         kit.setFill(AttributeParser.getItemStackFromPath(resource, "Inventory.Items.Fill"));
         kit.setOffhand(AttributeParser.getItemStackFromPath(resource, "Inventory.Items.Offhand"));
+
+        kit.setOption("IgnoreOccupiedSlots", resources.getConfig().getBoolean("Arena.IgnoreOccupiedSlotsOnKit"));
 
         AttributeParser.getAbilitiesFromResource(resource).forEach(ability -> kit.addAbility(ability));
 

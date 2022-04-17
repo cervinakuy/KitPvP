@@ -23,6 +23,7 @@ public class Kit {
     private int level;
     private int health;
 
+    private final Map<String, Object> options;
     private final Map<Integer, ItemStack> inventory;
     private final List<PotionEffect> effects;
     private final List<Ability> abilities;
@@ -35,13 +36,12 @@ public class Kit {
     private ItemStack fill;
 
     public Kit(String name) {
-
         this.name = name;
 
+        this.options = new HashMap<>();
         this.inventory = new HashMap<>();
         this.effects = new ArrayList<>();
         this.abilities = new ArrayList<>();
-
     }
 
     public void setPermission(String permission) {
@@ -58,6 +58,10 @@ public class Kit {
 
     public void setHealth(int health) {
         this.health = health;
+    }
+
+    public void setOption(String key, Object value) {
+        this.options.put(key, value);
     }
 
     public void setInventoryItem(int slot, ItemStack item) {
@@ -128,7 +132,13 @@ public class Kit {
 
         Toolkit.setMaxHealth(player, health);
 
+        boolean ignoreOccupiedSlots = (boolean) options.get("IgnoreOccupiedSlots");
+
         for (int i = 0; i < 36; i++) {
+            if (!ignoreOccupiedSlots && player.getInventory().getItem(i) != null) {
+                continue; // this does not replace occupied slots if "IgnoreOccupiedSlotsOnKit" is false
+            }
+
             if (inventory.get(i) != null) {
                 player.getInventory().setItem(i, inventory.get(i));
             } else {
