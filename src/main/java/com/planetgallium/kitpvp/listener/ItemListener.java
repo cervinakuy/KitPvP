@@ -35,13 +35,15 @@ import com.planetgallium.kitpvp.util.Resources;
 import com.planetgallium.kitpvp.util.Toolkit;
 
 public class ItemListener implements Listener {
-	
+
+	private final Game plugin;
 	private final Arena arena;
 	private final Resources resources;
 	private final Resource config;
 	private final Resource abilities;
 	
 	public ItemListener(Game plugin) {
+		this.plugin = plugin;
 		this.arena = plugin.getArena();
 		this.resources = plugin.getResources();
 		this.config = resources.getConfig();
@@ -188,7 +190,7 @@ public class ItemListener implements Listener {
 
 						}
 
-					}.runTaskLater(Game.getInstance(), 100L);
+					}.runTaskLater(plugin, 100L);
 
 				}
 
@@ -224,7 +226,7 @@ public class ItemListener implements Listener {
 
 						}
 
-					}.runTaskTimer(Game.getInstance(), 0L, 20L);
+					}.runTaskTimer(plugin, 0L, 20L);
 
 					useAbilityItem(p, null, item, "Bomber");
 
@@ -371,31 +373,24 @@ public class ItemListener implements Listener {
 	}
 
 	private boolean isAbilityItem(Player p, String kitName, ItemStack interactedItem) {
+		if (Toolkit.hasMatchingDisplayName(interactedItem, abilities.getString("Abilities." + kitName + ".Item.Name"))) {
+			String abilityPermission = "kp.ability." + kitName.toLowerCase();
 
-		if (arena.getKits().hasKit(p.getName())) {
-
-			if (Toolkit.hasMatchingDisplayName(interactedItem, abilities.getString("Abilities." + kitName + ".Item.Name"))) {
-
-				String abilityPermission = "kp.ability." + kitName.toLowerCase();
-
-				if (p.hasPermission(abilityPermission)) {
-
-					if (arena.isCombatActionPermittedInRegion(p)) {
-						return true;
-					}
-
-				} else {
-
-					p.sendMessage(resources.getMessages().getString("Messages.General.Permission").replace("%permission%", abilityPermission));
-
+			if (p.hasPermission(abilityPermission)) {
+				if (config.getBoolean("Arena.AbilitiesRequireKit") && !arena.getKits().hasKit(p.getName())) {
+					p.sendMessage(resources.getMessages().getString("Messages.Error.Kit"));
+					return false;
 				}
 
+				if (arena.isCombatActionPermittedInRegion(p)) {
+					return true;
+				}
+			} else {
+				p.sendMessage(resources.getMessages().getString("Messages.General.Permission").replace("%permission%", abilityPermission));
 			}
-
 		}
 
 		return false;
-
 	}
 
 	private void useAbilityItem(Player p, Player clicked, ItemStack abilityItem, String kitName) {
@@ -510,7 +505,7 @@ public class ItemListener implements Listener {
 
 								}
 
-							}.runTaskLater(Game.getInstance(), 5 * 20);
+							}.runTaskLater(plugin, 5 * 20);
 
 						}
 
