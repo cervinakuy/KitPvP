@@ -132,6 +132,7 @@ public class Arena {
 		CacheManager.getPlayerAbilityCooldowns(p.getName()).clear();
 		hitCache.remove(p.getName());
 		stats.pushCachedStatsToDatabase(p.getName());
+		CacheManager.getStatsCache().remove(p.getName());
 	}
 	
 	public void giveItems(Player p) {

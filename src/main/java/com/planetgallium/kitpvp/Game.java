@@ -92,7 +92,6 @@ public class Game extends JavaPlugin implements Listener {
 	}
 
 	private void checkUpdate() {
-
 		Updater.of(this).resourceId(27107).handleResponse((versionResponse, version) -> {
 			switch (versionResponse) {
 				case FOUND_NEW:
@@ -105,7 +104,6 @@ public class Game extends JavaPlugin implements Listener {
 					break;
 			}
 		}).check();
-		
 	}
 	
 	@EventHandler
@@ -143,6 +141,14 @@ public class Game extends JavaPlugin implements Listener {
 
 		}
 		
+	}
+
+	@Override
+	public void onDisable() {
+		// for players that haven't died and had their stats pushed
+//		for (String username : CacheManager.getStatsCache().keySet()) {
+//			arena.getStats().pushCachedStatsToDatabase(username);
+//		}
 	}
 
 	public boolean hasPlaceholderAPI() { return hasPlaceholderAPI; }

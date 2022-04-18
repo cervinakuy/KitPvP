@@ -31,17 +31,17 @@ public class Database {
     }
 
     private void setupMySQL(String host, int port, String database, String username, String password) {
-        MysqlDataSource dataSource = new MysqlConnectionPoolDataSource(); // new MysqlDataSource();
-        dataSource.setServerName(host);
-        dataSource.setPortNumber(port);
-        dataSource.setCreateDatabaseIfNotExist(true); // idk
-        dataSource.setDatabaseName(database);
-        dataSource.setUser(username);
-        dataSource.setPassword(password);
-
-        this.dataSource = dataSource;
-
         try {
+            MysqlDataSource dataSource = new MysqlConnectionPoolDataSource(); // new MysqlDataSource();
+            dataSource.setServerName(host);
+            dataSource.setPortNumber(port);
+            dataSource.setCreateDatabaseIfNotExist(true); // idk
+            dataSource.setDatabaseName(database);
+            dataSource.setUser(username);
+            dataSource.setPassword(password);
+
+            this.dataSource = dataSource;
+
             testDatabaseConnection();
         } catch (SQLException exception) {
             exception.printStackTrace();
