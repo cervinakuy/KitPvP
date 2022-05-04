@@ -31,6 +31,7 @@ public class Placeholders extends PlaceholderExpansion {
 		placeholderAPItoBuiltIn.put("player_kit", "%kit%");
 		placeholderAPItoBuiltIn.put("max_level", "%max_level%");
 		placeholderAPItoBuiltIn.put("max_xp", "%max_xp%");
+		placeholderAPItoBuiltIn.put("level_prefix", "%level_prefix%");
 	}
 	
 	@Override
@@ -39,7 +40,6 @@ public class Placeholders extends PlaceholderExpansion {
 		if (p == null) return null;
 
 		if (identifier.contains("top")) {
-
 			String[] queries = identifier.split("_");
 			String topType = queries[1]; // ex: kills
 			String topIdentifier = queries[2]; // ex: amount, player
@@ -56,7 +56,6 @@ public class Placeholders extends PlaceholderExpansion {
 			boolean isUsernamePlaceholder = topIdentifier.equals("player");
 
 			return isUsernamePlaceholder ? entry.getIdentifier() : String.valueOf(entry.getValue());
-
 		}
 
 		return translatePlaceholderAPIPlaceholders(identifier, p.getName());

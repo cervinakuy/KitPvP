@@ -26,13 +26,17 @@ public class Arena {
 
 	private final Map<String, String> hitCache;
 
+	private final Utilities utilties;
 	private final Leaderboards leaderboards;
 	private final Stats stats;
 	private final Kits kits;
 	private final KillStreaks killstreaks;
 	private final Cooldowns cooldowns;
 	private final Menus menus;
-	
+
+
+	// TODO: maybe move some of these helper methods to a separate class (Utilities.java?)
+
 	public Arena(Game plugin, Resources resources) {
 		this.plugin = plugin;
 		this.random = new Random();
@@ -42,6 +46,7 @@ public class Arena {
 
 		this.hitCache = new HashMap<>();
 
+		this.utilties = new Utilities(plugin);
 		this.leaderboards = new Leaderboards(plugin);
 		this.stats = new Stats(plugin, this);
 		this.kits = new Kits(plugin, this);
@@ -95,7 +100,6 @@ public class Arena {
 	}
 	
 	public void removePlayer(Player p) {
-
 		CacheManager.getPlayerAbilityCooldowns(p.getName()).clear();
 
 		for (PotionEffect effect : p.getActivePotionEffects()) {
@@ -119,8 +123,8 @@ public class Arena {
 			updateScoreboards(p, true);
 		}
 
+		stats.pushCachedStatsToDatabase(p.getName(), false); // cached stats are pushed to database on death
 		hitCache.remove(p.getName());
-		
 	}
 	
 	public void deletePlayer(Player p) {
@@ -131,8 +135,7 @@ public class Arena {
 
 		CacheManager.getPlayerAbilityCooldowns(p.getName()).clear();
 		hitCache.remove(p.getName());
-		stats.pushCachedStatsToDatabase(p.getName());
-		CacheManager.getStatsCache().remove(p.getName());
+		stats.pushCachedStatsToDatabase(p.getName(), true);
 	}
 	
 	public void giveItems(Player p) {
@@ -190,13 +193,11 @@ public class Arena {
 	}
 
 	private String addPlaceholdersIfPossible(Player p, String text) {
-
 		if (plugin.hasPlaceholderAPI()) {
 			text = PlaceholderAPI.setPlaceholders(p, text);
 		}
 
 		return replaceBuiltInPlaceholdersIfPresent(text, p.getName());
-
 	}
 
 	public String replaceBuiltInPlaceholdersIfPresent(String s, String username) {
@@ -219,6 +220,11 @@ public class Arena {
 
 		if (s.contains("%level%")) {
 			s = s.replace("%level%", String.valueOf(stats.getStat("level", username)));
+		}
+
+		if (s.contains("%level_prefix%")) {
+			String levelPrefix = utilties.getPlayerLevelPrefix(username);
+			s = s.replace("%level_prefix%", levelPrefix);
 		}
 
 		if (s.contains("%max_xp%")) {
@@ -281,6 +287,8 @@ public class Arena {
 	public Map<String, String> getHitCache() { return hitCache; }
 
 	public Stats getStats() { return stats; }
+
+	public Utilities getUtilities() { return utilties; }
 
 	public Leaderboards getLeaderboards() { return leaderboards; }
 	

@@ -12,8 +12,8 @@ import com.planetgallium.kitpvp.util.Toolkit;
 
 public class ChatListener implements Listener {
 
-	private Arena arena;
-	private Resources resources;
+	private final Arena arena;
+	private final Resources resources;
 	
 	public ChatListener(Game plugin) {
 		this.arena = plugin.getArena();
@@ -26,10 +26,7 @@ public class ChatListener implements Listener {
 		if (resources.getConfig().getBoolean("Chat.Enabled") && Toolkit.inArena(e.getPlayer())) {
 			
 			Player p = e.getPlayer();
-
-			String playerLevel = String.valueOf(arena.getStats().getStat("level", p.getName()));
-			String levelPrefix = resources.getLevels().getString("Levels.Levels." + playerLevel + ".Prefix")
-					.replace("%level%", playerLevel);
+			String levelPrefix = arena.getUtilities().getPlayerLevelPrefix(p.getName());
 
 			String format = resources.getConfig().getString("Chat.Format")
 					.replace("%player%", "%s")
