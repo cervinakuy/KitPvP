@@ -237,7 +237,7 @@ public class MainCommand implements CommandExecutor {
 
                             int amount = Integer.parseInt(possibleAmount);
                             arena.getStats().setStat(statsIdentifier, playerName, amount);
-                            arena.getStats().pushCachedStatsToDatabase(playerName);
+                            arena.getStats().pushCachedStatsToDatabase(playerName, false);
 
                             sender.sendMessage(resources.getMessages().getString("Messages.Commands.SetStats")
                                                        .replace("%player%", playerName)
@@ -423,7 +423,7 @@ public class MainCommand implements CommandExecutor {
                     if (arena.getKits().isKit(kitName)) {
 
                         Kit kitToPreview = arena.getKits().getKitByName(kitName);
-                        arena.getMenus().getPreviewMenu().open(p, kitToPreview);
+                        arena.getMenus().getPreviewMenu().open(p, kitToPreview, resources);
 
                     } else {
 
