@@ -57,8 +57,8 @@ public class DeathListener implements Listener {
 			respawnPlayer(victim);
 
 			arena.getStats().addToStat("deaths", victim.getName(), 1);
-			arena.getStats().removeExperience(victim.getName(), resources.getLevels().getInt("Levels.Options.Experience-Taken-On-Death"));
-			arena.getStats().pushCachedStatsToDatabase(victim.getName()); // cached stats are pushed to database on death
+			arena.getStats().removeExperience(victim.getName(),
+					resources.getLevels().getInt("Levels.Options.Experience-Taken-On-Death"));
 
 			if (config.getBoolean("Arena.DeathParticle")) {
 				victim.getWorld().playEffect(victim.getLocation().add(0.0D, 1.0D, 0.0D), Effect.STEP_SOUND, 152);
