@@ -249,9 +249,7 @@ public class Kits {
     }
 
     public Kit getKitByName(String kitName) {
-
         return loadKitFromCacheOrCreate(kitName);
-
     }
 
     private String trimName(String kitNameWithFileEnding) {
@@ -272,14 +270,12 @@ public class Kits {
     }
 
     public Kit getKitOfPlayer(String playerName) {
-
         String kitName = kits.get(playerName);
         if (kitName == null) {
             return null;
         }
 
         return loadKitFromCacheOrCreate(kitName);
-
     }
 
     private Kit loadKitFromCacheOrCreate(String kitName) {
