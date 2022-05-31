@@ -34,11 +34,7 @@ public class MenuListener implements Listener {
     @EventHandler
     public void onClick(InventoryClickEvent e) {
 
-//        System.out.println("sldfjsdkfjk j");
-
         if (e.getClickedInventory() != null) {
-
-//            System.out.println("here");
 
             Player p = (Player) e.getWhoClicked();
 
@@ -109,13 +105,6 @@ public class MenuListener implements Listener {
             }
 
         }
-
-    }
-
-    @EventHandler
-    public void onThing(PlayerDropItemEvent e) {
-
-        //System.out.println("Tesdfjksdfk");
 
     }
 
