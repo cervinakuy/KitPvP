@@ -71,7 +71,6 @@ public class Table {
         String insertRecordQuery = Table.INSERT_RECORD_QUERY.replace("{table_name}", this.getName())
                 .replace("{columns}", columns)
                 .replace("{values}", values);
-        System.out.println("Insert: [" + insertRecordQuery + "]");
         try (Connection connection = dataSource.getConnection() ;
              PreparedStatement statement = connection.prepareStatement(insertRecordQuery)) {
 
@@ -84,11 +83,8 @@ public class Table {
         } catch (SQLException exception) {
             exception.printStackTrace();
         }
-
     }
 
-    // TODO: modify updateRecord to become updateRecord(Record rec), and make separate method to change primary
-    // key value. Or overload so that you can have updateReocrd(key, field .. fields) and updateRecord(rec)
     /**
      * Updates an existing record (row).
      * If the fields parameter contains the primary key field (ex: uuid), it will update its key value to that
@@ -101,7 +97,6 @@ public class Table {
                     .replace("{columns_with_values}", formatFieldNamesWithValues(fields))
                     .replace("{primary_key}", primaryKey.getName())
                     .replace("{primary_key_value}", keyOfRecordToUpdate.getValue().toString());
-            System.out.println("Update q: [" + updateQuery + "]");
             try (Connection connection = dataSource.getConnection() ;
                  PreparedStatement statement = connection.prepareStatement(updateQuery)) {
                 statement.executeUpdate();
@@ -116,6 +111,21 @@ public class Table {
 
             deleteRecord(keyOfRecordToUpdate);
             insertRecord(newUpdatedRecord);
+        }
+    }
+
+    public void updateRecord(Record record) {
+        Field keyOfRecordToUpdate = record.getFields().get(0); // NOTE: assuming first field is always key
+        List<Field> fieldsWithoutKey = record.getFieldsWithoutPrimaryKey();
+
+        updateRecord(keyOfRecordToUpdate, fieldsWithoutKey.toArray(new Field[0]));
+    }
+
+    public void updateOrInsertRecord(Record record) {
+        if (getRecord(record.getFields().get(0)) == null) {
+            insertRecord(record);
+        } else {
+            updateRecord(record);
         }
     }
 
@@ -160,7 +170,8 @@ public class Table {
     public Record getRecord(Field keyToRecord) {
         if (!verifyPrimaryKey(this, keyToRecord)) return null;
 
-        String getRecordQuery = Table.GET_RECORD_QUERY.replace("{table_name}", this.getName())
+        String getRecordQuery = Table.GET_RECORD_QUERY
+                .replace("{table_name}", this.getName())
                 .replace("{primary_field_name}", keyToRecord.getName());
         try (Connection connection = dataSource.getConnection() ;
              PreparedStatement statement = connection.prepareStatement(getRecordQuery)) {
@@ -274,7 +285,7 @@ public class Table {
         DataType dataType = primaryKey.getDataType();
         String valueAsString = primaryKey.getValue().toString();
 
-        if (dataType == DataType.STRING) {
+        if (dataType == DataType.STRING || dataType == DataType.FIXED_STRING) {
             statement.setString(parameterIndex, valueAsString);
         } else if (dataType == DataType.INTEGER) {
             statement.setInt(parameterIndex, Integer.parseInt(valueAsString));

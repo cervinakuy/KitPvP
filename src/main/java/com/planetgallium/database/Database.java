@@ -8,20 +8,20 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Database {
 
     private DataSource dataSource;
-    private final List<Table> tables;
+    private final Map<String, Table> tables;
 
     public Database(String localDatabaseFileName) {
         this("none", -1, localDatabaseFileName, "none", "none");
     }
 
     public Database(String host, int port, String database, String username, String password) {
-        this.tables = new ArrayList<>();
+        this.tables = new HashMap<>();
 
         if (!host.equals("none")) {
             setupMySQL(host, port, database, username, password);
@@ -68,13 +68,12 @@ public class Database {
 
     public Table createTable(String tableName, Record masterRecord) {
         Table table = new Table(dataSource, tableName, masterRecord);
-
-        tables.add(table);
+        tables.put(tableName, table);
         return table;
     }
 
     public void deleteTable(String tableName) {
-        Table table = getTableByName(tableName);
+        Table table = tables.get(tableName);
         if (table == null) {
             System.out.printf("[Database] Failed to delete table %s; table not found\n", tableName);
             return;
@@ -89,15 +88,10 @@ public class Database {
         }
     }
 
-    public Table getTableByName(String tableName) {
-        for (Table table : this.tables) {
-            if (table.getName().equals(tableName)) {
-                return table;
-            }
-        }
-        return null;
+    public Table getTable(String tableName) {
+        return tables.get(tableName);
     }
 
-    public List<Table> getTables() { return tables; }
+    public Map<String, Table> getTables() { return tables; }
 
 }

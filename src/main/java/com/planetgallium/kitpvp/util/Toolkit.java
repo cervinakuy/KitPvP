@@ -341,9 +341,7 @@ public class Toolkit {
 	}
 
 	public static String translate(String s) {
-
 		return ChatColor.translateAlternateColorCodes('&', s.replace("%prefix%", Game.getPrefix()));
-
 	}
 
 	public static int getNextAvailable(FileConfiguration yamlConfig, String path, int limit, boolean zeroBased, int fallbackAmount) {

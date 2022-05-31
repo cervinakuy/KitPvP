@@ -1,7 +1,6 @@
 package com.planetgallium.kitpvp.game;
 
 import com.cryptomorin.xseries.XSound;
-import com.planetgallium.database.DataType;
 import com.planetgallium.database.TopEntry;
 import com.planetgallium.kitpvp.Game;
 import com.planetgallium.kitpvp.api.PlayerLevelUpEvent;
@@ -10,7 +9,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Stats {
@@ -20,9 +18,6 @@ public class Stats {
     private final Resources resources;
     private final Resource levels;
     private final Leaderboards leaderboards;
-    private final List<String> statIdentifiers;
-
-    // TODO: determine if repetitive calls to isPlayerRegistered is necessary. Maybe database always handles it anyway
 
     public Stats(Game plugin, Arena arena) {
         this.plugin = plugin;
@@ -30,16 +25,11 @@ public class Stats {
         this.resources = plugin.getResources();
         this.levels = plugin.getResources().getLevels();
         this.leaderboards = arena.getLeaderboards();
-        this.statIdentifiers = new ArrayList<>();
-        statIdentifiers.add("kills");
-        statIdentifiers.add("deaths");
-        statIdentifiers.add("experience");
-        statIdentifiers.add("level");
     }
 
     public void createPlayer(Player p) {
         CacheManager.getUUIDCache().put(p.getName(), p.getUniqueId().toString());
-        database.createPlayerStatsIfNew(p);
+        database.registerPlayerStats(p);
     }
 
     private boolean isPlayerRegistered(String username) {
@@ -50,10 +40,6 @@ public class Stats {
     }
 
     public double getKDRatio(String username) {
-        if (!isPlayerRegistered(username)) {
-            return 0.0;
-        }
-
         if (getStat("deaths", username) != 0) {
             double divided = (double) getStat("kills", username) / getStat("deaths", username);
             return Toolkit.round(divided, 2);
@@ -62,10 +48,6 @@ public class Stats {
     }
 
     public void removeExperience(String username, int amount) {
-        if (!isPlayerRegistered(username)) {
-            return;
-        }
-
         if (levels.getBoolean("Levels.Levels.Enabled")) {
             int currentExperience = getStat("experience", username);
             setStat("experience", username, currentExperience >= amount ? currentExperience - amount : 0);
@@ -73,10 +55,6 @@ public class Stats {
     }
 
     public void addExperience(Player p, int experienceToAdd) {
-        if (!isPlayerRegistered(p.getName())) {
-            return;
-        }
-
         if (levels.getBoolean("Levels.Levels.Enabled")) {
             int currentExperience = getStat("experience", p.getName());
             int newExperience = applyPossibleXPMultiplier(p, currentExperience + experienceToAdd);
@@ -94,10 +72,6 @@ public class Stats {
     }
 
     public void levelUp(Player p) {
-        if (!isPlayerRegistered(p.getName())) {
-            return;
-        }
-
         String username = p.getName();
 
         if (getStat("level", username) < levels.getInt("Levels.Options.Maximum-Level")) {
@@ -133,19 +107,17 @@ public class Stats {
             return;
         }
 
-        getOrCreateStatsCache(username).setDataByIdentifier(identifier, data);
+        getOrCreateStatsCache(username).setData(identifier, data);
         leaderboards.updateRankings(identifier, new TopEntry(username, data));
     }
 
-    public void pushCachedStatsToDatabase(String username) {
+    public void pushCachedStatsToDatabase(String username, boolean removeFromCacheAfter) {
         new BukkitRunnable() {
             @Override
             public void run() {
-                PlayerData cachedPlayerData = getOrCreateStatsCache(username);
-
-                for (String statIdentifier : statIdentifiers) {
-                    int data = cachedPlayerData.getDataByIdentifier(statIdentifier);
-                    database.setData("stats", statIdentifier, data, DataType.INTEGER, username);
+                database.setStatsData(username, getOrCreateStatsCache(username));
+                if (removeFromCacheAfter) {
+                    CacheManager.getStatsCache().remove(username);
                 }
             }
         }.runTaskAsynchronously(plugin);
@@ -156,22 +128,16 @@ public class Stats {
             return -1;
         }
 
-        return getOrCreateStatsCache(username).getDataByIdentifier(identifier);
+        return getOrCreateStatsCache(username).getData(identifier);
     }
 
-    private PlayerData getOrCreateStatsCache(String username) {
+    public PlayerData getOrCreateStatsCache(String username) {
         if (!isPlayerRegistered(username)) {
             return new PlayerData(-1, -1, -1, -1);
         }
 
         if (!CacheManager.getStatsCache().containsKey(username)) {
-            int kills = (int) database.getData("stats", "kills", username);
-            int deaths = (int) database.getData("stats", "deaths", username);
-            int experience = (int) database.getData("stats", "experience", username);
-            int level = (int) database.getData("stats", "level", username);
-            PlayerData playerData = new PlayerData(kills, deaths, experience, level);
-
-            CacheManager.getStatsCache().put(username, playerData);
+            CacheManager.getStatsCache().put(username, database.getStatsData(username));
         }
         return CacheManager.getStatsCache().get(username);
     }
