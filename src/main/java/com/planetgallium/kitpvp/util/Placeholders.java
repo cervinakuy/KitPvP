@@ -67,7 +67,7 @@ public class Placeholders extends PlaceholderExpansion {
 	public String translatePlaceholderAPIPlaceholders(String placeholderAPIIdentifier, String username) {
 		if (placeholderAPItoBuiltIn.containsKey(placeholderAPIIdentifier)) {
 			String toBuiltInPlaceholder = placeholderAPItoBuiltIn.get(placeholderAPIIdentifier);
-			return arena.replaceBuiltInPlaceholdersIfPresent(toBuiltInPlaceholder, username);
+			return arena.getUtilities().replaceBuiltInPlaceholdersIfPresent(toBuiltInPlaceholder, username);
 		} else {
 			Toolkit.printToConsole(String.format("&7[&b&lKIT-PVP&7] &cUnknown placeholder identifier [%s]. " +
 							"Please see plugin page.", placeholderAPIIdentifier));

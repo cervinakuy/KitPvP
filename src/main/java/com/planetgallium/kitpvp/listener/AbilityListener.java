@@ -27,7 +27,7 @@ public class AbilityListener implements Listener {
 	public void onAbility(PlayerAbilityEvent e) {
 		Player p = e.getPlayer();
 
-		if (!arena.isCombatActionPermittedInRegion(p)) {
+		if (!arena.getUtilities().isCombatActionPermittedInRegion(p)) {
 			return;
 		}
 

@@ -511,7 +511,7 @@ public class MainCommand implements CommandExecutor {
     private void sendStatsMessage(CommandSender receiver, String username) {
 
         for (String line : messages.getStringList("Messages.Stats.Message")) {
-            receiver.sendMessage(arena.replaceBuiltInPlaceholdersIfPresent(line, username));
+            receiver.sendMessage(arena.getUtilities().replaceBuiltInPlaceholdersIfPresent(line, username));
         }
 
     }

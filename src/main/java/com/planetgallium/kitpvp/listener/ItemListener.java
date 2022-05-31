@@ -7,6 +7,7 @@ import java.util.Random;
 import com.cryptomorin.xseries.XMaterial;
 import com.cryptomorin.xseries.XSound;
 import com.planetgallium.kitpvp.api.Kit;
+import com.planetgallium.kitpvp.game.Utilities;
 import com.planetgallium.kitpvp.util.Resource;
 import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
@@ -38,6 +39,7 @@ public class ItemListener implements Listener {
 
 	private final Game plugin;
 	private final Arena arena;
+	private final Utilities utilities;
 	private final Resources resources;
 	private final Resource config;
 	private final Resource abilities;
@@ -45,6 +47,7 @@ public class ItemListener implements Listener {
 	public ItemListener(Game plugin) {
 		this.plugin = plugin;
 		this.arena = plugin.getArena();
+		this.utilities = plugin.getArena().getUtilities();
 		this.resources = plugin.getResources();
 		this.config = resources.getConfig();
 		this.abilities = resources.getAbilities();
@@ -95,7 +98,7 @@ public class ItemListener implements Listener {
 
 				if (config.getBoolean("TNT.Enabled") && Toolkit.hasMatchingDisplayName(item, config.getString("TNT.Name"))) {
 
-					if (!arena.isCombatActionPermittedInRegion(p)) {
+					if (!utilities.isCombatActionPermittedInRegion(p)) {
 						return;
 					}
 
@@ -382,7 +385,7 @@ public class ItemListener implements Listener {
 					return false;
 				}
 
-				if (arena.isCombatActionPermittedInRegion(p)) {
+				if (utilities.isCombatActionPermittedInRegion(p)) {
 					return true;
 				}
 			} else {
@@ -579,7 +582,7 @@ public class ItemListener implements Listener {
 							Player shooter = (Player) egg.getShooter();
 							Location shooterLocation = shooter.getLocation();
 
-							if (!arena.isCombatActionPermittedInRegion(damagedPlayer)) {
+							if (!utilities.isCombatActionPermittedInRegion(damagedPlayer)) {
 								shooter.sendMessage(resources.getMessages().getString("Messages.Error.PVP"));
 								return;
 							}
