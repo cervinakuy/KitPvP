@@ -1,0 +1,24 @@
+Activator:
+  Name: '&aStampede &7(Right Click)'
+  Material: FIREWORK_STAR
+Cooldown:
+  Cooldown: '60S'
+Message:
+  Message: '%prefix% &7You have used your ability.'
+Sound:
+  Sound: HORSE_ANGRY
+  Pitch: 0
+  Volume: 1
+Effects:
+  SPEED:
+    Level: 3
+    Duration: 5
+  REGENERATION:
+    Level: 3
+    Duration: 5
+  INCREASE_DAMAGE:
+    Level: 2
+    Duration: 5
+  NIGHT_VISION:
+    Level: 1
+    Duration: 5

@@ -1,62 +1,59 @@
 package com.planetgallium.kitpvp.util;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import com.planetgallium.kitpvp.Game;
 
 public class Resources {
 
 	private final Game plugin;
-	private final Map<String, Resource> kits;
+	private final Map<String, Resource> kitToResource;
+	private final Map<String, Resource> abilityToResource;
 
 	private final Resource config, abilities, killstreaks,
 							levels, menu, messages, scoreboard, signs;
 	
 	public Resources(Game plugin) {
-		
 		this.plugin = plugin;
-		this.kits = new HashMap<>();
+		this.kitToResource = new HashMap<>();
+		this.abilityToResource = new HashMap<>();
 
 		Toolkit.printToConsole("&7[&b&lKIT-PVP&7] &7Loading configuration files...");
+		this.config = new Resource(plugin, "config.yml");
+		this.abilities = new Resource(plugin, "abilities.yml");
+		this.killstreaks = new Resource(plugin, "killstreaks.yml");
+		this.levels = new Resource(plugin, "levels.yml");
+		this.menu = new Resource(plugin, "menu.yml");
+		this.messages = new Resource(plugin, "messages.yml");
+		this.scoreboard = new Resource(plugin, "scoreboard.yml");
+		this.signs = new Resource(plugin, "signs.yml");
 
 		if (!plugin.getDataFolder().exists()) {
-			kits.put("Fighter.yml", new Resource(plugin, "kits/Fighter.yml"));
-			kits.put("Archer.yml", new Resource(plugin, "kits/Archer.yml"));
-			kits.put("Tank.yml", new Resource(plugin, "kits/Tank.yml"));
-			kits.put("Soldier.yml", new Resource(plugin, "kits/Soldier.yml"));
-			kits.put("Bomber.yml", new Resource(plugin, "kits/Bomber.yml"));
-			kits.put("Kangaroo.yml", new Resource(plugin, "kits/Kangaroo.yml"));
-			kits.put("Warper.yml", new Resource(plugin, "kits/Warper.yml"));
-			kits.put("Witch.yml", new Resource(plugin, "kits/Witch.yml"));
-			kits.put("Ninja.yml", new Resource(plugin, "kits/Ninja.yml"));
-			kits.put("Thunderbolt.yml", new Resource(plugin, "kits/Thunderbolt.yml"));
-			kits.put("Vampire.yml", new Resource(plugin, "kits/Vampire.yml"));
-			kits.put("Rhino.yml", new Resource(plugin, "kits/Rhino.yml"));
-			kits.put("Example.yml", new Resource(plugin, "kits/Example.yml"));
-			kits.put("Trickster.yml", new Resource(plugin, "kits/Trickster.yml"));
-		}
+			kitToResource.put("Fighter.yml", new Resource(plugin, "kits/Fighter.yml"));
+			kitToResource.put("Archer.yml", new Resource(plugin, "kits/Archer.yml"));
+			kitToResource.put("Tank.yml", new Resource(plugin, "kits/Tank.yml"));
+			kitToResource.put("Soldier.yml", new Resource(plugin, "kits/Soldier.yml"));
+			kitToResource.put("Bomber.yml", new Resource(plugin, "kits/Bomber.yml"));
+			kitToResource.put("Kangaroo.yml", new Resource(plugin, "kits/Kangaroo.yml"));
+			kitToResource.put("Warper.yml", new Resource(plugin, "kits/Warper.yml"));
+			kitToResource.put("Witch.yml", new Resource(plugin, "kits/Witch.yml"));
+			kitToResource.put("Ninja.yml", new Resource(plugin, "kits/Ninja.yml"));
+			kitToResource.put("Thunderbolt.yml", new Resource(plugin, "kits/Thunderbolt.yml"));
+			kitToResource.put("Vampire.yml", new Resource(plugin, "kits/Vampire.yml"));
+			kitToResource.put("Rhino.yml", new Resource(plugin, "kits/Rhino.yml"));
+			kitToResource.put("Example.yml", new Resource(plugin, "kits/Example.yml"));
+			kitToResource.put("Trickster.yml", new Resource(plugin, "kits/Trickster.yml"));
 
-		config = new Resource(plugin, "config.yml");
-		abilities = new Resource(plugin, "abilities.yml");
-		killstreaks = new Resource(plugin, "killstreaks.yml");
-		levels = new Resource(plugin, "levels.yml");
-		menu = new Resource(plugin, "menu.yml");
-		messages = new Resource(plugin, "messages.yml");
-		scoreboard = new Resource(plugin, "scoreboard.yml");
-		signs = new Resource(plugin, "signs.yml");
+			abilityToResource.put("HealthPack.yml", new Resource(plugin, "abilities/HealthPack.yml"));
+			abilityToResource.put("ExampleAbility.yml", new Resource(plugin, "abilities/ExampleAbility.yml"));
+			abilityToResource.put("ExampleAbility2.yml", new Resource(plugin, "abilities/ExampleAbility2.yml"));
+			abilityToResource.put("SpeedBoost.yml", new Resource(plugin, "abilities/SpeedBoost.yml"));
+			abilityToResource.put("Stampede.yml", new Resource(plugin, "abilities/Stampede.yml"));
+		}
 
 		Toolkit.printToConsole("&7[&b&lKIT-PVP&7] &7Loading kit files...");
-
-		for (String fileName : this.getKitList(true)) {
-			kits.put(fileName, new Resource(plugin, "kits/" + fileName));
-		}
-
 		load();
-		
 	}
 	
 	public void load() {
@@ -89,16 +86,26 @@ public class Resources {
 
 		abilities.copyDefaults();
 		signs.copyDefaults();
-		
-		for (String fileName : kits.keySet()) {
-			kits.get(fileName).load();
+
+		// load new kits & abilities that have been added through file system (when doing /kp reload)
+		for (String fileName : getPluginDirectoryFiles("kits", true)) {
+			if (!kitToResource.containsKey(fileName)) {
+				kitToResource.put(fileName, new Resource(plugin, "kits/" + fileName));
+			}
 		}
 
-		// load new kits that have been added through file system (when doing /kp reload)
-		for (String fileName : getKitList(true)) {
-			if (!kits.containsKey(fileName)) {
-				kits.put(fileName, new Resource(plugin, "kits/" + fileName));
+		for (String fileName : getPluginDirectoryFiles("abilities", true)) {
+			if (!abilityToResource.containsKey(fileName)) {
+				abilityToResource.put(fileName, new Resource(plugin, "abilities/" + fileName));
 			}
+		}
+
+		for (String fileName : kitToResource.keySet()) {
+			kitToResource.get(fileName).load();
+		}
+
+		for (String fileName : abilityToResource.keySet()) {
+			abilityToResource.get(fileName).load();
 		}
 		
 	}
@@ -106,53 +113,34 @@ public class Resources {
 	public void reload() {
 		load();
 	}
-	
-	public void save() {
-
-		config.save();
-		abilities.save();
-		killstreaks.save();
-		levels.save();
-		menu.save();
-		messages.save();
-		scoreboard.save();
-		signs.save();
-		
-		for (String key : kits.keySet()) {
-			kits.get(key).save();
-		}
-		
-	}
 
 	public void addResource(String fileName, Resource resource) {
-		kits.put(fileName, resource);
-		kits.get(fileName).load();
+		kitToResource.put(fileName, resource);
+		kitToResource.get(fileName).load();
 	}
 	
 	public void removeResource(String fileName) {
-		kits.get(fileName).getFile().delete();
-		kits.remove(fileName);
+		kitToResource.get(fileName).getFile().delete();
+		kitToResource.remove(fileName);
 	}
 
 	public Resource getKit(String kitName) {
-		if (kits.containsKey(kitName + ".yml")) {
-			return kits.get(kitName + ".yml");
+		if (kitToResource.containsKey(kitName + ".yml")) {
+			return kitToResource.get(kitName + ".yml");
 		}
 		return null;
 	}
 
-	public List<String> getKitList(boolean withFileEndings) {
-
-		File folder = new File(plugin.getDataFolder().getAbsolutePath() + "/kits");
-		List<String> kitList = new ArrayList<>();
+	public List<String> getPluginDirectoryFiles(String directoryName, boolean withFileEndings) {
+		File folder = new File(plugin.getDataFolder().getAbsolutePath() + "/" + directoryName);
+		List<String> fileList = new ArrayList<>();
 
 		if (folder.exists() && folder.list() != null) {
 			for (String fileName : folder.list()) {
-				kitList.add(withFileEndings ? fileName : fileName.split(".yml")[0]);
+				fileList.add(withFileEndings ? fileName : fileName.split(".yml")[0]);
 			}
 		}
-		return kitList;
-
+		return fileList;
 	}
 
 	public Resource getConfig() { return config; }
@@ -170,5 +158,7 @@ public class Resources {
 	public Resource getScoreboard() { return scoreboard; }
 	
 	public Resource getSigns() { return signs; }
+
+	public Collection<Resource> getAbilityResources() { return abilityToResource.values(); }
 	
 }

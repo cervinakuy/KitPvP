@@ -30,10 +30,10 @@ public class Arena {
 	private final Leaderboards leaderboards;
 	private final Stats stats;
 	private final Kits kits;
+	private final Abilities abilities;
 	private final KillStreaks killstreaks;
 	private final Cooldowns cooldowns;
 	private final Menus menus;
-
 
 	// TODO: maybe move some of these helper methods to a separate class (Utilities.java?)
 
@@ -50,6 +50,7 @@ public class Arena {
 		this.leaderboards = new Leaderboards(plugin);
 		this.stats = new Stats(plugin, this);
 		this.kits = new Kits(plugin, this);
+		this.abilities = new Abilities(plugin);
 		this.killstreaks = new KillStreaks(resources);
 		this.cooldowns = new Cooldowns(plugin);
 		this.menus = new Menus(resources);
@@ -147,7 +148,7 @@ public class Arena {
 			String itemPath = "Items." + identifier;
 
 			if (config.getBoolean(itemPath + ".Enabled")) {
-				ItemStack item = Toolkit.safeStack(config.getString(itemPath + ".Material"));
+				ItemStack item = Toolkit.safeItemStack(config.getString(itemPath + ".Material"));
 				ItemMeta meta = item.getItemMeta();
 
 				meta.setDisplayName(config.getString(itemPath + ".Name"));
@@ -268,20 +269,15 @@ public class Arena {
 	}
 
 	public boolean isCombatActionPermittedInRegion(Player p) {
-
 		if (plugin.hasWorldGuard()) {
-
 			if (WorldGuardAPI.getInstance().allows(p, WorldGuardFlag.PVP.getFlag())) {
 				return true;
 			}
 
 			p.sendMessage(resources.getMessages().getString("Messages.Error.PVP"));
 			return false;
-
 		}
-
 		return true;
-
 	}
 
 	public Map<String, String> getHitCache() { return hitCache; }
@@ -293,6 +289,8 @@ public class Arena {
 	public Leaderboards getLeaderboards() { return leaderboards; }
 	
 	public Kits getKits() { return kits; }
+
+	public Abilities getAbilities() { return abilities; }
 	
 	public KillStreaks getKillStreaks() { return killstreaks; }
 	

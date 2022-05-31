@@ -90,13 +90,11 @@ public class Resource extends YamlConfiguration {
 	}
 	
 	public void save() {
-
 		try {
 			super.save(file);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
 	}
 
     @Override

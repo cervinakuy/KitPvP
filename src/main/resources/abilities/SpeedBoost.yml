@@ -1,0 +1,15 @@
+Activator:
+  Name: '&aSpeed Boost &7(Right Click)'
+  Material: FEATHER
+Cooldown:
+  Cooldown: '40S'
+Message:
+  Message: '%prefix% &7You have used a &bSpeed Boost&7.'
+Sound:
+  Sound: ZOMBIE_IDLE
+  Pitch: 1
+  Volume: 1
+Effects:
+  SPEED:
+    Amplifier: 7
+    Duration: 10

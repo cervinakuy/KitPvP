@@ -1,0 +1,18 @@
+Activator:
+  Name: '&aAbility Item'
+  Material: EMERALD
+Cooldown:
+  Cooldown: '10S'
+Message:
+  Message: '%prefix% &7This is an example ability message.'
+Sound:
+  Sound: NOTE_PLING
+  Pitch: 1
+  Volume: 1
+Effects:
+  SPEED:
+    Amplifier: 5
+    Duration: 10
+Commands:
+  - 'console: say Hi %player%, this is an example console command that can be run when you use your ability.'
+  - 'player: me This is an example player command that can be run when you use your ability.'

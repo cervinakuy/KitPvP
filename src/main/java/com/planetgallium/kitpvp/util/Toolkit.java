@@ -1,10 +1,13 @@
 package com.planetgallium.kitpvp.util;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import com.cryptomorin.xseries.XMaterial;
+import com.cryptomorin.xseries.XPotion;
+import com.cryptomorin.xseries.XSound;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
@@ -18,6 +21,7 @@ import com.planetgallium.kitpvp.Game;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.permissions.PermissionAttachmentInfo;
+import org.bukkit.potion.PotionEffectType;
 
 public class Toolkit {
 
@@ -400,16 +404,13 @@ public class Toolkit {
 	}
 
 	public static void setMaxHealth(Player p, int amount) {
-
 		if (Toolkit.versionToNumber() >= 19) {
 			AttributeInstance healthAttribute = p.getAttribute(Attribute.GENERIC_MAX_HEALTH);
 			assert healthAttribute != null;
 			healthAttribute.setBaseValue(amount);
 			return;
 		}
-
 		p.setMaxHealth(amount);
-
 	}
 
 	public static int getMaxHealth(Player p) {
@@ -422,7 +423,7 @@ public class Toolkit {
 		return (int) p.getMaxHealth();
 	}
 
-	public static ItemStack safeStack(String materialName) {
+	public static ItemStack safeItemStack(String materialName) {
 		Optional<XMaterial> materialOptional = XMaterial.matchXMaterial(materialName);
 		if (materialOptional.isPresent()) {
 			Material material = materialOptional.get().parseMaterial();
@@ -430,7 +431,44 @@ public class Toolkit {
 				return new ItemStack(material);
 			}
 		}
+		printToConsole("&7[&b&lKIT-PVP&7] &cInvalid material: " + materialName);
 		return new ItemStack(Toolkit.FALLBACK_MATERIAL);
+	}
+
+	public static Sound safeSound(String soundName) {
+		Optional<XSound> soundOptional = XSound.matchXSound(soundName);
+		if (soundOptional.isPresent()) {
+			Sound sound = soundOptional.get().parseSound();
+			if (sound != null) {
+				return sound;
+			}
+		}
+		printToConsole("&7[&b&lKIT-PVP&7] &cInvalid sound: " + soundName);
+		return XSound.ENTITY_ENDER_DRAGON_HURT.parseSound();
+	}
+
+	public static PotionEffectType safePotionEffectType(String potionEffectTypeName) {
+		Optional<XPotion> potionOptional = XPotion.matchXPotion(potionEffectTypeName);
+		if (potionOptional.isPresent()) {
+			PotionEffectType potionEffectType = potionOptional.get().getPotionEffectType();
+			if (potionEffectType != null) {
+				return potionEffectType;
+			}
+		}
+		printToConsole("&7[&b&lKIT-PVP&7] &cInvalid potion effect type: " + potionEffectTypeName);
+		return XPotion.BLINDNESS.getPotionEffectType();
+	}
+
+	public static boolean itemStacksMatch(ItemStack itemA, ItemStack itemB) {
+		if (itemA.getType() == itemB.getType()) {
+			ItemMeta itemAMeta = itemA.getItemMeta();
+			ItemMeta itemBMeta = itemB.getItemMeta();
+
+			if (itemAMeta.hasDisplayName() && itemBMeta.hasDisplayName()) {
+				return itemAMeta.getDisplayName().equals(itemBMeta.getDisplayName());
+			}
+		}
+		return false;
 	}
 
 }

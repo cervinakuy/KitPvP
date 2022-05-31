@@ -37,6 +37,13 @@ public class Kits {
         this.kits = new HashMap<>();
     }
 
+    // TODO: restructure KitPvP such as there is an `abilities` folder and `kits` folder. With the new
+    // TODO: AbilitiesRequireKit, basically separate abilities from being assigned to a specific kit
+    // TODO: this will be more "KitPvP" like, where you can kill another player with abilities, and use those
+    // TODO: abilities? Idk figure out how that would work
+    // TODO: OR at least make abilities a bit more separated from a kit in the code or smth to make AbilitiesRequireKit
+    // TODO: work
+
     public void createKit(Player fromPlayer, String kitName) {
 
         Kit kitToCreate = createKitFromPlayer(fromPlayer, kitName);
@@ -142,7 +149,8 @@ public class Kits {
         sampleAbility.addCommand("console: This command is run from the console, you can use %player%");
         sampleAbility.addCommand("player: This command is run from the player, you can use %player%");
 
-        kit.addAbility(sampleAbility);
+        // TODO: put this ^ into abilities/<kit-name>-Blank.yml
+//        kit.addAbility(sampleAbility);
 
         return kit;
 
@@ -176,9 +184,14 @@ public class Kits {
         kit.setFill(AttributeParser.getItemStackFromPath(resource, "Inventory.Items.Fill"));
         kit.setOffhand(AttributeParser.getItemStackFromPath(resource, "Inventory.Items.Offhand"));
 
-        kit.setOption("IgnoreOccupiedSlots", resources.getConfig().getBoolean("Arena.IgnoreOccupiedSlotsOnKit"));
+        kit.setOption("AddOverflowItemsOnKit",
+                resources.getConfig().getBoolean("Arena.AddOverflowItemsOnKit"));
+        kit.setOption("DropRemainingOverflowItemsOnKit",
+                resources.getConfig().getBoolean("Arena.DropRemainingOverflowItemsOnKit"));
+        kit.setOption("Message-OverflowItemsLost",
+                resources.getMessages().getString("Messages.Error.OverflowItemsLost"));
 
-        AttributeParser.getAbilitiesFromResource(resource).forEach(ability -> kit.addAbility(ability));
+//        AttributeParser.getAbilitiesFromResource(resource).forEach(ability -> kit.addAbility(ability));
 
         return kit;
 
@@ -242,10 +255,8 @@ public class Kits {
     }
 
     public void deleteKit(String kitName) {
-
         resources.removeResource(kitName + ".yml");
         plugin.getDatabase().deleteKitCooldownTable(kitName);
-
     }
 
     public Kit getKitByName(String kitName) {
@@ -281,7 +292,7 @@ public class Kits {
     private Kit loadKitFromCacheOrCreate(String kitName) {
 
         if (!CacheManager.getKitCache().containsKey(kitName)) {
-            if (resources.getKitList(false).contains(kitName)) {
+            if (resources.getPluginDirectoryFiles("kits", false).contains(kitName)) {
                 Resource kit = resources.getKit(kitName);
                 try {
                     CacheManager.getKitCache().put(kitName, createKitFromResource(kit));
@@ -305,7 +316,7 @@ public class Kits {
 
     public boolean isKit(String kitName) {
 
-        return resources.getKitList(false).contains(kitName);
+        return resources.getPluginDirectoryFiles("kits", false).contains(kitName);
 
     }
 

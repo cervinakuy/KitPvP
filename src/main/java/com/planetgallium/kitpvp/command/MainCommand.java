@@ -128,7 +128,7 @@ public class MainCommand implements CommandExecutor {
 
                 String message = "";
 
-                for (String kitName : resources.getKitList(false)) {
+                for (String kitName : resources.getPluginDirectoryFiles("kits", false)) {
                     String[] fileName = kitName.split(".yml", 2);
                     message += fileName[0] + ", ";
                 }

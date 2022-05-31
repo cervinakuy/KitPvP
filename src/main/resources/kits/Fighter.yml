@@ -29,23 +29,3 @@ Inventory:
     Fill:
       Name: '&aRegenerative Soup &7(Right Click)'
       Material: MUSHROOM_SOUP
-Abilities:
-  HealthPack:
-    Activator:
-      Name: '&aHealth Pack &7(Right Click)'
-      Material: ENDER_CHEST
-    Cooldown:
-      Cooldown: '30S'
-    Message:
-      Message: '%prefix% &7You have used a &bHealth Pack&7.'
-    Sound:
-      Sound: ANVIL_USE
-      Pitch: 1
-      Volume: 1
-    Effects:
-      SPEED:
-        Amplifier: 2
-        Duration: 10
-      REGENERATION:
-        Amplifier: 2
-        Duration: 10

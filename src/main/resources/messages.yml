@@ -47,6 +47,7 @@ Messages:
     PVP: '%prefix% &cPVP is not permitted in this region.'
     InvalidType: '%prefix% &cInvalid type "%type%". Available types: %types%.'
     InvalidNumber: '%prefix% &cInvalid number "%number%".'
+    OverflowItemsLost: '%prefix% &c%number% items could not fit in your inventory and were lost.'
   Stats:
     Message:
     - '&7&m                                &r'

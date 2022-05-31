@@ -13,62 +13,47 @@ import java.util.List;
 
 public class Ability {
 
-    private String name;
+    private final String name;
     private ItemStack activator;
     private Cooldown cooldown;
     private String message;
     private Sound sound;
     private int soundPitch;
     private int soundVolume;
-    private List<PotionEffect> effects;
-    private List<String> commands;
+    private final List<PotionEffect> effects;
+    private final List<String> commands;
 
     public Ability(String name) {
-
         this.name = name;
-
         this.effects = new ArrayList<>();
         this.commands = new ArrayList<>();
-
     }
 
     public void setActivator(ItemStack activator) {
-
         this.activator = activator;
-
     }
 
     public void setCooldown(Cooldown cooldown) {
-
         this.cooldown = cooldown;
-
     }
 
     public void setMessage(String message) {
-
         this.message = message;
-
     }
 
     public void setSound(Sound sound, int pitch, int volume) {
-
         this.sound = sound;
         this.soundPitch = pitch;
         this.soundVolume = volume;
-
     }
 
     public void addEffect(PotionEffectType type, int amplifier, int durationSeconds) {
-
         PotionEffect effect = new PotionEffect(type, durationSeconds * 20, amplifier - 1);
         effects.add(effect);
-
     }
 
     public void addCommand(String command) {
-
         commands.add(command);
-
     }
 
     public void toResource(Resource resource, String path) {

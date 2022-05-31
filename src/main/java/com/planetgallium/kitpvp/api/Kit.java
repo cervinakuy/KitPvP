@@ -6,7 +6,6 @@ import com.planetgallium.kitpvp.util.Resource;
 import com.planetgallium.kitpvp.util.Toolkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -26,7 +25,6 @@ public class Kit {
     private final Map<String, Object> options;
     private final Map<Integer, ItemStack> inventory;
     private final List<PotionEffect> effects;
-    private final List<Ability> abilities;
 
     private ItemStack helmet;
     private ItemStack chestplate;
@@ -41,7 +39,6 @@ public class Kit {
         this.options = new HashMap<>();
         this.inventory = new HashMap<>();
         this.effects = new ArrayList<>();
-        this.abilities = new ArrayList<>();
     }
 
     public void setPermission(String permission) {
@@ -61,6 +58,8 @@ public class Kit {
     }
 
     public void setOption(String key, Object value) {
+        // NOTE: using this strategy to pass data rather than using Resources class so
+        // kit class can be used externally without needing access to Resources
         this.options.put(key, value);
     }
 
@@ -71,10 +70,6 @@ public class Kit {
     public void addEffect(PotionEffectType type, int amplifierNonZeroBased, int durationSeconds) {
         PotionEffect effect = new PotionEffect(type, durationSeconds * 20, amplifierNonZeroBased - 1);
         effects.add(effect);
-    }
-
-    public void addAbility(Ability ability) {
-        abilities.add(ability);
     }
 
     public void setHelmet(ItemStack helmet) {
@@ -101,28 +96,6 @@ public class Kit {
         this.fill = fill;
     }
 
-    public Ability getAbilityFromActivator(ItemStack activator) {
-
-        for (Ability ability : abilities) {
-
-            if (activator.getType() == ability.getActivator().getType()) {
-
-                ItemMeta meta = activator.getItemMeta();
-
-                if (meta.getDisplayName().equals(ability.getActivator().getItemMeta().getDisplayName())) {
-
-                    return ability;
-
-                }
-
-            }
-
-        }
-
-        return null;
-
-    }
-
     public void apply(Player player) {
 
         if (helmet != null) player.getInventory().setHelmet(helmet);
@@ -132,11 +105,16 @@ public class Kit {
 
         Toolkit.setMaxHealth(player, health);
 
-        boolean ignoreOccupiedSlots = (boolean) options.get("IgnoreOccupiedSlots");
+        List<ItemStack> overflowItems = new ArrayList<>();
+        boolean addOverflowItems = (Boolean) options.get("AddOverflowItemsOnKit");
 
         for (int i = 0; i < 36; i++) {
-            if (!ignoreOccupiedSlots && player.getInventory().getItem(i) != null) {
-                continue; // this does not replace occupied slots if "IgnoreOccupiedSlotsOnKit" is false
+            if (addOverflowItems) {
+                // if kit wants to put an item in slot i, but slot i in player inventory is already taken
+                if (inventory.containsKey(i) && player.getInventory().getItem(i) != null) {
+                    overflowItems.add(inventory.get(i)); // add kit item to overflow items
+                    continue; // ignore this kit item, will be accounted for with giveOverflowItems
+                }
             }
 
             if (inventory.get(i) != null) {
@@ -152,7 +130,37 @@ public class Kit {
             player.getInventory().setItemInOffHand(offhand);
         }
 
+        if (addOverflowItems) {
+            giveOverflowItems(player, overflowItems);
+        }
+
         effects.stream().forEach(effect -> player.addPotionEffect(effect));
+
+    }
+
+    private void giveOverflowItems(Player p, List<ItemStack> overflowItems) {
+
+        for (int i = 0; i < 36; i++) {
+            if (p.getInventory().getItem(i) == null) { // if empty slot found
+                if (overflowItems.size() >= 1) {
+                    p.getInventory().setItem(i, overflowItems.get(0));
+                    overflowItems.remove(0);
+                } else {
+                    return; // if no overflow items left, return out of function
+                }
+            }
+        }
+
+        boolean dropRemainingOverflowItems = (Boolean) options.get("DropRemainingOverflowItemsOnKit");
+
+        if (dropRemainingOverflowItems) {
+            for (ItemStack remainingOverflowItem : overflowItems) {
+                p.getWorld().dropItem(p.getLocation(), remainingOverflowItem);
+            }
+        } else {
+            String overflowItemsLostMessage = (String) options.get("Message-OverflowItemsLost");
+            p.sendMessage(overflowItemsLostMessage);
+        }
 
     }
 
@@ -180,8 +188,6 @@ public class Kit {
             AttributeWriter.potionEffectToResource(resource, "Effects", effect);
         }
 
-        abilities.stream().forEach(ability -> ability.toResource(resource, "Abilities."));
-
         resource.save();
 
     }
@@ -199,8 +205,6 @@ public class Kit {
     public Map<Integer, ItemStack> getInventory() { return inventory; }
 
     public List<PotionEffect> getEffects() { return effects; }
-
-    public List<Ability> getAbilities() { return abilities; }
 
     public ItemStack getHelmet() { return helmet; }
 
