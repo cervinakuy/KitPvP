@@ -37,13 +37,6 @@ public class Kits {
         this.kits = new HashMap<>();
     }
 
-    // TODO: restructure KitPvP such as there is an `abilities` folder and `kits` folder. With the new
-    // TODO: AbilitiesRequireKit, basically separate abilities from being assigned to a specific kit
-    // TODO: this will be more "KitPvP" like, where you can kill another player with abilities, and use those
-    // TODO: abilities? Idk figure out how that would work
-    // TODO: OR at least make abilities a bit more separated from a kit in the code or smth to make AbilitiesRequireKit
-    // TODO: work
-
     public void createKit(Player fromPlayer, String kitName) {
 
         Kit kitToCreate = createKitFromPlayer(fromPlayer, kitName);
@@ -87,7 +80,6 @@ public class Kits {
     }
 
     public Kit createKitFromPlayer(Player player, String name) {
-
         Player p = player;
         
         //          KIT             //
@@ -133,12 +125,12 @@ public class Kits {
 
         //          ABILITY         //
 
-        Ability sampleAbility = new Ability("Example");
+        Ability sampleAbility = new Ability(kit.getName() + "-Blank");
 
         ItemStack activator = XMaterial.EMERALD.parseItem();
         ItemMeta activatorMeta = activator.getItemMeta();
 
-        activatorMeta.setDisplayName(Toolkit.translate("&aDefault Ability &7(Must be modified in kit file)"));
+        activatorMeta.setDisplayName(Toolkit.translate("&aBlank Kit Ability &7(Right Click)"));
         activator.setItemMeta(activatorMeta);
 
         sampleAbility.setActivator(activator);
@@ -149,11 +141,9 @@ public class Kits {
         sampleAbility.addCommand("console: This command is run from the console, you can use %player%");
         sampleAbility.addCommand("player: This command is run from the player, you can use %player%");
 
-        // TODO: put this ^ into abilities/<kit-name>-Blank.yml
-//        kit.addAbility(sampleAbility);
+        resources.addAbilityResource(sampleAbility);
 
         return kit;
-
     }
 
     private Kit createKitFromResource(Resource resource) throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {

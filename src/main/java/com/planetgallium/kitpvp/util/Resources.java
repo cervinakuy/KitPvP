@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.*;
 
 import com.planetgallium.kitpvp.Game;
+import com.planetgallium.kitpvp.api.Ability;
 
 public class Resources {
 
@@ -122,6 +123,15 @@ public class Resources {
 	public void removeResource(String fileName) {
 		kitToResource.get(fileName).getFile().delete();
 		kitToResource.remove(fileName);
+	}
+
+	public void addAbilityResource(Ability ability) {
+		String abilityName = ability.getName();
+		Resource abilityResource = new Resource(plugin, "abilities/" + abilityName + ".yml");
+		ability.toResource(abilityResource);
+
+		abilityToResource.put(abilityName, abilityResource);
+		abilityToResource.get(abilityName).load();
 	}
 
 	public Resource getKit(String kitName) {
