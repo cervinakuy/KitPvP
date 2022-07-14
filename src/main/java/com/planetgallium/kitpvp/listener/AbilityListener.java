@@ -31,10 +31,9 @@ public class AbilityListener implements Listener {
 			return;
 		}
 
-		Kit kit = arena.getKits().getKitOfPlayer(p.getName());
 		Ability ability = e.getAbility();
 
-		String abilityPermission = "kp.ability." + kit.getName().toLowerCase();
+		String abilityPermission = "kp.ability." + ability.getName().toLowerCase();
 		if (!p.hasPermission(abilityPermission)) {
 			p.sendMessage(resources.getMessages().getString("Messages.General.Permission")
 					.replace("%permission%", abilityPermission));
