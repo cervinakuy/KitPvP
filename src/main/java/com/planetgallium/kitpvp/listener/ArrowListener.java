@@ -67,7 +67,7 @@ public class ArrowListener implements Listener {
 
 					ItemStack arrowToAdd = new ItemStack(Material.ARROW, config.getInt("Combat.ArrowReturn.Count"));
 
-					if (config.getBoolean("Combat.ArrowReturn.Enabled")) {
+					if (config.getBoolean("Combat.ArrowReturn.Enabled") && e.getDamager() != e.getEntity()) {
 						
 						for (ItemStack items : shooter.getInventory().getContents()) {
 							
