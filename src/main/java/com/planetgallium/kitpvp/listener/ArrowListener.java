@@ -16,8 +16,8 @@ import com.planetgallium.kitpvp.util.Toolkit;
 
 public class ArrowListener implements Listener {
 
-	private Game plugin;
-	private Resource config;
+	private final Game plugin;
+	private final Resource config;
 
 	public ArrowListener(Game plugin) {
 		this.plugin = plugin;
@@ -25,85 +25,61 @@ public class ArrowListener implements Listener {
 	}
 
 	@EventHandler
-	public void onShot(EntityDamageByEntityEvent e) {
-		
-		if (Toolkit.inArena(e.getEntity()) && config.getBoolean("Combat.ArrowHit.Enabled")) {
-			
-			if (e.getEntity() instanceof Player && e.getDamager() instanceof Arrow) {
-				
-				Player damagedPlayer = (Player) e.getEntity();
-				Arrow arrow = (Arrow) e.getDamager();
-				
-				if (arrow.getShooter() != null && arrow.getShooter() instanceof Player) {
-					
-					Player shooter = (Player) arrow.getShooter();
-					
-					// ARROW HEALTH MESSAGE
-					
-					if (damagedPlayer.getName() != shooter.getName()) {
-						
-						new BukkitRunnable() {
-							
-							@Override
-							public void run() {
-								
-								double health = Math.round(damagedPlayer.getHealth() * 10.0) / 10.0;
-								
-								if (shooter.hasPermission("kp.arrowmessage")) {
-									
-									if (health != 20.0) {
-										
-										shooter.sendMessage(config.getString("Combat.ArrowHit.Message").replace("%player%", damagedPlayer.getName()).replace("%health%", String.valueOf(health)));
-										
-									}
-									
-								}
-								
-							}
-							
-						}.runTaskLater(plugin, 2L);
-						
-					}
-					
-					// ARROW RETURN
+	public void onArrowHit(EntityDamageByEntityEvent e) {
+		if (Toolkit.inArena(e.getEntity()) &&
+				e.getEntity() instanceof Player && e.getDamager() instanceof Arrow) {
+			Player damagedPlayer = (Player) e.getEntity();
+			Arrow arrow = (Arrow) e.getDamager();
 
-					ItemStack arrowToAdd = new ItemStack(Material.ARROW, config.getInt("Combat.ArrowReturn.Count"));
+			if (arrow.getShooter() != null && arrow.getShooter() instanceof Player) {
+				Player shooter = (Player) arrow.getShooter();
 
-					if (config.getBoolean("Combat.ArrowReturn.Enabled") && e.getDamager() != e.getEntity()) {
-						
-						for (ItemStack items : shooter.getInventory().getContents()) {
-							
-							if (items != null && items.getType() == XMaterial.ARROW.parseMaterial() && items.getAmount() < 64) {
-								
-								if (shooter.hasPermission("kp.arrowreturn")) {
-									shooter.getInventory().addItem(arrowToAdd);
-									return;
-									
-								}
-
-							}
-							
-						}
-						
-				    	if (shooter.getInventory().firstEmpty() == -1) {
-			     		       
-			        		shooter.sendMessage(config.getString("Combat.ArrowReturn.NoSpace"));
-			        			
-			        	} else {
-
-							shooter.getInventory().addItem(arrowToAdd);
-
-
-						}
-						
-					}
-						
+				// make sure damaged player isn't shooter (self-hit)
+				if (!damagedPlayer.getName().equals(shooter.getName())) {
+					doArrowHitMessageIfEnabled(shooter, damagedPlayer);
+					doArrowReturnIfEnabled(shooter);
 				}
-				
 			}
-			
 		}
-		
+	}
+
+	private void doArrowHitMessageIfEnabled(Player shooter, Player damagedPlayer) {
+		if (config.getBoolean("Combat.ArrowHit.Enabled")) {
+			new BukkitRunnable() {
+				@Override
+				public void run() {
+					double health = Math.round(damagedPlayer.getHealth() * 10.0) / 10.0;
+
+					if (shooter.hasPermission("kp.arrowmessage")) {
+						if (health != 20.0) {
+							shooter.sendMessage(config.getString("Combat.ArrowHit.Message").replace("%player%", damagedPlayer.getName()).replace("%health%", String.valueOf(health)));
+						}
+					}
+				}
+			}.runTaskLater(plugin, 2L);
+		}
+	}
+
+	private void doArrowReturnIfEnabled(Player shooter) {
+		if (config.getBoolean("Combat.ArrowReturn.Enabled")) {
+			ItemStack arrowToAdd = new ItemStack(Material.ARROW, config.getInt("Combat.ArrowReturn.Count"));
+
+			for (ItemStack items : shooter.getInventory().getContents()) {
+				if (items != null && items.getType() == XMaterial.ARROW.parseMaterial() && items.getAmount() < 64) {
+
+					if (shooter.hasPermission("kp.arrowreturn")) {
+						shooter.getInventory().addItem(arrowToAdd);
+						return;
+					}
+				}
+			}
+
+			if (shooter.getInventory().firstEmpty() == -1) {
+				shooter.sendMessage(config.getString("Combat.ArrowReturn.NoSpace"));
+			} else {
+				shooter.getInventory().addItem(arrowToAdd);
+			}
+		}
 	}
 
 }
