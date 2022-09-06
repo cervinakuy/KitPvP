@@ -34,6 +34,7 @@ Combat:
     ItemName: '&eReturnable Arrow'
     NoSpace: '%prefix% &cYou must have at least one slot open in your inventory for you to receive your arrow for your successful shot.'
     Enabled: true
+    Count: 2
 Kill:
   SoupReward:
     NoSpace: '%prefix% &c%amount% soups could not be added to your full inventory.'
