@@ -37,7 +37,7 @@ public class ArrowListener implements Listener {
 				// make sure damaged player isn't shooter (self-hit)
 				if (!damagedPlayer.getName().equals(shooter.getName())) {
 					doArrowHitMessageIfEnabled(shooter, damagedPlayer);
-					doArrowReturnIfEnabled(shooter);
+					doArrowReturnIfEnabled(shooter, damagedPlayer);
 				}
 			}
 		}
@@ -60,8 +60,16 @@ public class ArrowListener implements Listener {
 		}
 	}
 
-	private void doArrowReturnIfEnabled(Player shooter) {
+	private void doArrowReturnIfEnabled(Player shooter, Player damagedPlayer) {
 		if (config.getBoolean("Combat.ArrowReturn.Enabled")) {
+
+			// Do not do arrow return if damagedPlayer does not have a kit (if NoKitProtection is enabled)
+			if (config.getBoolean("Arena.NoKitProtection")) {
+				if (!plugin.getArena().getKits().hasKit(damagedPlayer.getName())) {
+					return;
+				}
+			}
+
 			ItemStack arrowToAdd = new ItemStack(Material.ARROW, config.getInt("Combat.ArrowReturn.Count"));
 
 			for (ItemStack items : shooter.getInventory().getContents()) {
