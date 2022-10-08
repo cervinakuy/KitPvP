@@ -97,7 +97,6 @@ public class Toolkit {
 		if (commands == null) return;
 
 		for (String commandString : commands) {
-
 			String[] commandPhrase = commandString.split(":", 2);
 
 			if (commandPhrase.length == 1) {
@@ -111,22 +110,24 @@ public class Toolkit {
 			String command = commandPhrase[1];
 
 			if (sender.equals("console")) {
-
-				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), addPlaceholdersIfPossible(p, command.replace("%player%", p.getName()).replace(replaceFrom, replaceTo)));
-
+				Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
+						replaceCommandPlaceholders(command, p, replaceFrom, replaceTo));
 			} else if (sender.equals("player")) {
-
-				p.performCommand(addPlaceholdersIfPossible(p, command.replace("%player%", p.getName()).replace(replaceFrom, replaceTo)));
-
+				p.performCommand(replaceCommandPlaceholders(command, p, replaceFrom, replaceTo));
 			} else {
-
 				Toolkit.printToConsole("&7[&b&lKIT-PVP&7] &cIncorrect command format. Please see: &fhttps://bit.ly/kp-command-format");
 				return;
-
 			}
-
 		}
 
+	}
+
+	private static String replaceCommandPlaceholders(String s, Player p, String replaceFrom, String replaceTo) {
+		String withPotentialPapiPlaceholders = addPlaceholdersIfPossible(p, s);
+		return withPotentialPapiPlaceholders
+				.replace("%player%", p.getName())
+				.replace("%uuid%", p.getUniqueId().toString())
+				.replace(replaceFrom, replaceTo);
 	}
  	
  	public static int versionToNumber() {
