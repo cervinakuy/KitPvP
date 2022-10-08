@@ -141,10 +141,12 @@ public class Table {
     public List<Record> searchRecords(Field fieldToSearchFor) {
         List<Record> matchingRecords = new ArrayList<>();
         if (fieldToSearchFor.getName().equals(this.getPrimaryKey().getName())) {
+            System.out.println("[DATABASE] Primary key search detected. Should use getRecord instead.");
             return matchingRecords; // should use getRecord instead
         }
 
-        String searchQuery = Table.SEARCH_RECORD_QUERY.replace("{table_name}", this.getName())
+        String searchQuery = Table.SEARCH_RECORD_QUERY
+                .replace("{table_name}", this.getName())
                 .replace("{column_to_search_name}", fieldToSearchFor.getName());
         try (Connection connection = dataSource.getConnection() ;
              PreparedStatement statement = connection.prepareStatement(searchQuery)) {
@@ -280,10 +282,10 @@ public class Table {
         return data;
     }
 
-    private void setStatementParameterToType(PreparedStatement statement, int parameterIndex, Field primaryKey)
+    private void setStatementParameterToType(PreparedStatement statement, int parameterIndex, Field field)
             throws SQLException {
-        DataType dataType = primaryKey.getDataType();
-        String valueAsString = primaryKey.getValue().toString();
+        DataType dataType = field.getDataType();
+        String valueAsString = field.getValue().toString();
 
         if (dataType == DataType.STRING || dataType == DataType.FIXED_STRING) {
             statement.setString(parameterIndex, valueAsString);
