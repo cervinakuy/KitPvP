@@ -11,7 +11,6 @@ import org.bukkit.World;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDamageByBlockEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
@@ -39,7 +38,7 @@ public class DeathListener implements Listener {
 		this.resources = plugin.getResources();
 		this.config = resources.getConfig();
 	}
-	
+
 	@EventHandler
 	public void onDeath(PlayerDeathEvent e) {
 
@@ -53,8 +52,8 @@ public class DeathListener implements Listener {
 				e.getDrops().clear();
 			}
 
-			setDeathMessage(victim);
 			respawnPlayer(victim);
+			setDeathMessage(victim);
 
 			arena.getStats().addToStat("deaths", victim.getName(), 1);
 			arena.getStats().removeExperience(victim.getName(),
@@ -70,9 +69,8 @@ public class DeathListener implements Listener {
 					XSound.matchXSound(config.getString("Death.Sound.Sound")).get().parseSound(),
 					1,
 					config.getInt("Death.Sound.Pitch"));
-
 		}
-	
+
 	}
 
 	@EventHandler
@@ -92,45 +90,37 @@ public class DeathListener implements Listener {
 	}
 
 	private void respawnPlayer(Player victim) {
-
 		if (!victim.isOnline()) {
 			return;
 		}
 
 		if (config.getBoolean("Arena.FancyDeath")) {
-
 			Location deathLocation = victim.getLocation();
 
 			new BukkitRunnable() {
-
 				@Override
 				public void run() {
-
 					victim.spigot().respawn();
 					victim.teleport(deathLocation);
 					victim.setGameMode(GameMode.SPECTATOR);
-
 				}
-
 			}.runTaskLater(plugin, 1L);
 
 			arena.removePlayer(victim);
 			
 			new BukkitRunnable() {
-				
 				int time = config.getInt("Death.Title.Time");
-				
+
 				@Override
 				public void run() {
-
 					if (time != 0) {
-
-						Titles.sendTitle(victim, 0, 21, 0, config.getString("Death.Title.Title"), config.getString("Death.Title.Subtitle").replace("%seconds%", String.valueOf(time)));
+						Titles.sendTitle(victim, 0, 21, 0,
+								config.getString("Death.Title.Title"),
+								config.getString("Death.Title.Subtitle")
+										.replace("%seconds%", String.valueOf(time)));
 						XSound.play(victim, "UI_BUTTON_CLICK, 1, 1");
 						time--;
-
 					} else {
-
 						if (config.getBoolean("Arena.ClearInventoryOnRespawn")) {
 							victim.getInventory().clear();
 							victim.getInventory().setArmorContents(null);
@@ -145,36 +135,27 @@ public class DeathListener implements Listener {
 						Toolkit.runCommands(victim, config.getStringList("Respawn.Commands"), "none", "none");
 
 						cancel();
-
 					}
-
 				}
-				
 			}.runTaskTimer(plugin, 0L, 20L);
-			
-		} else {
 
+		} else {
 			arena.removePlayer(victim);
-			
+
 			if (config.getBoolean("Arena.ClearInventoryOnRespawn")) {
 				victim.getInventory().clear();
 				victim.getInventory().setArmorContents(null);
 			}
 
 			new BukkitRunnable() {
-
 				@Override
 				public void run() {
-
 					arena.addPlayer(victim, true, config.getBoolean("Arena.GiveItemsOnRespawn"));
-					Toolkit.runCommands(victim, config.getStringList("Respawn.Commands"), "none", "none");
-
+					Toolkit.runCommands(victim, config.getStringList("Respawn.Commands"),
+							"none", "none");
 				}
-
 			}.runTaskLater(plugin, 1L);
-			
 		}
-		
 	}
 
 	private void setDeathMessage(Player victim) {
