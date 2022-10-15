@@ -87,8 +87,20 @@ public class Game extends JavaPlugin implements Listener {
 			hasWorldGuard = true;
 		}
 
+		populateUUIDCacheForOnlinePlayers();
+
 		Toolkit.printToConsole("&7[&b&lKIT-PVP&7] &aDone!");
 		
+	}
+
+	private void populateUUIDCacheForOnlinePlayers() {
+		// populates UUID cache if there are players online when doing /reload to avoid a lot of errors related
+		// to database and UUIDs
+		if (Bukkit.getOnlinePlayers().size() > 0) {
+			for (Player player : Bukkit.getOnlinePlayers()) {
+				CacheManager.getUUIDCache().put(player.getName(), player.getUniqueId().toString());
+			}
+		}
 	}
 
 	private void checkUpdate() {
