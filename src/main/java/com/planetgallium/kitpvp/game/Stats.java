@@ -115,6 +115,10 @@ public class Stats {
         new BukkitRunnable() {
             @Override
             public void run() {
+                if (!CacheManager.getStatsCache().containsKey(username)) {
+                    return; // nothing to push if stats cache is empty
+                }
+
                 database.setStatsData(username, getOrCreateStatsCache(username));
                 if (removeFromCacheAfter) {
                     CacheManager.getStatsCache().remove(username);

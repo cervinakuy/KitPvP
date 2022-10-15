@@ -157,8 +157,7 @@ public class Table {
                 Record recordResult = new Record();
                 for (int i = 0; i < masterRecord.getFields().size(); i++) {
                     Field field = masterRecord.getFields().get(i);
-                    recordResult.addOrUpdateData(field.getName(), field.getDataType(),
-                            setObjectType(field, resultSet));
+                    recordResult.addOrUpdateData(field.getName(), field.getDataType(), setObjectType(field, resultSet));
                 }
                 matchingRecords.add(recordResult);
             }
