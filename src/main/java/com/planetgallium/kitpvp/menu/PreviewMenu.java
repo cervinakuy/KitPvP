@@ -15,7 +15,6 @@ import org.bukkit.potion.PotionEffect;
 public class PreviewMenu {
 
 	private Menu create(Kit kit, Resources resources) {
-
 		Menu previewMenu = new Menu("Previewing: " + kit.getName(), new PreviewHolder(), 54);
 
 		//			ARMOR			//
@@ -84,16 +83,13 @@ public class PreviewMenu {
 		CacheManager.getPreviewMenuCache().put(kit.getName(), previewMenu);
 
 		return previewMenu;
-
 	}
 
 	public void open(Player p, Kit kit, Resources resources) {
-
 		Menu previewMenu = CacheManager.getPreviewMenuCache().containsKey(kit.getName()) ?
 				CacheManager.getPreviewMenuCache().get(kit.getName()) : create(kit, resources);
 
 		previewMenu.openMenu(p);
-
 	}
 	
 }
