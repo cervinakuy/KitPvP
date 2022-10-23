@@ -85,14 +85,14 @@ public class TrackerListener implements Listener {
 			double nearestPlayerDistance = Toolkit.round(Double.parseDouble(nearestPlayerData[1]), 1);
 
 			if (nearestPlayer != null && nearestPlayer.isOnline()) {
-				compassMeta.setDisplayName(resources.getConfig().getString("PlayerTracker.Message")
+				compassMeta.setDisplayName(resources.getConfig().fetchString("PlayerTracker.Message")
 												   .replace("%nearestplayer%", nearestPlayer.getName())
 												   .replace("%distance%", String.valueOf(nearestPlayerDistance)));
 
 				player.setCompassTarget(nearestPlayer.getLocation());
 			}
 		} else {
-			compassMeta.setDisplayName(resources.getConfig().getString("PlayerTracker.NoneOnline"));
+			compassMeta.setDisplayName(resources.getConfig().fetchString("PlayerTracker.NoneOnline"));
 		}
 
 		compass.setItemMeta(compassMeta);

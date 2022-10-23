@@ -28,7 +28,7 @@ public class ChatListener implements Listener {
 			Player p = e.getPlayer();
 			String levelPrefix = arena.getUtilities().getPlayerLevelPrefix(p.getName());
 
-			String format = resources.getConfig().getString("Chat.Format")
+			String format = resources.getConfig().fetchString("Chat.Format")
 					.replace("%player%", "%s")
 					.replace("%message%", "%s")
 					.replace("%level%", levelPrefix);

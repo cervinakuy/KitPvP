@@ -43,28 +43,28 @@ public class Abilities {
         Ability ability = new Ability(resource.getName());
 
         // Activator
-        ItemStack activator = Toolkit.safeItemStack(resource.getString("Activator.Material"));
+        ItemStack activator = Toolkit.safeItemStack(resource.fetchString("Activator.Material"));
         ItemMeta activatorMeta = activator.getItemMeta();
 
-        activatorMeta.setDisplayName(resource.getString("Activator.Name"));
+        activatorMeta.setDisplayName(resource.fetchString("Activator.Name"));
         activator.setItemMeta(activatorMeta);
 
         ability.setActivator(activator);
 
         // Cooldown
         if (resource.contains("Cooldown")) {
-            String formattedCooldown = resource.getString("Cooldown.Cooldown");
+            String formattedCooldown = resource.fetchString("Cooldown.Cooldown");
             ability.setCooldown(new Cooldown(formattedCooldown));
         }
 
         // Message
         if (resource.contains("Message")) {
-            ability.setMessage(resource.getString("Message.Message"));
+            ability.setMessage(resource.fetchString("Message.Message"));
         }
 
         // Sound
         if (resource.contains("Sound")) {
-            Sound abilitySound = Toolkit.safeSound(resource.getString("Sound.Sound"));
+            Sound abilitySound = Toolkit.safeSound(resource.fetchString("Sound.Sound"));
             int abilitySoundPitch = resource.getInt("Sound.Pitch");
             int abilitySoundVolume = resource.getInt("Sound.Volume");
 

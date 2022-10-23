@@ -49,12 +49,12 @@ public class Infobase {
         Toolkit.printToConsole("&7[&b&lKIT-PVP&7] Establishing database connection...");
 
         // Set database to MySQL, or in any other case, SQLite
-        if (config.getString("Storage.Type").equalsIgnoreCase("mysql")) {
-            String host = config.getString("Storage.MySQL.Host");
+        if (config.fetchString("Storage.Type").equalsIgnoreCase("mysql")) {
+            String host = config.fetchString("Storage.MySQL.Host");
             int port = config.getInt("Storage.MySQL.Port");
-            String databaseName = config.getString("Storage.MySQL.Database");
-            String username = config.getString("Storage.MySQL.Username");
-            String password = config.getString("Storage.MySQL.Password");
+            String databaseName = config.fetchString("Storage.MySQL.Database");
+            String username = config.fetchString("Storage.MySQL.Username");
+            String password = config.fetchString("Storage.MySQL.Password");
 
             return new Database(host, port, databaseName, username, password);
         } else {

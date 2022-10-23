@@ -20,7 +20,7 @@ public class HitListener implements Listener {
 		this.arena = plugin.getArena();
 		this.config = plugin.getResources().getConfig();
 
-		String soundString = config.getString("Combat.HitSound.Sound") + ", 1, " + config.getInt("Combat.HitSound.Pitch");
+		String soundString = config.fetchString("Combat.HitSound.Sound") + ", 1, " + config.getInt("Combat.HitSound.Pitch");
 		this.hitSound = XSound.parse(soundString);
 	}
 

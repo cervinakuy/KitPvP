@@ -58,6 +58,7 @@ public class Arena {
 		kits.resetKit(p.getName());
 
 		if (config.getBoolean("Arena.ResetKillStreakOnLeave")) {
+
 			killstreaks.setStreak(p, 0);
 		}
 		
@@ -140,10 +141,10 @@ public class Arena {
 			String itemPath = "Items." + identifier;
 
 			if (config.getBoolean(itemPath + ".Enabled")) {
-				ItemStack item = Toolkit.safeItemStack(config.getString(itemPath + ".Material"));
+				ItemStack item = Toolkit.safeItemStack(config.fetchString(itemPath + ".Material"));
 				ItemMeta meta = item.getItemMeta();
 
-				meta.setDisplayName(config.getString(itemPath + ".Name"));
+				meta.setDisplayName(config.fetchString(itemPath + ".Name"));
 				item.setItemMeta(meta);
 
 				p.getInventory().setItem(config.getInt(itemPath + ".Slot"), item);
@@ -156,7 +157,7 @@ public class Arena {
 			p.teleport(Toolkit.getLocationFromResource(config,
 					"Arenas." + arenaName + "." + generateRandomArenaSpawn(arenaName)));
 		} else {
-			p.sendMessage(resources.getMessages().getString("Messages.Error.Arena")
+			p.sendMessage(resources.getMessages().fetchString("Messages.Error.Arena")
 					.replace("%arena%", arenaName));
 		}
 	}
@@ -164,7 +165,7 @@ public class Arena {
 	public void updateScoreboards(Player p, boolean hide) {
 		Scoreboard board = Bukkit.getScoreboardManager().getNewScoreboard();
 		String scoreboardTitle = utilties.addPlaceholdersIfPossible(p,
-				resources.getScoreboard().getString("Scoreboard.General.Title"));
+				resources.getScoreboard().fetchString("Scoreboard.General.Title"));
 		Infoboard scoreboard = new Infoboard(board, scoreboardTitle);
 		
 		if (!hide) {

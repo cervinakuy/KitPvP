@@ -36,14 +36,14 @@ public class AttackListener implements Listener {
 					
 					if (!kits.hasKit(damagedPlayer.getName())) {
 						
-						damager.sendMessage(resources.getMessages().getString("Messages.Error.Invincible"));
+						damager.sendMessage(resources.getMessages().fetchString("Messages.Error.Invincible"));
 						e.setCancelled(true);
 						
 					}
 					
 					if (kits.hasKit(damagedPlayer.getName()) && !kits.hasKit(damager.getName())) {
 						
-						damager.sendMessage(resources.getMessages().getString("Messages.Error.Kit"));
+						damager.sendMessage(resources.getMessages().fetchString("Messages.Error.Kit"));
 						e.setCancelled(true);
 						
 					}
@@ -60,11 +60,20 @@ public class AttackListener implements Listener {
 	public void onDamage(EntityDamageEvent e) {
 		if (e.getEntity() instanceof Player) {
 			Player damagedPlayer = (Player) e.getEntity();
-			
+//			System.out.println("Damaged player: " + damagedPlayer.getName());
+
+			// bot is not doing damage to the player
+
 			if (Toolkit.inArena(damagedPlayer)) {
+//				System.out.println("Damaged player is in arena");
 				if (resources.getConfig().getBoolean("Arena.NoKitProtection")) {
+//					System.out.println("NoKitProt enabled");
+
+
 					if (!kits.hasKit(damagedPlayer.getName())) {
+//						System.out.println("has kit");
 						if (e.getCause() != DamageCause.VOID) {
+//							System.out.println("Cancelled damage");
 							e.setCancelled(true);
 						}
 					}

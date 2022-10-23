@@ -96,7 +96,7 @@ public class ItemListener implements Listener {
 
 			} else if (item.getType() == XMaterial.TNT.parseMaterial()) {
 
-				if (config.getBoolean("TNT.Enabled") && Toolkit.hasMatchingDisplayName(item, config.getString("TNT.Name"))) {
+				if (config.getBoolean("TNT.Enabled") && Toolkit.hasMatchingDisplayName(item, config.fetchString("TNT.Name"))) {
 
 					if (!utilities.isCombatActionPermittedInRegion(p)) {
 						return;
@@ -139,11 +139,11 @@ public class ItemListener implements Listener {
 							useAbilityItem(p, p, item, "Warper");
 
 						} else {
-							p.sendMessage(resources.getMessages().getString("Messages.Other.Players"));
+							p.sendMessage(resources.getMessages().fetchString("Messages.Other.Players"));
 						}
 
 					} else {
-						p.sendMessage(resources.getMessages().getString("Messages.Other.Players"));
+						p.sendMessage(resources.getMessages().fetchString("Messages.Other.Players"));
 					}
 
 				}
@@ -215,7 +215,7 @@ public class ItemListener implements Listener {
 								Entity entity = p.getWorld().spawn(p.getLocation(), TNTPrimed.class);
 								entity.setCustomName(p.getName());
 
-								String bomberSound = abilities.getString("Abilities.Bomber.Sound.Sound");
+								String bomberSound = abilities.fetchString("Abilities.Bomber.Sound.Sound");
 								p.playSound(p.getLocation(), XSound.matchXSound(bomberSound).get().parseSound(),
 										1, abilities.getInt("Abilities.Bomber.Sound.Pitch"));
 
@@ -237,16 +237,16 @@ public class ItemListener implements Listener {
 
 			} else if (item.getType() == XMaterial.SLIME_BALL.parseMaterial() && item.hasItemMeta()) {
 
-				if (Toolkit.hasMatchingDisplayName(item, abilities.getString("Abilities.Archer.Item.NoFire"))) {
+				if (Toolkit.hasMatchingDisplayName(item, abilities.fetchString("Abilities.Archer.Item.NoFire"))) {
 
 					item.setType(XMaterial.MAGMA_CREAM.parseMaterial());
-					meta.setDisplayName(Toolkit.translate(abilities.getString("Abilities.Archer.Item.Fire")));
+					meta.setDisplayName(Toolkit.translate(abilities.fetchString("Abilities.Archer.Item.Fire")));
 					item.setItemMeta(meta);
 
 					Toolkit.setMainHandItem(p, item);
 
 					if (abilities.getBoolean("Abilities.Archer.Message.Enabled")) {
-						p.sendMessage(abilities.getString("Abilities.Archer.Message.Fire"));
+						p.sendMessage(abilities.fetchString("Abilities.Archer.Message.Fire"));
 					}
 
 					XSound.play(p, "UI_BUTTON_CLICK, 1, 1");
@@ -255,16 +255,16 @@ public class ItemListener implements Listener {
 
 			} else if (item.getType() == XMaterial.MAGMA_CREAM.parseMaterial() && item.hasItemMeta()) {
 
-				if (Toolkit.hasMatchingDisplayName(item, abilities.getString("Abilities.Archer.Item.Fire"))) {
+				if (Toolkit.hasMatchingDisplayName(item, abilities.fetchString("Abilities.Archer.Item.Fire"))) {
 
 					item.setType(XMaterial.SLIME_BALL.parseMaterial());
-					meta.setDisplayName(Toolkit.translate(abilities.getString("Abilities.Archer.Item.NoFire")));
+					meta.setDisplayName(Toolkit.translate(abilities.fetchString("Abilities.Archer.Item.NoFire")));
 					item.setItemMeta(meta);
 
 					Toolkit.setMainHandItem(p, item);
 
 					if (abilities.getBoolean("Abilities.Archer.Message.Enabled")) {
-						p.sendMessage(Toolkit.translate(abilities.getString("Abilities.Archer.Message.NoFire")));
+						p.sendMessage(Toolkit.translate(abilities.fetchString("Abilities.Archer.Message.NoFire")));
 					}
 
 					XSound.play(p, "UI_BUTTON_CLICK, 1, 1");
@@ -276,9 +276,9 @@ public class ItemListener implements Listener {
 			/* Kit Item and custom Arena Items */
 
 			if (config.contains("Items.Kits") &&
-					item.getType() == XMaterial.matchXMaterial(config.getString("Items.Kits.Material")).get().parseMaterial()) {
+					item.getType() == XMaterial.matchXMaterial(config.fetchString("Items.Kits.Material")).get().parseMaterial()) {
 
-				if (Toolkit.hasMatchingDisplayName(item, config.getString("Items.Kits.Name"))) {
+				if (Toolkit.hasMatchingDisplayName(item, config.fetchString("Items.Kits.Name"))) {
 
 					Toolkit.runCommands(p, config.getStringList("Items.Kits.Commands"), "none", "none");
 
@@ -300,9 +300,9 @@ public class ItemListener implements Listener {
 
 					if (config.getBoolean(itemPath + ".Enabled")) {
 
-						if (item.getType() == XMaterial.matchXMaterial(config.getString(itemPath + ".Material")).get().parseMaterial()) {
+						if (item.getType() == XMaterial.matchXMaterial(config.fetchString(itemPath + ".Material")).get().parseMaterial()) {
 
-							if (Toolkit.hasMatchingDisplayName(item, config.getString(itemPath + ".Name"))) {
+							if (Toolkit.hasMatchingDisplayName(item, config.fetchString(itemPath + ".Name"))) {
 
 								Toolkit.runCommands(p, config.getStringList(itemPath + ".Commands"), "none", "none");
 								e.setCancelled(true);
@@ -376,12 +376,12 @@ public class ItemListener implements Listener {
 	}
 
 	private boolean isAbilityItem(Player p, String kitName, ItemStack interactedItem) {
-		if (Toolkit.hasMatchingDisplayName(interactedItem, abilities.getString("Abilities." + kitName + ".Item.Name"))) {
+		if (Toolkit.hasMatchingDisplayName(interactedItem, abilities.fetchString("Abilities." + kitName + ".Item.Name"))) {
 			String abilityPermission = "kp.ability." + kitName.toLowerCase();
 
 			if (p.hasPermission(abilityPermission)) {
 				if (config.getBoolean("Arena.AbilitiesRequireKit") && !arena.getKits().hasKit(p.getName())) {
-					p.sendMessage(resources.getMessages().getString("Messages.Error.Kit"));
+					p.sendMessage(resources.getMessages().fetchString("Messages.Error.Kit"));
 					return false;
 				}
 
@@ -389,7 +389,7 @@ public class ItemListener implements Listener {
 					return true;
 				}
 			} else {
-				p.sendMessage(resources.getMessages().getString("Messages.General.Permission").replace("%permission%", abilityPermission));
+				p.sendMessage(resources.getMessages().fetchString("Messages.General.Permission").replace("%permission%", abilityPermission));
 			}
 		}
 
@@ -401,7 +401,7 @@ public class ItemListener implements Listener {
 		String abilityPrefix = "Abilities." + kitName;
 
 		if (abilities.getBoolean(abilityPrefix + ".Message.Enabled")) {
-			String abilityMessage = abilities.getString(abilityPrefix + ".Message.Message");
+			String abilityMessage = abilities.fetchString(abilityPrefix + ".Message.Message");
 			if (clicked != null) abilityMessage = abilityMessage.replace("%player%", clicked.getName());
 			p.sendMessage(abilityMessage);
 		}
@@ -410,7 +410,7 @@ public class ItemListener implements Listener {
 		Toolkit.setMainHandItem(p, abilityItem);
 
 		if (abilities.getBoolean(abilityPrefix + ".Sound.Enabled")) {
-			XSound.play(p, abilities.getString(abilityPrefix + ".Sound.Sound") + ", 1, " + abilities.getInt(abilityPrefix + ".Sound.Pitch"));
+			XSound.play(p, abilities.fetchString(abilityPrefix + ".Sound.Sound") + ", 1, " + abilities.getInt(abilityPrefix + ".Sound.Pitch"));
 		}
 
 	}
@@ -426,14 +426,14 @@ public class ItemListener implements Listener {
 				
 				if (p.hasPermission("kp.ability.archer")) {
 
-					int ammoSlot = getItemByMeta(Material.MAGMA_CREAM, abilities.getString("Abilities.Archer.Item.Fire"), p);
+					int ammoSlot = getItemByMeta(Material.MAGMA_CREAM, abilities.fetchString("Abilities.Archer.Item.Fire"), p);
 
 					if (ammoSlot != -1) {
 
 						ItemStack ammo = p.getInventory().getItem(ammoSlot);
 
 						e.getProjectile().setFireTicks(1000);
-						p.playSound(p.getLocation(), XSound.matchXSound(abilities.getString("Abilities.Archer.Sound.Sound")).get().parseSound(), 1, (int) abilities.getInt("Abilities.Archer.Sound.Pitch"));
+						p.playSound(p.getLocation(), XSound.matchXSound(abilities.fetchString("Abilities.Archer.Sound.Sound")).get().parseSound(), 1, (int) abilities.getInt("Abilities.Archer.Sound.Pitch"));
 
 						if (ammo.getAmount() == 1) {
 							p.getInventory().setItem(ammoSlot, new ItemStack(Material.AIR));
@@ -501,10 +501,10 @@ public class ItemListener implements Listener {
 									shooter.getInventory().setItem(slot, potionStack);
 
 									if (abilities.getBoolean("Abilities.Witch.Message.Enabled")) {
-										shooter.sendMessage(Toolkit.translate(abilities.getString("Abilities.Witch.Message.Message")));
+										shooter.sendMessage(Toolkit.translate(abilities.fetchString("Abilities.Witch.Message.Message")));
 									}
 
-									XSound.play(shooter, abilities.getString("Abilities.Witch.Sound.Sound") + ", 1, " + abilities.getInt("Abliities.Witch.Sound.Pitch"));
+									XSound.play(shooter, abilities.fetchString("Abilities.Witch.Sound.Sound") + ", 1, " + abilities.getInt("Abliities.Witch.Sound.Pitch"));
 
 								}
 
@@ -583,7 +583,7 @@ public class ItemListener implements Listener {
 							Location shooterLocation = shooter.getLocation();
 
 							if (!utilities.isCombatActionPermittedInRegion(damagedPlayer)) {
-								shooter.sendMessage(resources.getMessages().getString("Messages.Error.PVP"));
+								shooter.sendMessage(resources.getMessages().fetchString("Messages.Error.PVP"));
 								return;
 							}
 
@@ -591,12 +591,12 @@ public class ItemListener implements Listener {
 							damagedPlayer.teleport(shooterLocation);
 
 							if (abilities.getBoolean("Abilities.Trickster.Message.Enabled")) {
-								shooter.sendMessage(Toolkit.translate(abilities.getString("Abilities.Trickster.Message.Message").replace("%player%", damagedPlayer.getName())));
+								shooter.sendMessage(Toolkit.translate(abilities.fetchString("Abilities.Trickster.Message.Message").replace("%player%", damagedPlayer.getName())));
 							}
 
 							if (abilities.getBoolean("Abilities.Trickster.Sound.Enabled")) {
-								XSound.play(shooter, abilities.getString("Abilities.Trickster.Sound.Sound") + ", 1, " + abilities.getInt("Abilities.Trickster.Sound.Pitch"));
-								XSound.play(damagedPlayer, abilities.getString("Abilities.Trickster.Sound.Sound") + ", 1, " + abilities.getInt("Abilities.Trickster.Sound.Pitch"));
+								XSound.play(shooter, abilities.fetchString("Abilities.Trickster.Sound.Sound") + ", 1, " + abilities.getInt("Abilities.Trickster.Sound.Pitch"));
+								XSound.play(damagedPlayer, abilities.fetchString("Abilities.Trickster.Sound.Sound") + ", 1, " + abilities.getInt("Abilities.Trickster.Sound.Pitch"));
 							}
 
 						}

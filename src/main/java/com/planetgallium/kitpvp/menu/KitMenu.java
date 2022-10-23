@@ -20,7 +20,7 @@ public class KitMenu {
 
 	private void create() {
 
-		this.menu = new Menu(resources.getMenu().getString("Menu.General.Title"), new KitHolder(), resources.getMenu().getInt("Menu.General.Size"));
+		this.menu = new Menu(resources.getMenu().fetchString("Menu.General.Title"), new KitHolder(), resources.getMenu().getInt("Menu.General.Size"));
 
 		ConfigurationSection section = resources.getMenu().getConfigurationSection("Menu.Items");
 
@@ -28,8 +28,8 @@ public class KitMenu {
 
 			String itemPath = "Menu.Items." + slot;
 
-			String name = resources.getMenu().getString(itemPath + ".Name");
-			Material material = XMaterial.matchXMaterial(resources.getMenu().getString(itemPath + ".Material")).get().parseMaterial();
+			String name = resources.getMenu().fetchString(itemPath + ".Name");
+			Material material = XMaterial.matchXMaterial(resources.getMenu().fetchString(itemPath + ".Material")).get().parseMaterial();
 			List<String> lore = resources.getMenu().getStringList(itemPath + ".Lore");
 
 			menu.addItem(name, material, lore, Integer.valueOf(slot));

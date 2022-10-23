@@ -66,7 +66,7 @@ public class AttributeParser {
         //          BASIC ITEM INFORMATION          //
 
         if (resource.contains(path + ".Name")) {
-            meta.setDisplayName(resource.getString(path + ".Name"));
+            meta.setDisplayName(resource.fetchString(path + ".Name"));
         }
 
         if (resource.contains(path + ".Lore")) {
@@ -74,7 +74,7 @@ public class AttributeParser {
         }
 
         if (resource.contains(path + ".Material")) {
-            String materialValue = resource.getString(path + ".Material");
+            String materialValue = resource.fetchString(path + ".Material");
             Optional<XMaterial> possibleMaterial = XMaterial.matchXMaterial(materialValue);
 
             if (possibleMaterial.isPresent()) {
@@ -108,7 +108,7 @@ public class AttributeParser {
         }
 
         if (resource.contains(path + ".Skull")) {
-            setSkull(item, resource.getString(path + ".Skull"));
+            setSkull(item, resource.fetchString(path + ".Skull"));
         }
 
         if (resource.contains(path + ".Durability")) {
@@ -245,7 +245,7 @@ public class AttributeParser {
         boolean isExtended = resource.getBoolean(firstChildPath + ".Extended");
 
         if (Toolkit.versionToNumber() == 18) {
-            boolean isSplash = resource.getString(path.replace("Effects", "") + ".Type").equals("SPLASH_POTION");
+            boolean isSplash = resource.fetchString(path.replace("Effects", "") + ".Type").equals("SPLASH_POTION");
             Potion potion = Potion.fromItemStack(item);
             potion.setSplash(isSplash);
             potion.setType(potionType);

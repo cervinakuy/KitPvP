@@ -48,7 +48,7 @@ public class PreviewMenu {
 		}
 
 		String menuPotionEffectsItemName =
-				resources.getMessages().getString("Messages.Other.MenuPotionEffectsItemName");
+				resources.getMessages().fetchString("Messages.Other.MenuPotionEffectsItemName");
 		previewMenu.addItem(menuPotionEffectsItemName, XMaterial.BREWING_STAND.parseMaterial(), effectsLore, 4);
 
 		//			HOTBAR			//
@@ -77,7 +77,7 @@ public class PreviewMenu {
 			}
 		}
 
-		String menuBackArrowItemName = resources.getMessages().getString("Messages.Other.MenuBackArrowItemName");
+		String menuBackArrowItemName = resources.getMessages().fetchString("Messages.Other.MenuBackArrowItemName");
 		previewMenu.addItem(menuBackArrowItemName, XMaterial.ARROW.parseMaterial(), new ArrayList<>(), 8);
 
 		CacheManager.getPreviewMenuCache().put(kit.getName(), previewMenu);

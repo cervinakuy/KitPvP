@@ -21,7 +21,7 @@ public class Utilities {
 
     public String getPlayerLevelPrefix(String username) {
         String playerLevel = String.valueOf(arena.getStats().getStat("level", username));
-        return resources.getLevels().getString("Levels.Levels." + playerLevel + ".Prefix")
+        return resources.getLevels().fetchString("Levels.Levels." + playerLevel + ".Prefix")
                 .replace("%level%", playerLevel);
     }
 
@@ -98,7 +98,7 @@ public class Utilities {
                 return true;
             }
 
-            p.sendMessage(resources.getMessages().getString("Messages.Error.PVP"));
+            p.sendMessage(resources.getMessages().fetchString("Messages.Error.PVP"));
             return false;
         }
         return true;

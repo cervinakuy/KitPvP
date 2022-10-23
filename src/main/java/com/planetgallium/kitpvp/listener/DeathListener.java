@@ -66,7 +66,7 @@ public class DeathListener implements Listener {
 			Toolkit.runCommands(victim, config.getStringList("Death.Commands"), "%victim%", victim.getName());
 
 			broadcast(victim.getWorld(),
-					XSound.matchXSound(config.getString("Death.Sound.Sound")).get().parseSound(),
+					XSound.matchXSound(config.fetchString("Death.Sound.Sound")).get().parseSound(),
 					1,
 					config.getInt("Death.Sound.Pitch"));
 		}
@@ -115,8 +115,8 @@ public class DeathListener implements Listener {
 				public void run() {
 					if (time != 0) {
 						Titles.sendTitle(victim, 0, 21, 0,
-								config.getString("Death.Title.Title"),
-								config.getString("Death.Title.Subtitle")
+								config.fetchString("Death.Title.Title"),
+								config.fetchString("Death.Title.Subtitle")
 										.replace("%seconds%", String.valueOf(time)));
 						XSound.play(victim, "UI_BUTTON_CLICK, 1, 1");
 						time--;
@@ -128,7 +128,7 @@ public class DeathListener implements Listener {
 
 						arena.addPlayer(victim, true, config.getBoolean("Arena.GiveItemsOnRespawn"));
 
-						victim.sendMessage(config.getString("Death.Title.Message"));
+						victim.sendMessage(config.fetchString("Death.Title.Message"));
 						victim.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 30, 0));
 						XSound.play(victim, "ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1");
 
@@ -176,7 +176,7 @@ public class DeathListener implements Listener {
 
 //		} else if (cause == DamageCause.ENTITY_ATTACK) {
 //
-//			broadcast(victim.getWorld(), config.getString("Death.Messages.Player").replace("%victim%", victim.getName()).replace("%killer%", victim.getKiller().getName()));
+//			broadcast(victim.getWorld(), config.fetchString("Death.Messages.Player").replace("%victim%", victim.getName()).replace("%killer%", victim.getKiller().getName()));
 //			creditWithKill(victim, victim.getKiller());
 
 		} else if (victim.getKiller() != null) {
@@ -271,11 +271,11 @@ public class DeathListener implements Listener {
 
 	private String getDeathMessage(Player victim, Player killer, String type) {
 
-		String deathMessage = config.getString("Death.Messages." + type);
+		String deathMessage = config.fetchString("Death.Messages." + type);
 
 		if (victim != null && killer != null) {
 			if (victim.getName().equals(killer.getName())) {
-				deathMessage = config.getString("Death.Messages.Suicide");
+				deathMessage = config.fetchString("Death.Messages.Suicide");
 			}
 		}
 
@@ -283,7 +283,7 @@ public class DeathListener implements Listener {
 			deathMessage = deathMessage.replace("%killer%", killer.getName())
 					.replace("%killer_health%", String.valueOf(Toolkit.round(killer.getHealth(), 2)));
 		} else {
-			deathMessage = config.getString("Death.Messages.Unknown"); // if killer is null (left the server, or some other unknown reason)
+			deathMessage = config.fetchString("Death.Messages.Unknown"); // if killer is null (left the server, or some other unknown reason)
 		}
 
 		if (victim != null) {

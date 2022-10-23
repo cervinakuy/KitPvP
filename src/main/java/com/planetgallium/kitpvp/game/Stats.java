@@ -88,7 +88,7 @@ public class Stats {
                 Toolkit.runCommands(p, commandsList, "%level%", String.valueOf(newLevel));
             }
 
-            p.sendMessage(resources.getMessages().getString("Messages.Other.Level")
+            p.sendMessage(resources.getMessages().fetchString("Messages.Other.Level")
                                   .replace("%level%", String.valueOf(newLevel)));
             XSound.play(p, "ENTITY_PLAYER_LEVELUP, 1, 1");
 

@@ -84,9 +84,7 @@ public class Resource extends YamlConfiguration {
 	}
 
 	public void addCopyDefaultExemption(String path) {
-
 		copyDefaultExemptions.add(path);
-
 	}
 	
 	public void save() {

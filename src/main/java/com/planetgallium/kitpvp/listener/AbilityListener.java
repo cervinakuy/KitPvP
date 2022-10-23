@@ -35,14 +35,14 @@ public class AbilityListener implements Listener {
 
 		String abilityPermission = "kp.ability." + ability.getName().toLowerCase();
 		if (!p.hasPermission(abilityPermission)) {
-			p.sendMessage(resources.getMessages().getString("Messages.General.Permission")
+			p.sendMessage(resources.getMessages().fetchString("Messages.General.Permission")
 					.replace("%permission%", abilityPermission));
 			return;
 		}
 
 		Cooldown cooldownRemaining = arena.getCooldowns().getRemainingCooldown(p, ability);
 		if (cooldownRemaining.toSeconds() > 0) {
-			p.sendMessage(resources.getMessages().getString("Messages.Error.CooldownAbility")
+			p.sendMessage(resources.getMessages().fetchString("Messages.Error.CooldownAbility")
 					.replace("%cooldown%", cooldownRemaining.formatted(false)));
 			return;
 		}

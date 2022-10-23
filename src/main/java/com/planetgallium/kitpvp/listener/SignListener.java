@@ -44,12 +44,12 @@ public class SignListener implements Listener {
 
 			if (regularSignTypes.contains(signType)) {
 				renameSign(e, "Signs." + Toolkit.capitalizeFirstChar(signType), null, null);
-				p.sendMessage(messages.getString("Messages.Other.Sign"));
+				p.sendMessage(messages.fetchString("Messages.Other.Sign"));
 			} else if (customSignTypes.contains(signType)) {
 				String placeholderKey = "%" + signType + "%";
 				String placeholderValue = e.getLine(2);
 				renameSign(e, "Signs." + Toolkit.capitalizeFirstChar(signType), placeholderKey, placeholderValue);
-				p.sendMessage(messages.getString("Messages.Other.Sign"));
+				p.sendMessage(messages.fetchString("Messages.Other.Sign"));
 			}
 			
 		}
@@ -79,7 +79,7 @@ public class SignListener implements Listener {
 
 					for (int i = 0; i < 3; i++) {
 						String signLine = sign.getLine(i);
-						String configSignLine = signs.getString("Signs." + signType + ".Line-" + (i + 1));
+						String configSignLine = signs.fetchString("Signs." + signType + ".Line-" + (i + 1));
 
 						if (!signLine.equals(configSignLine)) {
 							mismatchedLines.add(new String[]{configSignLine, signLine});
@@ -106,7 +106,7 @@ public class SignListener implements Listener {
 		
 		for (int i = 0; i < 3; i++) {
 
-			String line = signs.getString(path + ".Line-" + (i + 1));
+			String line = signs.fetchString(path + ".Line-" + (i + 1));
 
 			if (placeholder != null && placeholderValue != null)
 				line = line.replace(placeholder, placeholderValue);

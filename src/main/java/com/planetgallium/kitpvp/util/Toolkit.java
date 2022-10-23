@@ -290,7 +290,7 @@ public class Toolkit {
 
 	public static Location getLocationFromResource(Resource resource, String path) {
 
-		return new Location(Bukkit.getWorld(resource.getString(path + ".World")),
+		return new Location(Bukkit.getWorld(resource.fetchString(path + ".World")),
 				(float) resource.getInt(path + ".X") + 0.5,
 				(float) resource.getInt(path + ".Y"),
 				(float) resource.getInt(path + ".Z") + 0.5,
@@ -384,8 +384,8 @@ public class Toolkit {
 	public static boolean matchesConfigItem(ItemStack item, Resource resource, String path) {
 
 		ItemMeta itemMeta = item.getItemMeta();
-		String configItemName = resource.getString(path + ".Name");
-		String configItemMaterial = resource.getString(path + ".Material");
+		String configItemName = resource.fetchString(path + ".Name");
+		String configItemMaterial = resource.fetchString(path + ".Material");
 
 		if (item.getType() == XMaterial.matchXMaterial(configItemMaterial).get().parseMaterial()) {
 			if (itemMeta != null && itemMeta.hasDisplayName()) {

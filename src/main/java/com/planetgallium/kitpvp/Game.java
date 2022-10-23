@@ -40,7 +40,7 @@ public class Game extends JavaPlugin implements Listener {
 
 		instance = this;
 		resources = new Resources(this);
-		prefix = resources.getMessages().getString("Messages.General.Prefix");
+		prefix = resources.getMessages().fetchString("Messages.General.Prefix");
 		database = new Infobase(this);
 		arena = new Arena(this, resources);
 
@@ -120,7 +120,6 @@ public class Game extends JavaPlugin implements Listener {
 	
 	@EventHandler
 	public void onInteract(PlayerInteractEvent e) {
-		
 		Player p = e.getPlayer();
 
 		if (!resources.getConfig().contains("Items.Leave")) {
@@ -138,7 +137,7 @@ public class Game extends JavaPlugin implements Listener {
 						ByteArrayDataOutput out = ByteStreams.newDataOutput();
 						out.writeUTF("Connect");
 
-						String server = resources.getConfig().getString("Items.Leave.BungeeCord.Server");
+						String server = resources.getConfig().fetchString("Items.Leave.BungeeCord.Server");
 
 						out.writeUTF(server);
 						p.sendPluginMessage(this, "BungeeCord", out.toByteArray());

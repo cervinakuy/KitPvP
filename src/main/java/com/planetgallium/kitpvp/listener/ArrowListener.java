@@ -52,7 +52,7 @@ public class ArrowListener implements Listener {
 
 					if (shooter.hasPermission("kp.arrowmessage")) {
 						if (health != 20.0) {
-							shooter.sendMessage(config.getString("Combat.ArrowHit.Message").replace("%player%", damagedPlayer.getName()).replace("%health%", String.valueOf(health)));
+							shooter.sendMessage(config.fetchString("Combat.ArrowHit.Message").replace("%player%", damagedPlayer.getName()).replace("%health%", String.valueOf(health)));
 						}
 					}
 				}
@@ -83,7 +83,7 @@ public class ArrowListener implements Listener {
 			}
 
 			if (shooter.getInventory().firstEmpty() == -1) {
-				shooter.sendMessage(config.getString("Combat.ArrowReturn.NoSpace"));
+				shooter.sendMessage(config.fetchString("Combat.ArrowReturn.NoSpace"));
 			} else {
 				shooter.getInventory().addItem(arrowToAdd);
 			}
