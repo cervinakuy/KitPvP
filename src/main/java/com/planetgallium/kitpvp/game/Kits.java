@@ -180,6 +180,8 @@ public class Kits {
                 resources.getConfig().getBoolean("Arena.DropRemainingOverflowItemsOnKit"));
         kit.setOption("Message-OverflowItemsLost",
                 resources.getMessages().fetchString("Messages.Error.OverflowItemsLost"));
+        kit.setOption("Message-OverflowItemsDropped",
+                resources.getMessages().fetchString("Messages.Other.OverflowItemsDropped"));
 
 //        AttributeParser.getAbilitiesFromResource(resource).forEach(ability -> kit.addAbility(ability));
 

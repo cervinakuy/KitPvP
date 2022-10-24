@@ -125,7 +125,7 @@ Arena:
   ToSpawnOnJoin: true
   DeathParticles: true
   AbilitiesRequireKit: true
-  AddOverflowItemsOnKit: false
+  AddOverflowItemsOnKit: true
   DropRemainingOverflowItemsOnKit: true
 Other:
   AutomaticallyAddKitToMenu: true

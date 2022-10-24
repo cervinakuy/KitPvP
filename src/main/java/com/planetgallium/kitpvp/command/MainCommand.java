@@ -503,7 +503,7 @@ public class MainCommand implements CommandExecutor {
         }
 
         if (config.getBoolean("Arena.GiveItemsOnClear")) {
-            arena.giveItems(p);
+            arena.giveArenaItems(p);
         }
 
         arena.getKits().resetKit(p.getName());

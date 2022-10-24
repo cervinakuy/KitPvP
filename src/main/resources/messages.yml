@@ -26,6 +26,7 @@ Messages:
     NoKit: 'None'
     MenuBackArrowItemName: '&cBack to Kits'
     MenuPotionEffectsItemName: '&a&lPotion Effects'
+    OverflowItemsDropped: '%prefix% &b%number% &7kit items had no inventory space and were dropped on the ground.'
   Error:
     Player: '%prefix% &cYou must right-click on a player to activate this ability.'
     Arena: '%prefix% &cNo arena exists with name %arena%.'

@@ -83,7 +83,7 @@ public class Arena {
 		p.setFoodLevel(20);
 
 		if (giveItems) {
-			giveItems(p);
+			giveArenaItems(p);
 		}
 
 		if (toSpawn) {
@@ -134,7 +134,7 @@ public class Arena {
 		stats.pushCachedStatsToDatabase(p.getName(), true);
 	}
 	
-	public void giveItems(Player p) {
+	public void giveArenaItems(Player p) {
 		ConfigurationSection items = config.getConfigurationSection("Items");
 
 		for (String identifier : items.getKeys(false)) {

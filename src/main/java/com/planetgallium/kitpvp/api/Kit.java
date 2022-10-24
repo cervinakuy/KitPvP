@@ -146,10 +146,6 @@ public class Kit {
 
             if (inventory.get(i) != null) {
                 player.getInventory().setItem(i, inventory.get(i));
-            } else {
-                if (fill != null) {
-                    player.getInventory().setItem(i, fill);
-                }
             }
         }
 
@@ -159,6 +155,14 @@ public class Kit {
 
         if (addOverflowItems) {
             giveOverflowItems(player, overflowItems);
+        }
+
+        if (fill != null) {
+            for (int i = 0; i < 36; i++) {
+                if (player.getInventory().getItem(i) == null) {
+                    player.getInventory().setItem(i, fill);
+                }
+            }
         }
 
         effects.stream().forEach(effect -> player.addPotionEffect(effect));
@@ -183,9 +187,11 @@ public class Kit {
             for (ItemStack remainingOverflowItem : overflowItems) {
                 p.getWorld().dropItem(p.getLocation(), remainingOverflowItem);
             }
+            String overflowItemsDropMessage = (String) options.get("Message-OverflowItemsDropped");
+            p.sendMessage(overflowItemsDropMessage.replace("%number%", String.valueOf(overflowItems.size())));
         } else {
             String overflowItemsLostMessage = (String) options.get("Message-OverflowItemsLost");
-            p.sendMessage(overflowItemsLostMessage);
+            p.sendMessage(overflowItemsLostMessage.replace("%number%", String.valueOf(overflowItems.size())));
         }
 
     }
