@@ -461,6 +461,11 @@ public class MainCommand implements CommandExecutor {
     private void executeCreateKitCommand(Player p, String[] args) {
         String kitName = args[1];
 
+        if (!validateKitName(kitName)) {
+            p.sendMessage(messages.fetchString("Messages.Error.InvalidKitName"));
+            return;
+        }
+
         if (!arena.getKits().isKit(kitName)) {
             arena.getKits().createKit(p, kitName);
 
@@ -513,6 +518,13 @@ public class MainCommand implements CommandExecutor {
         for (String line : messages.getStringList("Messages.Stats.Message")) {
             receiver.sendMessage(arena.getUtilities().replaceBuiltInPlaceholdersIfPresent(line, username));
         }
+    }
+
+    private boolean validateKitName(String possibleKitName) {
+        if (possibleKitName.contains("-") || possibleKitName.contains("+")) {
+            return false;
+        }
+        return true;
     }
 
 }
