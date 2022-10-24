@@ -15,7 +15,9 @@ import org.bukkit.potion.PotionEffect;
 public class PreviewMenu {
 
 	private Menu create(Kit kit, Resources resources) {
-		Menu previewMenu = new Menu("Previewing: " + kit.getName(), new PreviewHolder(), 54);
+		String previewMenuTitle = resources.getMessages().fetchString("Messages.Other.PreviewMenuTitle")
+				.replace("%kit%", kit.getName());
+		Menu previewMenu = new Menu(previewMenuTitle, new PreviewHolder(), 54);
 
 		//			ARMOR			//
 

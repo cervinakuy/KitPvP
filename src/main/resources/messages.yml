@@ -24,8 +24,9 @@ Messages:
     Sign: '%prefix% &7You have successfully created a sign.'
     Players: '%prefix% &cThere are no other players with a kit online.'
     NoKit: 'None'
-    MenuBackArrowItemName: '&cBack to Kits'
-    MenuPotionEffectsItemName: '&a&lPotion Effects'
+    PreviewMenuTitle: 'Previewing: %kit%'
+    PreviewMenuBackArrowItemName: '&cBack to Kits'
+    PreviewMenuPotionEffectsItemName: '&a&lPotion Effects'
     OverflowItemsDropped: '%prefix% &b%number% &7kit items had no inventory space and were dropped on the ground.'
   Error:
     Player: '%prefix% &cYou must right-click on a player to activate this ability.'
