@@ -37,6 +37,9 @@ public class Kits {
         this.kits = new HashMap<>();
     }
 
+    // Could also load and cache kits onEnable like Abilities.yml so no lag spike for hefty kit when first used by
+    // player
+
     public void createKit(Player fromPlayer, String kitName) {
 
         Kit kitToCreate = createKitFromPlayer(fromPlayer, kitName);
@@ -70,7 +73,7 @@ public class Kits {
                 menuConfig.save();
 
                 menuConfig.load();
-                arena.getMenus().getKitMenu().clearCache();
+                arena.getMenus().getKitMenu().rebuildCache();
             } else {
                 fromPlayer.sendMessage(messages.fetchString("Messages.Error.Menu"));
             }

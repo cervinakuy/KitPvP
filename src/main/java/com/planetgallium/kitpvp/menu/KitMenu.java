@@ -11,11 +11,11 @@ import java.util.List;
 public class KitMenu {
 
 	private Menu menu;
-	private Resources resources;
+	private final Resources resources;
 	
 	public KitMenu(Resources resources) {
 		this.resources = resources;
-		create();
+		rebuildCache();
 	}
 
 	private void create() {
@@ -38,7 +38,7 @@ public class KitMenu {
 
 	}
 
-	public void clearCache() {
+	public void rebuildCache() {
 		create();
 	}
 

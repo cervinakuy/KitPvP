@@ -199,7 +199,8 @@ public class MainCommand implements CommandExecutor {
     private void executeReloadCommand(CommandSender sender) {
         resources.reload();
         CacheManager.clearCaches();
-        arena.getMenus().getKitMenu().clearCache();
+        arena.getMenus().getKitMenu().rebuildCache();
+        arena.getAbilities().rebuildCache();
 
         sender.sendMessage(messages.fetchString("Messages.Commands.Reload"));
     }

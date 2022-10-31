@@ -90,24 +90,20 @@ public class Resources {
 
 		// load new kits & abilities that have been added through file system (when doing /kp reload)
 		for (String fileName : getPluginDirectoryFiles("kits", true)) {
-			if (!kitToResource.containsKey(fileName)) {
+			if (!kitToResource.containsKey(fileName) && !fileName.startsWith(".")) {
 				kitToResource.put(fileName, new Resource(plugin, "kits/" + fileName));
 			}
 		}
 
 		for (String fileName : getPluginDirectoryFiles("abilities", true)) {
-			if (!abilityToResource.containsKey(fileName)) {
+			if (!abilityToResource.containsKey(fileName) && !fileName.startsWith(".")) {
 				abilityToResource.put(fileName, new Resource(plugin, "abilities/" + fileName));
 			}
 		}
 
-		for (String fileName : kitToResource.keySet()) {
-			kitToResource.get(fileName).load();
-		}
-
-		for (String fileName : abilityToResource.keySet()) {
-			abilityToResource.get(fileName).load();
-		}
+		// Reload all kitName.yml, abilityName.yml
+		kitToResource.values().forEach(Resource::load);
+		abilityToResource.values().forEach(Resource::load);
 		
 	}
 	

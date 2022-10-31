@@ -17,13 +17,17 @@ import java.util.Map;
 
 public class Abilities {
 
+    private final Resources resources;
     private final Map<ItemStack, Ability> activatorToAbility;
 
     public Abilities(Game plugin) {
-        Resources resources = plugin.getResources();
-
+        this.resources = plugin.getResources();
         this.activatorToAbility = new HashMap<>();
 
+        rebuildCache();
+    }
+
+    public void rebuildCache() {
         for (Resource abilityResource : resources.getAbilityResources()) {
             Ability ability = getAbilityFromResource(abilityResource);
             activatorToAbility.put(ability.getActivator(), ability);
