@@ -351,6 +351,7 @@ public class MainCommand implements CommandExecutor {
     private void executeSpawnCommand(Player p) {
         if (!config.contains("Arenas." + p.getWorld().getName())) {
             p.sendMessage(messages.fetchString("Messages.Error.Arena").replace("%arena%", p.getWorld().getName()));
+            return;
         }
 
         if (spawnUsers.contains(p.getName())) {
