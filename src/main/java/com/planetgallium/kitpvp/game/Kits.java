@@ -9,7 +9,6 @@ import com.planetgallium.kitpvp.api.Kit;
 import com.planetgallium.kitpvp.api.PlayerSelectKitEvent;
 import com.planetgallium.kitpvp.item.AttributeParser;
 import com.planetgallium.kitpvp.util.*;
-import com.zp4rker.localdb.Table;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -17,7 +16,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
@@ -38,6 +36,9 @@ public class Kits {
 
         this.kits = new HashMap<>();
     }
+
+    // Could also load and cache kits onEnable like Abilities.yml so no lag spike for hefty kit when first used by
+    // player
 
     public void createKit(Player fromPlayer, String kitName) {
 
@@ -72,9 +73,9 @@ public class Kits {
                 menuConfig.save();
 
                 menuConfig.load();
-                arena.getMenus().getKitMenu().clearCache();
+                arena.getMenus().getKitMenu().rebuildCache();
             } else {
-                fromPlayer.sendMessage(messages.getString("Messages.Error.Menu"));
+                fromPlayer.sendMessage(messages.fetchString("Messages.Error.Menu"));
             }
 
         }
@@ -82,7 +83,6 @@ public class Kits {
     }
 
     public Kit createKitFromPlayer(Player player, String name) {
-
         Player p = player;
         
         //          KIT             //
@@ -111,7 +111,7 @@ public class Kits {
             if (item != null) {
                 if (item.getType() == XMaterial.MUSHROOM_STEW.parseMaterial()) {
                     ItemMeta itemMeta = item.getItemMeta();
-                    itemMeta.setDisplayName(resources.getConfig().getString("Soups.Name"));
+                    itemMeta.setDisplayName(resources.getConfig().fetchString("Soups.Name"));
                     itemMeta.setLore(Toolkit.colorizeList(resources.getConfig().getStringList("Soups.Lore")));
                     item.setItemMeta(itemMeta);
                 }
@@ -128,35 +128,34 @@ public class Kits {
 
         //          ABILITY         //
 
-        Ability sampleAbility = new Ability("Example");
+        Ability sampleAbility = new Ability(kit.getName() + "-Blank");
 
         ItemStack activator = XMaterial.EMERALD.parseItem();
         ItemMeta activatorMeta = activator.getItemMeta();
 
-        activatorMeta.setDisplayName(Toolkit.translate("&aDefault Ability &7(Must be modified in kit file)"));
+        activatorMeta.setDisplayName(Toolkit.translate("&aBlank Kit Ability &7(Right Click)"));
         activator.setItemMeta(activatorMeta);
 
         sampleAbility.setActivator(activator);
 
         sampleAbility.setMessage("%prefix% &7You have used your ability.");
         sampleAbility.setSound(XSound.BLOCK_NOTE_BLOCK_PLING.parseSound(), 1, 1);
-        sampleAbility.addEffect(XPotion.SPEED.parsePotionEffectType(), 1, 10);
+        sampleAbility.addEffect(XPotion.SPEED.getPotionEffectType(), 1, 10);
         sampleAbility.addCommand("console: This command is run from the console, you can use %player%");
         sampleAbility.addCommand("player: This command is run from the player, you can use %player%");
 
-        kit.addAbility(sampleAbility);
+        resources.addAbilityResource(sampleAbility);
 
         return kit;
-
     }
 
     private Kit createKitFromResource(Resource resource) throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
 
         Kit kit = new Kit(trimName(resource.getName()));
 
-        kit.setPermission(resource.getString("Kit.Permission"));
+        kit.setPermission(resource.fetchString("Kit.Permission"));
         kit.setLevel(resource.getInt("Kit.Level"));
-        kit.setCooldown(new Cooldown(resource.getString("Kit.Cooldown")));
+        kit.setCooldown(new Cooldown(resource.fetchString("Kit.Cooldown")));
 
         kit.setHealth(resource.contains("Kit.Health") ? resource.getInt("Kit.Health") : 20);
 
@@ -178,7 +177,16 @@ public class Kits {
         kit.setFill(AttributeParser.getItemStackFromPath(resource, "Inventory.Items.Fill"));
         kit.setOffhand(AttributeParser.getItemStackFromPath(resource, "Inventory.Items.Offhand"));
 
-        AttributeParser.getAbilitiesFromResource(resource).forEach(ability -> kit.addAbility(ability));
+        kit.setOption("AddOverflowItemsOnKit",
+                resources.getConfig().getBoolean("Arena.AddOverflowItemsOnKit"));
+        kit.setOption("DropRemainingOverflowItemsOnKit",
+                resources.getConfig().getBoolean("Arena.DropRemainingOverflowItemsOnKit"));
+        kit.setOption("Message-OverflowItemsLost",
+                resources.getMessages().fetchString("Messages.Error.OverflowItemsLost"));
+        kit.setOption("Message-OverflowItemsDropped",
+                resources.getMessages().fetchString("Messages.Other.OverflowItemsDropped"));
+
+//        AttributeParser.getAbilitiesFromResource(resource).forEach(ability -> kit.addAbility(ability));
 
         return kit;
 
@@ -189,29 +197,29 @@ public class Kits {
         Player p = player;
 
         if (kit == null) {
-            p.sendMessage(messages.getString("Messages.Error.Lost"));
+            p.sendMessage(messages.fetchString("Messages.Error.Lost"));
             return;
         }
 
         if (!p.hasPermission(kit.getPermission())) {
-            p.sendMessage(messages.getString("Messages.General.Permission").replace("%permission%", kit.getPermission()));
+            p.sendMessage(messages.fetchString("Messages.General.Permission").replace("%permission%", kit.getPermission()));
             return;
         }
 
         if (!(Toolkit.getPermissionAmount(p, "kp.levelbypass.", 0) >= kit.getLevel() ||
                 arena.getStats().getStat("level", p.getName()) >= kit.getLevel())) {
-            p.sendMessage(messages.getString("Messages.Other.Needed").replace("%level%", String.valueOf(kit.getLevel())));
+            p.sendMessage(messages.fetchString("Messages.Other.Needed").replace("%level%", String.valueOf(kit.getLevel())));
             return;
         }
 
         Cooldown cooldownRemaining = arena.getCooldowns().getRemainingCooldown(p, kit);
         if (!p.hasPermission("kp.cooldownbypass") && cooldownRemaining.toSeconds() > 0) {
-            p.sendMessage(messages.getString("Messages.Error.CooldownKit").replace("%cooldown%", cooldownRemaining.formatted(false)));
+            p.sendMessage(messages.fetchString("Messages.Error.CooldownKit").replace("%cooldown%", cooldownRemaining.formatted(false)));
             return;
         }
 
         if (hasKit(player.getName())) {
-            p.sendMessage(messages.getString("Messages.Error.Selected"));
+            p.sendMessage(messages.fetchString("Messages.Error.Selected"));
             p.playSound(p.getLocation(), XSound.ENTITY_ENDER_DRAGON_HURT.parseSound(), 1, 1);
             return;
         }
@@ -222,7 +230,7 @@ public class Kits {
         }
 
         kit.apply(p);
-        p.sendMessage(messages.getString("Messages.Commands.Kit").replace("%kit%", kit.getName()));
+        p.sendMessage(messages.fetchString("Messages.Commands.Kit").replace("%kit%", kit.getName()));
         p.playSound(p.getLocation(), XSound.ENTITY_HORSE_ARMOR.parseSound(), 1, 1);
 
         Bukkit.getPluginManager().callEvent(new PlayerSelectKitEvent(player, kit));
@@ -242,16 +250,12 @@ public class Kits {
     }
 
     public void deleteKit(String kitName) {
-
         resources.removeResource(kitName + ".yml");
         plugin.getDatabase().deleteKitCooldownTable(kitName);
-
     }
 
     public Kit getKitByName(String kitName) {
-
         return loadKitFromCacheOrCreate(kitName);
-
     }
 
     private String trimName(String kitNameWithFileEnding) {
@@ -272,20 +276,18 @@ public class Kits {
     }
 
     public Kit getKitOfPlayer(String playerName) {
-
         String kitName = kits.get(playerName);
         if (kitName == null) {
             return null;
         }
 
         return loadKitFromCacheOrCreate(kitName);
-
     }
 
     private Kit loadKitFromCacheOrCreate(String kitName) {
 
         if (!CacheManager.getKitCache().containsKey(kitName)) {
-            if (resources.getKitList(false).contains(kitName)) {
+            if (resources.getPluginDirectoryFiles("kits", false).contains(kitName)) {
                 Resource kit = resources.getKit(kitName);
                 try {
                     CacheManager.getKitCache().put(kitName, createKitFromResource(kit));
@@ -309,7 +311,7 @@ public class Kits {
 
     public boolean isKit(String kitName) {
 
-        return resources.getKitList(false).contains(kitName);
+        return resources.getPluginDirectoryFiles("kits", false).contains(kitName);
 
     }
 

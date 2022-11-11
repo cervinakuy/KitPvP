@@ -2,7 +2,6 @@ package com.planetgallium.kitpvp.game;
 
 import java.util.*;
 
-import com.cryptomorin.xseries.XMaterial;
 import com.planetgallium.kitpvp.util.*;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -15,8 +14,6 @@ import org.bukkit.scoreboard.Scoreboard;
 
 import com.planetgallium.kitpvp.Game;
 
-import me.clip.placeholderapi.PlaceholderAPI;
-
 public class Arena {
 
 	private final Game plugin;
@@ -27,13 +24,15 @@ public class Arena {
 
 	private final Map<String, String> hitCache;
 
+	private final Utilities utilties;
 	private final Leaderboards leaderboards;
 	private final Stats stats;
 	private final Kits kits;
+	private final Abilities abilities;
 	private final KillStreaks killstreaks;
 	private final Cooldowns cooldowns;
 	private final Menus menus;
-	
+
 	public Arena(Game plugin, Resources resources) {
 		this.plugin = plugin;
 		this.random = new Random();
@@ -43,21 +42,23 @@ public class Arena {
 
 		this.hitCache = new HashMap<>();
 
+		this.utilties = new Utilities(plugin, this);
 		this.leaderboards = new Leaderboards(plugin);
 		this.stats = new Stats(plugin, this);
 		this.kits = new Kits(plugin, this);
+		this.abilities = new Abilities(plugin);
 		this.killstreaks = new KillStreaks(resources);
-		this.cooldowns = new Cooldowns(plugin);
+		this.cooldowns = new Cooldowns(plugin, this);
 		this.menus = new Menus(resources);
 	}
 	
 	public void addPlayer(Player p, boolean toSpawn, boolean giveItems) {
-
 		CacheManager.getPlayerAbilityCooldowns(p.getName()).clear();
 
 		kits.resetKit(p.getName());
 
 		if (config.getBoolean("Arena.ResetKillStreakOnLeave")) {
+
 			killstreaks.setStreak(p, 0);
 		}
 		
@@ -82,7 +83,7 @@ public class Arena {
 		p.setFoodLevel(20);
 
 		if (giveItems) {
-			giveItems(p);
+			giveArenaItems(p);
 		}
 
 		if (toSpawn) {
@@ -92,11 +93,9 @@ public class Arena {
 		if (resources.getScoreboard().getBoolean("Scoreboard.General.Enabled")) {
 			updateScoreboards(p, false);
 		}
-		
 	}
 	
 	public void removePlayer(Player p) {
-
 		CacheManager.getPlayerAbilityCooldowns(p.getName()).clear();
 
 		for (PotionEffect effect : p.getActivePotionEffects()) {
@@ -120,142 +119,64 @@ public class Arena {
 			updateScoreboards(p, true);
 		}
 
+		stats.pushCachedStatsToDatabase(p.getName(), false); // cached stats are pushed to database on death
 		hitCache.remove(p.getName());
-		
 	}
 	
 	public void deletePlayer(Player p) {
-		
 		if (config.getBoolean("Arena.ClearInventoryOnLeave")) {
 			p.getInventory().clear();
 			p.getInventory().setArmorContents(null);
 		}
 
 		CacheManager.getPlayerAbilityCooldowns(p.getName()).clear();
-
 		hitCache.remove(p.getName());
-		
+		stats.pushCachedStatsToDatabase(p.getName(), true);
 	}
 	
-	public void giveItems(Player p) {
-
+	public void giveArenaItems(Player p) {
 		ConfigurationSection items = config.getConfigurationSection("Items");
 
 		for (String identifier : items.getKeys(false)) {
-
 			String itemPath = "Items." + identifier;
 
 			if (config.getBoolean(itemPath + ".Enabled")) {
-
-				ItemStack item = new ItemStack(XMaterial.matchXMaterial(config.getString(itemPath + ".Material")).get().parseMaterial());
+				ItemStack item = Toolkit.safeItemStack(config.fetchString(itemPath + ".Material"));
 				ItemMeta meta = item.getItemMeta();
 
-				meta.setDisplayName(config.getString(itemPath + ".Name"));
+				meta.setDisplayName(config.fetchString(itemPath + ".Name"));
 				item.setItemMeta(meta);
 
 				p.getInventory().setItem(config.getInt(itemPath + ".Slot"), item);
-
 			}
-
 		}
-		
 	}
 
 	public void toSpawn(Player p, String arenaName) {
-
 		if (config.contains("Arenas." + arenaName)) {
-
-			p.teleport(Toolkit.getLocationFromResource(config, "Arenas." + arenaName + "." + generateRandomArenaSpawn(arenaName)));
-
+			p.teleport(Toolkit.getLocationFromResource(config,
+					"Arenas." + arenaName + "." + generateRandomArenaSpawn(arenaName)));
 		} else {
-
-			p.sendMessage(resources.getMessages().getString("Messages.Error.Arena").replace("%arena%", arenaName));
-
+			p.sendMessage(resources.getMessages().fetchString("Messages.Error.Arena")
+					.replace("%arena%", arenaName));
 		}
-
 	}
 	
 	public void updateScoreboards(Player p, boolean hide) {
-		
 		Scoreboard board = Bukkit.getScoreboardManager().getNewScoreboard();
-		Infoboard scoreboard = new Infoboard(board, resources.getScoreboard().getString("Scoreboard.General.Title"));
+		String scoreboardTitle = utilties.addPlaceholdersIfPossible(p,
+				resources.getScoreboard().fetchString("Scoreboard.General.Title"));
+		Infoboard scoreboard = new Infoboard(board, scoreboardTitle);
 		
 		if (!hide) {
-
 			for (String line : resources.getScoreboard().getStringList("Scoreboard.Lines")) {
-				scoreboard.add(addPlaceholdersIfPossible(p, line));
+				scoreboard.add(utilties.addPlaceholdersIfPossible(p, line));
 			}
-
 		} else {
 			scoreboard.hide();
 		}
 
 		scoreboard.update(p);
-
-	}
-
-	private String addPlaceholdersIfPossible(Player p, String text) {
-
-		if (plugin.hasPlaceholderAPI()) {
-			text = PlaceholderAPI.setPlaceholders(p, text);
-		}
-
-		return replaceBuiltInPlaceholdersIfPresent(text, p.getName());
-
-	}
-
-	public String replaceBuiltInPlaceholdersIfPresent(String s, String username) {
-
-		// The reason I'm doing all these if statements rather than a more concise code solution is to reduce
-		// the amount of data that is unnecessarily fetched (ex by using .replace) to improve performance
-		// no longer constantly fetching stats from database for EACH line of scoreboard on update and player join
-
-		if (s.contains("%streak%")) {
-			s = s.replace("%streak%", String.valueOf(getKillStreaks().getStreak(username)));
-		}
-
-		if (s.contains("%player%")) {
-			s = s.replace("%player%", username);
-		}
-
-		if (s.contains("%xp%")) {
-			s = s.replace("%xp%", String.valueOf(stats.getStat("experience", username)));
-		}
-
-		if (s.contains("%level%")) {
-			s = s.replace("%level%", String.valueOf(stats.getStat("level", username)));
-		}
-
-		if (s.contains("%max_xp%")) {
-			s = s.replace("%max_xp%", String.valueOf(stats.getRegularOrRelativeNeededExperience(username)));
-		}
-
-		if (s.contains("%max_level%")) {
-			s = s.replace("%max_level%", String.valueOf(resources.getLevels().getInt("Levels.Options.Maximum-Level")));
-		}
-
-		if (s.contains("%kd%")) {
-			s = s.replace("%kd%", String.valueOf(getStats().getKDRatio(username)));
-		}
-
-		if (s.contains("%kills%")) {
-			s = s.replace("%kills%", String.valueOf(stats.getStat("kills", username)));
-		}
-
-		if (s.contains("%deaths%")) {
-			s = s.replace("%deaths%", String.valueOf(stats.getStat("deaths", username)));
-		}
-
-		if (s.contains("%kit%")) {
-			if (getKits().getKitOfPlayer(username) != null) {
-				s = s.replace("%kit%", getKits().getKitOfPlayer(username).getName());
-			} else {
-				s = s.replace("%kit%", "None");
-			}
-		}
-
-		return s;
-
 	}
 
 	public String generateRandomArenaSpawn(String arenaName) {
@@ -265,30 +186,17 @@ public class Arena {
 		return spawnKeys.get(random.nextInt(spawnKeys.size()));
 	}
 
-	public boolean isCombatActionPermittedInRegion(Player p) {
-
-		if (plugin.hasWorldGuard()) {
-
-			if (WorldGuardAPI.getInstance().allows(p, WorldGuardFlag.PVP.getFlag())) {
-				return true;
-			}
-
-			p.sendMessage(resources.getMessages().getString("Messages.Error.PVP"));
-			return false;
-
-		}
-
-		return true;
-
-	}
-
 	public Map<String, String> getHitCache() { return hitCache; }
 
 	public Stats getStats() { return stats; }
 
+	public Utilities getUtilities() { return utilties; }
+
 	public Leaderboards getLeaderboards() { return leaderboards; }
 	
 	public Kits getKits() { return kits; }
+
+	public Abilities getAbilities() { return abilities; }
 	
 	public KillStreaks getKillStreaks() { return killstreaks; }
 	

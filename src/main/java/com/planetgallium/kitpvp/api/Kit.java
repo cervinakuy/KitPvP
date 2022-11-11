@@ -6,7 +6,6 @@ import com.planetgallium.kitpvp.util.Resource;
 import com.planetgallium.kitpvp.util.Toolkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -23,25 +22,23 @@ public class Kit {
     private int level;
     private int health;
 
+    private final Map<String, Object> options;
     private final Map<Integer, ItemStack> inventory;
     private final List<PotionEffect> effects;
-    private final List<Ability> abilities;
 
-    private ItemStack helmet;
-    private ItemStack chestplate;
-    private ItemStack leggings;
-    private ItemStack boots;
+    private ItemStack kitHelmet;
+    private ItemStack kitChestplate;
+    private ItemStack kitLeggings;
+    private ItemStack kitBoots;
     private ItemStack offhand;
     private ItemStack fill;
 
     public Kit(String name) {
-
         this.name = name;
 
+        this.options = new HashMap<>();
         this.inventory = new HashMap<>();
         this.effects = new ArrayList<>();
-        this.abilities = new ArrayList<>();
-
     }
 
     public void setPermission(String permission) {
@@ -60,6 +57,12 @@ public class Kit {
         this.health = health;
     }
 
+    public void setOption(String key, Object value) {
+        // NOTE: using this strategy to pass data rather than using Resources class so
+        // kit class can be used externally without needing access to Resources
+        this.options.put(key, value);
+    }
+
     public void setInventoryItem(int slot, ItemStack item) {
         inventory.put(slot, item);
     }
@@ -69,24 +72,20 @@ public class Kit {
         effects.add(effect);
     }
 
-    public void addAbility(Ability ability) {
-        abilities.add(ability);
-    }
-
     public void setHelmet(ItemStack helmet) {
-        this.helmet = helmet;
+        this.kitHelmet = helmet;
     }
 
     public void setChestplate(ItemStack chestplate) {
-        this.chestplate = chestplate;
+        this.kitChestplate = chestplate;
     }
 
     public void setLeggings(ItemStack leggings) {
-        this.leggings = leggings;
+        this.kitLeggings = leggings;
     }
 
     public void setBoots(ItemStack boots) {
-        this.boots = boots;
+        this.kitBoots = boots;
     }
 
     public void setOffhand(ItemStack offhand) {
@@ -97,44 +96,56 @@ public class Kit {
         this.fill = fill;
     }
 
-    public Ability getAbilityFromActivator(ItemStack activator) {
-
-        for (Ability ability : abilities) {
-
-            if (activator.getType() == ability.getActivator().getType()) {
-
-                ItemMeta meta = activator.getItemMeta();
-
-                if (meta.getDisplayName().equals(ability.getActivator().getItemMeta().getDisplayName())) {
-
-                    return ability;
-
-                }
-
-            }
-
-        }
-
-        return null;
-
-    }
-
     public void apply(Player player) {
 
-        if (helmet != null) player.getInventory().setHelmet(helmet);
-        if (chestplate != null) player.getInventory().setChestplate(chestplate);
-        if (leggings != null) player.getInventory().setLeggings(leggings);
-        if (boots != null) player.getInventory().setBoots(boots);
+        List<ItemStack> overflowItems = new ArrayList<>();
+        boolean addOverflowItems = (Boolean) options.get("AddOverflowItemsOnKit");
+
+        if (kitHelmet != null) {
+            if (player.getInventory().getHelmet() == null) {
+                player.getInventory().setHelmet(kitHelmet);
+            } else {
+                overflowItems.add(kitHelmet);
+            }
+        }
+
+        if (kitChestplate != null) {
+            if (player.getInventory().getChestplate() == null) {
+                player.getInventory().setChestplate(kitChestplate);
+            } else {
+                overflowItems.add(kitChestplate);
+            }
+        }
+
+        if (kitLeggings != null) {
+            if (player.getInventory().getLeggings() == null) {
+                player.getInventory().setLeggings(kitLeggings);
+            } else {
+                overflowItems.add(kitLeggings);
+            }
+        }
+
+        if (kitBoots != null) {
+            if (player.getInventory().getBoots() == null) {
+                player.getInventory().setBoots(kitBoots);
+            } else {
+                overflowItems.add(kitBoots);
+            }
+        }
 
         Toolkit.setMaxHealth(player, health);
 
         for (int i = 0; i < 36; i++) {
+            if (addOverflowItems) {
+                // if kit wants to put an item in slot i, but slot i in player inventory is already taken
+                if (inventory.containsKey(i) && player.getInventory().getItem(i) != null) {
+                    overflowItems.add(inventory.get(i)); // add kit item to overflow items
+                    continue; // ignore this kit item, will be accounted for with giveOverflowItems
+                }
+            }
+
             if (inventory.get(i) != null) {
                 player.getInventory().setItem(i, inventory.get(i));
-            } else {
-                if (fill != null) {
-                    player.getInventory().setItem(i, fill);
-                }
             }
         }
 
@@ -142,7 +153,46 @@ public class Kit {
             player.getInventory().setItemInOffHand(offhand);
         }
 
+        if (addOverflowItems) {
+            giveOverflowItems(player, overflowItems);
+        }
+
+        if (fill != null) {
+            for (int i = 0; i < 36; i++) {
+                if (player.getInventory().getItem(i) == null) {
+                    player.getInventory().setItem(i, fill);
+                }
+            }
+        }
+
         effects.stream().forEach(effect -> player.addPotionEffect(effect));
+    }
+
+    private void giveOverflowItems(Player p, List<ItemStack> overflowItems) {
+
+        for (int i = 0; i < 36; i++) {
+            if (p.getInventory().getItem(i) == null) { // if empty slot found
+                if (overflowItems.size() >= 1) {
+                    p.getInventory().setItem(i, overflowItems.get(0));
+                    overflowItems.remove(0);
+                } else {
+                    return; // if no overflow items left, return out of function
+                }
+            }
+        }
+
+        boolean dropRemainingOverflowItems = (Boolean) options.get("DropRemainingOverflowItemsOnKit");
+
+        if (dropRemainingOverflowItems) {
+            for (ItemStack remainingOverflowItem : overflowItems) {
+                p.getWorld().dropItem(p.getLocation(), remainingOverflowItem);
+            }
+            String overflowItemsDropMessage = (String) options.get("Message-OverflowItemsDropped");
+            p.sendMessage(overflowItemsDropMessage.replace("%number%", String.valueOf(overflowItems.size())));
+        } else {
+            String overflowItemsLostMessage = (String) options.get("Message-OverflowItemsLost");
+            p.sendMessage(overflowItemsLostMessage.replace("%number%", String.valueOf(overflowItems.size())));
+        }
 
     }
 
@@ -154,10 +204,10 @@ public class Kit {
         resource.set("Kit.Health", health);
         resource.save();
 
-        AttributeWriter.itemStackToResource(resource, "Inventory.Armor.Helmet", helmet);
-        AttributeWriter.itemStackToResource(resource, "Inventory.Armor.Chestplate", chestplate);
-        AttributeWriter.itemStackToResource(resource, "Inventory.Armor.Leggings", leggings);
-        AttributeWriter.itemStackToResource(resource, "Inventory.Armor.Boots", boots);
+        AttributeWriter.itemStackToResource(resource, "Inventory.Armor.Helmet", kitHelmet);
+        AttributeWriter.itemStackToResource(resource, "Inventory.Armor.Chestplate", kitChestplate);
+        AttributeWriter.itemStackToResource(resource, "Inventory.Armor.Leggings", kitLeggings);
+        AttributeWriter.itemStackToResource(resource, "Inventory.Armor.Boots", kitBoots);
 
         for (Integer slot : inventory.keySet()) {
             AttributeWriter.itemStackToResource(resource, "Inventory.Items." + slot, inventory.get(slot));
@@ -169,8 +219,6 @@ public class Kit {
         for (PotionEffect effect : effects) {
             AttributeWriter.potionEffectToResource(resource, "Effects", effect);
         }
-
-        abilities.stream().forEach(ability -> ability.toResource(resource, "Abilities."));
 
         resource.save();
 
@@ -190,15 +238,13 @@ public class Kit {
 
     public List<PotionEffect> getEffects() { return effects; }
 
-    public List<Ability> getAbilities() { return abilities; }
+    public ItemStack getHelmet() { return kitHelmet; }
 
-    public ItemStack getHelmet() { return helmet; }
+    public ItemStack getChestplate() { return kitChestplate; }
 
-    public ItemStack getChestplate() { return chestplate; }
+    public ItemStack getLeggings() { return kitLeggings; }
 
-    public ItemStack getLeggings() { return leggings; }
-
-    public ItemStack getBoots() { return boots; }
+    public ItemStack getBoots() { return kitBoots; }
 
     public ItemStack getFill() { return fill; }
 

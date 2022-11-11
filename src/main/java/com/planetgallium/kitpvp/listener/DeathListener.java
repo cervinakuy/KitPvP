@@ -11,7 +11,6 @@ import org.bukkit.World;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDamageByBlockEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
@@ -28,21 +27,22 @@ import java.util.List;
 
 public class DeathListener implements Listener {
 
+	private final Game plugin;
 	private final Arena arena;
 	private final Resources resources;
 	private final Resource config;
 	
 	public DeathListener(Game plugin) {
+		this.plugin = plugin;
 		this.arena = plugin.getArena();
 		this.resources = plugin.getResources();
 		this.config = resources.getConfig();
 	}
-	
+
 	@EventHandler
 	public void onDeath(PlayerDeathEvent e) {
 
 		// investigate possible memory leak when FancyDeath is enabled
-
 		if (Toolkit.inArena(e.getEntity())) {
 
 			Player victim = e.getEntity();
@@ -52,11 +52,12 @@ public class DeathListener implements Listener {
 				e.getDrops().clear();
 			}
 
-			setDeathMessage(victim);
 			respawnPlayer(victim);
+			setDeathMessage(victim);
 
 			arena.getStats().addToStat("deaths", victim.getName(), 1);
-			arena.getStats().removeExperience(victim.getName(), resources.getLevels().getInt("Levels.Options.Experience-Taken-On-Death"));
+			arena.getStats().removeExperience(victim.getName(),
+					resources.getLevels().getInt("Levels.Options.Experience-Taken-On-Death"));
 
 			if (config.getBoolean("Arena.DeathParticle")) {
 				victim.getWorld().playEffect(victim.getLocation().add(0.0D, 1.0D, 0.0D), Effect.STEP_SOUND, 152);
@@ -64,76 +65,62 @@ public class DeathListener implements Listener {
 
 			Toolkit.runCommands(victim, config.getStringList("Death.Commands"), "%victim%", victim.getName());
 
-			broadcast(victim.getWorld(), XSound.matchXSound(config.getString("Death.Sound.Sound")).get().parseSound(), 1, config.getInt("Death.Sound.Pitch"));
-
+			broadcast(victim.getWorld(),
+					XSound.matchXSound(config.fetchString("Death.Sound.Sound")).get().parseSound(),
+					1,
+					config.getInt("Death.Sound.Pitch"));
 		}
-	
+
 	}
 
 	@EventHandler
 	public void onRespawn(PlayerRespawnEvent e) {
-
 		if (Toolkit.inArena(e.getPlayer())) {
-
 			if (!config.getBoolean("Arena.FancyDeath")) {
-
 				Player p = e.getPlayer();
 
 				new BukkitRunnable() {
-
 					@Override
 					public void run() {
 						arena.toSpawn(p, p.getWorld().getName());
 					}
-
-				}.runTaskLater(Game.getInstance(), 1L);
-
+				}.runTaskLater(plugin, 1L);
 			}
-
 		}
-
 	}
 
 	private void respawnPlayer(Player victim) {
-
 		if (!victim.isOnline()) {
 			return;
 		}
 
 		if (config.getBoolean("Arena.FancyDeath")) {
-
 			Location deathLocation = victim.getLocation();
 
 			new BukkitRunnable() {
-
 				@Override
 				public void run() {
-
 					victim.spigot().respawn();
 					victim.teleport(deathLocation);
 					victim.setGameMode(GameMode.SPECTATOR);
-
 				}
-
-			}.runTaskLater(Game.getInstance(), 1L);
+			}.runTaskLater(plugin, 1L);
 
 			arena.removePlayer(victim);
 			
 			new BukkitRunnable() {
-				
 				int time = config.getInt("Death.Title.Time");
-				
+
 				@Override
 				public void run() {
-
 					if (time != 0) {
-
-						Titles.sendTitle(victim, 0, 21, 0, config.getString("Death.Title.Title"), config.getString("Death.Title.Subtitle").replace("%seconds%", String.valueOf(time)));
+						Titles.sendTitle(victim, 0, 21, 0,
+								config.fetchString("Death.Title.Title"),
+								config.fetchString("Death.Title.Subtitle")
+										.replace("%seconds%", String.valueOf(time)));
 						XSound.play(victim, "UI_BUTTON_CLICK, 1, 1");
 						time--;
-
 					} else {
-
 						if (config.getBoolean("Arena.ClearInventoryOnRespawn")) {
 							victim.getInventory().clear();
 							victim.getInventory().setArmorContents(null);
@@ -141,46 +128,42 @@ public class DeathListener implements Listener {
 
 						arena.addPlayer(victim, true, config.getBoolean("Arena.GiveItemsOnRespawn"));
 
-						victim.sendMessage(config.getString("Death.Title.Message"));
+						victim.sendMessage(config.fetchString("Death.Title.Message"));
 						victim.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 30, 0));
 						XSound.play(victim, "ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1");
 
 						Toolkit.runCommands(victim, config.getStringList("Respawn.Commands"), "none", "none");
 
 						cancel();
-
 					}
-
 				}
-				
-			}.runTaskTimer(Game.getInstance(), 0L, 20L);
-			
-		} else {
+			}.runTaskTimer(plugin, 0L, 20L);
 
+		} else {
 			arena.removePlayer(victim);
-			
+
 			if (config.getBoolean("Arena.ClearInventoryOnRespawn")) {
 				victim.getInventory().clear();
 				victim.getInventory().setArmorContents(null);
 			}
 
 			new BukkitRunnable() {
-
 				@Override
 				public void run() {
-
 					arena.addPlayer(victim, true, config.getBoolean("Arena.GiveItemsOnRespawn"));
-					Toolkit.runCommands(victim, config.getStringList("Respawn.Commands"), "none", "none");
-
+					Toolkit.runCommands(victim, config.getStringList("Respawn.Commands"),
+							"none", "none");
 				}
-
-			}.runTaskLater(Game.getInstance(), 1L);
-			
+			}.runTaskLater(plugin, 1L);
 		}
-		
 	}
 
 	private void setDeathMessage(Player victim) {
+
+		if (victim.getLastDamageCause() == null) {
+			broadcast(victim.getWorld(), getDeathMessage(victim, null, "Unknown"));
+			return;
+		}
 
 		DamageCause cause = victim.getLastDamageCause().getCause();
 
@@ -193,7 +176,7 @@ public class DeathListener implements Listener {
 
 //		} else if (cause == DamageCause.ENTITY_ATTACK) {
 //
-//			broadcast(victim.getWorld(), config.getString("Death.Messages.Player").replace("%victim%", victim.getName()).replace("%killer%", victim.getKiller().getName()));
+//			broadcast(victim.getWorld(), config.fetchString("Death.Messages.Player").replace("%victim%", victim.getName()).replace("%killer%", victim.getKiller().getName()));
 //			creditWithKill(victim, victim.getKiller());
 
 		} else if (victim.getKiller() != null) {
@@ -265,11 +248,8 @@ public class DeathListener implements Listener {
 	}
 
 	private void creditWithKill(Player victim, Player killer) {
-
 		if (victim != null && killer != null) {
-
 			if (!victim.getName().equals(killer.getName())) {
-
 				arena.getStats().addToStat("kills", killer.getName(), 1);
 				arena.getStats().addExperience(killer, resources.getLevels().getInt("Levels.Options.Experience-Given-On-Kill"));
 
@@ -278,37 +258,24 @@ public class DeathListener implements Listener {
 				Toolkit.runCommands(killer, killCommands, "%killer%", killer.getName());
 
 				if (resources.getScoreboard().getBoolean("Scoreboard.General.Enabled")) {
-
 					new BukkitRunnable() {
-
 						@Override
 						public void run() {
-
-							if (killer instanceof Player) {
-
-								arena.updateScoreboards(killer, false);
-
-							}
-
+							arena.updateScoreboards(killer, false);
 						}
-
-					}.runTaskLater(Game.getInstance(), 20L);
-
+					}.runTaskLater(plugin, 20L);
 				}
-
 			}
-
 		}
-
 	}
 
 	private String getDeathMessage(Player victim, Player killer, String type) {
 
-		String deathMessage = config.getString("Death.Messages." + type);
+		String deathMessage = config.fetchString("Death.Messages." + type);
 
 		if (victim != null && killer != null) {
 			if (victim.getName().equals(killer.getName())) {
-				deathMessage = config.getString("Death.Messages.Suicide");
+				deathMessage = config.fetchString("Death.Messages.Suicide");
 			}
 		}
 
@@ -316,7 +283,7 @@ public class DeathListener implements Listener {
 			deathMessage = deathMessage.replace("%killer%", killer.getName())
 					.replace("%killer_health%", String.valueOf(Toolkit.round(killer.getHealth(), 2)));
 		} else {
-			deathMessage = config.getString("Death.Messages.Unknown"); // if killer is null (left the server, or some other unknown reason)
+			deathMessage = config.fetchString("Death.Messages.Unknown"); // if killer is null (left the server, or some other unknown reason)
 		}
 
 		if (victim != null) {

@@ -24,6 +24,10 @@ Messages:
     Sign: '%prefix% &7You have successfully created a sign.'
     Players: '%prefix% &cThere are no other players with a kit online.'
     NoKit: 'None'
+    PreviewMenuTitle: 'Previewing: %kit%'
+    PreviewMenuBackArrowItemName: '&cBack to Kits'
+    PreviewMenuPotionEffectsItemName: '&a&lPotion Effects'
+    OverflowItemsDropped: '%prefix% &b%number% &7kit items had no inventory space and were dropped on the ground.'
   Error:
     Player: '%prefix% &cYou must right-click on a player to activate this ability.'
     Arena: '%prefix% &cNo arena exists with name %arena%.'
@@ -45,6 +49,8 @@ Messages:
     PVP: '%prefix% &cPVP is not permitted in this region.'
     InvalidType: '%prefix% &cInvalid type "%type%". Available types: %types%.'
     InvalidNumber: '%prefix% &cInvalid number "%number%".'
+    OverflowItemsLost: '%prefix% &c%number% items could not fit in your inventory and were lost.'
+    InvalidKitName: '%prefix% &cFailed to create kit due to invalid kit name (contains +, -)'
   Stats:
     Message:
     - '&7&m                                &r'

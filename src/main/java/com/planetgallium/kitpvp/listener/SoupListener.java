@@ -16,11 +16,13 @@ import org.bukkit.scheduler.BukkitRunnable;
 import com.planetgallium.kitpvp.Game;
 
 public class SoupListener implements Listener {
-	
-	private Resource config;
-	private int soupBoost;
+
+	private final Game plugin;
+	private final Resource config;
+	private final int soupBoost;
 	
 	public SoupListener(Game plugin) {
+		this.plugin = plugin;
 		this.config = plugin.getResources().getConfig();
 		this.soupBoost = plugin.getConfig().getInt("Soups.RegenAmount");
 	}
@@ -55,7 +57,7 @@ public class SoupListener implements Listener {
 									}
 									
 									if (count < config.getInt("Kill.SoupReward.Amount")) {
-										killer.sendMessage(config.getString("Kill.SoupReward.NoSpace").replace("%amount%", String.valueOf((config.getInt("Kill.SoupReward.Amount") - count))));
+										killer.sendMessage(config.fetchString("Kill.SoupReward.NoSpace").replace("%amount%", String.valueOf((config.getInt("Kill.SoupReward.Amount") - count))));
 									} else {
 										count = config.getInt("Kill.SoupReward.Amount");
 									}
@@ -63,7 +65,7 @@ public class SoupListener implements Listener {
 									ItemStack soup = XMaterial.MUSHROOM_STEW.parseItem();
 									ItemMeta soupMeta = soup.getItemMeta();
 
-									soupMeta.setDisplayName(config.getString("Soups.Name"));
+									soupMeta.setDisplayName(config.fetchString("Soups.Name"));
 									soupMeta.setLore(Toolkit.colorizeList(config.getStringList("Soups.Lore")));
 
 									soup.setItemMeta(soupMeta);
@@ -76,7 +78,7 @@ public class SoupListener implements Listener {
 								
 							}
 							
-						}.runTaskLater(Game.getInstance(), config.getInt("Kill.SoupReward.Delay") * 20);
+						}.runTaskLater(plugin, config.getInt("Kill.SoupReward.Delay") * 20);
 						
 					}
 					
@@ -106,7 +108,7 @@ public class SoupListener implements Listener {
 						if (p.getHealth() < 20.0) {
 
 							p.setHealth(p.getHealth() + (double) soupBoost >= 20.0 ? 20.0 : p.getHealth() + (double) soupBoost);
-							p.playSound(p.getLocation(), XSound.matchXSound(config.getString("Soups.Sound")).get().parseSound(), 1, (float) config.getInt("Soups.Pitch"));
+							p.playSound(p.getLocation(), XSound.matchXSound(config.fetchString("Soups.Sound")).get().parseSound(), 1, (float) config.getInt("Soups.Pitch"));
 
 							if (Toolkit.getMainHandItem(p).getType() == XMaterial.MUSHROOM_STEW.parseMaterial()) {
 

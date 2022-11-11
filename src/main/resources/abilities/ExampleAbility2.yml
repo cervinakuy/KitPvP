@@ -1,0 +1,5 @@
+Activator:
+  Name: '&aSecond Ability Item &7(Unlimited custom abilities per kit!)'
+  Material: GOLD_INGOT
+Message:
+  Message: '%prefix% &7KitPvP supports &aunlimited &7custom kits and each with &aunlimited &7custom abilities!'

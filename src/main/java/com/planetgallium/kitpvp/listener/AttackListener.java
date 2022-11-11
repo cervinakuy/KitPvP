@@ -1,5 +1,6 @@
 package com.planetgallium.kitpvp.listener;
 
+import com.planetgallium.kitpvp.game.Kits;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -14,9 +15,11 @@ import com.planetgallium.kitpvp.util.Toolkit;
 public class AttackListener implements Listener {
 
 	private Resources resources;
-	
+	private Kits kits;
+
 	public AttackListener(Game plugin) {
 		this.resources = plugin.getResources();
+		this.kits = plugin.getArena().getKits();
 	}
 	
 	@EventHandler
@@ -31,16 +34,16 @@ public class AttackListener implements Listener {
 				
 				if (resources.getConfig().getBoolean("Arena.NoKitProtection")) {
 					
-					if (!Game.getInstance().getArena().getKits().hasKit(damagedPlayer.getName())) {
+					if (!kits.hasKit(damagedPlayer.getName())) {
 						
-						damager.sendMessage(resources.getMessages().getString("Messages.Error.Invincible"));
+						damager.sendMessage(resources.getMessages().fetchString("Messages.Error.Invincible"));
 						e.setCancelled(true);
 						
 					}
 					
-					if (Game.getInstance().getArena().getKits().hasKit(damagedPlayer.getName()) && !Game.getInstance().getArena().getKits().hasKit(damager.getName())) {
+					if (kits.hasKit(damagedPlayer.getName()) && !kits.hasKit(damager.getName())) {
 						
-						damager.sendMessage(resources.getMessages().getString("Messages.Error.Kit"));
+						damager.sendMessage(resources.getMessages().fetchString("Messages.Error.Kit"));
 						e.setCancelled(true);
 						
 					}
@@ -55,31 +58,28 @@ public class AttackListener implements Listener {
 	
 	@EventHandler
 	public void onDamage(EntityDamageEvent e) {
-		
 		if (e.getEntity() instanceof Player) {
-			
 			Player damagedPlayer = (Player) e.getEntity();
-			
+//			System.out.println("Damaged player: " + damagedPlayer.getName());
+
+			// bot is not doing damage to the player
+
 			if (Toolkit.inArena(damagedPlayer)) {
-				
+//				System.out.println("Damaged player is in arena");
 				if (resources.getConfig().getBoolean("Arena.NoKitProtection")) {
-					
-					if (!Game.getInstance().getArena().getKits().hasKit(damagedPlayer.getName())) {
-						
+//					System.out.println("NoKitProt enabled");
+
+
+					if (!kits.hasKit(damagedPlayer.getName())) {
+//						System.out.println("has kit");
 						if (e.getCause() != DamageCause.VOID) {
-						
+//							System.out.println("Cancelled damage");
 							e.setCancelled(true);
-						
 						}
-						
 					}
-					
 				}
-				
 			}
-			
 		}
-		
 	}
-	
+
 }

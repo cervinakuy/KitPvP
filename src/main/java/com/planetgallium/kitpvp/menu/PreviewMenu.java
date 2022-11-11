@@ -6,6 +6,7 @@ import java.util.List;
 import com.cryptomorin.xseries.XMaterial;
 import com.planetgallium.kitpvp.api.Kit;
 import com.planetgallium.kitpvp.util.CacheManager;
+import com.planetgallium.kitpvp.util.Resources;
 import org.bukkit.entity.Player;
 
 import com.planetgallium.kitpvp.util.Menu;
@@ -13,9 +14,10 @@ import org.bukkit.potion.PotionEffect;
 
 public class PreviewMenu {
 
-	private Menu create(Kit kit) {
-
-		Menu previewMenu = new Menu("Previewing: " + kit.getName(), new PreviewHolder(), 54);
+	private Menu create(Kit kit, Resources resources) {
+		String previewMenuTitle = resources.getMessages().fetchString("Messages.Other.PreviewMenuTitle")
+				.replace("%kit%", kit.getName());
+		Menu previewMenu = new Menu(previewMenuTitle, new PreviewHolder(), 54);
 
 		//			ARMOR			//
 
@@ -47,7 +49,9 @@ public class PreviewMenu {
 			effectsLore.add("&7None");
 		}
 
-		previewMenu.addItem("&a&lPotion Effects", XMaterial.BREWING_STAND.parseMaterial(), effectsLore, 4);
+		String menuPotionEffectsItemName =
+				resources.getMessages().fetchString("Messages.Other.MenuPotionEffectsItemName");
+		previewMenu.addItem(menuPotionEffectsItemName, XMaterial.BREWING_STAND.parseMaterial(), effectsLore, 4);
 
 		//			HOTBAR			//
 
@@ -75,21 +79,19 @@ public class PreviewMenu {
 			}
 		}
 
-		previewMenu.addItem("&cBack to Kits", XMaterial.ARROW.parseMaterial(), new ArrayList<String>(), 8);
+		String menuBackArrowItemName = resources.getMessages().fetchString("Messages.Other.MenuBackArrowItemName");
+		previewMenu.addItem(menuBackArrowItemName, XMaterial.ARROW.parseMaterial(), new ArrayList<>(), 8);
 
 		CacheManager.getPreviewMenuCache().put(kit.getName(), previewMenu);
 
 		return previewMenu;
-
 	}
 
-	public void open(Player p, Kit kit) {
-
+	public void open(Player p, Kit kit, Resources resources) {
 		Menu previewMenu = CacheManager.getPreviewMenuCache().containsKey(kit.getName()) ?
-				CacheManager.getPreviewMenuCache().get(kit.getName()) : create(kit);
+				CacheManager.getPreviewMenuCache().get(kit.getName()) : create(kit, resources);
 
 		previewMenu.openMenu(p);
-
 	}
 	
 }

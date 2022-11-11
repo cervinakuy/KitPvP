@@ -19,7 +19,7 @@ public class RefillMenu {
         this.menu = new Menu("Refill", null, 54);
 
         for (int i = 0; i < menu.getSize(); i++) {
-            menu.addItem(resources.getConfig().getString("Soups.Name"), XMaterial.MUSHROOM_STEW.parseMaterial(), resources.getConfig().getStringList("Soups.Lore"), i);
+            menu.addItem(resources.getConfig().fetchString("Soups.Name"), XMaterial.MUSHROOM_STEW.parseMaterial(), resources.getConfig().getStringList("Soups.Lore"), i);
         }
 
     }

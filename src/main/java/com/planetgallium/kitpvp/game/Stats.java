@@ -1,23 +1,26 @@
 package com.planetgallium.kitpvp.game;
 
 import com.cryptomorin.xseries.XSound;
+import com.planetgallium.database.TopEntry;
 import com.planetgallium.kitpvp.Game;
 import com.planetgallium.kitpvp.api.PlayerLevelUpEvent;
 import com.planetgallium.kitpvp.util.*;
-import com.zp4rker.localdb.DataType;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.List;
 
 public class Stats {
 
+    private final Game plugin;
     private final Infobase database;
     private final Resources resources;
     private final Resource levels;
     private final Leaderboards leaderboards;
 
     public Stats(Game plugin, Arena arena) {
+        this.plugin = plugin;
         this.database = plugin.getDatabase();
         this.resources = plugin.getResources();
         this.levels = plugin.getResources().getLevels();
@@ -26,13 +29,14 @@ public class Stats {
 
     public void createPlayer(Player p) {
         CacheManager.getUUIDCache().put(p.getName(), p.getUniqueId().toString());
-        if (!isPlayerRegistered(p.getName())) {
-            database.createPlayerStats(p);
-        }
+        database.registerPlayerStats(p);
     }
 
-    public boolean isPlayerRegistered(String username) {
-        return database.databaseTableContainsPlayer("stats", username);
+    private boolean isPlayerRegistered(String username) {
+        if (CacheManager.getStatsCache().containsKey(username)) { // try to use cache first to be faster
+            return true;
+        }
+        return database.isPlayerRegistered(username);
     }
 
     public double getKDRatio(String username) {
@@ -44,7 +48,7 @@ public class Stats {
     }
 
     public void removeExperience(String username, int amount) {
-        if (levels.getBoolean("Levels.Levels.Enabled") && isPlayerRegistered(username)) {
+        if (levels.getBoolean("Levels.Levels.Enabled")) {
             int currentExperience = getStat("experience", username);
             setStat("experience", username, currentExperience >= amount ? currentExperience - amount : 0);
         }
@@ -68,7 +72,6 @@ public class Stats {
     }
 
     public void levelUp(Player p) {
-
         String username = p.getName();
 
         if (getStat("level", username) < levels.getInt("Levels.Options.Maximum-Level")) {
@@ -85,14 +88,13 @@ public class Stats {
                 Toolkit.runCommands(p, commandsList, "%level%", String.valueOf(newLevel));
             }
 
-            p.sendMessage(resources.getMessages().getString("Messages.Other.Level")
+            p.sendMessage(resources.getMessages().fetchString("Messages.Other.Level")
                                   .replace("%level%", String.valueOf(newLevel)));
             XSound.play(p, "ENTITY_PLAYER_LEVELUP, 1, 1");
 
         } else {
             setStat("experience", username, 0);
         }
-
     }
 
     public void addToStat(String identifier, String username, int amount) {
@@ -101,43 +103,56 @@ public class Stats {
     }
 
     public void setStat(String identifier, String username, int data) {
-        if (isPlayerRegistered(username)) {
-            PlayerData playerData = getOrCreateStatsCache(username);
-            playerData.setDataByIdentifier(identifier, data);
-
-            database.setData("stats", identifier, data, DataType.INTEGER, username);
-            leaderboards.updateCache(identifier, new PlayerEntry(username, data));
-        } else {
-            Toolkit.printToConsole(String.format("&7[&b&lKIT-PVP&7] &cFailed to set stats of player %s; not in database.", username));
+        if (!isPlayerRegistered(username)) {
+            return;
         }
+
+        getOrCreateStatsCache(username).setData(identifier, data);
+        leaderboards.updateRankings(identifier, new TopEntry(username, data));
+    }
+
+    public void pushCachedStatsToDatabase(String username, boolean removeFromCacheAfter) {
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (!CacheManager.getStatsCache().containsKey(username)) {
+                    return; // nothing to push if stats cache is empty
+                }
+
+                database.setStatsData(username, getOrCreateStatsCache(username));
+                if (removeFromCacheAfter) {
+                    CacheManager.getStatsCache().remove(username);
+                }
+            }
+        }.runTaskAsynchronously(plugin);
     }
 
     public int getStat(String identifier, String username) {
-        return getOrCreateStatsCache(username).getDataByIdentifier(identifier);
+        if (!isPlayerRegistered(username)) {
+            return -1;
+        }
+
+        return getOrCreateStatsCache(username).getData(identifier);
     }
 
-    private PlayerData getOrCreateStatsCache(String username) {
-        if (!CacheManager.getStatsCache().containsKey(username)) {
-            int kills = (int) database.getData("stats", "kills", username);
-            int deaths = (int) database.getData("stats", "deaths", username);
-            int experience = (int) database.getData("stats", "experience", username);
-            int level = (int) database.getData("stats", "level", username);
-            PlayerData playerData = new PlayerData(kills, deaths, experience, level);
+    public PlayerData getOrCreateStatsCache(String username) {
+        if (!isPlayerRegistered(username)) {
+            return new PlayerData(-1, -1, -1, -1);
+        }
 
-            CacheManager.getStatsCache().put(username, playerData);
+        if (!CacheManager.getStatsCache().containsKey(username)) {
+            CacheManager.getStatsCache().put(username, database.getStatsData(username));
         }
         return CacheManager.getStatsCache().get(username);
     }
 
     public int getRegularOrRelativeNeededExperience(String username) {
-
         int level = getStat("level", username);
 
         if (levels.contains("Levels.Levels." + level + ".Experience-To-Level-Up")) {
             return levels.getInt("Levels.Levels." + level + ".Experience-To-Level-Up");
         }
         return levels.getInt("Levels.Options.Experience-To-Level-Up");
-
     }
 
 }

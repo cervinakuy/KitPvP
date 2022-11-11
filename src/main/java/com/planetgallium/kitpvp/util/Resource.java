@@ -84,24 +84,19 @@ public class Resource extends YamlConfiguration {
 	}
 
 	public void addCopyDefaultExemption(String path) {
-
 		copyDefaultExemptions.add(path);
-
 	}
 	
 	public void save() {
-
 		try {
 			super.save(file);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
 	}
 
-    @Override
-    public String getString(String path) {
-        String string = super.getString(path);
+    public String fetchString(String path) {
+		String string = super.getString(path);
 
 		if (string != null) {
 			string = ChatColor.translateAlternateColorCodes('&',
@@ -112,7 +107,7 @@ public class Resource extends YamlConfiguration {
 		}
 
 		return string;
-    }
+	}
 
     @Override
 	public List<String> getStringList(String path) {

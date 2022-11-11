@@ -15,8 +15,8 @@ import com.planetgallium.kitpvp.util.Toolkit;
 
 public class AbilityListener implements Listener {
 
-	private Arena arena;
-	private Resources resources;
+	private final Arena arena;
+	private final Resources resources;
 	
 	public AbilityListener(Game plugin) {
 		this.arena = plugin.getArena();
@@ -25,25 +25,24 @@ public class AbilityListener implements Listener {
 	
 	@EventHandler
 	public void onAbility(PlayerAbilityEvent e) {
-
 		Player p = e.getPlayer();
 
-		if (!arena.isCombatActionPermittedInRegion(p)) {
+		if (!arena.getUtilities().isCombatActionPermittedInRegion(p)) {
 			return;
 		}
 
-		Kit kit = arena.getKits().getKitOfPlayer(p.getName());
 		Ability ability = e.getAbility();
 
-		String abilityPermission = "kp.ability." + kit.getName().toLowerCase();
+		String abilityPermission = "kp.ability." + ability.getName().toLowerCase();
 		if (!p.hasPermission(abilityPermission)) {
-			p.sendMessage(resources.getMessages().getString("Messages.General.Permission").replace("%permission%", abilityPermission));
+			p.sendMessage(resources.getMessages().fetchString("Messages.General.Permission")
+					.replace("%permission%", abilityPermission));
 			return;
 		}
 
 		Cooldown cooldownRemaining = arena.getCooldowns().getRemainingCooldown(p, ability);
 		if (cooldownRemaining.toSeconds() > 0) {
-			p.sendMessage(resources.getMessages().getString("Messages.Error.CooldownAbility")
+			p.sendMessage(resources.getMessages().fetchString("Messages.Error.CooldownAbility")
 					.replace("%cooldown%", cooldownRemaining.formatted(false)));
 			return;
 		}

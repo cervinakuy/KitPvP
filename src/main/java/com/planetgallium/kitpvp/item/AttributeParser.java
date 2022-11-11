@@ -41,7 +41,7 @@ public class AttributeParser {
         if (effectsSection != null) {
 
             for (String effectName : effectsSection.getKeys(false)) {
-                PotionEffectType type = XPotion.matchXPotion(effectName).get().parsePotionEffectType();
+                PotionEffectType type = XPotion.matchXPotion(effectName).get().getPotionEffectType();
                 int amplifier = resource.getInt(path + "." + effectName + ".Amplifier");
                 int duration = resource.getInt(path + "." + effectName + ".Duration");
 
@@ -56,69 +56,6 @@ public class AttributeParser {
 
     }
 
-    public static List<Ability> getAbilitiesFromResource(Resource resource) {
-
-        List<Ability> abilities = new ArrayList<>();
-        ConfigurationSection abilitySection = resource.getConfigurationSection("Abilities");
-
-        if (abilitySection == null) return new ArrayList<>();
-
-        for (String abilityName : abilitySection.getKeys(false)) {
-
-            Ability ability = new Ability(abilityName);
-            String pathPrefix = "Abilities." + abilityName;
-
-            String activatorMaterial = resource.getString(pathPrefix + ".Activator.Material");
-            String activatorName = resource.getString(pathPrefix + ".Activator.Name");
-
-            ItemStack activator = new ItemStack(XMaterial.matchXMaterial(activatorMaterial).get().parseMaterial());
-            ItemMeta abilityMeta = activator.getItemMeta();
-            abilityMeta.setDisplayName(activatorName);
-            activator.setItemMeta(abilityMeta);
-            ability.setActivator(activator);
-
-            if (resource.contains(pathPrefix + ".Cooldown")) {
-                String formattedCooldown = resource.getString(pathPrefix + ".Cooldown.Cooldown");
-                ability.setCooldown(new Cooldown(formattedCooldown));
-            }
-
-            if (resource.contains(pathPrefix + ".Message")) {
-                String abilityMessage = resource.getString(pathPrefix + ".Message.Message");
-                ability.setMessage(abilityMessage);
-            }
-
-            if (resource.contains(pathPrefix + ".Sound")) {
-                Sound abilitySound = XSound.matchXSound(resource.getString(pathPrefix + ".Sound.Sound")).get().parseSound();
-                int abilitySoundPitch = resource.getInt(pathPrefix + ".Sound.Pitch");
-                int abilitySoundVolume = resource.getInt(pathPrefix + ".Sound.Volume");
-                ability.setSound(abilitySound, abilitySoundPitch, abilitySoundVolume);
-            }
-
-            if (resource.contains(pathPrefix + ".Effects")) {
-                ConfigurationSection effectSection = resource.getConfigurationSection(pathPrefix + ".Effects");
-
-                for (String effectName : effectSection.getKeys(false)) {
-                    PotionEffectType effectType = XPotion.matchXPotion(effectName).get().parsePotionEffectType();
-                    int amplifier = resource.getInt(pathPrefix + ".Effects." + effectName + ".Amplifier");
-                    int duration = resource.getInt(pathPrefix + ".Effects." + effectName + ".Duration");
-                    ability.addEffect(effectType, amplifier, duration);
-                }
-            }
-
-            if (resource.contains(pathPrefix + ".Commands")) {
-                for (String command : resource.getStringList(pathPrefix + ".Commands")) {
-                    ability.addCommand(command);
-                }
-            }
-
-            abilities.add(ability);
-
-        }
-
-        return abilities;
-
-    }
-
     public static ItemStack getItemStackFromPath(Resource resource, String path) throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
 
         if (!resource.contains(path)) return null;
@@ -129,7 +66,7 @@ public class AttributeParser {
         //          BASIC ITEM INFORMATION          //
 
         if (resource.contains(path + ".Name")) {
-            meta.setDisplayName(resource.getString(path + ".Name"));
+            meta.setDisplayName(resource.fetchString(path + ".Name"));
         }
 
         if (resource.contains(path + ".Lore")) {
@@ -137,7 +74,7 @@ public class AttributeParser {
         }
 
         if (resource.contains(path + ".Material")) {
-            String materialValue = resource.getString(path + ".Material");
+            String materialValue = resource.fetchString(path + ".Material");
             Optional<XMaterial> possibleMaterial = XMaterial.matchXMaterial(materialValue);
 
             if (possibleMaterial.isPresent()) {
@@ -171,7 +108,7 @@ public class AttributeParser {
         }
 
         if (resource.contains(path + ".Skull")) {
-            setSkull(item, resource.getString(path + ".Skull"));
+            setSkull(item, resource.fetchString(path + ".Skull"));
         }
 
         if (resource.contains(path + ".Durability")) {
@@ -186,7 +123,7 @@ public class AttributeParser {
                 Enchantment enchantment = FALLBACK_ITEM_ENCHANTMENT;
                 Optional<XEnchantment> enchantmentFromConfig = XEnchantment.matchXEnchantment(enchantmentName.toUpperCase());
                 if (enchantmentFromConfig.isPresent()) {
-                    enchantment = enchantmentFromConfig.get().parseEnchantment();
+                    enchantment = enchantmentFromConfig.get().getEnchant();
                 } else {
                     Toolkit.printToConsole(String.format("&7[&b&lKIT-PVP&7] &cUnknown enchantment [%s], defaulting to [THORNS].", enchantmentName));
                 }
@@ -308,7 +245,7 @@ public class AttributeParser {
         boolean isExtended = resource.getBoolean(firstChildPath + ".Extended");
 
         if (Toolkit.versionToNumber() == 18) {
-            boolean isSplash = resource.getString(path.replace("Effects", "") + ".Type").equals("SPLASH_POTION");
+            boolean isSplash = resource.fetchString(path.replace("Effects", "") + ".Type").equals("SPLASH_POTION");
             Potion potion = Potion.fromItemStack(item);
             potion.setSplash(isSplash);
             potion.setType(potionType);

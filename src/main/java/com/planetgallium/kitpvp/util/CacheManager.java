@@ -21,13 +21,11 @@ public class CacheManager {
     public static Map<String, PlayerData> getStatsCache() { return statsCache; }
 
     public static Map<String, Long> getPlayerAbilityCooldowns(String username) {
-
-        if (abilityCooldowns.get(username) == null) {
+        if (!abilityCooldowns.containsKey(username)) {
             abilityCooldowns.put(username, new HashMap<>());
         }
 
         return abilityCooldowns.get(username);
-
     }
 
     public static void clearCaches() {

@@ -1,20 +1,19 @@
 package com.planetgallium.kitpvp.game;
 
-import java.util.UUID;
-
 import com.planetgallium.kitpvp.Game;
 import com.planetgallium.kitpvp.api.Ability;
 import com.planetgallium.kitpvp.api.Kit;
 import com.planetgallium.kitpvp.util.CacheManager;
 import com.planetgallium.kitpvp.util.Cooldown;
-import com.zp4rker.localdb.DataType;
 import org.bukkit.entity.Player;
 
 public class Cooldowns {
 
-	private Infobase database;
+	private final Stats stats;
+	private final Infobase database;
 	
-	public Cooldowns(Game plugin) {
+	public Cooldowns(Game plugin, Arena arena) {
+		this.stats = arena.getStats();
 		this.database = plugin.getDatabase();
 	}
 
@@ -23,11 +22,11 @@ public class Cooldowns {
 	}
 
 	public void setKitCooldown(String username, String kitName) {
-		database.setData(kitName + "_cooldowns", "last_used", (System.currentTimeMillis() / 1000), DataType.INTEGER, username);
+		long timeKitLastUsed = System.currentTimeMillis() / 1000;
+		stats.getOrCreateStatsCache(username).addKitCooldown(kitName, timeKitLastUsed);
 	}
 
 	public Cooldown getRemainingCooldown(Player p, Object type) {
-
 		long currentTimeSeconds = (System.currentTimeMillis() / 1000);
 		int timeLastUsedSeconds = 0;
 		int actionCooldownSeconds = 0;
@@ -60,7 +59,6 @@ public class Cooldowns {
 
 		int cooldownRemainingSeconds = (int) (timeLastUsedSeconds + actionCooldownSeconds - currentTimeSeconds);
 		return new Cooldown(cooldownRemainingSeconds);
-
 	}
 	
 }

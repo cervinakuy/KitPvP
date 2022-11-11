@@ -40,7 +40,7 @@ public class Game extends JavaPlugin implements Listener {
 
 		instance = this;
 		resources = new Resources(this);
-		prefix = resources.getMessages().getString("Messages.General.Prefix");
+		prefix = resources.getMessages().fetchString("Messages.General.Prefix");
 		database = new Infobase(this);
 		arena = new Arena(this, resources);
 
@@ -87,12 +87,23 @@ public class Game extends JavaPlugin implements Listener {
 			hasWorldGuard = true;
 		}
 
+		populateUUIDCacheForOnlinePlayers();
+
 		Toolkit.printToConsole("&7[&b&lKIT-PVP&7] &aDone!");
 		
 	}
 
-	private void checkUpdate() {
+	private void populateUUIDCacheForOnlinePlayers() {
+		// populates UUID cache if there are players online when doing /reload to avoid a lot of errors related
+		// to database and UUIDs
+		if (Bukkit.getOnlinePlayers().size() > 0) {
+			for (Player player : Bukkit.getOnlinePlayers()) {
+				CacheManager.getUUIDCache().put(player.getName(), player.getUniqueId().toString());
+			}
+		}
+	}
 
+	private void checkUpdate() {
 		Updater.of(this).resourceId(27107).handleResponse((versionResponse, version) -> {
 			switch (versionResponse) {
 				case FOUND_NEW:
@@ -105,12 +116,10 @@ public class Game extends JavaPlugin implements Listener {
 					break;
 			}
 		}).check();
-		
 	}
 	
 	@EventHandler
 	public void onInteract(PlayerInteractEvent e) {
-		
 		Player p = e.getPlayer();
 
 		if (!resources.getConfig().contains("Items.Leave")) {
@@ -128,7 +137,7 @@ public class Game extends JavaPlugin implements Listener {
 						ByteArrayDataOutput out = ByteStreams.newDataOutput();
 						out.writeUTF("Connect");
 
-						String server = resources.getConfig().getString("Items.Leave.BungeeCord.Server");
+						String server = resources.getConfig().fetchString("Items.Leave.BungeeCord.Server");
 
 						out.writeUTF(server);
 						p.sendPluginMessage(this, "BungeeCord", out.toByteArray());
@@ -143,6 +152,14 @@ public class Game extends JavaPlugin implements Listener {
 
 		}
 		
+	}
+
+	@Override
+	public void onDisable() {
+		// for players that haven't died and had their stats pushed
+//		for (String username : CacheManager.getStatsCache().keySet()) {
+//			arena.getStats().pushCachedStatsToDatabase(username);
+//		}
 	}
 
 	public boolean hasPlaceholderAPI() { return hasPlaceholderAPI; }

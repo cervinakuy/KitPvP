@@ -1,9 +1,13 @@
 package com.planetgallium.kitpvp.util;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import com.cryptomorin.xseries.XMaterial;
+import com.cryptomorin.xseries.XPotion;
+import com.cryptomorin.xseries.XSound;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
@@ -17,9 +21,12 @@ import com.planetgallium.kitpvp.Game;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.permissions.PermissionAttachmentInfo;
+import org.bukkit.potion.PotionEffectType;
 
 public class Toolkit {
-	
+
+	private static final Material FALLBACK_MATERIAL = Material.BEDROCK;
+
 	public static boolean inArena(World world) {
 
 		if (Game.getInstance().getResources().getConfig().contains("Arenas")) {
@@ -90,7 +97,6 @@ public class Toolkit {
 		if (commands == null) return;
 
 		for (String commandString : commands) {
-
 			String[] commandPhrase = commandString.split(":", 2);
 
 			if (commandPhrase.length == 1) {
@@ -104,22 +110,24 @@ public class Toolkit {
 			String command = commandPhrase[1];
 
 			if (sender.equals("console")) {
-
-				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), addPlaceholdersIfPossible(p, command.replace("%player%", p.getName()).replace(replaceFrom, replaceTo)));
-
+				Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
+						replaceCommandPlaceholders(command, p, replaceFrom, replaceTo));
 			} else if (sender.equals("player")) {
-
-				p.performCommand(addPlaceholdersIfPossible(p, command.replace("%player%", p.getName()).replace(replaceFrom, replaceTo)));
-
+				p.performCommand(replaceCommandPlaceholders(command, p, replaceFrom, replaceTo));
 			} else {
-
 				Toolkit.printToConsole("&7[&b&lKIT-PVP&7] &cIncorrect command format. Please see: &fhttps://bit.ly/kp-command-format");
 				return;
-
 			}
-
 		}
 
+	}
+
+	private static String replaceCommandPlaceholders(String s, Player p, String replaceFrom, String replaceTo) {
+		String withPotentialPapiPlaceholders = addPlaceholdersIfPossible(p, s);
+		return withPotentialPapiPlaceholders
+				.replace("%player%", p.getName())
+				.replace("%uuid%", p.getUniqueId().toString())
+				.replace(replaceFrom, replaceTo);
 	}
  	
  	public static int versionToNumber() {
@@ -148,6 +156,8 @@ public class Toolkit {
 			return 117;
 		} else if (version.contains("1.18")) {
 			return 118;
+		} else if (version.contains("1.19")) {
+			return 119;
 		}
  		return 500;
  		
@@ -280,7 +290,7 @@ public class Toolkit {
 
 	public static Location getLocationFromResource(Resource resource, String path) {
 
-		return new Location(Bukkit.getWorld(resource.getString(path + ".World")),
+		return new Location(Bukkit.getWorld(resource.fetchString(path + ".World")),
 				(float) resource.getInt(path + ".X") + 0.5,
 				(float) resource.getInt(path + ".Y"),
 				(float) resource.getInt(path + ".Z") + 0.5,
@@ -334,9 +344,7 @@ public class Toolkit {
 	}
 
 	public static String translate(String s) {
-
 		return ChatColor.translateAlternateColorCodes('&', s.replace("%prefix%", Game.getPrefix()));
-
 	}
 
 	public static int getNextAvailable(FileConfiguration yamlConfig, String path, int limit, boolean zeroBased, int fallbackAmount) {
@@ -376,8 +384,8 @@ public class Toolkit {
 	public static boolean matchesConfigItem(ItemStack item, Resource resource, String path) {
 
 		ItemMeta itemMeta = item.getItemMeta();
-		String configItemName = resource.getString(path + ".Name");
-		String configItemMaterial = resource.getString(path + ".Material");
+		String configItemName = resource.fetchString(path + ".Name");
+		String configItemMaterial = resource.fetchString(path + ".Material");
 
 		if (item.getType() == XMaterial.matchXMaterial(configItemMaterial).get().parseMaterial()) {
 			if (itemMeta != null && itemMeta.hasDisplayName()) {
@@ -397,20 +405,16 @@ public class Toolkit {
 	}
 
 	public static void setMaxHealth(Player p, int amount) {
-
 		if (Toolkit.versionToNumber() >= 19) {
 			AttributeInstance healthAttribute = p.getAttribute(Attribute.GENERIC_MAX_HEALTH);
 			assert healthAttribute != null;
 			healthAttribute.setBaseValue(amount);
 			return;
 		}
-
 		p.setMaxHealth(amount);
-
 	}
 
 	public static int getMaxHealth(Player p) {
-
 		if (Toolkit.versionToNumber() >= 19) {
 			AttributeInstance healthAttribute = p.getAttribute(Attribute.GENERIC_MAX_HEALTH);
 			assert healthAttribute != null;
@@ -418,7 +422,54 @@ public class Toolkit {
 		}
 
 		return (int) p.getMaxHealth();
+	}
 
+	public static ItemStack safeItemStack(String materialName) {
+		Optional<XMaterial> materialOptional = XMaterial.matchXMaterial(materialName);
+		if (materialOptional.isPresent()) {
+			Material material = materialOptional.get().parseMaterial();
+			if (material != null) {
+				return new ItemStack(material);
+			}
+		}
+		printToConsole("&7[&b&lKIT-PVP&7] &cInvalid material: " + materialName);
+		return new ItemStack(Toolkit.FALLBACK_MATERIAL);
+	}
+
+	public static Sound safeSound(String soundName) {
+		Optional<XSound> soundOptional = XSound.matchXSound(soundName);
+		if (soundOptional.isPresent()) {
+			Sound sound = soundOptional.get().parseSound();
+			if (sound != null) {
+				return sound;
+			}
+		}
+		printToConsole("&7[&b&lKIT-PVP&7] &cInvalid sound: " + soundName);
+		return XSound.ENTITY_ENDER_DRAGON_HURT.parseSound();
+	}
+
+	public static PotionEffectType safePotionEffectType(String potionEffectTypeName) {
+		Optional<XPotion> potionOptional = XPotion.matchXPotion(potionEffectTypeName);
+		if (potionOptional.isPresent()) {
+			PotionEffectType potionEffectType = potionOptional.get().getPotionEffectType();
+			if (potionEffectType != null) {
+				return potionEffectType;
+			}
+		}
+		printToConsole("&7[&b&lKIT-PVP&7] &cInvalid potion effect type: " + potionEffectTypeName);
+		return XPotion.BLINDNESS.getPotionEffectType();
+	}
+
+	public static boolean itemStacksMatch(ItemStack itemA, ItemStack itemB) {
+		if (itemA.getType() == itemB.getType()) {
+			ItemMeta itemAMeta = itemA.getItemMeta();
+			ItemMeta itemBMeta = itemB.getItemMeta();
+
+			if (itemAMeta.hasDisplayName() && itemBMeta.hasDisplayName()) {
+				return itemAMeta.getDisplayName().equals(itemBMeta.getDisplayName());
+			}
+		}
+		return false;
 	}
 
 }

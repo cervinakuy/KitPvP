@@ -34,6 +34,7 @@ Combat:
     ItemName: '&eReturnable Arrow'
     NoSpace: '%prefix% &cYou must have at least one slot open in your inventory for you to receive your arrow for your successful shot.'
     Enabled: true
+    Count: 2
 Kill:
   SoupReward:
     NoSpace: '%prefix% &c%amount% soups could not be added to your full inventory.'
@@ -90,6 +91,14 @@ Commands:
     Kit: false
     Kits: false
     Stats: false
+Storage:
+  Type: sqlite
+  MySQL:
+    Host: 127.0.0.1
+    Port: 3306
+    Database: kitpvp
+    Username: root
+    Password: password
 Arena:
   ClearPotionEffectsOnJoin: true
   ClearInventoryOnJoin: true
@@ -115,6 +124,9 @@ Arena:
   ResetKillStreakOnLeave: true
   ToSpawnOnJoin: true
   DeathParticles: true
+  AbilitiesRequireKit: true
+  AddOverflowItemsOnKit: true
+  DropRemainingOverflowItemsOnKit: true
 Other:
   AutomaticallyAddKitToMenu: true
 Spawn:

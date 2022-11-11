@@ -4,7 +4,6 @@ import com.cryptomorin.xseries.XSound;
 import com.planetgallium.kitpvp.Game;
 import com.planetgallium.kitpvp.game.Arena;
 import com.planetgallium.kitpvp.util.Resource;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -21,7 +20,7 @@ public class HitListener implements Listener {
 		this.arena = plugin.getArena();
 		this.config = plugin.getResources().getConfig();
 
-		String soundString = config.getString("Combat.HitSound.Sound") + ", 1, " + config.getInt("Combat.HitSound.Pitch");
+		String soundString = config.fetchString("Combat.HitSound.Sound") + ", 1, " + config.getInt("Combat.HitSound.Pitch");
 		this.hitSound = XSound.parse(soundString);
 	}
 
