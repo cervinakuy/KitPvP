@@ -35,9 +35,14 @@ public class Abilities {
     }
 
     public Ability getAbilityByActivator(ItemStack potentialActivator) {
+        int previousPotentialActivatorAmount = potentialActivator.getAmount();
+        potentialActivator.setAmount(1);
+
         for (ItemStack loadedActivator : activatorToAbility.keySet()) {
             if (Toolkit.itemStacksMatch(loadedActivator, potentialActivator)) {
-                return activatorToAbility.get(potentialActivator);
+                Ability ability = activatorToAbility.get(potentialActivator);
+                potentialActivator.setAmount(previousPotentialActivatorAmount);
+                return ability;
             }
         }
         return null;
