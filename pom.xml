@@ -39,6 +39,10 @@
                             <pattern>com.cryptomorin.xseries</pattern>
                             <shadedPattern>com.planetgallium.kitpvp</shadedPattern>
                         </relocation>
+                        <relocation>
+                            <pattern>com.mysql</pattern>
+                            <shadedPattern>com.planetgallium.sql</shadedPattern>
+                        </relocation>
                     </relocations>
                     <filters>
                         <filter>
