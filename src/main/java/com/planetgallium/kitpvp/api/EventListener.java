@@ -29,6 +29,10 @@ public class EventListener implements Listener {
 			if (Toolkit.inArena(e.getPlayer())) {
 				Player p = e.getPlayer();
 
+				if (Toolkit.itemUsedIsOffhand(e)) {
+					return; // PlayerInteractEvent is triggered twice if there is an item in the offhand
+				}
+
 				if (resources.getConfig().getBoolean("Arena.AbilitiesRequireKit") &&
 						!arena.getKits().hasKit(p.getName())) {
 					return; // if "AbilitiesRequireKit" true, and player does not have kit, return

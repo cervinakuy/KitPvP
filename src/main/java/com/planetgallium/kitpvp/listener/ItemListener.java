@@ -60,6 +60,10 @@ public class ItemListener implements Listener {
 
 		if (Toolkit.inArena(p) && (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK)) {
 
+			if (Toolkit.itemUsedIsOffhand(e)) {
+				return; // PlayerInteractEvent is triggered twice if there is an item in the offhand
+			}
+
 			ItemStack item = Toolkit.getMainHandItem(p);
 			ItemMeta meta = item.getItemMeta();
 

@@ -14,6 +14,8 @@ import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
 import com.planetgallium.kitpvp.Game;
@@ -468,6 +470,13 @@ public class Toolkit {
 			if (itemAMeta.hasDisplayName() && itemBMeta.hasDisplayName()) {
 				return itemAMeta.getDisplayName().equals(itemBMeta.getDisplayName());
 			}
+		}
+		return false;
+	}
+
+	public static boolean itemUsedIsOffhand(PlayerInteractEvent e) {
+		if (versionToNumber() >= 19) {
+			return e.getHand() == EquipmentSlot.OFF_HAND;
 		}
 		return false;
 	}
