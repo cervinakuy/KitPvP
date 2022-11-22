@@ -7,6 +7,8 @@ import com.planetgallium.kitpvp.util.CacheManager;
 import com.planetgallium.kitpvp.util.Cooldown;
 import org.bukkit.entity.Player;
 
+import java.util.Map;
+
 public class Cooldowns {
 
 	private final Stats stats;
@@ -19,6 +21,10 @@ public class Cooldowns {
 
 	public void setAbilityCooldown(String playerName, String abilityName) {
 		CacheManager.getPlayerAbilityCooldowns(playerName).put(abilityName, (System.currentTimeMillis() / 1000));
+	}
+
+	public void clearPlayerAbilityCooldowns(String playerName) {
+		CacheManager.getPlayerAbilityCooldowns(playerName).clear();
 	}
 
 	public void setKitCooldown(String username, String kitName) {

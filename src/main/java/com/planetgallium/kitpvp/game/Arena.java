@@ -53,12 +53,11 @@ public class Arena {
 	}
 	
 	public void addPlayer(Player p, boolean toSpawn, boolean giveItems) {
-		CacheManager.getPlayerAbilityCooldowns(p.getName()).clear();
+		cooldowns.clearPlayerAbilityCooldowns(p.getName());
 
 		kits.resetKit(p.getName());
 
 		if (config.getBoolean("Arena.ResetKillStreakOnLeave")) {
-
 			killstreaks.setStreak(p, 0);
 		}
 		
