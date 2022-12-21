@@ -12,10 +12,10 @@ public class TopEntry implements Comparable<TopEntry> {
 
     @Override
     public int compareTo(TopEntry otherEntry) {
-        if (otherEntry.getValue() > this.getValue()) {
-            return -1;
-        } else if (otherEntry.getValue() < this.getValue()) {
+        if (this.getValue() < otherEntry.getValue()) {
             return 1;
+        } else if (this.getValue() > otherEntry.getValue()) {
+            return -1;
         }
         return 0; // if they're equal, will return 0
     }
