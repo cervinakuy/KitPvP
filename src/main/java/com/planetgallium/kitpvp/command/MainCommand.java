@@ -48,52 +48,53 @@ public class MainCommand implements CommandExecutor {
 
         } else if (args.length == 1) {
 
-            if (args[0].equalsIgnoreCase("help")) {
+            if (isCommand(args, sender,"help", null)) {
                 executeHelpCommand(sender);
                 return true;
 
-            } else if (args[0].equalsIgnoreCase("reload") && hasPermission(sender, "kp.command.reload")) {
+            } else if (isCommand(args, sender, "reload", "kp.command.reload")) {
                 executeReloadCommand(sender);
                 return true;
 
-            } else if (args[0].equalsIgnoreCase("debug") && hasPermission(sender, "kp.command.debug")) {
+            } else if (isCommand(args, sender, "debug", "kp.command.debug")) {
                 executeDebugCommand(sender);
                 return true;
 
-            } else if (args[0].equalsIgnoreCase("export") && hasPermission(sender, "kp.command.export")) {
+            } else if (isCommand(args, sender, "export", "kp.command.export")) {
                 executeExportCommand(sender);
                 return true;
 
-            } else if (args[0].equalsIgnoreCase("kits") && hasPermission(sender, "kp.command.kits")) {
+            } else if (isCommand(args, sender, "kits", "kp.command.kits")) {
                 executeKitsCommand(sender);
                 return true;
+
             }
 
         } else if (args.length == 2) {
 
-            if (args[0].equalsIgnoreCase("clear") && hasPermission(sender, "kp.command.clear.other")) {
+            if (isCommand(args, sender, "clear", "kp.command.clear.other")) {
                 executeClearCommandOther(sender, args);
                 return true;
 
-            } else if (args[0].equalsIgnoreCase("delete") && hasPermission(sender, "kp.command.delete")) {
+            } else if (isCommand(args, sender, "delete", "kp.command.delete")) {
                 executeDeleteKitCommand(sender, args);
                 return true;
 
-            } else if (args[0].equalsIgnoreCase("stats") && hasPermission(sender, "kp.command.stats.other")) {
+            } else if (isCommand(args, sender, "stats", "kp.command.stats.other")) {
                 executeStatsCommandOther(sender, args);
                 return true;
             }
 
         } else if (args.length == 3) {
 
-            if (args[0].equalsIgnoreCase("kit") && hasPermission(sender, "kp.command.kit.other")) {
+            if (isCommand(args, sender, "kit", "kp.command.kit.other")) {
                 executeKitCommand(sender, args);
                 return true;
             }
 
         } else if (args.length == 4) {
 
-            if (args[0].equalsIgnoreCase("setstats") && hasPermission(sender, "kp.command.setstats")) {
+            if (isCommand(args, sender, "setstats", "kp.command.setstats")) {
                 executeSetStatsCommand(sender, args);
                 return true;
             }
@@ -105,49 +106,63 @@ public class MainCommand implements CommandExecutor {
 
             if (args.length == 1) {
 
-                if (args[0].equalsIgnoreCase("stats") && hasPermission(sender, "kp.command.stats")) {
+                if (isCommand(args, sender, "stats", "kp.command.stats")) {
                     executeStatsCommandSelf(p);
                     return true;
 
-                } else if (args[0].equalsIgnoreCase("menu") && hasPermission(sender, "kp.command.menu")) {
+                } else if (isCommand(args, sender, "menu", "kp.command.menu")) {
                     executeMenuCommand(p);
                     return true;
 
-                } else if (args[0].equalsIgnoreCase("spawn") && hasPermission(sender, "kp.command.spawn")) {
+                } else if (isCommand(args, sender, "spawn", "kp.command.spawn")) {
                     executeSpawnCommand(p);
                     return true;
 
-                } else if (args[0].equalsIgnoreCase("clear") && hasPermission(sender, "kp.command.clear")) {
+                } else if (isCommand(args, sender, "clear","kp.command.clear")) {
                     executeClearCommandSelf(p);
                     return true;
 
-                } else if (args[0].equalsIgnoreCase("addspawn") && hasPermission(p, "kp.command.addspawn")) {
+                } else if (isCommand(args, sender, "addspawn", "kp.command.addspawn")) {
                     executeAddSpawnCommand(p);
                     return true;
 
-                } else if (args[0].equalsIgnoreCase("delarena") && hasPermission(sender, "kp.command.delarena")) {
+                } else if (isCommand(args, sender, "delarena", "kp.command.delarena")) {
                     executeDeleteArenaCommand(p);
                     return true;
+
+                } else {
+                    sendUnknownCommand(sender, alias, args);
+                    return true;
+
                 }
 
             } else if (args.length == 2) {
 
-                if (args[0].equalsIgnoreCase("arena") && hasPermission(sender, "kp.command.spawn")) {
+                if (isCommand(args, sender, "arena", "kp.command.spawn")) {
                     executeArenaCommand(p, args);
                     return true;
 
-                } else if (args[0].equalsIgnoreCase("preview") && hasPermission(sender, "kp.command.preview")) {
+                } else if (isCommand(args, sender, "preview", "kp.command.preview")) {
                     executePreviewCommand(p, args);
                     return true;
 
-                } else if (args[0].equalsIgnoreCase("create") && hasPermission(sender, "kp.command.create")) {
+                } else if (isCommand(args, sender, "create", "kp.command.create")) {
                     executeCreateKitCommand(p, args);
                     return true;
 
-                } else if (args[0].equalsIgnoreCase("kit")) {
+                } else if (isCommand(args, sender, "kit", null)) {
                     executeKitCommandSelf(p, args);
                     return true;
+
+                } else {
+                    sendUnknownCommand(sender, alias, args);
+                    return true;
+
                 }
+
+            } else {
+                sendUnknownCommand(sender, alias, args);
+                return true;
 
             }
 
@@ -155,8 +170,6 @@ public class MainCommand implements CommandExecutor {
             sender.sendMessage(messages.fetchString("Messages.General.Player"));
             return true;
         }
-
-        return false;
 
     }
 
@@ -212,10 +225,17 @@ public class MainCommand implements CommandExecutor {
             names += plugin.getName() + " ";
         }
 
-        sender.sendMessage(Toolkit.translate("&7[&b&lKIT-PVP&7] &aServer Version: &7" + Bukkit.getBukkitVersion()) + " " + (Bukkit.getVersion().contains("Spigot") ? "(Spigot)" : "(Other)"));
-        sender.sendMessage(Toolkit.translate("&7[&b&lKIT-PVP&7] &aPlugin Version: &7" + plugin.getDescription().getVersion() + " " + (plugin.needsUpdate() ? "&c(Requires Update)" : "&a(Latest Version)")));
-        sender.sendMessage(Toolkit.translate("&7[&b&lKIT-PVP&7] &aSpawn Set: " + (config.contains("Arenas") ? "&aConfigured" : "&cUnconfigured")));
-        sender.sendMessage(Toolkit.translate("&7[&b&lKIT-PVP&7] &aSupport Discord: &7https://discord.gg/Hfej6UR8Bk"));
+        String serverVersion = Bukkit.getBukkitVersion() + " " +
+                (Bukkit.getVersion().contains("Spigot") ? "(Spigot)" : "(Other)");
+        String pluginVersion = plugin.getDescription().getVersion() + " " +
+                (plugin.needsUpdate() ? "&c(Requires Update)" : "&a(Latest Version)");
+        String isSpawnSet = (config.contains("Arenas") ? "&aConfigured" : "&cUnconfigured");
+        String supportDiscordLink = "https://discord.gg/Hfej6UR8Bk";
+
+        sender.sendMessage(Toolkit.translate("&7[&b&lKIT-PVP&7] &aServer Version: &7" + serverVersion));
+        sender.sendMessage(Toolkit.translate("&7[&b&lKIT-PVP&7] &aPlugin Version: &7" + pluginVersion));
+        sender.sendMessage(Toolkit.translate("&7[&b&lKIT-PVP&7] &aSpawn Set: " + isSpawnSet));
+        sender.sendMessage(Toolkit.translate("&7[&b&lKIT-PVP&7] &aSupport Discord: &7" + supportDiscordLink));
         sender.sendMessage(Toolkit.translate("&7[&b&lKIT-PVP&7] &aPlugin List: &7" + names));
     }
 
@@ -258,7 +278,8 @@ public class MainCommand implements CommandExecutor {
             clearKit(target);
 
             target.sendMessage(messages.fetchString("Messages.Commands.Cleared"));
-            sender.sendMessage(messages.fetchString("Messages.Commands.ClearedOther").replace("%player%", target.getName()));
+            sender.sendMessage(messages.fetchString("Messages.Commands.ClearedOther")
+                    .replace("%player%", target.getName()));
 
         } else {
             sender.sendMessage(messages.fetchString("Messages.Error.Offline"));
@@ -297,7 +318,9 @@ public class MainCommand implements CommandExecutor {
             Kit kitToGive = arena.getKits().getKitByName(kitName);
             arena.getKits().attemptToGiveKitToPlayer(target, kitToGive);
 
-            sender.sendMessage(messages.fetchString("Messages.Commands.KitOther").replace("%player%", playerName).replace("%kit%", kitName));
+            sender.sendMessage(messages.fetchString("Messages.Commands.KitOther")
+                    .replace("%player%", playerName)
+                    .replace("%kit%", kitName));
         } else {
             sender.sendMessage(messages.fetchString("Messages.Error.Offline"));
         }
@@ -350,7 +373,8 @@ public class MainCommand implements CommandExecutor {
 
     private void executeSpawnCommand(Player p) {
         if (!config.contains("Arenas." + p.getWorld().getName())) {
-            p.sendMessage(messages.fetchString("Messages.Error.Arena").replace("%arena%", p.getWorld().getName()));
+            p.sendMessage(messages.fetchString("Messages.Error.Arena")
+                    .replace("%arena%", p.getWorld().getName()));
             return;
         }
 
@@ -412,7 +436,8 @@ public class MainCommand implements CommandExecutor {
 
     private void executeAddSpawnCommand(Player p) {
         String arenaName = p.getWorld().getName();
-        int spawnNumber = Toolkit.getNextAvailable(config, "Arenas." + arenaName, 1000, false, 1);
+        int spawnNumber = Toolkit.getNextAvailable(config, "Arenas." + arenaName,
+                1000, false, 1);
 
         Toolkit.saveLocationToResource(config, "Arenas." + arenaName + "." + spawnNumber, p.getLocation());
 
@@ -440,7 +465,7 @@ public class MainCommand implements CommandExecutor {
         String arenaName = args[1];
 
         if (resources.getConfig().getBoolean("Arena.PreventArenaSignUseWithKit")) {
-            if (arena.getKits().hasKit(p.getName())) {
+            if (arena.getKits().playerHasKit(p.getName())) {
                 p.sendMessage(messages.fetchString("Messages.Error.KitInvalid"));
                 return;
             }
@@ -494,7 +519,8 @@ public class MainCommand implements CommandExecutor {
             return true;
         }
 
-        sender.sendMessage(messages.fetchString("Messages.General.Permission").replace("%permission%", permission));
+        sender.sendMessage(messages.fetchString("Messages.General.Permission")
+                .replace("%permission%", permission));
         return false;
     }
 
@@ -513,7 +539,7 @@ public class MainCommand implements CommandExecutor {
             arena.giveArenaItems(p);
         }
 
-        arena.getKits().resetKit(p.getName());
+        arena.getKits().resetPlayerKit(p.getName());
     }
 
     private void sendStatsMessage(CommandSender receiver, String username) {
@@ -523,10 +549,23 @@ public class MainCommand implements CommandExecutor {
     }
 
     private boolean validateKitName(String possibleKitName) {
-        if (possibleKitName.contains("-") || possibleKitName.contains("+")) {
-            return false;
+        return !possibleKitName.contains("-") && !possibleKitName.contains("+");
+    }
+
+    private boolean isCommand(String[] args, CommandSender sender, String arg0, String permission) {
+        if (args[0].equalsIgnoreCase(arg0)) {
+            return permission == null || hasPermission(sender, permission);
         }
-        return true;
+        return false;
+    }
+
+    private void sendUnknownCommand(CommandSender sender, String alias, String[] args) {
+        StringBuilder unknownCommand = new StringBuilder();
+        for (String arg : args) {
+            unknownCommand.append(arg).append(" ");
+        }
+
+        sender.sendMessage(Toolkit.translate("%prefix% &cUnknown command: /" + alias + " " + unknownCommand));
     }
 
 }
