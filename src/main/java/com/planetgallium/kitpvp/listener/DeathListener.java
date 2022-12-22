@@ -121,10 +121,7 @@ public class DeathListener implements Listener {
 						XSound.play(victim, "UI_BUTTON_CLICK, 1, 1");
 						time--;
 					} else {
-						if (config.getBoolean("Arena.ClearInventoryOnRespawn")) {
-							victim.getInventory().clear();
-							victim.getInventory().setArmorContents(null);
-						}
+						doClearInventoryOnRespawnIfEnabled(victim);
 
 						arena.addPlayer(victim, true, config.getBoolean("Arena.GiveItemsOnRespawn"));
 
@@ -141,11 +138,7 @@ public class DeathListener implements Listener {
 
 		} else {
 			arena.removePlayer(victim);
-
-			if (config.getBoolean("Arena.ClearInventoryOnRespawn")) {
-				victim.getInventory().clear();
-				victim.getInventory().setArmorContents(null);
-			}
+			doClearInventoryOnRespawnIfEnabled(victim);
 
 			new BukkitRunnable() {
 				@Override
@@ -155,6 +148,15 @@ public class DeathListener implements Listener {
 							"none", "none");
 				}
 			}.runTaskLater(plugin, 1L);
+		}
+	}
+
+	private void doClearInventoryOnRespawnIfEnabled(Player victim) {
+		if (config.getBoolean("Arena.ClearInventoryOnRespawn")) {
+			victim.getInventory().clear();
+			victim.getInventory().setArmorContents(null);
+			victim.setItemOnCursor(null);
+			victim.getOpenInventory().getTopInventory().clear();
 		}
 	}
 
