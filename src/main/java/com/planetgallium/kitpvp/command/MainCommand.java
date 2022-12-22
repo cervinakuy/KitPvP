@@ -17,7 +17,6 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,10 +57,6 @@ public class MainCommand implements CommandExecutor {
 
             } else if (isCommand(args, sender, "debug", "kp.command.debug")) {
                 executeDebugCommand(sender);
-                return true;
-
-            } else if (isCommand(args, sender, "export", "kp.command.export")) {
-                executeExportCommand(sender);
                 return true;
 
             } else if (isCommand(args, sender, "kits", "kp.command.kits")) {
@@ -204,7 +199,6 @@ public class MainCommand implements CommandExecutor {
         sender.sendMessage(Toolkit.translate("&7- &b/kp stats <player> &7View the stats of another player."));
         sender.sendMessage(Toolkit.translate("&7- &b/kp menu &7Displays the kits menu."));
         sender.sendMessage(Toolkit.translate("&7- &b/kp setstats <player> <type> <amount> &7Change stats of a player."));
-        sender.sendMessage(Toolkit.translate("&7- &b/kp export &7Exports all stats to the new storage format."));
         sender.sendMessage(Toolkit.translate(" "));
         sender.sendMessage(Toolkit.translate("&3&m                                                                               "));
     }
@@ -237,23 +231,6 @@ public class MainCommand implements CommandExecutor {
         sender.sendMessage(Toolkit.translate("&7[&b&lKIT-PVP&7] &aSpawn Set: " + isSpawnSet));
         sender.sendMessage(Toolkit.translate("&7[&b&lKIT-PVP&7] &aSupport Discord: &7" + supportDiscordLink));
         sender.sendMessage(Toolkit.translate("&7[&b&lKIT-PVP&7] &aPlugin List: &7" + names));
-    }
-
-    private void executeExportCommand(CommandSender sender) {
-        File statsFile = new File(plugin.getDataFolder().getAbsolutePath() + "/stats.yml");
-
-        if (statsFile.exists()) {
-            sender.sendMessage(Toolkit.translate("%prefix% &7Exporting data, this may take a while..."));
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    plugin.getDatabase().exportStats();
-                }
-            }.runTaskAsynchronously(plugin);
-            sender.sendMessage(Toolkit.translate("%prefix% &aStats successfully exported to database."));
-        } else {
-            sender.sendMessage(Toolkit.translate("%prefix% &cNo stats.yml was found to export from."));
-        }
     }
 
     private void executeKitsCommand(CommandSender sender) {
@@ -316,11 +293,11 @@ public class MainCommand implements CommandExecutor {
 
         if (target != null && Toolkit.inArena(target)) {
             Kit kitToGive = arena.getKits().getKitByName(kitName);
-            arena.getKits().attemptToGiveKitToPlayer(target, kitToGive);
-
             sender.sendMessage(messages.fetchString("Messages.Commands.KitOther")
                     .replace("%player%", playerName)
                     .replace("%kit%", kitName));
+
+            arena.getKits().attemptToGiveKitToPlayer(target, kitToGive);
         } else {
             sender.sendMessage(messages.fetchString("Messages.Error.Offline"));
         }
