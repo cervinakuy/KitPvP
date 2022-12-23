@@ -11,7 +11,7 @@ Menu:
       Name: '&a&lFighter Kit'
       Material: IRON_CHESTPLATE
       Lore:
-      - '&6Ability: &73 Health Packs'
+      - '&6Ability: &7Rechargeable Health Pack'
       - ' '
       - '&7- Iron Sword'
       - '&7- Iron Helmet'
@@ -32,10 +32,10 @@ Menu:
       Lore:
       - '&6Ability: &710 Fire Arrows'
       - ' '
-      - '&7- Wooden Sword'
+      - '&7- Stone Sword'
       - '&7- Bow'
-      - '&7- 32 Arrows'
-      - '&7- Leather Helmet'
+      - '&7- 64 Arrows'
+      - '&7- Chain Helmet'
       - '&7- Chain Chestplate'
       - '&7- Chain Leggings'
       - '&7- Chain Boots'
@@ -51,9 +51,9 @@ Menu:
       Name: '&a&lTank Kit'
       Material: DIAMOND
       Lore:
-      - '&6Ability: &73 Speed Boosts'
+      - '&6Ability: &7Rechargeable Speed Boost'
       - ' '
-      - '&7- Wooden Sword'
+      - '&7- Iron Sword'
       - '&7- Diamond Helmet'
       - '&7- Diamond Chestplate'
       - '&7- Diamond Leggings'
@@ -70,9 +70,9 @@ Menu:
       Name: '&a&lSoldier Kit'
       Material: ARROW
       Lore:
-      - '&6Ability: &75 Guns'
+      - '&6Ability: &7Gun with 5 ammo'
       - ' '
-      - '&7- Iron Sword'
+      - '&7- Stone Sword'
       - '&7- Bow'
       - '&7- 32 Arrows'
       - '&7- Fishing Rod'
@@ -149,7 +149,7 @@ Menu:
         - 'player: kp preview Warper'
     19:
       Name: '&a&lWitch Kit'
-      Material: POTION
+      Material: BREWING_STAND
       Slot: 19
       Lore:
       - '&6Ability: &7Infinite Potions'
@@ -195,8 +195,8 @@ Menu:
       - '&7- Golden Sword'
       - '&7- Leather Helmet'
       - '&7- Golden Chestplate'
-      - '&7- Leather Leggings'
-      - '&7- Leather Boots'
+      - '&7- Golden Leggings'
+      - '&7- Golden Boots'
       - ' '
       - '&eLeft-click to select.'
       - '&eRight-click to preview.'
@@ -228,7 +228,7 @@ Menu:
       Name: '&a&lRhino Kit'
       Material: DIAMOND_HELMET
       Lore:
-      - '&6Ability: &73 Rhino Charges'
+      - '&6Ability: &7Rechargeable Rhino Charge'
       - ' '
       - '&7- Iron Sword'
       - '&7- Diamond Helmet'
