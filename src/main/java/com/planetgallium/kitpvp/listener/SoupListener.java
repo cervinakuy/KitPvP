@@ -17,21 +17,10 @@ public class SoupListener implements Listener {
 
 	private final Game plugin;
 	private final Resource config;
-	private final int soupBoost;
-	private final ItemStack soup;
 
 	public SoupListener(Game plugin) {
 		this.plugin = plugin;
 		this.config = plugin.getResources().getConfig();
-		// TODO: see if doing /kp reload works on this
-		this.soupBoost = plugin.getConfig().getInt("Soups.RegenAmount");
-
-		// TODO: see if doing /kp reload works on this
-		this.soup = Toolkit.safeItemStack("MUSHROOM_STEW");
-		ItemMeta soupMeta = soup.getItemMeta();
-		soupMeta.setDisplayName(config.fetchString("Soups.Name"));
-		soupMeta.setLore(Toolkit.colorizeList(config.getStringList("Soups.Lore")));
-		soup.setItemMeta(soupMeta);
 	}
 	
 	@EventHandler
@@ -67,7 +56,7 @@ public class SoupListener implements Listener {
 						.replace("%amount%", String.valueOf(i)));
 				break;
 			} else {
-				killer.getInventory().addItem(soup);
+				killer.getInventory().addItem(buildSoup());
 			}
 		}
 	}
@@ -86,6 +75,8 @@ public class SoupListener implements Listener {
 				e.setCancelled(true);
 
 				if (p.getHealth() < 20.0) {
+					int soupBoost = plugin.getConfig().getInt("Soups.RegenAmount");
+
 					p.setHealth(Math.min(p.getHealth() + (double) soupBoost, 20.0));
 
 					Toolkit.playSoundToPlayer(p, config.fetchString("Soups.Sound"),
@@ -95,6 +86,17 @@ public class SoupListener implements Listener {
 				}
 			}
 		}
+	}
+
+	private ItemStack buildSoup() {
+		ItemStack soup = Toolkit.safeItemStack("MUSHROOM_STEW");
+		ItemMeta soupMeta = soup.getItemMeta();
+
+		soupMeta.setDisplayName(config.fetchString("Soups.Name"));
+		soupMeta.setLore(config.getStringList("Soups.Lore"));
+
+		soup.setItemMeta(soupMeta);
+		return soup;
 	}
 	
 }
