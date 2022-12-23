@@ -41,7 +41,6 @@ public class DeathListener implements Listener {
 
 	@EventHandler
 	public void onDeath(PlayerDeathEvent e) {
-
 		// investigate possible memory leak when FancyDeath is enabled
 		if (Toolkit.inArena(e.getEntity())) {
 
@@ -161,7 +160,6 @@ public class DeathListener implements Listener {
 	}
 
 	private void setDeathMessage(Player victim) {
-
 		if (victim.getLastDamageCause() == null) {
 			broadcast(victim.getWorld(), getDeathMessage(victim, null, "Unknown"));
 			return;
@@ -170,7 +168,6 @@ public class DeathListener implements Listener {
 		DamageCause cause = victim.getLastDamageCause().getCause();
 
 		if (cause == DamageCause.PROJECTILE && getShooter(victim.getLastDamageCause()).getType() == EntityType.PLAYER) {
-
 			Player killer = (Player) getShooter(victim.getLastDamageCause());
 
 			broadcast(victim.getWorld(), getDeathMessage(victim, killer, "Shot"));
@@ -182,22 +179,20 @@ public class DeathListener implements Listener {
 //			creditWithKill(victim, victim.getKiller());
 
 		} else if (victim.getKiller() != null) {
-
 			Player killer = victim.getKiller();
 
 			broadcast(victim.getWorld(), getDeathMessage(victim, killer, "Player"));
 			creditWithKill(victim, killer);
 
 		} else if (arena.getHitCache().get(victim.getName()) != null) {
-
 			String killerName = arena.getHitCache().get(victim.getName());
 			Player killer = Toolkit.getPlayer(victim.getWorld(), killerName);
 
 			broadcast(victim.getWorld(), getDeathMessage(victim, killer, "Player"));
 			creditWithKill(victim, killer);
 
-		} else if ((cause == DamageCause.BLOCK_EXPLOSION || cause == DamageCause.ENTITY_EXPLOSION) && getExplodedEntity(victim.getLastDamageCause()).getType() == EntityType.PRIMED_TNT) {
-
+		} else if ((cause == DamageCause.BLOCK_EXPLOSION || cause == DamageCause.ENTITY_EXPLOSION) &&
+				getExplodedEntity(victim.getLastDamageCause()).getType() == EntityType.PRIMED_TNT) {
 			String bomberName = getExplodedEntity(victim.getLastDamageCause()).getCustomName();
 			Player killer = Toolkit.getPlayer(victim.getWorld(), bomberName);
 
@@ -205,40 +200,31 @@ public class DeathListener implements Listener {
 			creditWithKill(victim, killer);
 
 		} else if (cause == DamageCause.VOID) {
-
 			broadcast(victim.getWorld(), getDeathMessage(victim, null, "Void"));
 
 		} else if (cause == DamageCause.FALL) {
-
 			broadcast(victim.getWorld(), getDeathMessage(victim, null, "Fall"));
 
 		} else if (cause == DamageCause.FIRE || cause == DamageCause.FIRE_TICK || cause == DamageCause.LAVA) {
-
 			broadcast(victim.getWorld(), getDeathMessage(victim, null, "Fire"));
 
 		} else if (cause == DamageCause.BLOCK_EXPLOSION || cause == DamageCause.ENTITY_EXPLOSION) {
-
 			broadcast(victim.getWorld(), getDeathMessage(victim, null, "Explosion"));
 
 		} else {
-
 			broadcast(victim.getWorld(), getDeathMessage(victim, null, "Unknown"));
 
 		}
-		
 	}
 
 	private Entity getShooter(EntityDamageEvent e) {
-
 		EntityDamageByEntityEvent shotEvent = (EntityDamageByEntityEvent) e;
 		Projectile damager = (Projectile) shotEvent.getDamager();
 
 		return (Entity) damager.getShooter();
-
 	}
 
 	private Entity getExplodedEntity(EntityDamageEvent e) {
-
 //		if (e instanceof EntityDamageByBlockEvent) {
 //			EntityDamageByBlockEvent blownUpEvent2 = (EntityDamageByBlockEvent) e;
 //			return blownUpEvent2.getDamager();
@@ -246,7 +232,6 @@ public class DeathListener implements Listener {
 			EntityDamageByEntityEvent blownUpEvent = (EntityDamageByEntityEvent) e;
 			return blownUpEvent.getDamager();
 		/*}*/
-
 	}
 
 	private void creditWithKill(Player victim, Player killer) {
@@ -272,7 +257,6 @@ public class DeathListener implements Listener {
 	}
 
 	private String getDeathMessage(Player victim, Player killer, String type) {
-
 		String deathMessage = config.fetchString("Death.Messages." + type);
 
 		if (victim != null && killer != null) {
@@ -293,7 +277,6 @@ public class DeathListener implements Listener {
 		}
 
 		return deathMessage;
-
 	}
 
 	private void broadcast(World world, String message) {

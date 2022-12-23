@@ -63,7 +63,8 @@ public class Updater {
 
         Bukkit.getScheduler().runTaskAsynchronously(this.javaPlugin, () -> {
             try {
-                HttpURLConnection httpURLConnection = (HttpsURLConnection) new URL(String.format(SPIGOT_URL, this.resourceId)).openConnection();
+                HttpURLConnection httpURLConnection = (HttpsURLConnection) new URL(String.format(SPIGOT_URL,
+                        this.resourceId)).openConnection();
                 httpURLConnection.setRequestMethod("GET");
                 httpURLConnection.setRequestProperty(HttpHeaders.USER_AGENT, "Mozilla/5.0");
 
@@ -71,11 +72,15 @@ public class Updater {
 
                 boolean latestVersion = fetchedVersion.equalsIgnoreCase(this.currentVersion);
 
-                Bukkit.getScheduler().runTask(this.javaPlugin, () -> this.versionResponse.accept(latestVersion ? VersionResponse.LATEST : VersionResponse.FOUND_NEW, latestVersion ? this.currentVersion : fetchedVersion));
+                Bukkit.getScheduler().runTask(this.javaPlugin, () ->
+                        this.versionResponse.accept(latestVersion ? VersionResponse.LATEST : VersionResponse.FOUND_NEW,
+                                latestVersion ? this.currentVersion : fetchedVersion));
             } catch (IOException exception) {
                 exception.printStackTrace();
-                Bukkit.getScheduler().runTask(this.javaPlugin, () -> this.versionResponse.accept(VersionResponse.UNAVAILABLE, null));
+                Bukkit.getScheduler().runTask(this.javaPlugin, () ->
+                        this.versionResponse.accept(VersionResponse.UNAVAILABLE, null));
             }
         });
     }
+
 }

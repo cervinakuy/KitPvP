@@ -26,25 +26,19 @@ public class HitListener implements Listener {
 
 	@EventHandler
 	public void onHit(EntityDamageByEntityEvent e) {
-
 		if (e.getEntity() instanceof Player && e.getDamager() instanceof Player) {
-
 			Player damager = (Player) e.getDamager();
 			Player damagedPlayer = (Player) e.getEntity();
 
 			if (Toolkit.inArena(damagedPlayer)) {
-
 				arena.getHitCache().put(damagedPlayer.getName(), damager.getName());
 
 				if (config.getBoolean("Combat.HitSound.Enabled")) {
 					hitSound.forPlayer(damagedPlayer).play();
 					hitSound.forPlayer(damager).play();
 				}
-
 			}
-
 		}
-		 
 	}
 	
 }

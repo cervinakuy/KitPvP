@@ -14,8 +14,8 @@ import com.planetgallium.kitpvp.util.Toolkit;
 
 public class AttackListener implements Listener {
 
-	private Resources resources;
-	private Kits kits;
+	private final Resources resources;
+	private final Kits kits;
 
 	public AttackListener(Game plugin) {
 		this.resources = plugin.getResources();
@@ -24,56 +24,35 @@ public class AttackListener implements Listener {
 	
 	@EventHandler
 	public void onDamageDealt(EntityDamageByEntityEvent e) {
-		
 		if (e.getEntity() instanceof Player && e.getDamager() instanceof Player) {
-			
 			Player damagedPlayer = (Player) e.getEntity();
 			Player damager = (Player) e.getDamager();
 			
 			if (Toolkit.inArena(damagedPlayer) && !damagedPlayer.hasMetadata("NPC")) {
-				
 				if (resources.getConfig().getBoolean("Arena.NoKitProtection")) {
-					
-					if (!kits.hasKit(damagedPlayer.getName())) {
-						
+					if (!kits.playerHasKit(damagedPlayer.getName())) {
 						damager.sendMessage(resources.getMessages().fetchString("Messages.Error.Invincible"));
 						e.setCancelled(true);
-						
 					}
 					
-					if (kits.hasKit(damagedPlayer.getName()) && !kits.hasKit(damager.getName())) {
-						
+					if (kits.playerHasKit(damagedPlayer.getName()) && !kits.playerHasKit(damager.getName())) {
 						damager.sendMessage(resources.getMessages().fetchString("Messages.Error.Kit"));
 						e.setCancelled(true);
-						
 					}
-					
 				}
-				
 			}
-			
-		} 
-		
+		}
 	}
 	
 	@EventHandler
 	public void onDamage(EntityDamageEvent e) {
 		if (e.getEntity() instanceof Player) {
 			Player damagedPlayer = (Player) e.getEntity();
-//			System.out.println("Damaged player: " + damagedPlayer.getName());
-
-			// bot is not doing damage to the player
 
 			if (Toolkit.inArena(damagedPlayer)) {
-//				System.out.println("Damaged player is in arena");
 				if (resources.getConfig().getBoolean("Arena.NoKitProtection")) {
-//					System.out.println("NoKitProt enabled");
-
-
-					if (!kits.hasKit(damagedPlayer.getName())) {
-//						System.out.println("has kit");
+					if (!kits.playerHasKit(damagedPlayer.getName())) {
 						if (e.getCause() != DamageCause.VOID) {
-//							System.out.println("Cancelled damage");
 							e.setCancelled(true);
 						}
 					}

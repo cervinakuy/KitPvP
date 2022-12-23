@@ -20,7 +20,7 @@ public class Kit {
     private String permission;
     private Cooldown cooldown;
     private int level;
-    private int health;
+    private int maxHealth;
 
     private final Map<String, Object> options;
     private final Map<Integer, ItemStack> inventory;
@@ -35,7 +35,6 @@ public class Kit {
 
     public Kit(String name) {
         this.name = name;
-
         this.options = new HashMap<>();
         this.inventory = new HashMap<>();
         this.effects = new ArrayList<>();
@@ -53,8 +52,8 @@ public class Kit {
         this.level = level;
     }
 
-    public void setHealth(int health) {
-        this.health = health;
+    public void setMaxHealth(int health) {
+        this.maxHealth = health;
     }
 
     public void setOption(String key, Object value) {
@@ -97,7 +96,6 @@ public class Kit {
     }
 
     public void apply(Player player) {
-
         List<ItemStack> overflowItems = new ArrayList<>();
         boolean addOverflowItems = (Boolean) options.get("AddOverflowItemsOnKit");
 
@@ -133,7 +131,7 @@ public class Kit {
             }
         }
 
-        Toolkit.setMaxHealth(player, health);
+        Toolkit.setMaxHealth(player, maxHealth);
 
         for (int i = 0; i < 36; i++) {
             if (addOverflowItems) {
@@ -169,7 +167,6 @@ public class Kit {
     }
 
     private void giveOverflowItems(Player p, List<ItemStack> overflowItems) {
-
         for (int i = 0; i < 36; i++) {
             if (p.getInventory().getItem(i) == null) { // if empty slot found
                 if (overflowItems.size() >= 1) {
@@ -193,15 +190,13 @@ public class Kit {
             String overflowItemsLostMessage = (String) options.get("Message-OverflowItemsLost");
             p.sendMessage(overflowItemsLostMessage.replace("%number%", String.valueOf(overflowItems.size())));
         }
-
     }
 
     public void toResource(Resource resource) {
-
         resource.set("Kit.Permission", permission != null ? permission : "kp.kit." + name);
         resource.set("Kit.Cooldown", cooldown != null ? cooldown.formatted(true) : 0);
         resource.set("Kit.Level", level);
-        resource.set("Kit.Health", health);
+        resource.set("Kit.Health", maxHealth);
         resource.save();
 
         AttributeWriter.itemStackToResource(resource, "Inventory.Armor.Helmet", kitHelmet);
@@ -221,7 +216,6 @@ public class Kit {
         }
 
         resource.save();
-
     }
 
     public String getName() { return name; }
@@ -232,7 +226,7 @@ public class Kit {
 
     public int getLevel() { return level; }
 
-    public int getHealth() { return health; }
+    public int getMaxHealth() { return maxHealth; }
 
     public Map<Integer, ItemStack> getInventory() { return inventory; }
 

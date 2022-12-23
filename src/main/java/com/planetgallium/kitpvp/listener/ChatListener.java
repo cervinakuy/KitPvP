@@ -22,9 +22,7 @@ public class ChatListener implements Listener {
 	
 	@EventHandler
 	public void onChat(AsyncPlayerChatEvent e) {
-		
 		if (resources.getConfig().getBoolean("Chat.Enabled") && Toolkit.inArena(e.getPlayer())) {
-			
 			Player p = e.getPlayer();
 			String levelPrefix = arena.getUtilities().getPlayerLevelPrefix(p.getName());
 
@@ -34,9 +32,7 @@ public class ChatListener implements Listener {
 					.replace("%level%", levelPrefix);
 
 			e.setFormat(Toolkit.addPlaceholdersIfPossible(p, format));
-
 		}
-
 	}
 
 }

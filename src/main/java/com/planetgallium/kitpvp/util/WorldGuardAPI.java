@@ -36,7 +36,6 @@ public class WorldGuardAPI {
     }
 
     private boolean allowsWg6(Player player, Location location, StateFlag...flags) {
-
         LocalPlayer localPlayer = WorldGuardPlugin.inst().wrapPlayer(player);
 
         com.sk89q.worldguard.protection.managers.RegionManager regionManager = com.sk89q.worldguard.bukkit.WGBukkit.getRegionManager(location.getWorld());
@@ -55,17 +54,14 @@ public class WorldGuardAPI {
         }
 
         return true;
-
     }
 
     private boolean allowsWg7(Player player, Location location, StateFlag...flags) {
-
         com.sk89q.worldguard.protection.regions.RegionContainer container = com.sk89q.worldguard.WorldGuard.getInstance().getPlatform().getRegionContainer();
         com.sk89q.worldguard.protection.regions.RegionQuery query = container.createQuery();
         ApplicableRegionSet regionSet = query.getApplicableRegions(com.sk89q.worldedit.bukkit.BukkitAdapter.adapt(location));
 
         return regionSet.testState(WorldGuardPlugin.inst().wrapPlayer(player), flags);
-
     }
 
 }

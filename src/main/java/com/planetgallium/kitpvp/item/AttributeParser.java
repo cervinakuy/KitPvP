@@ -3,13 +3,11 @@ package com.planetgallium.kitpvp.item;
 import com.cryptomorin.xseries.XEnchantment;
 import com.cryptomorin.xseries.XMaterial;
 import com.cryptomorin.xseries.XPotion;
-import com.cryptomorin.xseries.XSound;
 import com.planetgallium.kitpvp.Game;
-import com.planetgallium.kitpvp.api.Ability;
-import com.planetgallium.kitpvp.util.*;
+import com.planetgallium.kitpvp.util.Resource;
+import com.planetgallium.kitpvp.util.Toolkit;
 import org.bukkit.Color;
 import org.bukkit.Material;
-import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
@@ -56,8 +54,8 @@ public class AttributeParser {
 
     }
 
-    public static ItemStack getItemStackFromPath(Resource resource, String path) throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
-
+    public static ItemStack getItemStackFromPath(Resource resource, String path) throws IllegalAccessException,
+            NoSuchMethodException, InvocationTargetException {
         if (!resource.contains(path)) return null;
 
         ItemStack item = XMaterial.matchXMaterial(FALLBACK_ITEM_MATERIAL).parseItem();
@@ -137,60 +135,45 @@ public class AttributeParser {
         }
 
         return item;
-
     }
 
     private static void setCustomDurability(ItemStack item, int damageAmount) {
-
         if (Toolkit.versionToNumber() < 113) {
-
             item.setDurability((short) damageAmount);
 
         } else if (Toolkit.versionToNumber() >= 113) {
-
             ItemMeta meta = item.getItemMeta();
 
             if (meta instanceof Damageable) {
-
                 ((Damageable) meta).setDamage(damageAmount);
                 item.setItemMeta(meta);
-
             }
-
         }
-
     }
 
     private static void setSkull(ItemStack item, String skullOwner) {
-
         item.setType(XMaterial.PLAYER_HEAD.parseMaterial());
 
         SkullMeta skullMeta = (SkullMeta) item.getItemMeta();
         skullMeta.setOwner(skullOwner);
 
         item.setItemMeta(skullMeta);
-
     }
 
     private static void dyeItem(ItemStack item, Color color) {
-
-        if (item.getType() == XMaterial.LEATHER_HELMET.parseMaterial() ||
-                item.getType() == XMaterial.LEATHER_CHESTPLATE.parseMaterial() ||
-                item.getType() == XMaterial.LEATHER_LEGGINGS.parseMaterial() ||
-                item.getType() == XMaterial.LEATHER_BOOTS.parseMaterial()) {
+        if (Toolkit.hasMatchingMaterial(item, "LEATHER_HELMET") ||
+                Toolkit.hasMatchingMaterial(item, "LEATHER_CHESTPLATE") ||
+                Toolkit.hasMatchingMaterial(item, "LEATHER_LEGGINGS") ||
+                Toolkit.hasMatchingMaterial(item, "LEATHER_BOOTS")) {
 
             LeatherArmorMeta dyedMeta = (LeatherArmorMeta) item.getItemMeta();
             dyedMeta.setColor(color);
             item.setItemMeta(dyedMeta);
-
         }
-
     }
 
     private static void setUnbreakable(ItemStack item) throws InvocationTargetException, IllegalAccessException, NoSuchMethodException {
-
         if (Toolkit.versionToNumber() <= 114) {
-
             ItemMeta meta = item.getItemMeta();
 
             Method spigotMethod = meta.getClass().getMethod("spigot");
@@ -203,17 +186,12 @@ public class AttributeParser {
             setUnbreakableMethod.setAccessible(true);
 
             setUnbreakableMethod.invoke(spigotInstance, true);
-
         } else if (Toolkit.versionToNumber() > 114) {
-
             item.getItemMeta().setUnbreakable(true);
-
         }
-
     }
 
     private static ItemStack setEffectsFromPath(ItemStack item, Resource resource, String path) {
-
         String effectsPath = path + ".Effects";
         String firstChildEffectName = resource.getConfigurationSection(effectsPath).getKeys(false).toArray()[0].toString();
         String firstChildPath = path + ".Effects." + firstChildEffectName;
@@ -230,11 +208,9 @@ public class AttributeParser {
         }
 
         return item;
-
     }
 
     private static ItemStack setVanillaEffectsFromPath(ItemStack item, Resource resource, String path) {
-
         PotionMeta potionMeta = (PotionMeta) item.getItemMeta();
 
         String firstChildEffectName = resource.getConfigurationSection(path).getKeys(false).toArray()[0].toString();
@@ -260,11 +236,9 @@ public class AttributeParser {
         item.setItemMeta(potionMeta);
 
         return item;
-
     }
 
     private static void setCustomEffectsFromPath(ItemStack item, Resource resource, String path) {
-
         PotionMeta potionMeta = (PotionMeta) item.getItemMeta();
 
         for (String effectName : resource.getConfigurationSection(path).getKeys(false)) {
@@ -275,11 +249,9 @@ public class AttributeParser {
         }
 
         item.setItemMeta(potionMeta);
-
     }
 
     private static int getVanillaLevel(PotionType type, boolean isUpgraded) {
-
         switch (type) {
             case INVISIBILITY: case FIRE_RESISTANCE: case NIGHT_VISION:
                 case SLOWNESS: case WATER_BREATHING: case WEAKNESS:
@@ -288,9 +260,7 @@ public class AttributeParser {
                 case REGEN: case SPEED: case STRENGTH:
                 return isUpgraded ? 2 : 1;
         }
-
         return 1;
-
     }
 
 }

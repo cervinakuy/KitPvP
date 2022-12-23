@@ -58,7 +58,6 @@ public class Resources {
 	}
 	
 	public void load() {
-
 		config.load();
 		abilities.load();
 		killstreaks.load();
@@ -104,7 +103,6 @@ public class Resources {
 		// Reload all kitName.yml, abilityName.yml
 		kitToResource.values().forEach(Resource::load);
 		abilityToResource.values().forEach(Resource::load);
-		
 	}
 	
 	public void reload() {

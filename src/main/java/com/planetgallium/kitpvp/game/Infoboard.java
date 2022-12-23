@@ -22,7 +22,6 @@ public class Infoboard {
     private int lastSentCount;
 
     public Infoboard(final Scoreboard scoreboard2, final String title) {
-    	
         this.list = new ArrayList<ScoreboardText>();
         this.tag = "PlaceHolder";
         this.lastSentCount = -1;
@@ -30,11 +29,9 @@ public class Infoboard {
         this.tag = ChatColor.translateAlternateColorCodes('&', title);
         this.scoreBoard = scoreboard2;
         (this.objective = this.getOrCreateObjective(this.tag)).setDisplaySlot(DisplaySlot.SIDEBAR);
-        
     }
 
     public void add(String input) {
-    	
         input = ChatColor.translateAlternateColorCodes('&', input);
         
         ScoreboardText text = null;
@@ -127,11 +124,8 @@ public class Infoboard {
     /**
      * Added for testing purposes, not part of original class
      */
-    
     public void hide() {
-    	
     	objective.setDisplaySlot(null);
-    	
     }
     
 }

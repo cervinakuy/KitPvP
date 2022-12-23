@@ -24,7 +24,6 @@ public class CacheManager {
         if (!abilityCooldowns.containsKey(username)) {
             abilityCooldowns.put(username, new HashMap<>());
         }
-
         return abilityCooldowns.get(username);
     }
 

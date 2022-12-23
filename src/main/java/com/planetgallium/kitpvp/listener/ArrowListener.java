@@ -65,7 +65,7 @@ public class ArrowListener implements Listener {
 
 			// Do not do arrow return if damagedPlayer does not have a kit (if NoKitProtection is enabled)
 			if (config.getBoolean("Arena.NoKitProtection")) {
-				if (!plugin.getArena().getKits().hasKit(damagedPlayer.getName())) {
+				if (!plugin.getArena().getKits().playerHasKit(damagedPlayer.getName())) {
 					return;
 				}
 			}

@@ -55,7 +55,7 @@ public class Arena {
 	public void addPlayer(Player p, boolean toSpawn, boolean giveItems) {
 		cooldowns.clearPlayerAbilityCooldowns(p.getName());
 
-		kits.resetKit(p.getName());
+		kits.resetPlayerKit(p.getName());
 
 		if (config.getBoolean("Arena.ResetKillStreakOnLeave")) {
 			killstreaks.setStreak(p, 0);
@@ -101,15 +101,11 @@ public class Arena {
 			p.removePotionEffect(effect.getType());
 		}
 		
-		kits.resetKit(p.getName());
+		kits.resetPlayerKit(p.getName());
 
 		if (config.getBoolean("Arena.ResetKillStreakOnLeave")) {
 			getKillStreaks().resetStreak(p);
 		}
-		
-//		if (config.getBoolean("Arena.FancyDeath")) {
-//			p.setHealth(20.0); commenting this out fixes block glitching for some reason
-//		}
 		
 		p.setExp(0f);
 		p.setFoodLevel(20);
