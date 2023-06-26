@@ -28,7 +28,7 @@ public class Menu {
 		ItemStack item = new ItemStack(material);
 		ItemMeta meta = item.getItemMeta();
 
-		Toolkit.colorizeList(lore);
+		lore = Toolkit.colorizeList(lore);
 		
 		meta.setDisplayName(Toolkit.translate(name));
 		meta.setLore(lore);
@@ -41,7 +41,7 @@ public class Menu {
 		ItemStack item = new ItemStack(material);
 		ItemMeta meta = item.getItemMeta();
 
-		Toolkit.colorizeList(lore);
+		lore = Toolkit.colorizeList(lore);
 
 		meta.setDisplayName(Toolkit.translate(name));
 		meta.setLore(lore);
