@@ -78,6 +78,7 @@ public class MainCommand implements CommandExecutor {
             } else if (isCommand(args, sender, "stats", "kp.command.stats.other")) {
                 executeStatsCommandOther(sender, args);
                 return true;
+
             }
 
         } else if (args.length == 3) {
@@ -308,10 +309,7 @@ public class MainCommand implements CommandExecutor {
         String statsIdentifier = args[2];
         String possibleAmount = args[3];
 
-        if (statsIdentifier.equalsIgnoreCase("kills") ||
-                statsIdentifier.equalsIgnoreCase("deaths") ||
-                statsIdentifier.equalsIgnoreCase("level") ||
-                statsIdentifier.equalsIgnoreCase("experience")) {
+        if (isValidStatIdentifier(statsIdentifier, true)) {
 
             if (!StringUtils.isNumeric(possibleAmount)) {
                 sender.sendMessage(resources.getMessages().fetchString("Messages.Error.InvalidNumber")
@@ -361,7 +359,7 @@ public class MainCommand implements CommandExecutor {
 
         p.sendMessage(messages.fetchString("Messages.Commands.Teleporting"));
         spawnUsers.add(p.getName());
-        XSound.play(p, "ENTITY_ITEM_PICKUP, 1, -1");
+        Toolkit.playSoundToPlayer(p, "ENTITY_ITEM_PICKUP", -1);
 
         Location beforeLocation = p.getLocation();
 
@@ -376,7 +374,7 @@ public class MainCommand implements CommandExecutor {
                     if (p.getGameMode() != GameMode.SPECTATOR) {
                         p.sendMessage(messages.fetchString("Messages.Commands.Time")
                                 .replace("%time%", String.valueOf(time)));
-                        XSound.play(p, "BLOCK_NOTE_BLOCK_SNARE, 1, 1");
+                        Toolkit.playSoundToPlayer(p, "BLOCK_NOTE_BLOCK_SNARE", 1);
 
                         if (beforeLocation.getBlockX() != p.getLocation().getBlockX() ||
                                 beforeLocation.getBlockY() != p.getLocation().getBlockY() ||
@@ -399,7 +397,7 @@ public class MainCommand implements CommandExecutor {
                     }
 
                     spawnUsers.remove(p.getName());
-                    XSound.play(p, "ENTITY_ENDERMAN_TELEPORT, 1, 1");
+                    Toolkit.playSoundToPlayer(p, "ENTITY_ENDERMAN_TELEPORT", 1);
                     cancel();
                 }
             }
@@ -421,7 +419,7 @@ public class MainCommand implements CommandExecutor {
         p.sendMessage(messages.fetchString("Messages.Commands.Added")
                 .replace("%number%", String.valueOf(spawnNumber))
                 .replace("%arena%", arenaName));
-        XSound.play(p, "ENTITY_ZOMBIE_ATTACK_WOODEN_DOOR, 1, 1");
+        Toolkit.playSoundToPlayer(p, "ENTITY_ZOMBIE_ATTACK_WOODEN_DOOR", 1);
     }
 
     private void executeDeleteArenaCommand(Player p) {
@@ -432,7 +430,7 @@ public class MainCommand implements CommandExecutor {
             plugin.saveConfig();
 
             p.sendMessage(messages.fetchString("Messages.Commands.Removed").replace("%arena%", arenaName));
-            XSound.play(p, "ENTITY_ZOMBIE_ATTACK_WOODEN_DOOR, 1, 1");
+            Toolkit.playSoundToPlayer(p, "ENTITY_ZOMBIE_ATTACK_WOODEN_DOOR", 1);
         } else {
             p.sendMessage(messages.fetchString("Messages.Error.Arena"));
         }
@@ -502,6 +500,8 @@ public class MainCommand implements CommandExecutor {
     }
 
     private void clearKit(Player p) {
+        CacheManager.getPotionSwitcherUsers().remove(p.getName());
+
         p.getInventory().setArmorContents(null);
         p.getInventory().clear();
 
@@ -543,6 +543,13 @@ public class MainCommand implements CommandExecutor {
         }
 
         sender.sendMessage(Toolkit.translate("%prefix% &cUnknown command: /" + alias + " " + unknownCommand));
+    }
+
+    private boolean isValidStatIdentifier(String identifierToValidate, boolean includeExperience) {
+        return (identifierToValidate.equalsIgnoreCase("kills") ||
+                identifierToValidate.equalsIgnoreCase("deaths") ||
+                identifierToValidate.equalsIgnoreCase("level")) ||
+                (includeExperience && identifierToValidate.equalsIgnoreCase("experience"));
     }
 
 }

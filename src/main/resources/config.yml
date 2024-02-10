@@ -127,6 +127,7 @@ Arena:
   AbilitiesRequireKit: true
   AddOverflowItemsOnKit: true
   DropRemainingOverflowItemsOnKit: true
+  ResetMaxHealthOnDeath: true
 Other:
   AutomaticallyAddKitToMenu: true
 Spawn:

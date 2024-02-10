@@ -5,6 +5,7 @@ import com.planetgallium.kitpvp.Game;
 import com.planetgallium.kitpvp.api.Kit;
 import com.planetgallium.kitpvp.game.Arena;
 import com.planetgallium.kitpvp.game.Utilities;
+import com.planetgallium.kitpvp.util.CacheManager;
 import com.planetgallium.kitpvp.util.Resource;
 import com.planetgallium.kitpvp.util.Resources;
 import com.planetgallium.kitpvp.util.Toolkit;
@@ -80,9 +81,10 @@ public class ItemListener implements Listener {
 
 			} else if (isAbility(p, interactedItem, "Witch", "GLASS_BOTTLE")) {
 				e.setCancelled(true);
+				CacheManager.getPotionSwitcherUsers().add(p.getName());
 				Toolkit.setHandItemForInteraction(e, createWitchPotion());
 
-			} else if (Toolkit.hasMatchingMaterial(interactedItem, "SPLASH_POTION")) {
+			} else if (isSplashPotion(interactedItem)) {
 				witchAbility(e, p, interactedItem, interactedItemMeta);
 
 			} else if ((Toolkit.hasMatchingMaterial(interactedItem, "SLIME_BALL") ||
@@ -360,7 +362,7 @@ public class ItemListener implements Listener {
 				@Override
 				public void run() {
 					Kit playerKit = arena.getKits().getKitOfPlayer(p.getName());
-					if (playerKit != null && playerKit.getName().equals("Witch")) {
+					if (playerKit != null && CacheManager.getPotionSwitcherUsers().contains(p.getName())) {
 						slotUsed.placeItemInSlot(p, randomizedWitchPotion);
 
 						if (abilities.getBoolean("Abilities.Witch.Message.Enabled")) {
@@ -369,6 +371,8 @@ public class ItemListener implements Listener {
 
 						Toolkit.playSoundToPlayer(p, abilities.fetchString("Abilities.Witch.Sound.Sound"),
 								abilities.getInt("Abliities.Witch.Sound.Pitch"));
+
+						CacheManager.getPotionSwitcherUsers().add(p.getName());
 					}
 				}
 			}.runTaskLater(plugin, 5 * 20L);
@@ -485,7 +489,8 @@ public class ItemListener implements Listener {
 	}
 
 	private int getItemByMeta(Material type, String displayName, Player p) {
-		for (int i = 0; i <= 45; i++) {
+		int inventorySize = Toolkit.versionToNumber() == 18 ? 39 : 45;
+		for (int i = 0; i <= inventorySize; i++) {
 			ItemStack item = p.getInventory().getItem(i);
 			if (item != null) {
 				if (item.getType() == type && Toolkit.hasMatchingDisplayName(item, displayName)) {
@@ -526,6 +531,11 @@ public class ItemListener implements Listener {
 			potion = PotionType.SLOWNESS;
 		}
 		return potion;
+	}
+
+	public boolean isSplashPotion(ItemStack item) {
+		int serverVersion = Toolkit.versionToNumber();
+		return Toolkit.hasMatchingMaterial(item, serverVersion == 18 ? "POTION" : "SPLASH_POTION");
 	}
 
 }

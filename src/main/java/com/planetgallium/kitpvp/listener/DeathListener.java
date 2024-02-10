@@ -51,6 +51,8 @@ public class DeathListener implements Listener {
 				e.getDrops().clear();
 			}
 
+			CacheManager.getPotionSwitcherUsers().remove(victim.getName());
+
 			respawnPlayer(victim);
 			setDeathMessage(victim);
 
@@ -65,8 +67,7 @@ public class DeathListener implements Listener {
 			Toolkit.runCommands(victim, config.getStringList("Death.Commands"), "%victim%", victim.getName());
 
 			broadcast(victim.getWorld(),
-					XSound.matchXSound(config.fetchString("Death.Sound.Sound")).get().parseSound(),
-					1,
+					config.fetchString("Death.Sound.Sound"),
 					config.getInt("Death.Sound.Pitch"));
 		}
 
@@ -117,7 +118,7 @@ public class DeathListener implements Listener {
 								config.fetchString("Death.Title.Title"),
 								config.fetchString("Death.Title.Subtitle")
 										.replace("%seconds%", String.valueOf(time)));
-						XSound.play(victim, "UI_BUTTON_CLICK, 1, 1");
+						Toolkit.playSoundToPlayer(victim, "UI_BUTTON_CLICK", 1);
 						time--;
 					} else {
 						doClearInventoryOnRespawnIfEnabled(victim);
@@ -126,7 +127,7 @@ public class DeathListener implements Listener {
 
 						victim.sendMessage(config.fetchString("Death.Title.Message"));
 						victim.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 30, 0));
-						XSound.play(victim, "ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1");
+						Toolkit.playSoundToPlayer(victim, "ENTITY_EXPERIENCE_ORB_PICKUP", 1);
 
 						Toolkit.runCommands(victim, config.getStringList("Respawn.Commands"), "none", "none");
 
@@ -287,10 +288,10 @@ public class DeathListener implements Listener {
 		}
 	}
 
-	private void broadcast(World world, Sound sound, int volume, int pitch) {
+	private void broadcast(World world, String soundName, int pitch) {
 		if (config.getBoolean("Death.Sound.Enabled")) {
 			for (Player all : world.getPlayers()) {
-				XSound.play(all, String.format("%s, %d, %d", sound.toString(), volume, pitch));
+				Toolkit.playSoundToPlayer(all, soundName, pitch);
 			}
 		}
 	}

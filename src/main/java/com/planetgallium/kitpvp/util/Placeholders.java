@@ -35,13 +35,14 @@ public class Placeholders extends PlaceholderExpansion {
 	
 	@Override
 	public String onPlaceholderRequest(Player p, @NotNull String identifier) {
-		if (p == null) return null;
-
 		if (identifier.contains("top")) {
 			return handleLeaderboardPlaceholder(identifier);
 		}
 
-		return translatePlaceholderAPIPlaceholders(identifier, p.getName());
+		if (p != null) {
+			return translatePlaceholderAPIPlaceholders(identifier, p.getName());
+		}
+		return null;
 	}
 
 	private String handleLeaderboardPlaceholder(String identifier) {
