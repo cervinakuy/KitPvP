@@ -90,7 +90,7 @@ public class Stats {
 
             p.sendMessage(resources.getMessages().fetchString("Messages.Other.Level")
                                   .replace("%level%", String.valueOf(newLevel)));
-            XSound.play(p, "ENTITY_PLAYER_LEVELUP, 1, 1");
+            Toolkit.playSoundToPlayer(p, "ENTITY_PLAYER_LEVELUP", 1);
 
         } else {
             setStat("experience", username, 0);

@@ -143,6 +143,8 @@ public class Toolkit {
 			return 118;
 		} else if (version.contains("1.19")) {
 			return 119;
+		} else if (version.contains("1.20")) {
+			return 120;
 		}
  		return 500;
  	}
@@ -464,6 +466,10 @@ public class Toolkit {
 			return itemMeta.hasLore() && itemMeta.getLore() != null && itemMeta.getLore().get(0).equals(expectedLore);
 		}
 		return false;
+	}
+
+	public static boolean isPluginEnabled(String pluginName) {
+		return Bukkit.getPluginManager().isPluginEnabled(pluginName);
 	}
 
 	public static class SlotWrapper {

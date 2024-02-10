@@ -34,8 +34,7 @@ public class HitListener implements Listener {
 				arena.getHitCache().put(damagedPlayer.getName(), damager.getName());
 
 				if (config.getBoolean("Combat.HitSound.Enabled")) {
-					hitSound.forPlayer(damagedPlayer).play();
-					hitSound.forPlayer(damager).play();
+					hitSound.soundPlayer().forPlayers(damagedPlayer, damager);
 				}
 			}
 		}
