@@ -1,6 +1,5 @@
 package com.planetgallium.kitpvp.listener;
 
-import com.cryptomorin.xseries.XMaterial;
 import com.planetgallium.kitpvp.game.Arena;
 import com.planetgallium.kitpvp.util.Resources;
 import org.bukkit.entity.Player;
@@ -27,57 +26,47 @@ public class TrackerListener implements Listener {
 	}
 	
 	@EventHandler
-	public void onCompassHeld(PlayerItemHeldEvent event) {
-
-		if (!Toolkit.inArena(event.getPlayer())) {
+	public void onCompassHeld(PlayerItemHeldEvent e) {
+		if (!Toolkit.inArena(e.getPlayer())) {
 			return;
 		}
 
-		Player player = event.getPlayer();
-		ItemStack itemHeld = player.getInventory().getItem(event.getNewSlot());
+		Player p = e.getPlayer();
+		ItemStack itemHeld = p.getInventory().getItem(e.getNewSlot());
 
-		if (itemHeld != null && itemHeld.getType() == XMaterial.COMPASS.parseMaterial()) {
+		if (itemHeld != null && Toolkit.hasMatchingMaterial(itemHeld, "COMPASS")) {
 
 			new BukkitRunnable() {
-
 				@Override
 				public void run() {
-
 					// if the player using the compass leaves the server or no longer has a kit
-					if (!player.isOnline() || !arena.getKits().hasKit(player.getName())) {
+					if (!p.isOnline() || !arena.getKits().playerHasKit(p.getName())) {
 						cancel();
 						return;
 					}
 
 					if (resources.getConfig().getBoolean("PlayerTracker.RefreshOnlyWhenHeld")) {
-						ItemStack itemInHand = Toolkit.getMainHandItem(player);
-						if (itemInHand == null || itemInHand.getType() != XMaterial.COMPASS.parseMaterial()) {
+						if (!Toolkit.eitherHandHasMaterial(p, "COMPASS")) {
 							cancel();
 							return;
 						}
 					}
 
 					String[] nearestPlayerData = null;
-
-					if (player.getWorld().getPlayers().size() == 1) {
+					if (p.getWorld().getPlayers().size() == 1) {
 						cancel();
 					} else {
-						nearestPlayerData = Toolkit.getNearestPlayer(player,
+						nearestPlayerData = Toolkit.getNearestPlayer(p,
 												 resources.getConfig().getInt("PlayerTracker.TrackBelowY"));
 					}
 
-					updateTrackingCompass(player, itemHeld, nearestPlayerData);
-
+					updateTrackingCompass(p, itemHeld, nearestPlayerData);
 				}
-
 			}.runTaskTimer(plugin, 0L, 20L);
-
 		}
-		
 	}
 
 	private void updateTrackingCompass(Player player, ItemStack compass, String[] nearestPlayerData) {
-
 		ItemMeta compassMeta = compass.getItemMeta();
 
 		if (nearestPlayerData != null) {
@@ -88,7 +77,6 @@ public class TrackerListener implements Listener {
 				compassMeta.setDisplayName(resources.getConfig().fetchString("PlayerTracker.Message")
 												   .replace("%nearestplayer%", nearestPlayer.getName())
 												   .replace("%distance%", String.valueOf(nearestPlayerDistance)));
-
 				player.setCompassTarget(nearestPlayer.getLocation());
 			}
 		} else {
@@ -96,7 +84,6 @@ public class TrackerListener implements Listener {
 		}
 
 		compass.setItemMeta(compassMeta);
-
 	}
 	
 }

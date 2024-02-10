@@ -3,6 +3,7 @@ package com.planetgallium.kitpvp.game;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.planetgallium.kitpvp.util.Toolkit;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -22,19 +23,20 @@ public class Infoboard {
     private int lastSentCount;
 
     public Infoboard(final Scoreboard scoreboard2, final String title) {
-    	
         this.list = new ArrayList<ScoreboardText>();
         this.tag = "PlaceHolder";
         this.lastSentCount = -1;
-        Preconditions.checkState(title.length() <= 32, (Object) "title can not be more than 32");
+        if (title.length() > 32) {
+            Toolkit.printToConsole("&7[&b&lKIT-PVP&7] &cScoreboard title in scoreboard.yml is too long;" +
+                    " must be less than or equal to 32 characters. Scoreboard will not display.");
+        }
+        Preconditions.checkState(title.length() <= 32, (Object) "title cannot be more than 32 characters");
         this.tag = ChatColor.translateAlternateColorCodes('&', title);
         this.scoreBoard = scoreboard2;
         (this.objective = this.getOrCreateObjective(this.tag)).setDisplaySlot(DisplaySlot.SIDEBAR);
-        
     }
 
     public void add(String input) {
-    	
         input = ChatColor.translateAlternateColorCodes('&', input);
         
         ScoreboardText text = null;
@@ -127,11 +129,8 @@ public class Infoboard {
     /**
      * Added for testing purposes, not part of original class
      */
-    
     public void hide() {
-    	
     	objective.setDisplaySlot(null);
-    	
     }
     
 }

@@ -8,16 +8,13 @@ public class Cooldown {
 	private int seconds;
 	
 	public Cooldown(int days, int hours, int minutes, int seconds) {
-		
 		this.days = days;
 		this.hours = hours;
 		this.minutes = minutes;
 		this.seconds = seconds;
-		
 	}
 	
 	public Cooldown(int seconds) {
-
 		if (seconds / 86400 > 0) {
 			this.days = seconds / 86400;
 			seconds -= (days * 86400);
@@ -36,41 +33,26 @@ public class Cooldown {
 		if (seconds > 0) {
 			this.seconds = seconds;
 		}
-		
 	}
 
 	public Cooldown(String formattedCooldown) {
-
 		String[] units = formattedCooldown.split(":");
 
 		for (int i = 0; i < units.length; i++) {
-
 			if (units[i].toUpperCase().endsWith("D")) {
-
 				days = Integer.parseInt(units[i].split("D")[0]);
-
 			} else if (units[i].toUpperCase().endsWith("H")) {
-
 				hours = Integer.parseInt(units[i].split("H")[0]);
-
 			} else if (units[i].toUpperCase().endsWith("M")) {
-
 				minutes = Integer.parseInt(units[i].split("M")[0]);
-
 			} else if (units[i].toUpperCase().endsWith("S")) {
-
 				seconds = Integer.parseInt(units[i].split("S")[0]);
-
 			}
-
 		}
-
 	}
 
 	public String formatted(boolean condensed) {
-
 		if (condensed) {
-
 			String condensedCooldown = "";
 
 			if (getDays() != 0) condensedCooldown += getDays() + "D:";
@@ -85,9 +67,7 @@ public class Cooldown {
 			}
 
 			return condensedCooldown;
-
 		} else {
-
 			String longCooldown = "";
 
 			if (getDays() != 0) longCooldown += (getDays() + " days ");
@@ -96,24 +76,18 @@ public class Cooldown {
 			if (getSeconds() != 0) longCooldown += (getSeconds() + " seconds");
 
 			if (longCooldown.length() > 0 && longCooldown.charAt(longCooldown.length() - 1) == ' ') {
-
 				longCooldown = longCooldown.substring(0, longCooldown.length() - 1);
-
 			}
 
 			return longCooldown;
-
 		}
-
 	}
 
 	public int toSeconds() {
-
 		int daysToSeconds = days * 86400;
 		int hoursToSeconds = hours * 3600;
 		int minutesToSeconds = minutes * 60;
 		return daysToSeconds + hoursToSeconds + minutesToSeconds + seconds;
-
 	}
 	
 	public int getDays() { return days; }

@@ -4,7 +4,6 @@ import java.io.*;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import com.planetgallium.kitpvp.Game;
 import org.bukkit.ChatColor;
@@ -14,12 +13,12 @@ import org.bukkit.plugin.Plugin;
 
 public class Resource extends YamlConfiguration {
 
-	private String name;
+	private final String name;
 	private final File file;
-	private List<String> copyDefaultExemptions;
+	private final List<String> copyDefaultExemptions;
 
-	private Plugin plugin;
-	private String path;
+	private final Plugin plugin;
+	private final String path;
 
 	public Resource(Plugin plugin, String path) {
 		this.plugin = plugin;
@@ -31,7 +30,6 @@ public class Resource extends YamlConfiguration {
 	}
 
 	public void load() {
-
 		if (!file.getParentFile().exists()) {
 			file.getParentFile().mkdirs();
 		}
@@ -53,11 +51,9 @@ public class Resource extends YamlConfiguration {
 		} catch (IOException | InvalidConfigurationException e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	public void copyDefaults() {
-
 		Reader defaultConfigSearchResult = null;
 
 		if (plugin.getResource(path) != null) {
@@ -80,7 +76,6 @@ public class Resource extends YamlConfiguration {
 			}
 			save();
 		}
-
 	}
 
 	public void addCopyDefaultExemption(String path) {
@@ -93,6 +88,12 @@ public class Resource extends YamlConfiguration {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	public String getString(String path) {
+		Toolkit.printToConsole("%prefix% &cNote: Do not use legacy resource.getString, use resource.fetchString instead");
+		return super.getString(path);
 	}
 
     public String fetchString(String path) {
@@ -111,18 +112,7 @@ public class Resource extends YamlConfiguration {
 
     @Override
 	public List<String> getStringList(String path) {
-		List<String> originalList = super.getStringList(path);
-
-		if (originalList != null) {
-			List<String> colorizedList = new ArrayList<>();
-			for (String line : originalList) {
-				colorizedList.add(ChatColor.translateAlternateColorCodes('&', line));
-			}
-			return colorizedList;
-		}
-
-		return originalList;
-
+		return Toolkit.colorizeList(super.getStringList(path));
 	}
 	
 	public String getName() { return name; }

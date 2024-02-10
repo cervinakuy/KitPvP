@@ -93,7 +93,7 @@ public enum WorldGuardFlag {
     ENTRY_DENY_MESSAGE,
     EXIT_DENY_MESSAGE;
 
-    private byte version = WorldGuardAPI.getInstance().version;
+    private final byte version = WorldGuardAPI.getInstance().version;
     private StateFlag flag;
 
     public StateFlag getFlag() {
@@ -103,7 +103,8 @@ public enum WorldGuardFlag {
         String flagName = name();
 
         try {
-            Class<?> flagClass = version == 6 ? Class.forName("com.sk89q.worldguard.protection.flags.DefaultFlag") : Flags.class;
+            Class<?> flagClass = version == 6 ?
+                    Class.forName("com.sk89q.worldguard.protection.flags.DefaultFlag") : Flags.class;
             flag = (StateFlag) flagClass.getDeclaredField(flagName).get(null);
         } catch (Exception e) {
             System.out.println("[KitPvP] Unsupported flag! WorldGuard version " + version + " ; flag " + flagName);
@@ -112,4 +113,5 @@ public enum WorldGuardFlag {
 
         return flag;
     }
+
 }

@@ -2,7 +2,6 @@ package com.planetgallium.kitpvp.listener;
 
 import com.planetgallium.kitpvp.Game;
 import com.planetgallium.kitpvp.api.Ability;
-import com.planetgallium.kitpvp.api.Kit;
 import com.planetgallium.kitpvp.util.Cooldown;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -54,23 +53,17 @@ public class AbilityListener implements Listener {
 			p.playSound(p.getLocation(), ability.getSound(), ability.getSoundVolume(), ability.getSoundPitch());
 
 		if (ability.getEffects().size() > 0)
-			ability.getEffects().stream().forEach(effect -> p.addPotionEffect(effect));
+			ability.getEffects().forEach(p::addPotionEffect);
 
 		if (ability.getCommands().size() > 0)
 			Toolkit.runCommands(p, ability.getCommands(), "none", "none");
 
 		if (ability.getCooldown() == null) {
-			if (Toolkit.getMainHandItem(p).getAmount() == 1) {
-				ItemStack emptyItem = Toolkit.getMainHandItem(p);
-				emptyItem.setAmount(0);
-				Toolkit.setMainHandItem(p, emptyItem);
-			} else {
-				Toolkit.getMainHandItem(p).setAmount(Toolkit.getMainHandItem(p).getAmount() - 1);
-			}
+			ItemStack abilityItem = Toolkit.getHandItemForInteraction(e.getOriginalInteractionEvent());
+			abilityItem.setAmount(abilityItem.getAmount() - 1);
 		} else {
 			arena.getCooldowns().setAbilityCooldown(p.getName(), ability.getName());
 		}
-		
 	}
-	
+
 }

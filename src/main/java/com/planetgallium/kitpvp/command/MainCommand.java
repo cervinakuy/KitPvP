@@ -17,7 +17,6 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,52 +47,50 @@ public class MainCommand implements CommandExecutor {
 
         } else if (args.length == 1) {
 
-            if (args[0].equalsIgnoreCase("help")) {
+            if (isCommand(args, sender,"help", null)) {
                 executeHelpCommand(sender);
                 return true;
 
-            } else if (args[0].equalsIgnoreCase("reload") && hasPermission(sender, "kp.command.reload")) {
+            } else if (isCommand(args, sender, "reload", "kp.command.reload")) {
                 executeReloadCommand(sender);
                 return true;
 
-            } else if (args[0].equalsIgnoreCase("debug") && hasPermission(sender, "kp.command.debug")) {
+            } else if (isCommand(args, sender, "debug", "kp.command.debug")) {
                 executeDebugCommand(sender);
                 return true;
 
-            } else if (args[0].equalsIgnoreCase("export") && hasPermission(sender, "kp.command.export")) {
-                executeExportCommand(sender);
-                return true;
-
-            } else if (args[0].equalsIgnoreCase("kits") && hasPermission(sender, "kp.command.kits")) {
+            } else if (isCommand(args, sender, "kits", "kp.command.kits")) {
                 executeKitsCommand(sender);
                 return true;
+
             }
 
         } else if (args.length == 2) {
 
-            if (args[0].equalsIgnoreCase("clear") && hasPermission(sender, "kp.command.clear.other")) {
+            if (isCommand(args, sender, "clear", "kp.command.clear.other")) {
                 executeClearCommandOther(sender, args);
                 return true;
 
-            } else if (args[0].equalsIgnoreCase("delete") && hasPermission(sender, "kp.command.delete")) {
+            } else if (isCommand(args, sender, "delete", "kp.command.delete")) {
                 executeDeleteKitCommand(sender, args);
                 return true;
 
-            } else if (args[0].equalsIgnoreCase("stats") && hasPermission(sender, "kp.command.stats.other")) {
+            } else if (isCommand(args, sender, "stats", "kp.command.stats.other")) {
                 executeStatsCommandOther(sender, args);
                 return true;
+
             }
 
         } else if (args.length == 3) {
 
-            if (args[0].equalsIgnoreCase("kit") && hasPermission(sender, "kp.command.kit.other")) {
+            if (isCommand(args, sender, "kit", "kp.command.kit.other")) {
                 executeKitCommand(sender, args);
                 return true;
             }
 
         } else if (args.length == 4) {
 
-            if (args[0].equalsIgnoreCase("setstats") && hasPermission(sender, "kp.command.setstats")) {
+            if (isCommand(args, sender, "setstats", "kp.command.setstats")) {
                 executeSetStatsCommand(sender, args);
                 return true;
             }
@@ -105,49 +102,63 @@ public class MainCommand implements CommandExecutor {
 
             if (args.length == 1) {
 
-                if (args[0].equalsIgnoreCase("stats") && hasPermission(sender, "kp.command.stats")) {
+                if (isCommand(args, sender, "stats", "kp.command.stats")) {
                     executeStatsCommandSelf(p);
                     return true;
 
-                } else if (args[0].equalsIgnoreCase("menu") && hasPermission(sender, "kp.command.menu")) {
+                } else if (isCommand(args, sender, "menu", "kp.command.menu")) {
                     executeMenuCommand(p);
                     return true;
 
-                } else if (args[0].equalsIgnoreCase("spawn") && hasPermission(sender, "kp.command.spawn")) {
+                } else if (isCommand(args, sender, "spawn", "kp.command.spawn")) {
                     executeSpawnCommand(p);
                     return true;
 
-                } else if (args[0].equalsIgnoreCase("clear") && hasPermission(sender, "kp.command.clear")) {
+                } else if (isCommand(args, sender, "clear","kp.command.clear")) {
                     executeClearCommandSelf(p);
                     return true;
 
-                } else if (args[0].equalsIgnoreCase("addspawn") && hasPermission(p, "kp.command.addspawn")) {
+                } else if (isCommand(args, sender, "addspawn", "kp.command.addspawn")) {
                     executeAddSpawnCommand(p);
                     return true;
 
-                } else if (args[0].equalsIgnoreCase("delarena") && hasPermission(sender, "kp.command.delarena")) {
+                } else if (isCommand(args, sender, "delarena", "kp.command.delarena")) {
                     executeDeleteArenaCommand(p);
                     return true;
+
+                } else {
+                    sendUnknownCommand(sender, alias, args);
+                    return true;
+
                 }
 
             } else if (args.length == 2) {
 
-                if (args[0].equalsIgnoreCase("arena") && hasPermission(sender, "kp.command.spawn")) {
+                if (isCommand(args, sender, "arena", "kp.command.spawn")) {
                     executeArenaCommand(p, args);
                     return true;
 
-                } else if (args[0].equalsIgnoreCase("preview") && hasPermission(sender, "kp.command.preview")) {
+                } else if (isCommand(args, sender, "preview", "kp.command.preview")) {
                     executePreviewCommand(p, args);
                     return true;
 
-                } else if (args[0].equalsIgnoreCase("create") && hasPermission(sender, "kp.command.create")) {
+                } else if (isCommand(args, sender, "create", "kp.command.create")) {
                     executeCreateKitCommand(p, args);
                     return true;
 
-                } else if (args[0].equalsIgnoreCase("kit")) {
+                } else if (isCommand(args, sender, "kit", null)) {
                     executeKitCommandSelf(p, args);
                     return true;
+
+                } else {
+                    sendUnknownCommand(sender, alias, args);
+                    return true;
+
                 }
+
+            } else {
+                sendUnknownCommand(sender, alias, args);
+                return true;
 
             }
 
@@ -155,8 +166,6 @@ public class MainCommand implements CommandExecutor {
             sender.sendMessage(messages.fetchString("Messages.General.Player"));
             return true;
         }
-
-        return false;
 
     }
 
@@ -191,7 +200,6 @@ public class MainCommand implements CommandExecutor {
         sender.sendMessage(Toolkit.translate("&7- &b/kp stats <player> &7View the stats of another player."));
         sender.sendMessage(Toolkit.translate("&7- &b/kp menu &7Displays the kits menu."));
         sender.sendMessage(Toolkit.translate("&7- &b/kp setstats <player> <type> <amount> &7Change stats of a player."));
-        sender.sendMessage(Toolkit.translate("&7- &b/kp export &7Exports all stats to the new storage format."));
         sender.sendMessage(Toolkit.translate(" "));
         sender.sendMessage(Toolkit.translate("&3&m                                                                               "));
     }
@@ -212,28 +220,18 @@ public class MainCommand implements CommandExecutor {
             names += plugin.getName() + " ";
         }
 
-        sender.sendMessage(Toolkit.translate("&7[&b&lKIT-PVP&7] &aServer Version: &7" + Bukkit.getBukkitVersion()) + " " + (Bukkit.getVersion().contains("Spigot") ? "(Spigot)" : "(Other)"));
-        sender.sendMessage(Toolkit.translate("&7[&b&lKIT-PVP&7] &aPlugin Version: &7" + plugin.getDescription().getVersion() + " " + (plugin.needsUpdate() ? "&c(Requires Update)" : "&a(Latest Version)")));
-        sender.sendMessage(Toolkit.translate("&7[&b&lKIT-PVP&7] &aSpawn Set: " + (config.contains("Arenas") ? "&aConfigured" : "&cUnconfigured")));
-        sender.sendMessage(Toolkit.translate("&7[&b&lKIT-PVP&7] &aSupport Discord: &7https://discord.gg/Hfej6UR8Bk"));
+        String serverVersion = Bukkit.getBukkitVersion() + " " +
+                (Bukkit.getVersion().contains("Spigot") ? "(Spigot)" : "(Other)");
+        String pluginVersion = plugin.getDescription().getVersion() + " " +
+                (plugin.needsUpdate() ? "&c(Requires Update)" : "&a(Latest Version)");
+        String isSpawnSet = (config.contains("Arenas") ? "&aConfigured" : "&cUnconfigured");
+        String supportDiscordLink = "https://discord.gg/Hfej6UR8Bk";
+
+        sender.sendMessage(Toolkit.translate("&7[&b&lKIT-PVP&7] &aServer Version: &7" + serverVersion));
+        sender.sendMessage(Toolkit.translate("&7[&b&lKIT-PVP&7] &aPlugin Version: &7" + pluginVersion));
+        sender.sendMessage(Toolkit.translate("&7[&b&lKIT-PVP&7] &aSpawn Set: " + isSpawnSet));
+        sender.sendMessage(Toolkit.translate("&7[&b&lKIT-PVP&7] &aSupport Discord: &7" + supportDiscordLink));
         sender.sendMessage(Toolkit.translate("&7[&b&lKIT-PVP&7] &aPlugin List: &7" + names));
-    }
-
-    private void executeExportCommand(CommandSender sender) {
-        File statsFile = new File(plugin.getDataFolder().getAbsolutePath() + "/stats.yml");
-
-        if (statsFile.exists()) {
-            sender.sendMessage(Toolkit.translate("%prefix% &7Exporting data, this may take a while..."));
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    plugin.getDatabase().exportStats();
-                }
-            }.runTaskAsynchronously(plugin);
-            sender.sendMessage(Toolkit.translate("%prefix% &aStats successfully exported to database."));
-        } else {
-            sender.sendMessage(Toolkit.translate("%prefix% &cNo stats.yml was found to export from."));
-        }
     }
 
     private void executeKitsCommand(CommandSender sender) {
@@ -258,7 +256,8 @@ public class MainCommand implements CommandExecutor {
             clearKit(target);
 
             target.sendMessage(messages.fetchString("Messages.Commands.Cleared"));
-            sender.sendMessage(messages.fetchString("Messages.Commands.ClearedOther").replace("%player%", target.getName()));
+            sender.sendMessage(messages.fetchString("Messages.Commands.ClearedOther")
+                    .replace("%player%", target.getName()));
 
         } else {
             sender.sendMessage(messages.fetchString("Messages.Error.Offline"));
@@ -295,9 +294,11 @@ public class MainCommand implements CommandExecutor {
 
         if (target != null && Toolkit.inArena(target)) {
             Kit kitToGive = arena.getKits().getKitByName(kitName);
-            arena.getKits().attemptToGiveKitToPlayer(target, kitToGive);
+            sender.sendMessage(messages.fetchString("Messages.Commands.KitOther")
+                    .replace("%player%", playerName)
+                    .replace("%kit%", kitName));
 
-            sender.sendMessage(messages.fetchString("Messages.Commands.KitOther").replace("%player%", playerName).replace("%kit%", kitName));
+            arena.getKits().attemptToGiveKitToPlayer(target, kitToGive);
         } else {
             sender.sendMessage(messages.fetchString("Messages.Error.Offline"));
         }
@@ -308,10 +309,7 @@ public class MainCommand implements CommandExecutor {
         String statsIdentifier = args[2];
         String possibleAmount = args[3];
 
-        if (statsIdentifier.equalsIgnoreCase("kills") ||
-                statsIdentifier.equalsIgnoreCase("deaths") ||
-                statsIdentifier.equalsIgnoreCase("level") ||
-                statsIdentifier.equalsIgnoreCase("experience")) {
+        if (isValidStatIdentifier(statsIdentifier, true)) {
 
             if (!StringUtils.isNumeric(possibleAmount)) {
                 sender.sendMessage(resources.getMessages().fetchString("Messages.Error.InvalidNumber")
@@ -350,7 +348,8 @@ public class MainCommand implements CommandExecutor {
 
     private void executeSpawnCommand(Player p) {
         if (!config.contains("Arenas." + p.getWorld().getName())) {
-            p.sendMessage(messages.fetchString("Messages.Error.Arena").replace("%arena%", p.getWorld().getName()));
+            p.sendMessage(messages.fetchString("Messages.Error.Arena")
+                    .replace("%arena%", p.getWorld().getName()));
             return;
         }
 
@@ -360,7 +359,7 @@ public class MainCommand implements CommandExecutor {
 
         p.sendMessage(messages.fetchString("Messages.Commands.Teleporting"));
         spawnUsers.add(p.getName());
-        XSound.play(p, "ENTITY_ITEM_PICKUP, 1, -1");
+        Toolkit.playSoundToPlayer(p, "ENTITY_ITEM_PICKUP", -1);
 
         Location beforeLocation = p.getLocation();
 
@@ -375,7 +374,7 @@ public class MainCommand implements CommandExecutor {
                     if (p.getGameMode() != GameMode.SPECTATOR) {
                         p.sendMessage(messages.fetchString("Messages.Commands.Time")
                                 .replace("%time%", String.valueOf(time)));
-                        XSound.play(p, "BLOCK_NOTE_BLOCK_SNARE, 1, 1");
+                        Toolkit.playSoundToPlayer(p, "BLOCK_NOTE_BLOCK_SNARE", 1);
 
                         if (beforeLocation.getBlockX() != p.getLocation().getBlockX() ||
                                 beforeLocation.getBlockY() != p.getLocation().getBlockY() ||
@@ -398,7 +397,7 @@ public class MainCommand implements CommandExecutor {
                     }
 
                     spawnUsers.remove(p.getName());
-                    XSound.play(p, "ENTITY_ENDERMAN_TELEPORT, 1, 1");
+                    Toolkit.playSoundToPlayer(p, "ENTITY_ENDERMAN_TELEPORT", 1);
                     cancel();
                 }
             }
@@ -412,14 +411,15 @@ public class MainCommand implements CommandExecutor {
 
     private void executeAddSpawnCommand(Player p) {
         String arenaName = p.getWorld().getName();
-        int spawnNumber = Toolkit.getNextAvailable(config, "Arenas." + arenaName, 1000, false, 1);
+        int spawnNumber = Toolkit.getNextAvailable(config, "Arenas." + arenaName,
+                1000, false, 1);
 
         Toolkit.saveLocationToResource(config, "Arenas." + arenaName + "." + spawnNumber, p.getLocation());
 
         p.sendMessage(messages.fetchString("Messages.Commands.Added")
                 .replace("%number%", String.valueOf(spawnNumber))
                 .replace("%arena%", arenaName));
-        XSound.play(p, "ENTITY_ZOMBIE_ATTACK_WOODEN_DOOR, 1, 1");
+        Toolkit.playSoundToPlayer(p, "ENTITY_ZOMBIE_ATTACK_WOODEN_DOOR", 1);
     }
 
     private void executeDeleteArenaCommand(Player p) {
@@ -430,7 +430,7 @@ public class MainCommand implements CommandExecutor {
             plugin.saveConfig();
 
             p.sendMessage(messages.fetchString("Messages.Commands.Removed").replace("%arena%", arenaName));
-            XSound.play(p, "ENTITY_ZOMBIE_ATTACK_WOODEN_DOOR, 1, 1");
+            Toolkit.playSoundToPlayer(p, "ENTITY_ZOMBIE_ATTACK_WOODEN_DOOR", 1);
         } else {
             p.sendMessage(messages.fetchString("Messages.Error.Arena"));
         }
@@ -440,7 +440,7 @@ public class MainCommand implements CommandExecutor {
         String arenaName = args[1];
 
         if (resources.getConfig().getBoolean("Arena.PreventArenaSignUseWithKit")) {
-            if (arena.getKits().hasKit(p.getName())) {
+            if (arena.getKits().playerHasKit(p.getName())) {
                 p.sendMessage(messages.fetchString("Messages.Error.KitInvalid"));
                 return;
             }
@@ -494,11 +494,14 @@ public class MainCommand implements CommandExecutor {
             return true;
         }
 
-        sender.sendMessage(messages.fetchString("Messages.General.Permission").replace("%permission%", permission));
+        sender.sendMessage(messages.fetchString("Messages.General.Permission")
+                .replace("%permission%", permission));
         return false;
     }
 
     private void clearKit(Player p) {
+        CacheManager.getPotionSwitcherUsers().remove(p.getName());
+
         p.getInventory().setArmorContents(null);
         p.getInventory().clear();
 
@@ -513,7 +516,7 @@ public class MainCommand implements CommandExecutor {
             arena.giveArenaItems(p);
         }
 
-        arena.getKits().resetKit(p.getName());
+        arena.getKits().resetPlayerKit(p.getName());
     }
 
     private void sendStatsMessage(CommandSender receiver, String username) {
@@ -523,10 +526,30 @@ public class MainCommand implements CommandExecutor {
     }
 
     private boolean validateKitName(String possibleKitName) {
-        if (possibleKitName.contains("-") || possibleKitName.contains("+")) {
-            return false;
+        return !possibleKitName.contains("-") && !possibleKitName.contains("+");
+    }
+
+    private boolean isCommand(String[] args, CommandSender sender, String arg0, String permission) {
+        if (args[0].equalsIgnoreCase(arg0)) {
+            return permission == null || hasPermission(sender, permission);
         }
-        return true;
+        return false;
+    }
+
+    private void sendUnknownCommand(CommandSender sender, String alias, String[] args) {
+        StringBuilder unknownCommand = new StringBuilder();
+        for (String arg : args) {
+            unknownCommand.append(arg).append(" ");
+        }
+
+        sender.sendMessage(Toolkit.translate("%prefix% &cUnknown command: /" + alias + " " + unknownCommand));
+    }
+
+    private boolean isValidStatIdentifier(String identifierToValidate, boolean includeExperience) {
+        return (identifierToValidate.equalsIgnoreCase("kills") ||
+                identifierToValidate.equalsIgnoreCase("deaths") ||
+                identifierToValidate.equalsIgnoreCase("level")) ||
+                (includeExperience && identifierToValidate.equalsIgnoreCase("experience"));
     }
 
 }

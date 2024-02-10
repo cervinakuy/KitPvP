@@ -28,19 +28,18 @@ public class EventListener implements Listener {
 		if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
 			if (Toolkit.inArena(e.getPlayer())) {
 				Player p = e.getPlayer();
+				ItemStack currentItem = Toolkit.getHandItemForInteraction(e);
 
 				if (resources.getConfig().getBoolean("Arena.AbilitiesRequireKit") &&
-						!arena.getKits().hasKit(p.getName())) {
+						!arena.getKits().playerHasKit(p.getName())) {
 					return; // if "AbilitiesRequireKit" true, and player does not have kit, return
 				}
-
-				ItemStack currentItem = Toolkit.getMainHandItem(p);
 
 				if (currentItem.hasItemMeta() && currentItem.getItemMeta().hasDisplayName()) {
 					Ability abilityResult = arena.getAbilities().getAbilityByActivator(currentItem);
 
 					if (abilityResult != null) {
-						Bukkit.getPluginManager().callEvent(new PlayerAbilityEvent(p, abilityResult));
+						Bukkit.getPluginManager().callEvent(new PlayerAbilityEvent(p, abilityResult, e));
 						e.setCancelled(true);
 					}
 				}

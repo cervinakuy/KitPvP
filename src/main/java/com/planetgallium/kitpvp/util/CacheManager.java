@@ -11,6 +11,7 @@ public class CacheManager {
     private static final Map<String, Menu> previewMenuCache = new HashMap<>();
     private static final Map<String, Map<String, Long>> abilityCooldowns = new HashMap<>();
     private static final Map<String, PlayerData> statsCache = new HashMap<>();
+    private static final Set<String> potionSwitcherUsers = new HashSet<>();
 
     public static Map<String, String> getUUIDCache() { return usernameToUUID; }
 
@@ -20,11 +21,12 @@ public class CacheManager {
 
     public static Map<String, PlayerData> getStatsCache() { return statsCache; }
 
+    public static Set<String> getPotionSwitcherUsers() { return potionSwitcherUsers; }
+
     public static Map<String, Long> getPlayerAbilityCooldowns(String username) {
         if (!abilityCooldowns.containsKey(username)) {
             abilityCooldowns.put(username, new HashMap<>());
         }
-
         return abilityCooldowns.get(username);
     }
 

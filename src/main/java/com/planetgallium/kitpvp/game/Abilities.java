@@ -18,11 +18,11 @@ import java.util.Map;
 public class Abilities {
 
     private final Resources resources;
-    private final Map<ItemStack, Ability> activatorToAbility;
+    private final Map<AbilityActivatorMetaData, Ability> activatorDataToAbility;
 
     public Abilities(Game plugin) {
         this.resources = plugin.getResources();
-        this.activatorToAbility = new HashMap<>();
+        this.activatorDataToAbility = new HashMap<>();
 
         rebuildCache();
     }
@@ -30,17 +30,13 @@ public class Abilities {
     public void rebuildCache() {
         for (Resource abilityResource : resources.getAbilityResources()) {
             Ability ability = getAbilityFromResource(abilityResource);
-            activatorToAbility.put(ability.getActivator(), ability);
+            AbilityActivatorMetaData activatorMetaData = new AbilityActivatorMetaData(ability.getActivator());
+            activatorDataToAbility.put(activatorMetaData, ability);
         }
     }
 
     public Ability getAbilityByActivator(ItemStack potentialActivator) {
-        for (ItemStack loadedActivator : activatorToAbility.keySet()) {
-            if (Toolkit.itemStacksMatch(loadedActivator, potentialActivator)) {
-                return activatorToAbility.get(potentialActivator);
-            }
-        }
-        return null;
+        return activatorDataToAbility.get(new AbilityActivatorMetaData(potentialActivator));
     }
 
     private Ability getAbilityFromResource(Resource resource) {
@@ -96,6 +92,42 @@ public class Abilities {
         }
 
         return ability;
+    }
+
+    public class AbilityActivatorMetaData {
+
+        private final String materialName;
+        private String displayName;
+
+        public AbilityActivatorMetaData(ItemStack buildFromItem) {
+            this.materialName = buildFromItem.getType().toString();
+            if (buildFromItem.hasItemMeta()) {
+                ItemMeta itemMeta = buildFromItem.getItemMeta();
+                if (itemMeta.hasDisplayName()) {
+                    this.displayName = itemMeta.getDisplayName();
+                }
+            }
+        }
+
+        @Override
+        public boolean equals(Object otherObject) {
+            if (otherObject instanceof AbilityActivatorMetaData) {
+                AbilityActivatorMetaData otherAbilityData = (AbilityActivatorMetaData) otherObject;
+                return this.displayName.equals(otherAbilityData.getDisplayName()) &&
+                        this.materialName.equals(otherAbilityData.getMaterialName());
+            }
+            return false;
+        }
+
+        @Override
+        public int hashCode() {
+            return this.displayName.hashCode() + this.materialName.hashCode();
+        }
+
+        public String getDisplayName() { return displayName; }
+
+        public String getMaterialName() { return materialName; }
+
     }
 
 }

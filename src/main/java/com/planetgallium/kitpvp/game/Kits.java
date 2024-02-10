@@ -26,7 +26,7 @@ public class Kits {
     private final Resources resources;
     private final Resource messages;
 
-    private final Map<String, String> kits;
+    private final Map<String, String> playerKits;
 
     public Kits(Game plugin, Arena arena) {
         this.arena = arena;
@@ -34,24 +34,29 @@ public class Kits {
         this.resources = plugin.getResources();
         this.messages = resources.getMessages();
 
-        this.kits = new HashMap<>();
+        this.playerKits = new HashMap<>();
     }
 
     // Could also load and cache kits onEnable like Abilities.yml so no lag spike for hefty kit when first used by
     // player
 
     public void createKit(Player fromPlayer, String kitName) {
-
         Kit kitToCreate = createKitFromPlayer(fromPlayer, kitName);
+
         Resource kitResource = new Resource(plugin, "kits/" + kitToCreate.getName() + ".yml");
         kitToCreate.toResource(kitResource);
 
         resources.addResource(kitToCreate.getName() + ".yml", kitResource);
         plugin.getDatabase().addKitCooldownTable(kitName);
 
+        automaticallyAddKitToMenu(fromPlayer, kitToCreate);
+    }
+
+    private void automaticallyAddKitToMenu(Player fromPlayer, Kit kitToCreate) {
         if (plugin.getConfig().getBoolean("Other.AutomaticallyAddKitToMenu")) {
 
-            int nextAvailableMenuSlot = Toolkit.getNextAvailable(resources.getMenu(), "Menu.Items", resources.getMenu().getInt("Menu.General.Size") - 1, true, -1);
+            int nextAvailableMenuSlot = Toolkit.getNextAvailable(resources.getMenu(), "Menu.Items",
+                    resources.getMenu().getInt("Menu.General.Size") - 1, true, -1);
 
             if (nextAvailableMenuSlot != -1) {
                 Resource menuConfig = resources.getMenu();
@@ -67,19 +72,18 @@ public class Kits {
                         " ",
                         "&e&eLeft-click to select.",
                         "&eRight-click to preview."});
-                menuConfig.set(pathPrefix + ".Commands.Left-Click", new String[]{"player: kp kit " + kitToCreate.getName()});
-                menuConfig.set(pathPrefix + ".Commands.Right-Click", new String[]{"player: kp preview " + kitToCreate.getName()});
+                menuConfig.set(pathPrefix + ".Commands.Left-Click",new String[]{
+                        "player: kp kit " + kitToCreate.getName()});
+                menuConfig.set(pathPrefix + ".Commands.Right-Click", new String[]{
+                        "player: kp preview " + kitToCreate.getName()});
 
                 menuConfig.save();
-
                 menuConfig.load();
                 arena.getMenus().getKitMenu().rebuildCache();
             } else {
                 fromPlayer.sendMessage(messages.fetchString("Messages.Error.Menu"));
             }
-
         }
-
     }
 
     public Kit createKitFromPlayer(Player player, String name) {
@@ -94,7 +98,7 @@ public class Kits {
         kit.setLeggings(p.getInventory().getLeggings());
         kit.setBoots(p.getInventory().getBoots());
 
-        kit.setHealth(Toolkit.getMaxHealth(p));
+        kit.setMaxHealth(Toolkit.getMaxHealth(p));
 
         for (PotionEffect effect : p.getActivePotionEffects()) {
             PotionEffectType type = effect.getType();
@@ -108,15 +112,18 @@ public class Kits {
 
         for (int i = 0; i < 36; i++) {
             ItemStack item = p.getInventory().getItem(i);
-            if (item != null) {
-                if (item.getType() == XMaterial.MUSHROOM_STEW.parseMaterial()) {
-                    ItemMeta itemMeta = item.getItemMeta();
-                    itemMeta.setDisplayName(resources.getConfig().fetchString("Soups.Name"));
-                    itemMeta.setLore(Toolkit.colorizeList(resources.getConfig().getStringList("Soups.Lore")));
-                    item.setItemMeta(itemMeta);
-                }
-                kit.setInventoryItem(i, item);
+            if (item == null) {
+                continue; // skip this item
             }
+
+            if (Toolkit.hasMatchingMaterial(item, "MUSHROOM_STEW")) {
+                ItemMeta itemMeta = item.getItemMeta();
+                itemMeta.setDisplayName(resources.getConfig().fetchString("Soups.Name"));
+                itemMeta.setLore(Toolkit.colorizeList(resources.getConfig().getStringList("Soups.Lore")));
+                item.setItemMeta(itemMeta);
+            }
+
+            kit.setInventoryItem(i, item);
         }
         
         if (Toolkit.versionToNumber() >= 19) {
@@ -149,15 +156,15 @@ public class Kits {
         return kit;
     }
 
-    private Kit createKitFromResource(Resource resource) throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
-
+    private Kit createKitFromResource(Resource resource) throws IllegalAccessException, NoSuchMethodException,
+            InvocationTargetException {
         Kit kit = new Kit(trimName(resource.getName()));
 
         kit.setPermission(resource.fetchString("Kit.Permission"));
         kit.setLevel(resource.getInt("Kit.Level"));
         kit.setCooldown(new Cooldown(resource.fetchString("Kit.Cooldown")));
 
-        kit.setHealth(resource.contains("Kit.Health") ? resource.getInt("Kit.Health") : 20);
+        kit.setMaxHealth(resource.contains("Kit.Health") ? resource.getInt("Kit.Health") : 20);
 
         kit.setHelmet(AttributeParser.getItemStackFromPath(resource, "Inventory.Armor.Helmet"));
         kit.setChestplate(AttributeParser.getItemStackFromPath(resource, "Inventory.Armor.Chestplate"));
@@ -186,14 +193,10 @@ public class Kits {
         kit.setOption("Message-OverflowItemsDropped",
                 resources.getMessages().fetchString("Messages.Other.OverflowItemsDropped"));
 
-//        AttributeParser.getAbilitiesFromResource(resource).forEach(ability -> kit.addAbility(ability));
-
         return kit;
-
     }
 
     public void attemptToGiveKitToPlayer(Player player, Kit kit) {
-
         Player p = player;
 
         if (kit == null) {
@@ -202,25 +205,28 @@ public class Kits {
         }
 
         if (!p.hasPermission(kit.getPermission())) {
-            p.sendMessage(messages.fetchString("Messages.General.Permission").replace("%permission%", kit.getPermission()));
+            p.sendMessage(messages.fetchString("Messages.General.Permission")
+                    .replace("%permission%", kit.getPermission()));
             return;
         }
 
         if (!(Toolkit.getPermissionAmount(p, "kp.levelbypass.", 0) >= kit.getLevel() ||
                 arena.getStats().getStat("level", p.getName()) >= kit.getLevel())) {
-            p.sendMessage(messages.fetchString("Messages.Other.Needed").replace("%level%", String.valueOf(kit.getLevel())));
+            p.sendMessage(messages.fetchString("Messages.Other.Needed")
+                    .replace("%level%", String.valueOf(kit.getLevel())));
             return;
         }
 
         Cooldown cooldownRemaining = arena.getCooldowns().getRemainingCooldown(p, kit);
         if (!p.hasPermission("kp.cooldownbypass") && cooldownRemaining.toSeconds() > 0) {
-            p.sendMessage(messages.fetchString("Messages.Error.CooldownKit").replace("%cooldown%", cooldownRemaining.formatted(false)));
+            p.sendMessage(messages.fetchString("Messages.Error.CooldownKit")
+                    .replace("%cooldown%", cooldownRemaining.formatted(false)));
             return;
         }
 
-        if (hasKit(player.getName())) {
+        if (playerHasKit(player.getName())) {
             p.sendMessage(messages.fetchString("Messages.Error.Selected"));
-            p.playSound(p.getLocation(), XSound.ENTITY_ENDER_DRAGON_HURT.parseSound(), 1, 1);
+            Toolkit.playSoundToPlayer(p, "ENTITY_ENDER_DRAGON_HURT", 1);
             return;
         }
 
@@ -231,10 +237,10 @@ public class Kits {
 
         kit.apply(p);
         p.sendMessage(messages.fetchString("Messages.Commands.Kit").replace("%kit%", kit.getName()));
-        p.playSound(p.getLocation(), XSound.ENTITY_HORSE_ARMOR.parseSound(), 1, 1);
+        Toolkit.playSoundToPlayer(p, "ENTITY_HORSE_ARMOR", 1);
 
         Bukkit.getPluginManager().callEvent(new PlayerSelectKitEvent(player, kit));
-        setKit(p.getName(), kit.getName());
+        setPlayerKit(p.getName(), kit.getName());
 
         Cooldown kitCooldown = kit.getCooldown();
         if (kitCooldown != null && kitCooldown.toSeconds() > 0 && !p.hasPermission("kp.cooldownbypass")) {
@@ -243,51 +249,14 @@ public class Kits {
 
         Resource kitResource = resources.getKit(kit.getName());
         if (kitResource != null && kitResource.contains("Commands")) {
-            List<String> commands = kitResource.getStringList("Commands");
-            Toolkit.runCommands(p, commands, "none", "none");
+            Toolkit.runCommands(p, kitResource.getStringList("Commands"),
+                    "none", "none");
         }
-
-    }
-
-    public void deleteKit(String kitName) {
-        resources.removeResource(kitName + ".yml");
-        plugin.getDatabase().deleteKitCooldownTable(kitName);
-    }
-
-    public Kit getKitByName(String kitName) {
-        return loadKitFromCacheOrCreate(kitName);
-    }
-
-    private String trimName(String kitNameWithFileEnding) {
-        String[] splitName = kitNameWithFileEnding.split(".yml");
-        return splitName[0];
-    }
-
-    public void setKit(String playerName, String kitName) {
-
-        kits.put(playerName, kitName);
-
-    }
-
-    public boolean hasKit(String playerName) {
-
-        return kits.containsKey(playerName);
-
-    }
-
-    public Kit getKitOfPlayer(String playerName) {
-        String kitName = kits.get(playerName);
-        if (kitName == null) {
-            return null;
-        }
-
-        return loadKitFromCacheOrCreate(kitName);
     }
 
     private Kit loadKitFromCacheOrCreate(String kitName) {
-
         if (!CacheManager.getKitCache().containsKey(kitName)) {
-            if (resources.getPluginDirectoryFiles("kits", false).contains(kitName)) {
+            if (isKit(kitName)) {
                 Resource kit = resources.getKit(kitName);
                 try {
                     CacheManager.getKitCache().put(kitName, createKitFromResource(kit));
@@ -295,24 +264,50 @@ public class Kits {
                     e.printStackTrace();
                 }
             } else {
-                Toolkit.printToConsole("&7[&b&lKIT-PVP&7] &cNo kit with name " + kitName + " found in the kits folder. Try reloading the server.");
+                Toolkit.printToConsole("&7[&b&lKIT-PVP&7] &cNo kit with name " + kitName + " found in the kits folder." +
+                        " Try reloading the server.");
             }
         }
-
         return CacheManager.getKitCache().get(kitName);
-
     }
 
-    public void resetKit(String playerName) {
+    public Kit getKitByName(String kitName) {
+        return loadKitFromCacheOrCreate(kitName);
+    }
 
-        kits.remove(playerName);
-
+    public Kit getKitOfPlayer(String playerName) {
+        String kitName = playerKits.get(playerName);
+        if (kitName == null) {
+            return null;
+        }
+        return loadKitFromCacheOrCreate(kitName);
     }
 
     public boolean isKit(String kitName) {
-
         return resources.getPluginDirectoryFiles("kits", false).contains(kitName);
+    }
 
+    public void deleteKit(String kitName) {
+        resources.removeResource(kitName + ".yml");
+        plugin.getDatabase().deleteKitCooldownTable(kitName);
+        CacheManager.getKitCache().remove(kitName);
+    }
+
+    public void setPlayerKit(String playerName, String kitName) {
+        playerKits.put(playerName, kitName);
+    }
+
+    public boolean playerHasKit(String playerName) {
+        return playerKits.containsKey(playerName);
+    }
+
+    public void resetPlayerKit(String playerName) {
+        playerKits.remove(playerName);
+    }
+
+    private String trimName(String kitNameWithFileEnding) {
+        String[] splitName = kitNameWithFileEnding.split(".yml");
+        return splitName[0];
     }
 
 }

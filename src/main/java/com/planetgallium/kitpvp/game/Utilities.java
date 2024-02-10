@@ -34,7 +34,6 @@ public class Utilities {
     }
 
     public String replaceBuiltInPlaceholdersIfPresent(String s, String username) {
-
         // The reason I'm doing all these if statements rather than a more concise code solution is to reduce
         // the amount of data that is unnecessarily fetched (ex by using .replace) to improve performance
         // no longer constantly fetching stats from database for EACH line of scoreboard on update and player join

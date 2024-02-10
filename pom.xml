@@ -6,7 +6,7 @@
 
     <groupId>com.planetgallium</groupId>
     <artifactId>KitPvP</artifactId>
-    <version>2.2.1</version>
+    <version>2.2.2</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -39,6 +39,10 @@
                             <pattern>com.cryptomorin.xseries</pattern>
                             <shadedPattern>com.planetgallium.kitpvp</shadedPattern>
                         </relocation>
+                        <relocation>
+                            <pattern>com.mysql</pattern>
+                            <shadedPattern>com.planetgallium.sql</shadedPattern>
+                        </relocation>
                     </relocations>
                     <filters>
                         <filter>
@@ -54,6 +58,8 @@
                                 <exclude>com/cryptomorin/xseries/XEntity*</exclude>
                                 <exclude>com/cryptomorin/xseries/XItemStack*</exclude>
                                 <exclude>com/cryptomorin/xseries/XBlock*</exclude>
+                                <exclude>com/cryptomorin/xseries/XTag*</exclude>
+                                <exclude>com/cryptomorin/xseries/XWorldBorder*</exclude>
                             </excludes>
                         </filter>
                     </filters>
@@ -67,7 +73,6 @@
                         <configuration>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
                             <shadedArtifactAttached>false</shadedArtifactAttached>
-                            <outputFile>/Users/nico/Developer/Spigot/Latest/plugins/${project.artifactId}.jar</outputFile>
                         </configuration>
                     </execution>
                 </executions>
@@ -81,11 +86,31 @@
         </resources>
     </build>
 
+    <profiles>
+        <profile>
+            <id>dev</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-shade-plugin</artifactId>
+                        <configuration>
+                            <outputFile>/Users/nico/Developer/Spigot/Latest/plugins/${project.artifactId}.jar</outputFile>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
     <dependencies>
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.19-R0.1-SNAPSHOT</version>
+            <version>1.20.4-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -109,7 +134,7 @@
         <dependency>
             <groupId>com.github.cryptomorin</groupId>
             <artifactId>XSeries</artifactId>
-            <version>9.0.0</version>
+            <version>9.9.0</version>
             <scope>compile</scope>
         </dependency>
         <dependency>

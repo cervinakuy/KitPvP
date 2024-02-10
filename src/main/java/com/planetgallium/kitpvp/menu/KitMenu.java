@@ -1,6 +1,5 @@
 package com.planetgallium.kitpvp.menu;
 
-import com.cryptomorin.xseries.XMaterial;
 import com.planetgallium.kitpvp.util.*;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -19,23 +18,19 @@ public class KitMenu {
 	}
 
 	private void create() {
-
 		this.menu = new Menu(resources.getMenu().fetchString("Menu.General.Title"), new KitHolder(), resources.getMenu().getInt("Menu.General.Size"));
 
 		ConfigurationSection section = resources.getMenu().getConfigurationSection("Menu.Items");
 
 		for (String slot : section.getKeys(false)) {
-
 			String itemPath = "Menu.Items." + slot;
 
 			String name = resources.getMenu().fetchString(itemPath + ".Name");
-			Material material = XMaterial.matchXMaterial(resources.getMenu().fetchString(itemPath + ".Material")).get().parseMaterial();
+			Material material = Toolkit.safeMaterial(resources.getMenu().fetchString(itemPath + ".Material"));
 			List<String> lore = resources.getMenu().getStringList(itemPath + ".Lore");
 
-			menu.addItem(name, material, lore, Integer.valueOf(slot));
-
+			menu.addItem(name, material, lore, Integer.parseInt(slot));
 		}
-
 	}
 
 	public void rebuildCache() {
