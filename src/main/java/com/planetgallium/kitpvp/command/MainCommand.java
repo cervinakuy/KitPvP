@@ -225,12 +225,10 @@ public class MainCommand implements CommandExecutor {
         String pluginVersion = plugin.getDescription().getVersion() + " " +
                 (plugin.needsUpdate() ? "&c(Requires Update)" : "&a(Latest Version)");
         String isSpawnSet = (config.contains("Arenas") ? "&aConfigured" : "&cUnconfigured");
-        String supportDiscordLink = "https://discord.gg/Hfej6UR8Bk";
 
         sender.sendMessage(Toolkit.translate("&7[&b&lKIT-PVP&7] &aServer Version: &7" + serverVersion));
         sender.sendMessage(Toolkit.translate("&7[&b&lKIT-PVP&7] &aPlugin Version: &7" + pluginVersion));
         sender.sendMessage(Toolkit.translate("&7[&b&lKIT-PVP&7] &aSpawn Set: " + isSpawnSet));
-        sender.sendMessage(Toolkit.translate("&7[&b&lKIT-PVP&7] &aSupport Discord: &7" + supportDiscordLink));
         sender.sendMessage(Toolkit.translate("&7[&b&lKIT-PVP&7] &aPlugin List: &7" + names));
     }
 
