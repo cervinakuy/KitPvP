@@ -78,7 +78,10 @@ public class Placeholders extends PlaceholderExpansion {
 	
 	@Override
 	public boolean canRegister() { return true; }
-	
+
+	@Override
+	public boolean persist() { return true; }
+
 	@Override
 	public @NotNull String getAuthor() { return "Cervinakuy"; }
 	
