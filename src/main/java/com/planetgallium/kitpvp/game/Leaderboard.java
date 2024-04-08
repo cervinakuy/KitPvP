@@ -19,24 +19,39 @@ public class Leaderboard {
     }
 
     public void updateRankings(TopEntry playerEntry) {
-        if (rankings.size() < maxSize) {
-            rankings.add(playerEntry);
-            sortRankings();
-        } else if (rankings.size() == maxSize) {
-            TopEntry lowestRankingPlayer = rankings.get(rankings.size() - 1);
-            if (playerEntry.getValue() > lowestRankingPlayer.getValue()) {
-                if (!rankingsContainPlayer(playerEntry.getIdentifier())) {
-                    // remove lowest ranking player and add new better player
-                    rankings.remove(rankings.size() - 1);
-                    rankings.add(playerEntry);
-                } else {
-                    // update ranking for player already in leaderboard
-                    updatePlayerEntryInRanking(playerEntry);
-                }
-                sortRankings(); // resort in both above cases
+        if (rankingsContainPlayer(playerEntry.getIdentifier())) {
+            // Update the player's score if they are already in the leaderboard
+            updatePlayerEntryInRanking(playerEntry);
+        } else if (rankings.size() < maxSize || playerEntry.getValue() > rankings.get(rankings.size() - 1).getValue()) {
+            // Add the new player if there's space, or they have a higher score than the lowest in the leaderboard
+            if (rankings.size() == maxSize) {
+                // Remove the lowest ranking player to make space for the new entry
+                rankings.remove(rankings.size() - 1);
             }
+            rankings.add(playerEntry);
         }
+        sortRankings();
     }
+
+//    public void updateRankings(TopEntry playerEntry) {
+//        if (rankings.size() < maxSize) {
+//            rankings.add(playerEntry);
+//            sortRankings();
+//        } else if (rankings.size() == maxSize) {
+//            TopEntry lowestRankingPlayer = rankings.get(rankings.size() - 1);
+//            if (playerEntry.getValue() > lowestRankingPlayer.getValue()) {
+//                if (!rankingsContainPlayer(playerEntry.getIdentifier())) {
+//                    // remove lowest ranking player and add new better player
+//                    rankings.remove(rankings.size() - 1);
+//                    rankings.add(playerEntry);
+//                } else {
+//                    // update ranking for player already in leaderboard
+//                    updatePlayerEntryInRanking(playerEntry);
+//                }
+//                sortRankings(); // resort in both above cases
+//            }
+//        }
+//    }
 
     public TopEntry getNRanking(int n) { // n = 1 is top player
         if (n <= rankings.size() && n >= 1) {

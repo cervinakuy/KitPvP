@@ -17,9 +17,9 @@ public class Leaderboards {
         leaderboards.put("kills",
                 new Leaderboard("kills", database.getTopNStats("kills", 25), 25));
         leaderboards.put("deaths",
-                new Leaderboard("kills", database.getTopNStats("deaths", 25), 25));
+                new Leaderboard("deaths", database.getTopNStats("deaths", 25), 25));
         leaderboards.put("level",
-                new Leaderboard("kills", database.getTopNStats("level", 25), 25));
+                new Leaderboard("level", database.getTopNStats("level", 25), 25));
     }
 
     public void updateRankings(String leaderboardName, TopEntry newEntry) {
