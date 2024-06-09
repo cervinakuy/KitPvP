@@ -91,6 +91,19 @@ public class SignListener implements Listener {
 		}
 	}
 	
+	@EventHandler
+	public void onSignOpen(PlayerSignOpenEvent e) {
+		// Cancel the editing of active [KitPvP] signs
+
+		ConfigurationSection signsSection = signs.getConfigurationSection("Signs");
+		Sign sign = e.getSign();
+		Player p = e.getPlayer();
+
+		for (String signType : signsSection.getKeys(false)) {
+			if (!signType.equals("Locations")) e.setCancelled(true);
+		}
+	}
+	
 	private void renameSign(SignChangeEvent e, String path, String placeholder, String placeholderValue) {
 		for (int i = 0; i < 3; i++) {
 			String line = signs.fetchString(path + ".Line-" + (i + 1));
