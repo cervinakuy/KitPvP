@@ -8,278 +8,575 @@ Menu:
     Size: 54
   Items:
     10:
+      Kit: Fighter
       Name: '&a&lFighter Kit'
       Material: IRON_CHESTPLATE
       Lore:
-      - '&6Ability: &7Rechargeable Health Pack'
-      - ' '
-      - '&7- Iron Sword'
-      - '&7- Iron Helmet'
-      - '&7- Iron Chestplate'
-      - '&7- Iron Leggings'
-      - '&7- Iron Boots'
-      - ' '
-      - '&eLeft-click to select.'
-      - '&eRight-click to preview.'
+        - '&6Ability: &7Rechargeable Health Pack'
+        - ' '
+        - '&7- Iron Sword'
+        - '&7- Iron Helmet'
+        - '&7- Iron Chestplate'
+        - '&7- Iron Leggings'
+        - '&7- Iron Boots'
+        - ' '
+        - '&eLeft-click to select.'
+        - '&eRight-click to preview.'
       Commands:
         Left-Click:
-        - 'player: kp kit Fighter'
+          - 'player: kp kit Fighter'
         Right-Click:
-        - 'player: kp preview Fighter'
+          - 'player: kp preview Fighter'
+      Not-Purchased:
+        Name: '&c&lFighter Kit'
+        Material: IRON_CHESTPLATE
+        Lore:
+          - '&6Ability: &7Rechargeable Health Pack'
+          - ' '
+          - '&7- Iron Sword'
+          - '&7- Iron Helmet'
+          - '&7- Iron Chestplate'
+          - '&7- Iron Leggings'
+          - '&7- Iron Boots'
+          - ' '
+          - '&ePrice: &1500 Coins'
+          - '&eLeft-click to purchase.'
+          - '&eRight-click to preview.'
+        Commands:
+          Left-Click:
+            - 'player: kp purchase Fighter'
+          Right-Click:
+            - 'player: kp preview Fighter'
     11:
+      Kit: Archer
       Name: '&a&lArcher Kit'
       Material: BOW
       Lore:
-      - '&6Ability: &710 Fire Arrows'
-      - ' '
-      - '&7- Stone Sword'
-      - '&7- Bow'
-      - '&7- 64 Arrows'
-      - '&7- Chain Helmet'
-      - '&7- Chain Chestplate'
-      - '&7- Chain Leggings'
-      - '&7- Chain Boots'
-      - ' '
-      - '&eLeft-click to select.'
-      - '&eRight-click to preview.'
+        - '&6Ability: &710 Fire Arrows'
+        - ' '
+        - '&7- Stone Sword'
+        - '&7- Bow'
+        - '&7- 64 Arrows'
+        - '&7- Chain Helmet'
+        - '&7- Chain Chestplate'
+        - '&7- Chain Leggings'
+        - '&7- Chain Boots'
+        - ' '
+        - '&eLeft-click to select.'
+        - '&eRight-click to preview.'
       Commands:
         Left-Click:
-        - 'player: kp kit Archer'
+          - 'player: kp kit Archer'
         Right-Click:
-        - 'player: kp preview Archer'
+          - 'player: kp preview Archer'
+      Not-Purchased:
+        Name: '&c&lArcher Kit'
+        Material: BOW
+        Lore:
+          - '&6Ability: &710 Fire Arrows'
+          - ' '
+          - '&7- Stone Sword'
+          - '&7- Bow'
+          - '&7- 64 Arrows'
+          - '&7- Chain Helmet'
+          - '&7- Chain Chestplate'
+          - '&7- Chain Leggings'
+          - '&7- Chain Boots'
+          - ' '
+          - '&ePrice: &1500 Coins'
+          - '&eLeft-click to purchase.'
+          - '&eRight-click to preview.'
+        Commands:
+          Left-Click:
+            - 'player: kp purchase Archer'
+          Right-Click:
+            - 'player: kp preview Archer'
     12:
+      Kit: Tank
       Name: '&a&lTank Kit'
       Material: DIAMOND
       Lore:
-      - '&6Ability: &7Rechargeable Speed Boost'
-      - ' '
-      - '&7- Iron Sword'
-      - '&7- Diamond Helmet'
-      - '&7- Diamond Chestplate'
-      - '&7- Diamond Leggings'
-      - '&7- Diamond Boots'
-      - ' '
-      - '&eLeft-click to select.'
-      - '&eRight-click to preview.'
+        - '&6Ability: &7Rechargeable Speed Boost'
+        - ' '
+        - '&7- Iron Sword'
+        - '&7- Diamond Helmet'
+        - '&7- Diamond Chestplate'
+        - '&7- Diamond Leggings'
+        - '&7- Diamond Boots'
+        - ' '
+        - '&eLeft-click to select.'
+        - '&eRight-click to preview.'
       Commands:
         Left-Click:
-        - 'player: kp kit Tank'
+          - 'player: kp kit Tank'
         Right-Click:
-        - 'player: kp preview Tank'
+          - 'player: kp preview Tank'
+      Not-Purchased:
+        Name: '&c&lTank Kit'
+        Material: DIAMOND
+        Lore:
+          - '&6Ability: &7Rechargeable Speed Boost'
+          - ' '
+          - '&7- Iron Sword'
+          - '&7- Diamond Helmet'
+          - '&7- Diamond Chestplate'
+          - '&7- Diamond Leggings'
+          - '&7- Diamond Boots'
+          - ' '
+          - '&ePrice: &1500 Coins'
+          - '&eLeft-click to purchase.'
+          - '&eRight-click to preview.'
+        Commands:
+          Left-Click:
+            - 'player: kp purchase Tank'
+          Right-Click:
+            - 'player: kp preview Tank'
     13:
+      Kit: Soldier
       Name: '&a&lSoldier Kit'
       Material: ARROW
       Lore:
-      - '&6Ability: &7Gun with 5 ammo'
-      - ' '
-      - '&7- Stone Sword'
-      - '&7- Bow'
-      - '&7- 32 Arrows'
-      - '&7- Fishing Rod'
-      - '&7- Leather Helmet'
-      - '&7- Chain Chestplate'
-      - '&7- Leather Leggings'
-      - '&7- Leather Boots'
-      - ' '
-      - '&eLeft-click to select.'
-      - '&eRight-click to preview.'
+        - '&6Ability: &7Gun with 5 ammo'
+        - ' '
+        - '&7- Stone Sword'
+        - '&7- Bow'
+        - '&7- 32 Arrows'
+        - '&7- Fishing Rod'
+        - '&7- Leather Helmet'
+        - '&7- Chain Chestplate'
+        - '&7- Leather Leggings'
+        - '&7- Leather Boots'
+        - ' '
+        - '&eLeft-click to select.'
+        - '&eRight-click to preview.'
       Commands:
         Left-Click:
-        - 'player: kp kit Soldier'
+          - 'player: kp kit Soldier'
         Right-Click:
-        - 'player: kp preview Soldier'
+          - 'player: kp preview Soldier'
+      Not-Purchased:
+        Name: '&c&lSoldier Kit'
+        Material: ARROW
+        Lore:
+          - '&6Ability: &7Gun with 5 ammo'
+          - ' '
+          - '&7- Stone Sword'
+          - '&7- Bow'
+          - '&7- 32 Arrows'
+          - '&7- Fishing Rod'
+          - '&7- Leather Helmet'
+          - '&7- Chain Chestplate'
+          - '&7- Leather Leggings'
+          - '&7- Leather Boots'
+          - ' '
+          - '&ePrice: &1500 Coins'
+          - '&eLeft-click to purchase.'
+          - '&eRight-click to preview.'
+        Commands:
+          Left-Click:
+            - 'player: kp purchase Soldier'
+          Right-Click:
+            - 'player: kp preview Soldier'
     14:
+      Kit: Bomber
       Name: '&a&lBomber Kit'
       Material: TNT
       Lore:
-      - '&6Ability: &73 TNT Trails'
-      - ' '
-      - '&7- Iron Sword'
-      - '&7- 16 TNT'
-      - '&7- Leather Helmet'
-      - '&7- Leather Chestplate'
-      - '&7- Leather Leggings'
-      - '&7- Leather Boots'
-      - ' '
-      - '&eLeft-click to select.'
-      - '&eRight-click to preview.'
+        - '&6Ability: &73 TNT Trails'
+        - ' '
+        - '&7- Iron Sword'
+        - '&7- 16 TNT'
+        - '&7- Leather Helmet'
+        - '&7- Leather Chestplate'
+        - '&7- Leather Leggings'
+        - '&7- Leather Boots'
+        - ' '
+        - '&eLeft-click to select.'
+        - '&eRight-click to preview.'
       Commands:
         Left-Click:
-        - 'player: kp kit Bomber'
+          - 'player: kp kit Bomber'
         Right-Click:
-        - 'player: kp preview Bomber'
+          - 'player: kp preview Bomber'
+      Not-Purchased:
+        Name: '&c&lBomber Kit'
+        Material: TNT
+        Lore:
+          - '&6Ability: &73 TNT Trails'
+          - ' '
+          - '&7- Iron Sword'
+          - '&7- 16 TNT'
+          - '&7- Leather Helmet'
+          - '&7- Leather Chestplate'
+          - '&7- Leather Leggings'
+          - '&7- Leather Boots'
+          - ' '
+          - '&ePrice: &1500 Coins'
+          - '&eLeft-click to purchase.'
+          - '&eRight-click to preview.'
+        Commands:
+          Left-Click:
+            - 'player: kp purchase Bomber'
+          Right-Click:
+            - 'player: kp preview Bomber'
     15:
+      Kit: Kangaroo
       Name: '&a&lKangaroo Kit'
       Material: SADDLE
       Lore:
-      - '&6Ability: &73 Launchers'
-      - ' '
-      - '&7- Iron Sword'
-      - '&7- Leather Helmet'
-      - '&7- Leather Chestplate'
-      - '&7- Leather Leggings'
-      - '&7- Leather Boots'
-      - ' '
-      - '&eLeft-click to select.'
-      - '&eRight-click to preview.'
+        - '&6Ability: &73 Launchers'
+        - ' '
+        - '&7- Iron Sword'
+        - '&7- Leather Helmet'
+        - '&7- Leather Chestplate'
+        - '&7- Leather Leggings'
+        - '&7- Leather Boots'
+        - ' '
+        - '&eLeft-click to select.'
+        - '&eRight-click to preview.'
       Commands:
         Left-Click:
-        - 'player: kp kit Kangaroo'
+          - 'player: kp kit Kangaroo'
         Right-Click:
-        - 'player: kp preview Kangaroo'
+          - 'player: kp preview Kangaroo'
+      Not-Purchased:
+        Name: '&c&lKangaroo Kit'
+        Material: SADDLE
+        Lore:
+          - '&6Ability: &73 Launchers'
+          - ' '
+          - '&7- Iron Sword'
+          - '&7- Leather Helmet'
+          - '&7- Leather Chestplate'
+          - '&7- Leather Leggings'
+          - '&7- Leather Boots'
+          - ' '
+          - '&ePrice: &1500 Coins'
+          - '&eLeft-click to purchase.'
+          - '&eRight-click to preview.'
+        Commands:
+          Left-Click:
+            - 'player: kp purchase Kangaroo'
+          Right-Click:
+            - 'player: kp preview Kangaroo'
     16:
-      Name: '&a&lWarper Kit'    
+      Kit: Warper
+      Name: '&a&lWarper Kit'
       Material: ENDER_PEARL
       Lore:
-      - '&6Ability: &73 Teleporters'
-      - ' '
-      - '&7- Iron Sword'
-      - '&7- 4 Ender Pearls'
-      - '&7- Leather Helmet'
-      - '&7- Leather Chestplate'
-      - '&7- Leather Leggings'
-      - '&7- Leather Boots'
-      - ' '
-      - '&eLeft-click to select.'
-      - '&eRight-click to preview.'
+        - '&6Ability: &73 Teleporters'
+        - ' '
+        - '&7- Iron Sword'
+        - '&7- 4 Ender Pearls'
+        - '&7- Leather Helmet'
+        - '&7- Leather Chestplate'
+        - '&7- Leather Leggings'
+        - '&7- Leather Boots'
+        - ' '
+        - '&eLeft-click to select.'
+        - '&eRight-click to preview.'
       Commands:
         Left-Click:
-        - 'player: kp kit Warper'
+          - 'player: kp kit Warper'
         Right-Click:
-        - 'player: kp preview Warper'
+          - 'player: kp preview Warper'
+      Not-Purchased:
+        Name: '&c&lWarper Kit'
+        Material: ENDER_PEARL
+        Lore:
+          - '&6Ability: &73 Teleporters'
+          - ' '
+          - '&7- Iron Sword'
+          - '&7- 4 Ender Pearls'
+          - '&7- Leather Helmet'
+          - '&7- Leather Chestplate'
+          - '&7- Leather Leggings'
+          - '&7- Leather Boots'
+          - ' '
+          - '&ePrice: &1500 Coins'
+          - '&eLeft-click to purchase.'
+          - '&eRight-click to preview.'
+        Commands:
+          Left-Click:
+            - 'player: kp purchase Warper'
+          Right-Click:
+            - 'player: kp preview Warper'
     19:
+      Kit: Witch
       Name: '&a&lWitch Kit'
       Material: BREWING_STAND
       Slot: 19
       Lore:
-      - '&6Ability: &7Infinite Potions'
-      - ' '
-      - '&7- Iron Sword'
-      - '&7- Leather Helmet'
-      - '&7- Leather Chestplate'
-      - '&7- Leather Leggings'
-      - '&7- Leather Boots'
-      - ' '
-      - '&eLeft-click to select.'
-      - '&eRight-click to preview.'
+        - '&6Ability: &7Infinite Potions'
+        - ' '
+        - '&7- Iron Sword'
+        - '&7- Leather Helmet'
+        - '&7- Leather Chestplate'
+        - '&7- Leather Leggings'
+        - '&7- Leather Boots'
+        - ' '
+        - '&eLeft-click to select.'
+        - '&eRight-click to preview.'
       Commands:
         Left-Click:
-        - 'player: kp kit Witch'
+          - 'player: kp kit Witch'
         Right-Click:
-        - 'player: kp preview Witch'
+          - 'player: kp preview Witch'
+      Not-Purchased:
+        Name: '&c&lWitch Kit'
+        Material: BREWING_STAND
+        Slot: 19
+        Lore:
+          - '&6Ability: &7Infinite Potions'
+          - ' '
+          - '&7- Iron Sword'
+          - '&7- Leather Helmet'
+          - '&7- Leather Chestplate'
+          - '&7- Leather Leggings'
+          - '&7- Leather Boots'
+          - ' '
+          - '&ePrice: &1500 Coins'
+          - '&eLeft-click to purchase.'
+          - '&eRight-click to preview.'
+        Commands:
+          Left-Click:
+            - 'player: kp purchase Witch'
+          Right-Click:
+            - 'player: kp preview Witch'
     20:
+      Kit: Ninja
       Name: '&a&lNinja Kit'
       Material: NETHER_STAR
       Lore:
-      - '&6Ability: &73 Vanish Stars'
-      - ' '
-      - '&7- Wooden Sword'
-      - '&7- Leather Helmet'
-      - '&7- Chain Chestplate'
-      - '&7- Chain Leggings'
-      - '&7- Chain Boots'
-      - ' '
-      - '&eLeft-click to select.'
-      - '&eRight-click to preview.'
+        - '&6Ability: &73 Vanish Stars'
+        - ' '
+        - '&7- Wooden Sword'
+        - '&7- Leather Helmet'
+        - '&7- Chain Chestplate'
+        - '&7- Chain Leggings'
+        - '&7- Chain Boots'
+        - ' '
+        - '&eLeft-click to select.'
+        - '&eRight-click to preview.'
       Commands:
         Left-Click:
-        - 'player: kp kit Ninja'
+          - 'player: kp kit Ninja'
         Right-Click:
-        - 'player: kp preview Ninja'
+          - 'player: kp preview Ninja'
+      Not-Purchased:
+        Name: '&c&lNinja Kit'
+        Material: NETHER_STAR
+        Lore:
+          - '&6Ability: &73 Vanish Stars'
+          - ' '
+          - '&7- Wooden Sword'
+          - '&7- Leather Helmet'
+          - '&7- Chain Chestplate'
+          - '&7- Chain Leggings'
+          - '&7- Chain Boots'
+          - ' '
+          - '&ePrice: &1500 Coins'
+          - '&eLeft-click to purchase.'
+          - '&eRight-click to preview.'
+        Commands:
+          Left-Click:
+            - 'player: kp purchase Ninja'
+          Right-Click:
+            - 'player: kp preview Ninja'
     21:
+      Kit: Thunderbolt
       Name: '&a&lThunderbolt Kit'
       Material: BLAZE_POWDER
       Lore:
-      - '&6Ability: &73 Lightning Strikes'
-      - ' '
-      - '&7- Golden Sword'
-      - '&7- Leather Helmet'
-      - '&7- Golden Chestplate'
-      - '&7- Golden Leggings'
-      - '&7- Golden Boots'
-      - ' '
-      - '&eLeft-click to select.'
-      - '&eRight-click to preview.'
+        - '&6Ability: &73 Lightning Strikes'
+        - ' '
+        - '&7- Golden Sword'
+        - '&7- Leather Helmet'
+        - '&7- Golden Chestplate'
+        - '&7- Golden Leggings'
+        - '&7- Golden Boots'
+        - ' '
+        - '&eLeft-click to select.'
+        - '&eRight-click to preview.'
       Commands:
         Left-Click:
-        - 'player: kp kit Thunderbolt'
+          - 'player: kp kit Thunderbolt'
         Right-Click:
-        - 'player: kp preview Thunderbolt'
+          - 'player: kp preview Thunderbolt'
+      Not-Purchased:
+        Name: '&c&lThunderbolt Kit'
+        Material: BLAZE_POWDER
+        Lore:
+          - '&6Ability: &73 Lightning Strikes'
+          - ' '
+          - '&7- Golden Sword'
+          - '&7- Leather Helmet'
+          - '&7- Golden Chestplate'
+          - '&7- Golden Leggings'
+          - '&7- Golden Boots'
+          - ' '
+          - '&ePrice: &1500 Coins'
+          - '&eLeft-click to purchase.'
+          - '&eRight-click to preview.'
+        Commands:
+          Left-Click:
+            - 'player: kp purchase Thunderbolt'
+          Right-Click:
+            - 'player: kp preview Thunderbolt'
     22:
+      Kit: Vampire
       Name: '&a&lVampire Kit'
       Material: FERMENTED_SPIDER_EYE
       Lore:
-      - '&6Ability: &73 Blood Suckers'
-      - ' '
-      - '&7- Iron Sword'
-      - '&7- Leather Helmet'
-      - '&7- Leather Chestplate'
-      - '&7- Leather Leggings'
-      - '&7- Leather Boots'
-      - ' '
-      - '&eLeft-click to select.'
-      - '&eRight-click to preview.'
+        - '&6Ability: &73 Blood Suckers'
+        - ' '
+        - '&7- Iron Sword'
+        - '&7- Leather Helmet'
+        - '&7- Leather Chestplate'
+        - '&7- Leather Leggings'
+        - '&7- Leather Boots'
+        - ' '
+        - '&eLeft-click to select.'
+        - '&eRight-click to preview.'
       Commands:
         Left-Click:
-        - 'player: kp kit Vampire'
+          - 'player: kp kit Vampire'
         Right-Click:
-        - 'player: kp preview Vampire'
+          - 'player: kp preview Vampire'
+      Not-Purchased:
+        Name: '&c&lVampire Kit'
+        Material: FERMENTED_SPIDER_EYE
+        Lore:
+          - '&6Ability: &73 Blood Suckers'
+          - ' '
+          - '&7- Iron Sword'
+          - '&7- Leather Helmet'
+          - '&7- Leather Chestplate'
+          - '&7- Leather Leggings'
+          - '&7- Leather Boots'
+          - ' '
+          - '&ePrice: &1500 Coins'
+          - '&eLeft-click to purchase.'
+          - '&eRight-click to preview.'
+        Commands:
+          Left-Click:
+            - 'player: kp purchase Vampire'
+          Right-Click:
+            - 'player: kp preview Vampire'
     23:
+      Kit: Rhino
       Name: '&a&lRhino Kit'
       Material: DIAMOND_HELMET
       Lore:
-      - '&6Ability: &7Rechargeable Rhino Charge'
-      - ' '
-      - '&7- Iron Sword'
-      - '&7- Diamond Helmet'
-      - '&7- Leather Chestplate'
-      - '&7- Leather Leggings'
-      - '&7- Leather Boots'
-      - ' '
-      - '&eLeft-click to select.'
-      - '&eRight-click to preview.'
+        - '&6Ability: &7Rechargeable Rhino Charge'
+        - ' '
+        - '&7- Iron Sword'
+        - '&7- Diamond Helmet'
+        - '&7- Leather Chestplate'
+        - '&7- Leather Leggings'
+        - '&7- Leather Boots'
+        - ' '
+        - '&eLeft-click to select.'
+        - '&eRight-click to preview.'
       Commands:
         Left-Click:
-        - 'player: kp kit Rhino'
+          - 'player: kp kit Rhino'
         Right-Click:
-        - 'player: kp preview Rhino'
+          - 'player: kp preview Rhino'
+      Not-Purchased:
+        Name: '&c&lRhino Kit'
+        Material: DIAMOND_HELMET
+        Lore:
+          - '&6Ability: &7Rechargeable Rhino Charge'
+          - ' '
+          - '&7- Iron Sword'
+          - '&7- Diamond Helmet'
+          - '&7- Leather Chestplate'
+          - '&7- Leather Leggings'
+          - '&7- Leather Boots'
+          - ' '
+          - '&ePrice: &1500 Coins'
+          - '&eLeft-click to purchase.'
+          - '&eRight-click to preview.'
+        Commands:
+          Left-Click:
+            - 'player: kp purchase Rhino'
+          Right-Click:
+            - 'player: kp preview Rhino'
     24:
+      Kit: Trickster
       Name: '&a&lTrickster Kit'
       Material: EGG
       Lore:
-      - '&6Ability: &74 Switcher Pellets'
-      - ' '
-      - '&7- Stone Sword'
-      - '&7- Leather Helmet'
-      - '&7- Diamond Chestplate'
-      - '&7- Leather Leggings'
-      - '&7- Leather Boots'
-      - ' '
-      - '&eLeft-click to select.'
-      - '&eRight-click to preview.'
+        - '&6Ability: &74 Switcher Pellets'
+        - ' '
+        - '&7- Stone Sword'
+        - '&7- Leather Helmet'
+        - '&7- Diamond Chestplate'
+        - '&7- Leather Leggings'
+        - '&7- Leather Boots'
+        - ' '
+        - '&eLeft-click to select.'
+        - '&eRight-click to preview.'
       Commands:
         Left-Click:
-        - 'player: kp kit Trickster'
+          - 'player: kp kit Trickster'
         Right-Click:
-        - 'player: kp preview Trickster'
+          - 'player: kp preview Trickster'
+      Not-Purchased:
+        Name: '&c&lTrickster Kit'
+        Material: EGG
+        Lore:
+          - '&6Ability: &74 Switcher Pellets'
+          - ' '
+          - '&7- Stone Sword'
+          - '&7- Leather Helmet'
+          - '&7- Diamond Chestplate'
+          - '&7- Leather Leggings'
+          - '&7- Leather Boots'
+          - ' '
+          - '&ePrice: &1500 Coins'
+          - '&eLeft-click to purchase.'
+          - '&eRight-click to preview.'
+        Commands:
+          Left-Click:
+            - 'player: kp purchase Trickster'
+          Right-Click:
+            - 'player: kp preview Trickster'
     25:
+      Kit: Example
       Name: '&a&lExample Kit'
       Material: WOOD_SWORD
       Lore:
-      - '&7This is the example of a custom'
-      - '&7kit you can create using KitPvP.'
-      - '&7You can make a custom kit using your'
-      - '&7own inventory, potion effects, and enchantments'
-      - '&7using /kp create kitName. Make sure to add it to'
-      - '&7the menu.yml!'
+        - '&7This is the example of a custom'
+        - '&7kit you can create using KitPvP.'
+        - '&7You can make a custom kit using your'
+        - '&7own inventory, potion effects, and enchantments'
+        - '&7using /kp create kitName. Make sure to add it to'
+        - '&7the menu.yml!'
       Commands:
         Left-Click:
-        - 'player: kp kit Example'
+          - 'player: kp kit Example'
         Right-Click:
-        - 'player: kp preview Example'
+          - 'player: kp preview Example'
+      Not-Purchased:
+        Name: '&c&lExample Kit'
+        Material: WOOD_SWORD
+        Lore:
+          - '&7This is the example of a custom'
+          - '&7kit you can create using KitPvP.'
+          - '&7You can make a custom kit using your'
+          - '&7own inventory, potion effects, and enchantments'
+          - '&7using /kp create kitName. Make sure to add it to'
+          - '&7the menu.yml!'
+        Commands:
+          Left-Click:
+            - 'player: kp purchase Example'
+          Right-Click:
+            - 'player: kp preview Example'
     40:
       Name: '&c&lClose'
       Material: BARRIER
       Lore:
-      - '&7Click to close the Kit Menu.'
+        - '&7Click to close the Kit Menu.'
       Commands: []
