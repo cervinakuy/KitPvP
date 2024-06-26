@@ -49,7 +49,7 @@ public class Arena {
 		this.abilities = new Abilities(plugin);
 		this.killstreaks = new KillStreaks(resources);
 		this.cooldowns = new Cooldowns(plugin, this);
-		this.menus = new Menus(resources);
+		this.menus = new Menus(resources, plugin);
 	}
 	
 	public void addPlayer(Player p, boolean toSpawn, boolean giveItems) {
