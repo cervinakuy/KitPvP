@@ -2,6 +2,8 @@ Kit:
   Permission: kp.kit.archer
   Cooldown: 0
   Level: 0
+  #Price does not affect default kits
+  Price: 0
 Inventory:
   Armor:
     Helmet:
