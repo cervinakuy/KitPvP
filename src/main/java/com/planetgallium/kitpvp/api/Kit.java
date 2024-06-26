@@ -21,6 +21,7 @@ public class Kit {
     private Cooldown cooldown;
     private int level;
     private int maxHealth;
+    private int price;
 
     private final Map<String, Object> options;
     private final Map<Integer, ItemStack> inventory;
@@ -54,6 +55,10 @@ public class Kit {
 
     public void setMaxHealth(int health) {
         this.maxHealth = health;
+    }
+
+    public void setPrice(int price){
+        this.price = price;
     }
 
     public void setOption(String key, Object value) {
@@ -194,6 +199,7 @@ public class Kit {
 
     public void toResource(Resource resource) {
         resource.set("Kit.Permission", permission != null ? permission : "kp.kit." + name);
+        resource.set("Kit.Price", price);
         resource.set("Kit.Cooldown", cooldown != null ? cooldown.formatted(true) : 0);
         resource.set("Kit.Level", level);
         resource.set("Kit.Health", maxHealth);
@@ -241,5 +247,7 @@ public class Kit {
     public ItemStack getBoots() { return kitBoots; }
 
     public ItemStack getFill() { return fill; }
+
+    public int getPrice() { return price; }
 
 }
