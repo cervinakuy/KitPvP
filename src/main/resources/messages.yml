@@ -18,6 +18,7 @@ Messages:
     Cleared: '%prefix% &7Your kit has been cleared.'
     ClearedOther: '%prefix% &7You cleared &b%player%''s &7kit.'
     SetStats: '%prefix% &7Updated &b%player%''s &7stats to &b%amount% %type%&7.'
+    Purchased: '%prefix% &7You have purchased the &b%kit% &7kit.'
   Other:
     Needed: '%prefix% &cYou must be Level %level% to use that kit.'
     Level: '%prefix% &7Congratulations! You are now &bLevel %level%&7.'
@@ -51,6 +52,8 @@ Messages:
     InvalidNumber: '%prefix% &cInvalid number "%number%".'
     OverflowItemsLost: '%prefix% &c%number% items could not fit in your inventory and were lost.'
     InvalidKitName: '%prefix% &cFailed to create kit due to invalid kit name (contains +, -)'
+    AlreadyPurchased: '%prefix% &cYou have already purchased %kit% kit.'
+    InsufficientFunds: '%prefix% &cYou do not have enough money to purchase %kit% kit.'
   Stats:
     Message:
     - '&7&m                                &r'

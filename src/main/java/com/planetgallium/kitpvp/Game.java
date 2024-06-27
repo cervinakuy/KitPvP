@@ -1,6 +1,8 @@
 package com.planetgallium.kitpvp;
 
 import com.planetgallium.kitpvp.game.Infobase;
+import net.milkbowl.vault.economy.Economy;
+import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -8,6 +10,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -32,6 +35,12 @@ public class Game extends JavaPlugin implements Listener {
 	private boolean needsUpdate = false;
 	private boolean hasPlaceholderAPI = false;
 	private boolean hasWorldGuard = false;
+
+	private static Economy econ;
+
+	private static Permission permission;
+
+	private boolean vault;
 	
 	@Override
 	public void onEnable() {
@@ -42,6 +51,15 @@ public class Game extends JavaPlugin implements Listener {
 		prefix = resources.getMessages().fetchString("Messages.General.Prefix");
 		database = new Infobase(this);
 		arena = new Arena(this, resources);
+
+		try{
+			this.setupEconomy();
+			this.setupPermissions();
+			vault = true;
+		}catch (NoClassDefFoundError e){
+			vault = false;
+			getLogger().warning("Vault plugin not found");
+		}
 
 		PluginManager pm = Bukkit.getPluginManager();
 		pm.registerEvents(this, this);
@@ -89,6 +107,16 @@ public class Game extends JavaPlugin implements Listener {
 		populateUUIDCacheForOnlinePlayers();
 
 		Toolkit.printToConsole("&7[&b&lKIT-PVP&7] &aDone!");
+	}
+
+	private void setupEconomy() throws NoClassDefFoundError {
+		RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
+		econ = rsp.getProvider();
+	}
+
+	private void setupPermissions() throws NoClassDefFoundError{
+		RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
+		permission = rsp.getProvider();
 	}
 
 	private void populateUUIDCacheForOnlinePlayers() {
@@ -167,5 +195,11 @@ public class Game extends JavaPlugin implements Listener {
 	public static String getPrefix() { return prefix; }
 	
 	public Resources getResources() { return resources; }
+
+	public Economy getEconomy() { return econ; }
+
+	public Permission getPermissions() { return permission; }
+
+	public boolean isVaultEnabled() { return vault; }
 	
 }

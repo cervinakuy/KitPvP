@@ -57,14 +57,25 @@ public class MenuListener implements Listener {
                         String clickType = e.getClick() == ClickType.LEFT ? "Left-Click" : "Right-Click";
 
                         if (menuConfig.contains(itemPath + ".Commands")) {
-                            new BukkitRunnable() {
-                                @Override
-                                public void run() {
-                                    Toolkit.runCommands(p,
-                                            menuConfig.getStringList(itemPath + ".Commands." + clickType),
-                                            "none", "none");
-                                }
-                            }.runTaskLater(plugin, 1L);
+                            if(arena.getKits().canUseKit((Player) e.getWhoClicked(), arena.getKits().getKitByName(menuConfig.fetchString(itemPath + ".Kit")))){
+                                new BukkitRunnable() {
+                                    @Override
+                                    public void run() {
+                                        Toolkit.runCommands(p,
+                                                menuConfig.getStringList(itemPath + ".Commands." + clickType),
+                                                "none", "none");
+                                    }
+                                }.runTaskLater(plugin, 1L);
+                            }else if (plugin.isVaultEnabled()){
+                                new BukkitRunnable() {
+                                    @Override
+                                    public void run() {
+                                        Toolkit.runCommands(p,
+                                                menuConfig.getStringList(itemPath + ".Not-Purchased.Commands." + clickType),
+                                                "none", "none");
+                                    }
+                                }.runTaskLater(plugin, 1L);
+                            }
                         }
                     }
                 }

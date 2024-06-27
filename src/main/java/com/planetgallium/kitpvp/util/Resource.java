@@ -110,6 +110,10 @@ public class Resource extends YamlConfiguration {
 		return string;
 	}
 
+	public boolean exists(String path) {
+		return super.contains(path);
+	}
+
     @Override
 	public List<String> getStringList(String path) {
 		return Toolkit.colorizeList(super.getStringList(path));

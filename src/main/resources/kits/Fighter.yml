@@ -2,6 +2,7 @@ Kit:
   Permission: kp.kit.fighter
   Cooldown: 0
   Level: 0
+  Price: 0
 Inventory:
   Armor:
     Helmet:
