@@ -73,14 +73,31 @@ public class AttributeParser {
 
         if (resource.contains(path + ".Material")) {
             String materialValue = resource.fetchString(path + ".Material");
-            Optional<XMaterial> possibleMaterial = XMaterial.matchXMaterial(materialValue);
 
-            if (possibleMaterial.isPresent()) {
-                item.setType(possibleMaterial.get().parseMaterial());
-            } else {
-                Toolkit.printToConsole(String.format("&7[&b&lKIT-PVP&7] &cUnknown material [%s], defaulting to [%s].",
-                                                     materialValue, FALLBACK_ITEM_MATERIAL));
+            // First try to match on native server version Material; should allow
+            // for dynamically supporting new items in newer server versions
+
+            Material possibleNativeMaterial;
+            try {
+                possibleNativeMaterial = Material.valueOf(materialValue);
+            } catch (IllegalArgumentException exception) {
+                possibleNativeMaterial = null;
             }
+
+            if (possibleNativeMaterial != null) {
+                item.setType(possibleNativeMaterial);
+            } else {
+                // If no match, use XMaterial before defaulting to bedrock
+                Optional<XMaterial> possibleMaterial = XMaterial.matchXMaterial(materialValue);
+
+                if (possibleMaterial.isPresent()) {
+                    item.setType(possibleMaterial.get().parseMaterial());
+                } else {
+                    Toolkit.printToConsole(String.format("&7[&b&lKIT-PVP&7] &cUnknown material [%s], defaulting to [%s].",
+                            materialValue, FALLBACK_ITEM_MATERIAL));
+                }
+            }
+
         }
 
         if (resource.contains(path + ".Amount")) {
