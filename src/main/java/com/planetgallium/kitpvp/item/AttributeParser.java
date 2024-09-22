@@ -72,15 +72,10 @@ public class AttributeParser {
         }
 
         if (resource.contains(path + ".Material")) {
-            String materialValue = resource.fetchString(path + ".Material");
-            Optional<XMaterial> possibleMaterial = XMaterial.matchXMaterial(materialValue);
+            String materialName = resource.fetchString(path + ".Material");
+            Material material = Toolkit.safeMaterial(materialName);
 
-            if (possibleMaterial.isPresent()) {
-                item.setType(possibleMaterial.get().parseMaterial());
-            } else {
-                Toolkit.printToConsole(String.format("&7[&b&lKIT-PVP&7] &cUnknown material [%s], defaulting to [%s].",
-                                                     materialValue, FALLBACK_ITEM_MATERIAL));
-            }
+            item.setType(material);
         }
 
         if (resource.contains(path + ".Amount")) {

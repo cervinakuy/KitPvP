@@ -26,6 +26,7 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -33,7 +34,6 @@ import org.bukkit.potion.PotionType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
-import java.util.Objects;
 import java.util.Random;
 
 public class ItemListener implements Listener {
@@ -502,16 +502,31 @@ public class ItemListener implements Listener {
 	}
 
 	private ItemStack createWitchPotion() {
-		Potion potion = new Potion(pickPotion(), 1);
-		potion.setSplash(true);
+		PotionType randomPotionType = randomPotionType();
 
-		ItemStack potionStack = potion.toItemStack(1);
-		Toolkit.appendToLore(potionStack, "X");
+		if (Toolkit.versionToNumber() >= 121) { // 1.21+
+			ItemStack potionStack = new ItemStack(Material.SPLASH_POTION);
+			Toolkit.appendToLore(potionStack, "X");
+			PotionMeta potionMeta = (PotionMeta) potionStack.getItemMeta();
 
-		return potionStack;
+			if (potionMeta != null) {
+				potionMeta.setBasePotionType(randomPotionType);
+				potionStack.setItemMeta(potionMeta);
+			}
+
+			return potionStack;
+		} else { // pre 1.21
+			Potion potion = new Potion(randomPotionType, 1);
+			potion.setSplash(true);
+
+			ItemStack potionStack = potion.toItemStack(1);
+			Toolkit.appendToLore(potionStack, "X");
+
+			return potionStack;
+		}
 	}
 	
-	private PotionType pickPotion() {
+	private PotionType randomPotionType() {
 		PotionType potion = null;
 		
 		Random ran = new Random();

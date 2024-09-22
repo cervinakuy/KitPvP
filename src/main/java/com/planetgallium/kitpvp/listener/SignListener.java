@@ -81,9 +81,11 @@ public class SignListener implements Listener {
 
 					if (mismatchedLines.size() == 0) { // exact match
 						executeSign(p, signType, null);
+						e.setCancelled(true); // prevents sign editing on 1.20+
 						break;
 					} else if (mismatchedLines.size() == 1) { // one line (line with kit name or arena name) doesn't match
 						executeSign(p, signType, getWordDelta(mismatchedLines));
+						e.setCancelled(true); // prevents sign editing on 1.20+
 						break;
 					}
 				}

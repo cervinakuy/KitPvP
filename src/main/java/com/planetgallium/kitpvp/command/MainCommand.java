@@ -18,6 +18,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class MainCommand implements CommandExecutor {
@@ -214,17 +215,23 @@ public class MainCommand implements CommandExecutor {
     }
 
     private void executeDebugCommand(CommandSender sender) {
-        String names = "";
+        List<String> specialPlugins = Arrays.asList("PerWorldPlugins", "AuthMe");
+
+        StringBuilder names = new StringBuilder();
 
         for (Plugin plugin : Bukkit.getPluginManager().getPlugins()) {
-            names += plugin.getName() + " ";
+            String pluginName = plugin.getName();
+            if (specialPlugins.contains(pluginName) || pluginName.toLowerCase().contains("auth")) {
+                names.append("&c");
+            }
+            names.append(plugin.getName()).append(" ");
         }
 
         String serverVersion = Bukkit.getBukkitVersion() + " " +
                 (Bukkit.getVersion().contains("Spigot") ? "(Spigot)" : "(Other)");
         String pluginVersion = plugin.getDescription().getVersion() + " " +
-                (plugin.needsUpdate() ? "&c(Requires Update)" : "&a(Latest Version)");
-        String isSpawnSet = (config.contains("Arenas") ? "&aConfigured" : "&cUnconfigured");
+                (plugin.needsUpdate() ? "&c(Requires Update)" : "&e(Latest Version)");
+        String isSpawnSet = (config.contains("Arenas") ? "&eConfigured" : "&cUnconfigured");
 
         sender.sendMessage(Toolkit.translate("&7[&b&lKIT-PVP&7] &aServer Version: &7" + serverVersion));
         sender.sendMessage(Toolkit.translate("&7[&b&lKIT-PVP&7] &aPlugin Version: &7" + pluginVersion));
