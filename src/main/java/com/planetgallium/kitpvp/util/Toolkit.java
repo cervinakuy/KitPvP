@@ -337,6 +337,7 @@ public class Toolkit {
 	}
 
 	public static Material safeMaterial(String materialName) {
+		// 1. Use XMaterial first
 		Optional<XMaterial> materialOptional = XMaterial.matchXMaterial(materialName);
 		if (materialOptional.isPresent()) {
 			Material material = materialOptional.get().parseMaterial();
@@ -344,7 +345,16 @@ public class Toolkit {
 				return material;
 			}
 		}
-		printToConsole("&7[&b&lKIT-PVP&7] &cInvalid material: " + materialName);
+
+		// 2. XMaterial fails, try native check before returning fallbackMaterial (forward-compatible)
+		Material potentialNativeMaterial = Material.getMaterial(materialName);
+		if (potentialNativeMaterial != null) {
+			return potentialNativeMaterial;
+		}
+
+		// 3. Native check fails; return fallbackMaterial
+		printToConsole(String.format("&7[&b&lKIT-PVP&7] &cUnknown material [%s], defaulting to [%s].",
+				materialName, FALLBACK_MATERIAL));
 		return FALLBACK_MATERIAL;
 	}
 
