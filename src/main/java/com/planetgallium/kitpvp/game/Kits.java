@@ -40,8 +40,8 @@ public class Kits {
     // Could also load and cache kits onEnable like Abilities.yml so no lag spike for hefty kit when first used by
     // player
 
-    public void createKit(Player fromPlayer, String kitName) {
-        Kit kitToCreate = createKitFromPlayer(fromPlayer, kitName);
+    public void createKit(Player fromPlayer, String kitName, int price) {
+        Kit kitToCreate = createKitFromPlayer(fromPlayer, kitName, price);
 
         Resource kitResource = new Resource(plugin, "kits/" + kitToCreate.getName() + ".yml");
         kitToCreate.toResource(kitResource);
@@ -79,14 +79,13 @@ public class Kits {
 
                 menuConfig.save();
                 menuConfig.load();
-                arena.getMenus().getKitMenu().rebuildCache();
             } else {
                 fromPlayer.sendMessage(messages.fetchString("Messages.Error.Menu"));
             }
         }
     }
 
-    public Kit createKitFromPlayer(Player player, String name) {
+    public Kit createKitFromPlayer(Player player, String name, int price) {
         Player p = player;
         
         //          KIT             //
@@ -97,6 +96,7 @@ public class Kits {
         kit.setChestplate(p.getInventory().getChestplate());
         kit.setLeggings(p.getInventory().getLeggings());
         kit.setBoots(p.getInventory().getBoots());
+        kit.setPrice(price);
 
         kit.setMaxHealth(Toolkit.getMaxHealth(p));
 
@@ -170,6 +170,7 @@ public class Kits {
         kit.setChestplate(AttributeParser.getItemStackFromPath(resource, "Inventory.Armor.Chestplate"));
         kit.setLeggings(AttributeParser.getItemStackFromPath(resource, "Inventory.Armor.Leggings"));
         kit.setBoots(AttributeParser.getItemStackFromPath(resource, "Inventory.Armor.Boots"));
+        kit.setPrice(resource.getInt("Kit.Price"));
 
         for (PotionEffect effect : AttributeParser.getEffectsFromPath(resource, "Effects")) {
             kit.addEffect(effect.getType(), effect.getAmplifier(), effect.getDuration());
@@ -197,59 +198,58 @@ public class Kits {
     }
 
     public void attemptToGiveKitToPlayer(Player player, Kit kit) {
-        Player p = player;
 
         if (kit == null) {
-            p.sendMessage(messages.fetchString("Messages.Error.Lost"));
+            player.sendMessage(messages.fetchString("Messages.Error.Lost"));
             return;
         }
 
-        if (!p.hasPermission(kit.getPermission())) {
-            p.sendMessage(messages.fetchString("Messages.General.Permission")
+        if (!player.hasPermission(kit.getPermission())) {
+            player.sendMessage(messages.fetchString("Messages.General.Permission")
                     .replace("%permission%", kit.getPermission()));
             return;
         }
 
-        if (!(Toolkit.getPermissionAmount(p, "kp.levelbypass.", 0) >= kit.getLevel() ||
-                arena.getStats().getStat("level", p.getName()) >= kit.getLevel())) {
-            p.sendMessage(messages.fetchString("Messages.Other.Needed")
+        if (!(Toolkit.getPermissionAmount(player, "kp.levelbypass.", 0) >= kit.getLevel() ||
+                arena.getStats().getStat("level", player.getName()) >= kit.getLevel())) {
+            player.sendMessage(messages.fetchString("Messages.Other.Needed")
                     .replace("%level%", String.valueOf(kit.getLevel())));
             return;
         }
 
-        Cooldown cooldownRemaining = arena.getCooldowns().getRemainingCooldown(p, kit);
-        if (!p.hasPermission("kp.cooldownbypass") && cooldownRemaining.toSeconds() > 0) {
-            p.sendMessage(messages.fetchString("Messages.Error.CooldownKit")
+        Cooldown cooldownRemaining = arena.getCooldowns().getRemainingCooldown(player, kit);
+        if (!player.hasPermission("kp.cooldownbypass") && cooldownRemaining.toSeconds() > 0) {
+            player.sendMessage(messages.fetchString("Messages.Error.CooldownKit")
                     .replace("%cooldown%", cooldownRemaining.formatted(false)));
             return;
         }
 
         if (playerHasKit(player.getName())) {
-            p.sendMessage(messages.fetchString("Messages.Error.Selected"));
-            Toolkit.playSoundToPlayer(p, "ENTITY_ENDER_DRAGON_HURT", 1);
+            player.sendMessage(messages.fetchString("Messages.Error.Selected"));
+            Toolkit.playSoundToPlayer(player, "ENTITY_ENDER_DRAGON_HURT", 1);
             return;
         }
 
         if (resources.getConfig().getBoolean("Arena.ClearInventoryOnKit")) {
-            p.getInventory().clear();
-            p.getInventory().setArmorContents(null);
+            player.getInventory().clear();
+            player.getInventory().setArmorContents(null);
         }
 
-        kit.apply(p);
-        p.sendMessage(messages.fetchString("Messages.Commands.Kit").replace("%kit%", kit.getName()));
-        Toolkit.playSoundToPlayer(p, "ENTITY_HORSE_ARMOR", 1);
+        kit.apply(player);
+        player.sendMessage(messages.fetchString("Messages.Commands.Kit").replace("%kit%", kit.getName()));
+        Toolkit.playSoundToPlayer(player, "ENTITY_HORSE_ARMOR", 1);
 
         Bukkit.getPluginManager().callEvent(new PlayerSelectKitEvent(player, kit));
-        setPlayerKit(p.getName(), kit.getName());
+        setPlayerKit(player.getName(), kit.getName());
 
         Cooldown kitCooldown = kit.getCooldown();
-        if (kitCooldown != null && kitCooldown.toSeconds() > 0 && !p.hasPermission("kp.cooldownbypass")) {
-            arena.getCooldowns().setKitCooldown(p.getName(), kit.getName());
+        if (kitCooldown != null && kitCooldown.toSeconds() > 0 && !player.hasPermission("kp.cooldownbypass")) {
+            arena.getCooldowns().setKitCooldown(player.getName(), kit.getName());
         }
 
         Resource kitResource = resources.getKit(kit.getName());
         if (kitResource != null && kitResource.contains("Commands")) {
-            Toolkit.runCommands(p, kitResource.getStringList("Commands"),
+            Toolkit.runCommands(player, kitResource.getStringList("Commands"),
                     "none", "none");
         }
     }
@@ -299,6 +299,10 @@ public class Kits {
 
     public boolean playerHasKit(String playerName) {
         return playerKits.containsKey(playerName);
+    }
+
+    public boolean canUseKit(Player player, Kit kit){
+        return player.hasPermission(kit.getPermission());
     }
 
     public void resetPlayerKit(String playerName) {

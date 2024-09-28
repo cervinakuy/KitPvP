@@ -2,6 +2,7 @@ Kit:
   Permission: kp.kit.bomber
   Cooldown: 0
   Level: 0
+  Price: 500
 Inventory:
   Armor:
     Helmet:

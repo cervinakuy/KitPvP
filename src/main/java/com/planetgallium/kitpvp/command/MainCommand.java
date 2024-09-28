@@ -5,6 +5,7 @@ import com.planetgallium.kitpvp.Game;
 import com.planetgallium.kitpvp.api.Kit;
 import com.planetgallium.kitpvp.game.Arena;
 import com.planetgallium.kitpvp.util.*;
+import net.milkbowl.vault.economy.EconomyResponse;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -143,20 +144,28 @@ public class MainCommand implements CommandExecutor {
                     executePreviewCommand(p, args);
                     return true;
 
-                } else if (isCommand(args, sender, "create", "kp.command.create")) {
-                    executeCreateKitCommand(p, args);
-                    return true;
-
                 } else if (isCommand(args, sender, "kit", null)) {
                     executeKitCommandSelf(p, args);
                     return true;
 
+                } else if(isCommand(args, sender, "purchase", null)){
+                    executePurchaseCommand(p, args);
+                    return true;
                 } else {
                     sendUnknownCommand(sender, alias, args);
                     return true;
 
                 }
 
+            } else if(args.length == 3) {
+                if (isCommand(args, sender, "create", "kp.command.create")) {
+                    executeCreateKitCommand(p, args);
+                    return true;
+                }
+                else{
+                    sendUnknownCommand(sender, alias, args);
+                    return true;
+                }
             } else {
                 sendUnknownCommand(sender, alias, args);
                 return true;
@@ -208,7 +217,6 @@ public class MainCommand implements CommandExecutor {
     private void executeReloadCommand(CommandSender sender) {
         resources.reload();
         CacheManager.clearCaches();
-        arena.getMenus().getKitMenu().rebuildCache();
         arena.getAbilities().rebuildCache();
 
         sender.sendMessage(messages.fetchString("Messages.Commands.Reload"));
@@ -468,13 +476,21 @@ public class MainCommand implements CommandExecutor {
     private void executeCreateKitCommand(Player p, String[] args) {
         String kitName = args[1];
 
+
         if (!validateKitName(kitName)) {
             p.sendMessage(messages.fetchString("Messages.Error.InvalidKitName"));
             return;
         }
 
+        if(!isValidInteger(args[2])){
+            p.sendMessage(messages.fetchString("Messages.Error.InvalidNumber"));
+            return;
+        }
+
+        int price = Integer.parseInt(args[2]);
+
         if (!arena.getKits().isKit(kitName)) {
-            arena.getKits().createKit(p, kitName);
+            arena.getKits().createKit(p, kitName, price);
 
             p.sendMessage(messages.fetchString("Messages.Commands.Create")
                     .replace("%kit%", kitName));
@@ -492,6 +508,36 @@ public class MainCommand implements CommandExecutor {
         } else {
             p.sendMessage(messages.fetchString("Messages.Error.Location"));
         }
+    }
+
+    private void executePurchaseCommand(Player p, String[] args){
+
+        if(!plugin.isVaultEnabled()){
+            sendUnknownCommand(p, "purchase", args);
+            return;
+        }
+
+        String kitName = args[1];
+        Kit kitToPurchase = arena.getKits().getKitByName(kitName);
+        if(arena.getKits().canUseKit(p, kitToPurchase)){
+            p.sendMessage(messages.fetchString("Messages.Error.AlreadyPurchased")
+                    .replace("%kit%", kitName));
+            return;
+        }
+
+        double playerBalance = plugin.getEconomy().getBalance(p);
+        if(playerBalance < (double) kitToPurchase.getPrice()) {
+            p.sendMessage(messages.fetchString("Messages.Error.InsufficientFunds")
+                    .replace("%kit%", kitName));
+            return;
+        }
+
+        plugin.getEconomy().withdrawPlayer(p, (double) kitToPurchase.getPrice());
+        plugin.getPermissions().playerAdd(p, kitToPurchase.getPermission());
+        plugin.getPermissions().playerAdd(p, "kp.ability." + kitToPurchase.getName().toLowerCase());
+        plugin.getArena().getMenus().getKitMenu().open(p);
+        p.sendMessage(messages.fetchString("Messages.Commands.Purchased")
+                .replace("%kit%", kitName));
     }
 
     private boolean hasPermission(CommandSender sender, String permission) {
@@ -555,6 +601,14 @@ public class MainCommand implements CommandExecutor {
                 identifierToValidate.equalsIgnoreCase("deaths") ||
                 identifierToValidate.equalsIgnoreCase("level")) ||
                 (includeExperience && identifierToValidate.equalsIgnoreCase("experience"));
+    }
+
+    private boolean isValidInteger(String integer){
+        try{
+            return Integer.parseInt(integer)>0;
+        } catch (NumberFormatException e) {
+            return false;
+        }
     }
 
 }
