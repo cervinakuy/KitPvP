@@ -15,7 +15,9 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -156,7 +158,12 @@ public class DeathListener implements Listener {
 			victim.getInventory().clear();
 			victim.getInventory().setArmorContents(null);
 			victim.setItemOnCursor(null);
-			victim.getOpenInventory().getTopInventory().clear();
+
+			// clear crafting inventory if opened
+			Inventory topInv = victim.getOpenInventory().getTopInventory();
+			if (InventoryType.CRAFTING == topInv.getType()) {
+				topInv.clear();
+			}
 		}
 	}
 
