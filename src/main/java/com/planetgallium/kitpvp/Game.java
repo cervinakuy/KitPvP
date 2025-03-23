@@ -1,6 +1,10 @@
 package com.planetgallium.kitpvp;
 
 import com.planetgallium.kitpvp.game.Infobase;
+import com.sk89q.worldguard.WorldGuard;
+import com.sk89q.worldguard.protection.flags.StateFlag;
+import com.sk89q.worldguard.protection.flags.registry.FlagConflictException;
+import com.sk89q.worldguard.protection.flags.registry.FlagRegistry;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -32,6 +36,7 @@ public class Game extends JavaPlugin implements Listener {
 	private boolean needsUpdate = false;
 	private boolean hasPlaceholderAPI = false;
 	private boolean hasWorldGuard = false;
+	private StateFlag flag;
 	
 	@Override
 	public void onEnable() {
@@ -89,6 +94,27 @@ public class Game extends JavaPlugin implements Listener {
 		populateUUIDCacheForOnlinePlayers();
 
 		Toolkit.printToConsole("&7[&b&lKIT-PVP&7] &aDone!");
+	}
+
+	@Override
+	public void onLoad()
+	{
+		try {
+			FlagRegistry registery = WorldGuard.getInstance().getFlagRegistry();
+			getLogger().info("WorldGuard plugin found. Registering flags...");
+			flag = new StateFlag("kp-arena", false);
+			registery.register(flag);
+			getLogger().info("WorldGuard flags have been registered");
+		} catch (FlagConflictException e)
+		{
+			getLogger().severe("Cannot register flags. AN other plugin should already register kp-arena flag. This bug is not from us.");
+			getLogger().severe(e.getMessage());
+			getServer().getPluginManager().disablePlugin(this);
+		}
+		catch (Exception ignored)
+		{
+			getLogger().info("WorldGuard not found");
+		}
 	}
 
 	private void populateUUIDCacheForOnlinePlayers() {
@@ -167,5 +193,8 @@ public class Game extends JavaPlugin implements Listener {
 	public static String getPrefix() { return prefix; }
 	
 	public Resources getResources() { return resources; }
-	
+
+	public StateFlag getFlag() {
+		return flag;
+	}
 }
