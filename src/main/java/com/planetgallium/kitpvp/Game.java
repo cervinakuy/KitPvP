@@ -1,10 +1,6 @@
 package com.planetgallium.kitpvp;
 
 import com.planetgallium.kitpvp.game.Infobase;
-import com.sk89q.worldguard.WorldGuard;
-import com.sk89q.worldguard.protection.flags.StateFlag;
-import com.sk89q.worldguard.protection.flags.registry.FlagConflictException;
-import com.sk89q.worldguard.protection.flags.registry.FlagRegistry;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -36,7 +32,7 @@ public class Game extends JavaPlugin implements Listener {
 	private boolean needsUpdate = false;
 	private boolean hasPlaceholderAPI = false;
 	private boolean hasWorldGuard = false;
-	private StateFlag flag;
+	private WorldGuardLoader loader;
 	
 	@Override
 	public void onEnable() {
@@ -67,6 +63,8 @@ public class Game extends JavaPlugin implements Listener {
 		pm.registerEvents(new TrackerListener(this), this);
 		pm.registerEvents(new MenuListener(this), this);
 		pm.registerEvents(getArena().getKillStreaks(), this);
+		if (this.getServer().getPluginManager().isPluginEnabled("WorldGuard"))
+			pm.registerEvents(new WorldGuardListener(this), this);
 		
 		getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 	    getCommand("kitpvp").setExecutor(new MainCommand(this));
@@ -97,25 +95,14 @@ public class Game extends JavaPlugin implements Listener {
 	}
 
 	@Override
-	public void onLoad()
-	{
+	public void onLoad() {
 		try {
-			FlagRegistry registery = WorldGuard.getInstance().getFlagRegistry();
-			getLogger().info("WorldGuard plugin found. Registering flags...");
-			flag = new StateFlag("kp-arena", false);
-			registery.register(flag);
-			getLogger().info("WorldGuard flags have been registered");
-		} catch (FlagConflictException e)
-		{
-			getLogger().severe("Cannot register flags. AN other plugin should already register kp-arena flag. This bug is not from us.");
-			getLogger().severe(e.getMessage());
-			getServer().getPluginManager().disablePlugin(this);
-		}
-		catch (Exception ignored)
-		{
-			getLogger().info("WorldGuard not found");
+			loader = new WorldGuardLoader();
+		} catch (NoClassDefFoundError e) {
+			e.printStackTrace();
 		}
 	}
+
 
 	private void populateUUIDCacheForOnlinePlayers() {
 		// populates UUID cache if there are players online when doing /reload to avoid a lot of errors related
@@ -194,7 +181,5 @@ public class Game extends JavaPlugin implements Listener {
 	
 	public Resources getResources() { return resources; }
 
-	public StateFlag getFlag() {
-		return flag;
-	}
+	public WorldGuardLoader getLoader() { return loader; }
 }

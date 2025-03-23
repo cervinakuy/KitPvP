@@ -205,27 +205,4 @@ public class ArenaListener implements Listener {
 			}
 		}
 	}
-
-	@EventHandler
-	public void onArenaEnter(PlayerMoveEvent e) {
-		//Getting worldguard arenas
-		if (!Toolkit.inArena(e.getPlayer()) || !Game.getInstance().hasWorldGuard() || !config.getBoolean("Arena.SpawnOnArenaJoinWithNoKit", false) || arena.getKits().playerHasKit(e.getPlayer().getName()))
-			return ;
-		RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
-		RegionQuery query = container.createQuery();
-		LocalPlayer player = WorldGuardPlugin.inst().wrapPlayer(e.getPlayer());
-		ApplicableRegionSet set = query.getApplicableRegions(player.getLocation());
-		StateFlag.State flag;
-
-		for (ProtectedRegion region : set) {
-			flag = region.getFlag(Game.getInstance().getFlag());
-			if (flag == StateFlag.State.ALLOW) {
-				//Running this not in task may print moved too quickly spam. So now I teleport the player synchronized with ticks
-				Bukkit.getScheduler().runTask(Game.getInstance(), () -> {
-					e.getPlayer().setFallDistance(0);
-					arena.toSpawn(e.getPlayer(), e.getPlayer().getWorld().getName());
-				});
-			}
-		}
-	}
 }
