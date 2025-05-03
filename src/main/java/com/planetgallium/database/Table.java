@@ -259,11 +259,19 @@ public class Table {
      * to be used in SQL statements
      */
     private String formatFieldNamesWithValues(Field ... fields) {
-        String result = "";
+        StringBuilder result = new StringBuilder();
         for (Field field : fields) {
-            result += String.format(", %s=%s", field.getName(), field.getValue().toString());
+            String valueStr;
+
+            if (field.getDataType() == DataType.STRING) {
+                valueStr = "'" + field.getValue().toString().replace("'", "''") + "'";
+            } else {
+                valueStr = field.getValue().toString();
+            }
+
+            result.append(", ").append(field.getName()).append("=").append(valueStr);
         }
-        return result.length() > 0 ? result.substring(2) : result;
+        return result.length() > 0 ? result.substring(2) : result.toString();
     }
 
     private Object setObjectType(Field field, ResultSet resultSet) throws SQLException {
