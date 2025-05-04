@@ -509,4 +509,15 @@ public class Toolkit {
 
 	}
 
+	public static int parsePotionEffectDuration(int duration) {
+		int durationInTicks = duration * 20;
+
+		if (duration == -1) { // if you put -1 in any version it makes it infinite
+			boolean useNegativeOneVersion = Bukkit.getVersion().contains("1.19.4") || Toolkit.versionToNumber() >= 120;
+			return useNegativeOneVersion ? -1 : Integer.MAX_VALUE;
+		}
+
+		return durationInTicks;
+	}
+
 }

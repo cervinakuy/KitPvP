@@ -3,6 +3,7 @@ package com.planetgallium.kitpvp.api;
 import com.planetgallium.kitpvp.util.Cooldown;
 import com.planetgallium.kitpvp.util.Resource;
 import com.planetgallium.kitpvp.util.Toolkit;
+import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
@@ -47,8 +48,8 @@ public class Ability {
         this.soundVolume = volume;
     }
 
-    public void addEffect(PotionEffectType type, int amplifier, int durationSeconds) {
-        PotionEffect effect = new PotionEffect(type, durationSeconds * 20, amplifier - 1);
+    public void addEffect(PotionEffectType type, int amplifierNonZeroBased, int durationSeconds) {
+        PotionEffect effect = new PotionEffect(type, Toolkit.parsePotionEffectDuration(durationSeconds), amplifierNonZeroBased - 1);
         effects.add(effect);
     }
 

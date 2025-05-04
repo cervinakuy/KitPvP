@@ -49,4 +49,4 @@ Inventory:
 Effects:
   JUMP:
     Amplifier: 2
-    Duration: 100000
+    Duration: -1

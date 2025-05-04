@@ -4,6 +4,7 @@ import com.planetgallium.kitpvp.item.AttributeWriter;
 import com.planetgallium.kitpvp.util.Cooldown;
 import com.planetgallium.kitpvp.util.Resource;
 import com.planetgallium.kitpvp.util.Toolkit;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
@@ -67,7 +68,8 @@ public class Kit {
     }
 
     public void addEffect(PotionEffectType type, int amplifierNonZeroBased, int durationSeconds) {
-        PotionEffect effect = new PotionEffect(type, durationSeconds * 20, amplifierNonZeroBased - 1);
+        PotionEffect effect = new PotionEffect(type, Toolkit.parsePotionEffectDuration(durationSeconds),
+                amplifierNonZeroBased - 1);
         effects.add(effect);
     }
 
