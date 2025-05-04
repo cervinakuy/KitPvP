@@ -79,7 +79,7 @@ public class Kits {
 
                 menuConfig.save();
                 menuConfig.load();
-                arena.getMenus().getKitMenu().rebuildCache();
+//                arena.getMenus().getKitMenu().rebuildCache();
             } else {
                 fromPlayer.sendMessage(messages.fetchString("Messages.Error.Menu"));
             }

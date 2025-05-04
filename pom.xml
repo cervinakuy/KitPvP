@@ -140,8 +140,7 @@
         <dependency>
             <groupId>com.github.cryptomorin</groupId>
             <artifactId>XSeries</artifactId>
-            <version>11.2.1</version>
-            <scope>compile</scope>
+            <version>13.2.0</version>
         </dependency>
         <dependency>
             <groupId>com.googlecode.json-simple</groupId>

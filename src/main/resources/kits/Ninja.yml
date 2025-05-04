@@ -37,4 +37,4 @@ Inventory:
 Effects:
   SPEED:
     Amplifier: 1
-    Duration: 100000
+    Duration: -1

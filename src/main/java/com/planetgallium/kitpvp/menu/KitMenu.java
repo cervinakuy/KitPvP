@@ -14,7 +14,7 @@ public class KitMenu {
 	
 	public KitMenu(Resources resources) {
 		this.resources = resources;
-		rebuildCache();
+//		rebuildCache();
 	}
 
 	private void create() {
@@ -33,11 +33,12 @@ public class KitMenu {
 		}
 	}
 
-	public void rebuildCache() {
-		create();
-	}
+//	public void rebuildCache() {
+//		create();
+//	}
 
 	public void open(Player p) {
+		create();
 		menu.openMenu(p);
 	}
 	

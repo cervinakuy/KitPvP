@@ -32,4 +32,4 @@ Inventory:
 Effects:
   SLOW:
     Amplifier: 2
-    Duration: 100000
+    Duration: -1
