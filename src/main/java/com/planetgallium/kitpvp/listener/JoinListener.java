@@ -37,10 +37,11 @@ public class JoinListener implements Listener {
 
 		arena.getStats().createPlayer(p);
 
-		if (p.getName().equals("cervinakuy")) {
-			e.setJoinMessage(Toolkit.translate("&7[&b&lKIT-PVP&7] &7The Developer of &bKitPvP" +
-					" &7has joined the server."));
-		}
+		// I don't think that's really usefull
+//		if (p.getName().equals("cervinakuy")) {
+//			e.setJoinMessage(Toolkit.translate("&7[&b&lKIT-PVP&7] &7The Developer of &bKitPvP" +
+//					" &7has joined the server."));
+//		}
 
 		if (Toolkit.inArena(p)) {
 			if (config.getBoolean("Arena.ClearInventoryOnJoin")) {

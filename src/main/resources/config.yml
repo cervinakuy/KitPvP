@@ -128,6 +128,7 @@ Arena:
   AddOverflowItemsOnKit: true
   DropRemainingOverflowItemsOnKit: true
   ResetMaxHealthOnDeath: true
+  SpawnOnArenaJoinWithNoKit: false
 Other:
   AutomaticallyAddKitToMenu: true
 Spawn:

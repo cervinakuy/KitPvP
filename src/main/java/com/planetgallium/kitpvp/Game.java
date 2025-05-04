@@ -32,6 +32,7 @@ public class Game extends JavaPlugin implements Listener {
 	private boolean needsUpdate = false;
 	private boolean hasPlaceholderAPI = false;
 	private boolean hasWorldGuard = false;
+	private WorldGuardLoader loader;
 	
 	@Override
 	public void onEnable() {
@@ -62,6 +63,8 @@ public class Game extends JavaPlugin implements Listener {
 		pm.registerEvents(new TrackerListener(this), this);
 		pm.registerEvents(new MenuListener(this), this);
 		pm.registerEvents(getArena().getKillStreaks(), this);
+		if (this.getServer().getPluginManager().isPluginEnabled("WorldGuard"))
+			pm.registerEvents(new WorldGuardListener(this), this);
 		
 		getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 	    getCommand("kitpvp").setExecutor(new MainCommand(this));
@@ -90,6 +93,16 @@ public class Game extends JavaPlugin implements Listener {
 
 		Toolkit.printToConsole("&7[&b&lKIT-PVP&7] &aDone!");
 	}
+
+	@Override
+	public void onLoad() {
+		try {
+			loader = new WorldGuardLoader();
+		} catch (NoClassDefFoundError e) {
+			e.printStackTrace();
+		}
+	}
+
 
 	private void populateUUIDCacheForOnlinePlayers() {
 		// populates UUID cache if there are players online when doing /reload to avoid a lot of errors related
@@ -167,5 +180,6 @@ public class Game extends JavaPlugin implements Listener {
 	public static String getPrefix() { return prefix; }
 	
 	public Resources getResources() { return resources; }
-	
+
+	public WorldGuardLoader getLoader() { return loader; }
 }
