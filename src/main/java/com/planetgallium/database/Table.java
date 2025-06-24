@@ -6,7 +6,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 public class Table {
 
@@ -19,7 +22,7 @@ public class Table {
     private final static String SEARCH_RECORD_QUERY = "SELECT * FROM {table_name} WHERE {column_to_search_name}=?;";
     private final static String GET_RECORD_QUERY = "SELECT * FROM {table_name} WHERE `{primary_field_name}`=?;";
     private final static String DELETE_RECORD_QUERY = "DELETE FROM {table_name} WHERE `{primary_field_name}`=?;";
-    private final static String TOP_N_RECORD_QUERY = "SELECT {return_column_name}, {sort_column_name} FROM " +
+    private final static String TOP_N_RECORD_QUERY = "SELECT {id_column}, {username_column}, {sort_column_name} FROM " +
             "{table_name} ORDER BY {sort_column_name} DESC LIMIT {n};";
 
     private final DataSource dataSource;
@@ -208,19 +211,22 @@ public class Table {
         }
     }
 
-    public List<TopEntry> getTopN(Field sortField, Field returnField, int n) {
+    public Map<UUID, TopEntry> getTopN(Field sortField, Field idField, Field nameField, int n) {
         String topNQuery = Table.TOP_N_RECORD_QUERY.replace("{table_name}", this.getName())
-                .replace("{return_column_name}", returnField.getName())
+                .replace("{id_column}", idField.getName())
+                .replace("{username_column}", nameField.getName())
                 .replace("{sort_column_name}", sortField.getName())
                 .replace("{n}", String.valueOf(n));
 
-        List<TopEntry> topNResults = new ArrayList<>();
+        Map<UUID, TopEntry> topNResults = new HashMap<>();
         try (Connection connection = dataSource.getConnection() ;
              PreparedStatement statement = connection.prepareStatement(topNQuery)) {
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
-                topNResults.add(new TopEntry(resultSet.getString(returnField.getName()),
-                        resultSet.getInt(sortField.getName())));
+                final UUID uniqueId = UUID.fromString(resultSet.getString(idField.getName()));
+                final String name = resultSet.getString(nameField.getName());
+                final int value = resultSet.getInt(sortField.getName());
+                topNResults.put(uniqueId, new TopEntry(name, value));
             }
         } catch (SQLException exception) {
             exception.printStackTrace();

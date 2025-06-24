@@ -81,7 +81,7 @@ public class ItemListener implements Listener {
 
 			} else if (isAbility(p, interactedItem, "Witch", "GLASS_BOTTLE")) {
 				e.setCancelled(true);
-				CacheManager.getPotionSwitcherUsers().add(p.getName());
+				CacheManager.getPotionSwitcherUsers().add(p.getUniqueId());
 				Toolkit.setHandItemForInteraction(e, createWitchPotion());
 
 			} else if (isSplashPotion(interactedItem)) {
@@ -151,7 +151,7 @@ public class ItemListener implements Listener {
 			Player damagedPlayer = (Player) e.getRightClicked();
 
 			if (config.getBoolean("Arena.NoKitProtection")) {
-				if (!arena.getKits().playerHasKit(damagedPlayer.getName())) {
+				if (!arena.getKits().playerHasKit(damagedPlayer.getUniqueId())) {
 					return;
 				}
 			}
@@ -171,7 +171,7 @@ public class ItemListener implements Listener {
 			String abilityPermission = "kp.ability." + kitName.toLowerCase();
 
 			if (p.hasPermission(abilityPermission)) {
-				if (config.getBoolean("Arena.AbilitiesRequireKit") && !arena.getKits().playerHasKit(p.getName())) {
+				if (config.getBoolean("Arena.AbilitiesRequireKit") && !arena.getKits().playerHasKit(p.getUniqueId())) {
 					p.sendMessage(resources.getMessages().fetchString("Messages.Error.Kit"));
 					return false;
 				}
@@ -245,17 +245,14 @@ public class ItemListener implements Listener {
 	private void warperAbility(PlayerInteractEvent e, Player p, ItemStack abilityItem) {
 		e.setCancelled(true);
 
-		String[] nearestData = Toolkit.getNearestPlayer(p, config.getInt("PlayerTracker.TrackBelowY"));
+		Player nearestPlayer = Toolkit.getNearestPlayer(p, config.getInt("PlayerTracker.TrackBelowY"));
 
-		if (Bukkit.getServer().getOnlinePlayers().size() > 1 && nearestData != null) {
-			String nearestPlayerUsername = nearestData[0];
-			Location nearestPlayerLocation = Bukkit.getPlayer(nearestPlayerUsername).getLocation();
-
-			if (arena.getKits().playerHasKit(nearestPlayerUsername)) {
+		if (Bukkit.getServer().getOnlinePlayers().size() > 1 && nearestPlayer != null) {
+			if (arena.getKits().playerHasKit(nearestPlayer.getUniqueId())) {
 				new BukkitRunnable() {
 					@Override
 					public void run() {
-						p.teleport(nearestPlayerLocation);
+						p.teleport(nearestPlayer.getLocation());
 					}
 				}.runTaskLater(plugin, 5L);
 
@@ -296,7 +293,7 @@ public class ItemListener implements Listener {
 		new BukkitRunnable() {
 			@Override
 			public void run() {
-				if (arena.getKits().playerHasKit(p.getName())) {
+				if (arena.getKits().playerHasKit(p.getUniqueId())) {
 					p.getInventory().setHelmet(previousHelmet);
 					p.getInventory().setChestplate(previousChestplate);
 					p.getInventory().setLeggings(previousLeggings);
@@ -314,7 +311,7 @@ public class ItemListener implements Listener {
 
 			@Override
 			public void run() {
-				if (t != 0 && p.getGameMode() != GameMode.SPECTATOR && arena.getKits().playerHasKit(p.getName())) {
+				if (t != 0 && p.getGameMode() != GameMode.SPECTATOR && arena.getKits().playerHasKit(p.getUniqueId())) {
 					Entity entity = p.getWorld().spawn(p.getLocation(), TNTPrimed.class);
 					entity.setCustomName(p.getName());
 
@@ -361,8 +358,8 @@ public class ItemListener implements Listener {
 			new BukkitRunnable() {
 				@Override
 				public void run() {
-					Kit playerKit = arena.getKits().getKitOfPlayer(p.getName());
-					if (playerKit != null && CacheManager.getPotionSwitcherUsers().contains(p.getName())) {
+					Kit playerKit = arena.getKits().getKitOfPlayer(p.getUniqueId());
+					if (playerKit != null && CacheManager.getPotionSwitcherUsers().contains(p.getUniqueId())) {
 						slotUsed.placeItemInSlot(p, randomizedWitchPotion);
 
 						if (abilities.getBoolean("Abilities.Witch.Message.Enabled")) {
@@ -372,7 +369,7 @@ public class ItemListener implements Listener {
 						Toolkit.playSoundToPlayer(p, abilities.fetchString("Abilities.Witch.Sound.Sound"),
 								abilities.getInt("Abliities.Witch.Sound.Pitch"));
 
-						CacheManager.getPotionSwitcherUsers().add(p.getName());
+						CacheManager.getPotionSwitcherUsers().add(p.getUniqueId());
 					}
 				}
 			}.runTaskLater(plugin, 5 * 20L);
@@ -420,7 +417,7 @@ public class ItemListener implements Listener {
 
 	private void hitBySnowball(Player damagedPlayer, Snowball snowball) {
 		if (snowball.getCustomName() != null && snowball.getCustomName().equals("bullet")) {
-			if (Toolkit.inArena(damagedPlayer) && arena.getKits().playerHasKit(damagedPlayer.getName())) {
+			if (Toolkit.inArena(damagedPlayer) && arena.getKits().playerHasKit(damagedPlayer.getUniqueId())) {
 				damagedPlayer.damage(4.5);
 			}
 		}
@@ -428,7 +425,7 @@ public class ItemListener implements Listener {
 
 	private void hitByEgg(Player damagedPlayer, Egg egg) {
 		if (Toolkit.hasMatchingDisplayName(egg.getItem(), abilities.fetchString("Abilities.Trickster.Item.Name"))) {
-			if (Toolkit.inArena(damagedPlayer) && arena.getKits().playerHasKit(damagedPlayer.getName())) {
+			if (Toolkit.inArena(damagedPlayer) && arena.getKits().playerHasKit(damagedPlayer.getUniqueId())) {
 
 				if (egg.getShooter() instanceof Player) {
 					Player shooter = (Player) egg.getShooter();

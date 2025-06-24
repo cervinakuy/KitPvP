@@ -24,7 +24,7 @@ public class ChatListener implements Listener {
 	public void onChat(AsyncPlayerChatEvent e) {
 		if (resources.getConfig().getBoolean("Chat.Enabled") && Toolkit.inArena(e.getPlayer())) {
 			Player p = e.getPlayer();
-			String levelPrefix = arena.getUtilities().getPlayerLevelPrefix(p.getName());
+			String levelPrefix = arena.getUtilities().getPlayerLevelPrefix(p.getUniqueId());
 
 			String format = resources.getConfig().fetchString("Chat.Format")
 					.replace("%player%", "%s")

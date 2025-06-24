@@ -4,13 +4,16 @@ import com.planetgallium.database.*;
 import com.planetgallium.database.Record;
 import com.planetgallium.kitpvp.Game;
 import com.planetgallium.kitpvp.util.*;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public class Infobase {
 
@@ -62,9 +65,8 @@ public class Infobase {
         }
     }
 
-    public boolean isPlayerRegistered(String username) {
-        String uuid = usernameToUUID(username);
-        return tableContainsUUID("stats", uuid);
+    public boolean isPlayerRegistered(UUID uniqueId) {
+        return tableContainsUUID("stats", uniqueId);
     }
 
     public void registerPlayerStats(Player p) {
@@ -72,7 +74,7 @@ public class Infobase {
             return;
         }
 
-        Field uuidField = uuidField("uuid", p.getUniqueId().toString());
+        Field uuidField = uuidField(p.getUniqueId());
         Record playerRecord = statsTable.getRecord(uuidField);
 
         if (playerRecord == null) {
@@ -98,8 +100,8 @@ public class Infobase {
         }
 
         // put stats into stats cache
-        playerRecord = statsTable.getRecord(uuidField("uuid", p.getUniqueId().toString()));
-        CacheManager.getStatsCache().put(p.getName(), recordToPlayerData(playerRecord));
+        playerRecord = statsTable.getRecord(uuidField);
+        CacheManager.getStatsCache().put(p.getUniqueId(), recordToPlayerData(playerRecord));
     }
 
     public void exportStats() {
@@ -111,7 +113,7 @@ public class Infobase {
         for (String uuid : statsSection.getKeys(false)) {
             ConfigurationSection playerSection = statsSection.getConfigurationSection(uuid);
 
-            Field uuidField = uuidField("uuid", uuid);
+            Field uuidField = uuidField(uuid);
             Field usernameField = new Field("username", DataType.STRING,
                     playerSection.getString("Username"), Infobase.USERNAME_MAX_CHARACTERS);
             Field killsField = new Field("kills", DataType.INTEGER, playerSection.getInt("Kills"));
@@ -132,7 +134,7 @@ public class Infobase {
         }
     }
 
-    public String usernameToUUID(String username) {
+    public UUID usernameToUUID(String username) {
         if (CacheManager.getUUIDCache().containsKey(username)) {
             return CacheManager.getUUIDCache().get(username);
         }
@@ -144,7 +146,7 @@ public class Infobase {
             if (matchingRecords.size() == 1) {
                 Record matchingRecord = matchingRecords.get(0);
 
-                String uuid = (String) matchingRecord.getFieldValue("uuid");
+                UUID uuid = UUID.fromString((String) matchingRecord.getFieldValue("uuid"));
                 CacheManager.getUUIDCache().put(username, uuid);
                 return uuid;
             }
@@ -152,22 +154,53 @@ public class Infobase {
         return null;
     }
 
-    private boolean tableContainsUUID(String tableName, String uuid) {
+    public String uuidToUsername(UUID uniqueId) {
+        final Player player = Bukkit.getPlayer(uniqueId);
+        if (player != null) {
+            return player.getName();
+        }
+
+        for (Map.Entry<String, UUID> entry : CacheManager.getUUIDCache().entrySet()) {
+            if (entry.getValue().equals(uniqueId)) {
+                return entry.getKey();
+            }
+        }
+
+        if (verifyTableExists("stats")) {
+            Table stats = database.getTable("stats");
+
+            List<Record> matchingRecords = stats.searchRecords(uuidField(uniqueId));
+            if (matchingRecords.size() == 1) {
+                Record matchingRecord = matchingRecords.get(0);
+
+                String username = (String) matchingRecord.getFieldValue("username");
+                CacheManager.getUUIDCache().put(username, uniqueId);
+                return username;
+            }
+        }
+        return Bukkit.getOfflinePlayer(uniqueId).getName();
+    }
+
+    private boolean tableContainsUUID(String tableName, UUID uniqueId) {
         if (verifyTableExists(tableName)) {
             Table table = database.getTable(tableName);
-            return table.getRecord(uuidField("uuid", uuid)) != null;
+            return table.getRecord(uuidField(uniqueId)) != null;
         }
         return false;
     }
 
-    public List<TopEntry> getTopNStats(String identifier, int n) {
+    public Map<UUID, TopEntry> getTopNStats(String identifier, int n) {
         if (verifyTableExists("stats")) {
             Table table = database.getTable("stats");
 
-            return table.getTopN(new Field(identifier, DataType.INTEGER),
-                    new Field("username", DataType.FIXED_STRING, Infobase.USERNAME_MAX_CHARACTERS), n);
+            return table.getTopN(
+                    new Field(identifier, DataType.INTEGER),
+                    new Field("uuid", DataType.FIXED_STRING, Infobase.UUID_MAX_CHARACTERS),
+                    new Field("username", DataType.FIXED_STRING, Infobase.USERNAME_MAX_CHARACTERS),
+                    n
+            );
         }
-        return new ArrayList<>();
+        return new HashMap<>();
     }
 
     public void addKitCooldownTable(String kitName) {
@@ -195,26 +228,26 @@ public class Infobase {
         }
     }
 
-    public void setData(String tableName, String identifier, Object data, DataType type, String username) {
+    public void setData(String tableName, String identifier, Object data, DataType type, UUID uniqueId) {
         if (verifyTableExists(tableName)) {
             Table table = database.getTable(tableName);
 
-            Field uuidField = uuidField("username", username);
+            Field uuidField = uuidField(uniqueId);
             Record record = table.getRecord(uuidField);
             Field fieldToUpdate = new Field(identifier, type, data);
 
             if (record != null) {
                 table.updateRecord(uuidField, fieldToUpdate);
             } else {
-                System.out.printf("[Database] Failed to set data; database does not contain player %s\n", username);
+                System.out.printf("[Database] Failed to set data; database does not contain player %s\n", uniqueId);
             }
         }
     }
 
-    public void setStatsData(String username, PlayerData playerData) {
+    public void setStatsData(UUID uniqueId, PlayerData playerData) {
         if (verifyTableExists("stats")) {
             Table statsTable = database.getTable("stats");
-            Field uuidField = uuidField("username", username);
+            Field uuidField = uuidField(uniqueId);
 
             List<Field> fieldsToUpdate = new ArrayList<>();
             for (String statIdentifier : playerData.getData().keySet()) {
@@ -236,7 +269,7 @@ public class Infobase {
                                             .replace("{kit_name}", kitNameWithCooldown);
                 if (verifyTableExists(kitCooldownTableName)) {
                     Table kitCooldownTable = database.getTable(kitCooldownTableName);
-                    Record cooldownRecord = new Record(uuidField("username", username),
+                    Record cooldownRecord = new Record(uuidField(uniqueId),
                             new Field("last_used", DataType.INTEGER, timeKitLastUsed));
 
                     kitCooldownTable.updateOrInsertRecord(cooldownRecord);
@@ -245,15 +278,15 @@ public class Infobase {
         }
     }
 
-    public Object getData(String tableName, String identifier, String username) {
+    public Object getData(String tableName, String identifier, UUID uniqueId) {
         if (verifyTableExists(tableName)) {
             Table table = database.getTable(tableName);
-            Record record = table.getRecord(uuidField("username", username));
+            Record record = table.getRecord(uuidField(uniqueId));
 
             if (record != null) {
                 return record.getFieldValue(identifier);
             } /*else { // currently commented out because not being in a kit cooldown table prints this
-                System.out.printf("[Database] Failed to get data; database does not contain player %s\n", username);
+                System.out.printf("[Database] Failed to get data; database does not contain player %s\n", uniqueId);
             } */
         }
         return null;
@@ -267,12 +300,12 @@ public class Infobase {
         return playerData;
     }
 
-    public PlayerData getStatsData(String username) {
+    public PlayerData getStatsData(UUID uniqueId) {
         PlayerData playerData = new PlayerData(-1, -1, -1, -1);
         if (verifyTableExists("stats")) {
             Table statsTable = database.getTable("stats");
 
-            Record playerRecord = statsTable.getRecord(uuidField("username", username));
+            Record playerRecord = statsTable.getRecord(uuidField(uniqueId));
             return recordToPlayerData(playerRecord);
         }
         return playerData;
@@ -286,15 +319,12 @@ public class Infobase {
         return false;
     }
 
-    private Field uuidField(String flag, String value) {
-        if (flag.equalsIgnoreCase("username")) {
-            return new Field("uuid", DataType.FIXED_STRING, usernameToUUID(value),
-                    Infobase.UUID_MAX_CHARACTERS);
-        } else if (flag.equalsIgnoreCase("uuid")) {
-            return new Field("uuid", DataType.FIXED_STRING, value,
-                    Infobase.UUID_MAX_CHARACTERS);
-        }
-        return null;
+    private Field uuidField(UUID value) {
+        return uuidField(value.toString());
+    }
+
+    private Field uuidField(String value) {
+        return new Field("uuid", DataType.FIXED_STRING, value, Infobase.UUID_MAX_CHARACTERS);
     }
 
     private Field usernameField(String value) {

@@ -30,12 +30,12 @@ public class AttackListener implements Listener {
 			
 			if (Toolkit.inArena(damagedPlayer) && !damagedPlayer.hasMetadata("NPC")) {
 				if (resources.getConfig().getBoolean("Arena.NoKitProtection")) {
-					if (!kits.playerHasKit(damagedPlayer.getName())) {
+					if (!kits.playerHasKit(damagedPlayer.getUniqueId())) {
 						damager.sendMessage(resources.getMessages().fetchString("Messages.Error.Invincible"));
 						e.setCancelled(true);
 					}
 					
-					if (kits.playerHasKit(damagedPlayer.getName()) && !kits.playerHasKit(damager.getName())) {
+					if (kits.playerHasKit(damagedPlayer.getUniqueId()) && !kits.playerHasKit(damager.getUniqueId())) {
 						damager.sendMessage(resources.getMessages().fetchString("Messages.Error.Kit"));
 						e.setCancelled(true);
 					}
@@ -51,7 +51,7 @@ public class AttackListener implements Listener {
 
 			if (Toolkit.inArena(damagedPlayer)) {
 				if (resources.getConfig().getBoolean("Arena.NoKitProtection")) {
-					if (!kits.playerHasKit(damagedPlayer.getName())) {
+					if (!kits.playerHasKit(damagedPlayer.getUniqueId())) {
 						if (e.getCause() != DamageCause.VOID) {
 							e.setCancelled(true);
 						}

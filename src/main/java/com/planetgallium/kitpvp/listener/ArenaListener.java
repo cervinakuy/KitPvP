@@ -97,7 +97,7 @@ public class ArenaListener implements Listener {
 
 				Player damagedPlayer = (Player) e.getEntity();
 				if (config.getBoolean("Arena.NoKitProtection")) {
-					if (!arena.getKits().playerHasKit(damagedPlayer.getName())) {
+					if (!arena.getKits().playerHasKit(damagedPlayer.getUniqueId())) {
 						e.setCancelled(true);
 					}
 				}
@@ -139,7 +139,7 @@ public class ArenaListener implements Listener {
 						e.getCause() == DamageCause.FIRE ||
 						e.getCause() == DamageCause.FIRE_TICK) {
 					if (config.getBoolean("Arena.NoKitProtection")) {
-						if (!arena.getKits().playerHasKit(damagedPlayer.getName())) {
+						if (!arena.getKits().playerHasKit(damagedPlayer.getUniqueId())) {
 							e.setCancelled(true);
 						}
 					}

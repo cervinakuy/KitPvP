@@ -53,9 +53,9 @@ public class Arena {
 	}
 	
 	public void addPlayer(Player p, boolean toSpawn, boolean giveItems) {
-		cooldowns.clearPlayerAbilityCooldowns(p.getName());
+		cooldowns.clearPlayerAbilityCooldowns(p.getUniqueId());
 
-		kits.resetPlayerKit(p.getName());
+		kits.resetPlayerKit(p.getUniqueId());
 
 		if (config.getBoolean("Arena.ResetKillStreakOnLeave")) {
 			killstreaks.setStreak(p, 0);
@@ -99,14 +99,14 @@ public class Arena {
 	}
 	
 	public void removePlayer(Player p) {
-		CacheManager.getPlayerAbilityCooldowns(p.getName()).clear();
-		CacheManager.getPotionSwitcherUsers().remove(p.getName());
+		CacheManager.getPlayerAbilityCooldowns(p.getUniqueId()).clear();
+		CacheManager.getPotionSwitcherUsers().remove(p.getUniqueId());
 
 		for (PotionEffect effect : p.getActivePotionEffects()) {
 			p.removePotionEffect(effect.getType());
 		}
 		
-		kits.resetPlayerKit(p.getName());
+		kits.resetPlayerKit(p.getUniqueId());
 
 		if (config.getBoolean("Arena.ResetKillStreakOnLeave")) {
 			getKillStreaks().resetStreak(p);
@@ -119,7 +119,7 @@ public class Arena {
 			updateScoreboards(p, true);
 		}
 
-		stats.pushCachedStatsToDatabase(p.getName(), false); // cached stats are pushed to database on death
+		stats.pushCachedStatsToDatabase(p.getUniqueId(), false); // cached stats are pushed to database on death
 		hitCache.remove(p.getName());
 	}
 	
@@ -129,9 +129,9 @@ public class Arena {
 			p.getInventory().setArmorContents(null);
 		}
 
-		CacheManager.getPlayerAbilityCooldowns(p.getName()).clear();
+		CacheManager.getPlayerAbilityCooldowns(p.getUniqueId()).clear();
 		hitCache.remove(p.getName());
-		stats.pushCachedStatsToDatabase(p.getName(), true);
+		stats.pushCachedStatsToDatabase(p.getUniqueId(), true);
 	}
 	
 	public void giveArenaItems(Player p) {

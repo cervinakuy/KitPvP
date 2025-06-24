@@ -11,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class Placeholders extends PlaceholderExpansion {
 
@@ -40,7 +41,7 @@ public class Placeholders extends PlaceholderExpansion {
 		}
 
 		if (p != null) {
-			return translatePlaceholderAPIPlaceholders(identifier, p.getName());
+			return translatePlaceholderAPIPlaceholders(identifier, p.getUniqueId(), p.getName());
 		}
 		return null;
 	}
@@ -62,13 +63,13 @@ public class Placeholders extends PlaceholderExpansion {
 		TopEntry entry = arena.getLeaderboards().getTopN(topType, topValue);
 		boolean isUsernamePlaceholder = topIdentifier.equals("player");
 
-		return isUsernamePlaceholder ? entry.getIdentifier() : String.valueOf(entry.getValue());
+		return isUsernamePlaceholder ? entry.getName() : String.valueOf(entry.getValue());
 	}
 
-	public String translatePlaceholderAPIPlaceholders(String placeholderAPIIdentifier, String username) {
+	public String translatePlaceholderAPIPlaceholders(String placeholderAPIIdentifier, UUID uniqueId, String username) {
 		if (placeholderAPItoBuiltIn.containsKey(placeholderAPIIdentifier)) {
 			String toBuiltInPlaceholder = placeholderAPItoBuiltIn.get(placeholderAPIIdentifier);
-			return arena.getUtilities().replaceBuiltInPlaceholdersIfPresent(toBuiltInPlaceholder, username);
+			return arena.getUtilities().replaceBuiltInPlaceholdersIfPresent(toBuiltInPlaceholder, uniqueId, username);
 		} else {
 			Toolkit.printToConsole(String.format("&7[&b&lKIT-PVP&7] &cUnknown placeholder identifier [%s]. " +
 							"Please see plugin page.", placeholderAPIIdentifier));

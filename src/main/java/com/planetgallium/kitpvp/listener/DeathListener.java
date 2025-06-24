@@ -51,13 +51,13 @@ public class DeathListener implements Listener {
 				e.getDrops().clear();
 			}
 
-			CacheManager.getPotionSwitcherUsers().remove(victim.getName());
+			CacheManager.getPotionSwitcherUsers().remove(victim.getUniqueId());
 
 			respawnPlayer(victim);
 			setDeathMessage(victim);
 
-			arena.getStats().addToStat("deaths", victim.getName(), 1);
-			arena.getStats().removeExperience(victim.getName(),
+			arena.getStats().addToStat("deaths", victim.getUniqueId(), 1);
+			arena.getStats().removeExperience(victim.getUniqueId(),
 					resources.getLevels().getInt("Levels.Options.Experience-Taken-On-Death"));
 
 			if (config.getBoolean("Arena.DeathParticle")) {
@@ -238,7 +238,7 @@ public class DeathListener implements Listener {
 	private void creditWithKill(Player victim, Player killer) {
 		if (victim != null && killer != null) {
 			if (!victim.getName().equals(killer.getName())) {
-				arena.getStats().addToStat("kills", killer.getName(), 1);
+				arena.getStats().addToStat("kills", killer.getUniqueId(), 1);
 				arena.getStats().addExperience(killer, resources.getLevels().getInt("Levels.Options.Experience-Given-On-Kill"));
 
 				List<String> killCommands = config.getStringList("Kill.Commands");

@@ -8,6 +8,7 @@ import com.planetgallium.kitpvp.util.Cooldown;
 import org.bukkit.entity.Player;
 
 import java.util.Map;
+import java.util.UUID;
 
 public class Cooldowns {
 
@@ -19,17 +20,17 @@ public class Cooldowns {
 		this.database = plugin.getDatabase();
 	}
 
-	public void setAbilityCooldown(String playerName, String abilityName) {
-		CacheManager.getPlayerAbilityCooldowns(playerName).put(abilityName, (System.currentTimeMillis() / 1000));
+	public void setAbilityCooldown(UUID uniqueId, String abilityName) {
+		CacheManager.getPlayerAbilityCooldowns(uniqueId).put(abilityName, (System.currentTimeMillis() / 1000));
 	}
 
-	public void clearPlayerAbilityCooldowns(String playerName) {
-		CacheManager.getPlayerAbilityCooldowns(playerName).clear();
+	public void clearPlayerAbilityCooldowns(UUID uniqueId) {
+		CacheManager.getPlayerAbilityCooldowns(uniqueId).clear();
 	}
 
-	public void setKitCooldown(String username, String kitName) {
+	public void setKitCooldown(UUID uniqueId, String kitName) {
 		long timeKitLastUsed = System.currentTimeMillis() / 1000;
-		stats.getOrCreateStatsCache(username).addKitCooldown(kitName, timeKitLastUsed);
+		stats.getOrCreateStatsCache(uniqueId).addKitCooldown(kitName, timeKitLastUsed);
 	}
 
 	public Cooldown getRemainingCooldown(Player p, Object type) {
@@ -43,7 +44,7 @@ public class Cooldowns {
 			Kit kit = (Kit) type;
 			if (kit.getCooldown() == null) return noCooldown;
 
-			Object timeLastUsedResult = database.getData(kit.getName() + "_cooldowns", "last_used", p.getName());
+			Object timeLastUsedResult = database.getData(kit.getName() + "_cooldowns", "last_used", p.getUniqueId());
 			if (timeLastUsedResult != null) {
 				timeLastUsedSeconds = (int) timeLastUsedResult;
 			} else {
@@ -55,10 +56,10 @@ public class Cooldowns {
 
 			Ability ability = (Ability) type;
 			if (ability.getCooldown() == null ||
-					!CacheManager.getPlayerAbilityCooldowns(p.getName()).containsKey(ability.getName()))
+					!CacheManager.getPlayerAbilityCooldowns(p.getUniqueId()).containsKey(ability.getName()))
 				return noCooldown;
 
-			timeLastUsedSeconds = CacheManager.getPlayerAbilityCooldowns(p.getName()).get(ability.getName()).intValue();
+			timeLastUsedSeconds = CacheManager.getPlayerAbilityCooldowns(p.getUniqueId()).get(ability.getName()).intValue();
 			actionCooldownSeconds = ability.getCooldown().toSeconds();
 
 		}

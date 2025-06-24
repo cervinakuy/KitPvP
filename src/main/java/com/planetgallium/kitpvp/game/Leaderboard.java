@@ -1,35 +1,39 @@
 package com.planetgallium.kitpvp.game;
 
 import com.planetgallium.database.TopEntry;
+import com.planetgallium.kitpvp.Game;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class Leaderboard {
 
     private final String name;
-    private final List<TopEntry> rankings;
+    private final Map<UUID, TopEntry> rankings;
     private final int maxSize;
 
-    public Leaderboard(String name, List<TopEntry> initialRankings, int maxSize) {
+    private List<UUID> sorted = new ArrayList<>();
+
+    public Leaderboard(String name, Map<UUID, TopEntry> initialRankings, int maxSize) {
         this.name = name;
         this.rankings = initialRankings;
         this.maxSize = maxSize;
+        sortRankings();
     }
 
-    public void updateRankings(TopEntry playerEntry) {
-        if (rankingsContainPlayer(playerEntry.getIdentifier())) {
-            // Update the player's score if they are already in the leaderboard
-            updatePlayerEntryInRanking(playerEntry);
-        } else if (rankings.size() < maxSize || playerEntry.getValue() > rankings.get(rankings.size() - 1).getValue()) {
-            // Add the new player if there's space, or they have a higher score than the lowest in the leaderboard
-            if (rankings.size() == maxSize) {
-                // Remove the lowest ranking player to make space for the new entry
-                rankings.remove(rankings.size() - 1);
+    public void updateRankings(UUID uniqueId, int data) {
+        TopEntry entry = this.rankings.get(uniqueId);
+        if (entry == null) {
+            if (data < getLast().getValue()) {
+                return;
             }
-            rankings.add(playerEntry);
+            entry = new TopEntry(Game.getInstance().getDatabase().uuidToUsername(uniqueId), data);
+            this.rankings.put(uniqueId, entry);
         }
+        entry.setValue(data);
         sortRankings();
     }
 
@@ -54,32 +58,25 @@ public class Leaderboard {
 //    }
 
     public TopEntry getNRanking(int n) { // n = 1 is top player
-        if (n <= rankings.size() && n >= 1) {
-            return rankings.get(n - 1);
+        if (n <= this.sorted.size() && n >= 1) {
+            return this.rankings.get(this.sorted.get(n - 1));
         }
-        return new TopEntry("N / A", 0);
+        return TopEntry.empty();
     }
 
-    private boolean rankingsContainPlayer(String username) {
-        for (TopEntry entry : this.rankings) {
-            if (entry.getIdentifier().equals(username)) {
-                return true;
-            }
+    public TopEntry getLast() {
+        if (this.rankings.isEmpty()) {
+            return TopEntry.empty();
         }
-        return false;
-    }
-
-    private void updatePlayerEntryInRanking(TopEntry updatedEntry) {
-        for (TopEntry entry : this.rankings) {
-            if (entry.getIdentifier().equals(updatedEntry.getIdentifier())) {
-                entry.setValue(updatedEntry.getValue());
-                return;
-            }
-        }
+        return this.rankings.get(this.sorted.get(this.sorted.size() - 1));
     }
 
     public void sortRankings() {
-        Collections.sort(rankings);
+        this.sorted = this.rankings.entrySet().stream()
+                .sorted(Map.Entry.comparingByValue())
+                .limit(this.maxSize)
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
     }
 
     public String getName() { return name; }

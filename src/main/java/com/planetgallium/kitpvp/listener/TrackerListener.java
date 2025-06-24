@@ -40,7 +40,7 @@ public class TrackerListener implements Listener {
 				@Override
 				public void run() {
 					// if the player using the compass leaves the server or no longer has a kit
-					if (!p.isOnline() || !arena.getKits().playerHasKit(p.getName())) {
+					if (!p.isOnline() || !arena.getKits().playerHasKit(p.getUniqueId())) {
 						cancel();
 						return;
 					}
@@ -52,11 +52,11 @@ public class TrackerListener implements Listener {
 						}
 					}
 
-					String[] nearestPlayerData = null;
+					Object[] nearestPlayerData = null;
 					if (p.getWorld().getPlayers().size() == 1) {
 						cancel();
 					} else {
-						nearestPlayerData = Toolkit.getNearestPlayer(p,
+						nearestPlayerData = Toolkit.getNearestPlayerData(p,
 												 resources.getConfig().getInt("PlayerTracker.TrackBelowY"));
 					}
 
@@ -66,14 +66,14 @@ public class TrackerListener implements Listener {
 		}
 	}
 
-	private void updateTrackingCompass(Player player, ItemStack compass, String[] nearestPlayerData) {
+	private void updateTrackingCompass(Player player, ItemStack compass, Object[] nearestPlayerData) {
 		ItemMeta compassMeta = compass.getItemMeta();
 
 		if (nearestPlayerData != null) {
-			Player nearestPlayer = Toolkit.getPlayer(player.getWorld(), nearestPlayerData[0]);
-			double nearestPlayerDistance = Toolkit.round(Double.parseDouble(nearestPlayerData[1]), 1);
+			Player nearestPlayer = (Player) nearestPlayerData[0];
+			double nearestPlayerDistance = (double) nearestPlayerData[1];
 
-			if (nearestPlayer != null && nearestPlayer.isOnline()) {
+			if (nearestPlayer != null && nearestPlayer.isOnline() && player.getWorld().getName().equals(nearestPlayer.getWorld().getName())) {
 				compassMeta.setDisplayName(resources.getConfig().fetchString("PlayerTracker.Message")
 												   .replace("%nearestplayer%", nearestPlayer.getName())
 												   .replace("%distance%", String.valueOf(nearestPlayerDistance)));

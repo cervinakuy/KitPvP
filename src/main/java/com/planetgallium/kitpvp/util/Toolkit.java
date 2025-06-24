@@ -43,28 +43,30 @@ public class Toolkit {
 	public static boolean inArena(Entity entity) {
 		return inArena(entity.getWorld());
 	}
+
+	public static Player getNearestPlayer(Player player, int maxY) {
+		return (Player) getNearestPlayerData(player, maxY)[0];
+	}
 	
- 	public static String[] getNearestPlayer(Player player, int maxY) {
-		String nearest = "player:100000.0";
+ 	public static Object[] getNearestPlayerData(Player player, int maxY) {
+		Player nearest = null;
+		double distance = 100000.0;
+
 
 		for (Player all : Bukkit.getWorld(player.getWorld().getName()).getPlayers()) {
-			String[] list = nearest.split(":");
 			double cal = player.getLocation().distance(all.getLocation());
 			
-			if (cal <= Double.parseDouble(list[1]) && all != player) {
+			if (cal <= distance && all != player) {
 				if (all.getLocation().getBlockY() < maxY) {
 					if (all.getGameMode() != GameMode.SPECTATOR) {
-						nearest = all.getName() + ":" + cal;
+						nearest = all;
+						distance = cal;
 					}
 				}
 			}
 		}
-		
-		if (nearest.equals("player:100000.0")) {
-			return null;
-		}
-		
-		return nearest.split(":");
+
+        return new Object[] { nearest, distance };
 	}
  	
  	public static double round(double value, int precision) {
