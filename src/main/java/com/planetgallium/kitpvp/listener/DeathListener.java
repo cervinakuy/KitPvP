@@ -24,6 +24,7 @@ import com.planetgallium.kitpvp.Game;
 import com.planetgallium.kitpvp.game.Arena;
 
 import java.util.List;
+import java.util.UUID;
 
 public class DeathListener implements Listener {
 
@@ -185,17 +186,17 @@ public class DeathListener implements Listener {
 			broadcast(victim.getWorld(), getDeathMessage(victim, killer, "Player"));
 			creditWithKill(victim, killer);
 
-		} else if (arena.getHitCache().get(victim.getName()) != null) {
-			String killerName = arena.getHitCache().get(victim.getName());
-			Player killer = Toolkit.getPlayer(victim.getWorld(), killerName);
+		} else if (arena.getHitCache().get(victim.getUniqueId()) != null) {
+			UUID killerId = arena.getHitCache().get(victim.getUniqueId());
+			Player killer = Toolkit.getPlayer(victim.getWorld(), killerId);
 
 			broadcast(victim.getWorld(), getDeathMessage(victim, killer, "Player"));
 			creditWithKill(victim, killer);
 
 		} else if ((cause == DamageCause.BLOCK_EXPLOSION || cause == DamageCause.ENTITY_EXPLOSION) &&
 				getExplodedEntity(victim.getLastDamageCause()).getType() == EntityType.PRIMED_TNT) {
-			String bomberName = getExplodedEntity(victim.getLastDamageCause()).getCustomName();
-			Player killer = Toolkit.getPlayer(victim.getWorld(), bomberName);
+			UUID bomberId = getExplodedEntity(victim.getLastDamageCause()).getUniqueId();
+			Player killer = Toolkit.getPlayer(victim.getWorld(), bomberId);
 
 			broadcast(victim.getWorld(), getDeathMessage(victim, killer, "Player"));
 			creditWithKill(victim, killer);

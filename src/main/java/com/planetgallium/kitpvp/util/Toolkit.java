@@ -3,6 +3,7 @@ package com.planetgallium.kitpvp.util;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import com.cryptomorin.xseries.XMaterial;
 import com.cryptomorin.xseries.XPotion;
@@ -193,9 +194,9 @@ public class Toolkit {
 		return null;
 	}
 
- 	public static Player getPlayer(World world, String name) {
+ 	public static Player getPlayer(World world, UUID uniqueId) {
 		for (Player player : world.getPlayers()) {
-			if (player.getName().equals(name)) {
+			if (player.getUniqueId().equals(uniqueId)) {
 				return player;
 			}
 		}
