@@ -371,7 +371,12 @@ public class Toolkit {
 
 	public static ItemStack safeItemStack(String materialName) {
 		if (materialName.startsWith("head:")) {
-			return XSkull.of(XMaterial.PLAYER_HEAD.parseItem()).profile(Profileable.detect(materialName.substring(5))).apply();
+			final ItemStack head = XMaterial.PLAYER_HEAD.parseItem();
+			try {
+				return XSkull.of(head).profile(Profileable.detect(materialName.substring(5))).apply();
+			} catch (Throwable t) {
+				return head;
+			}
 		}
 		Optional<XMaterial> materialOptional = XMaterial.matchXMaterial(materialName);
 		if (materialOptional.isPresent()) {
