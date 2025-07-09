@@ -23,6 +23,9 @@ public class Utilities {
 
     public String getPlayerLevelPrefix(UUID uniqueId) {
         String playerLevel = String.valueOf(arena.getStats().getStat("level", uniqueId));
+        if (playerLevel.equals("-1")) {
+            playerLevel = "0";
+        }
         return resources.getLevels().fetchString("Levels.Levels." + playerLevel + ".Prefix")
                 .replace("%level%", playerLevel);
     }
