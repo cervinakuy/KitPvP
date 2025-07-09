@@ -1,11 +1,15 @@
 package com.planetgallium.kitpvp.listener;
 
 import com.planetgallium.kitpvp.util.*;
+import org.bukkit.Material;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -98,5 +102,13 @@ public class SoupListener implements Listener {
 		soup.setItemMeta(soupMeta);
 		return soup;
 	}
-	
+
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void onDrop(PlayerDropItemEvent e) {
+		final Item item = e.getItemDrop();
+		if (item.getItemStack().getType() == Material.BOWL && config.getBoolean("Soups.RemoveAfterDrop")) {
+			item.setItemStack(new ItemStack(Material.AIR));
+			e.setCancelled(false);
+		}
+	}
 }

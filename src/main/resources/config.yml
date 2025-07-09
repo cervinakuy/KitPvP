@@ -75,6 +75,7 @@ Soups:
   Name: '&aRegenerative Soups &7(Right Click)'
   RegenAmount: 6
   RemoveAfterUse: true
+  RemoveAfterDrop: true
   Lore:
   - '&7Use this item to regain health.'
   Sound: EAT
