@@ -3,6 +3,7 @@ package com.planetgallium.kitpvp.listener;
 import com.cryptomorin.xseries.XSound;
 import com.cryptomorin.xseries.messages.Titles;
 import com.planetgallium.kitpvp.util.*;
+import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -286,6 +287,7 @@ public class DeathListener implements Listener {
 			for (Player all : world.getPlayers()) {
 				all.sendMessage(Toolkit.translate(message));
 			}
+			Bukkit.getConsoleSender().sendMessage(Toolkit.translate(message));
 		}
 	}
 
