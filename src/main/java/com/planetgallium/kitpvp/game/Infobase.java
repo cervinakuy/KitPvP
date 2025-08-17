@@ -138,6 +138,11 @@ public class Infobase {
         if (CacheManager.getUUIDCache().containsKey(username)) {
             return CacheManager.getUUIDCache().get(username);
         }
+        final Player player = Bukkit.getPlayerExact(username);
+        if (player != null) {
+            CacheManager.getUUIDCache().put(username, player.getUniqueId());
+            return player.getUniqueId();
+        }
 
         if (verifyTableExists("stats")) {
             Table stats = database.getTable("stats");
