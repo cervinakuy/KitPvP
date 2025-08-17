@@ -129,6 +129,7 @@ Arena:
   AddOverflowItemsOnKit: true
   DropRemainingOverflowItemsOnKit: true
   ResetMaxHealthOnDeath: true
+  ArmorInvisibility: true
 Other:
   AutomaticallyAddKitToMenu: true
 Spawn:

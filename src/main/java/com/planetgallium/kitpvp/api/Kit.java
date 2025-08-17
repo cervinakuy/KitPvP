@@ -101,38 +101,6 @@ public class Kit {
         List<ItemStack> overflowItems = new ArrayList<>();
         boolean addOverflowItems = (Boolean) options.get("AddOverflowItemsOnKit");
 
-        if (kitHelmet != null) {
-            if (player.getInventory().getHelmet() == null) {
-                player.getInventory().setHelmet(kitHelmet);
-            } else {
-                overflowItems.add(kitHelmet);
-            }
-        }
-
-        if (kitChestplate != null) {
-            if (player.getInventory().getChestplate() == null) {
-                player.getInventory().setChestplate(kitChestplate);
-            } else {
-                overflowItems.add(kitChestplate);
-            }
-        }
-
-        if (kitLeggings != null) {
-            if (player.getInventory().getLeggings() == null) {
-                player.getInventory().setLeggings(kitLeggings);
-            } else {
-                overflowItems.add(kitLeggings);
-            }
-        }
-
-        if (kitBoots != null) {
-            if (player.getInventory().getBoots() == null) {
-                player.getInventory().setBoots(kitBoots);
-            } else {
-                overflowItems.add(kitBoots);
-            }
-        }
-
         Toolkit.setMaxHealth(player, maxHealth);
 
         for (int i = 0; i < 36; i++) {
@@ -166,6 +134,38 @@ public class Kit {
         }
 
         effects.stream().forEach(effect -> player.addPotionEffect(effect));
+
+        if (kitHelmet != null) {
+            if (player.getInventory().getHelmet() == null) {
+                player.getInventory().setHelmet(kitHelmet);
+            } else {
+                overflowItems.add(kitHelmet);
+            }
+        }
+
+        if (kitChestplate != null) {
+            if (player.getInventory().getChestplate() == null) {
+                player.getInventory().setChestplate(kitChestplate);
+            } else {
+                overflowItems.add(kitChestplate);
+            }
+        }
+
+        if (kitLeggings != null) {
+            if (player.getInventory().getLeggings() == null) {
+                player.getInventory().setLeggings(kitLeggings);
+            } else {
+                overflowItems.add(kitLeggings);
+            }
+        }
+
+        if (kitBoots != null) {
+            if (player.getInventory().getBoots() == null) {
+                player.getInventory().setBoots(kitBoots);
+            } else {
+                overflowItems.add(kitBoots);
+            }
+        }
     }
 
     private void giveOverflowItems(Player p, List<ItemStack> overflowItems) {

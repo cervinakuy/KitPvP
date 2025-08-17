@@ -1,5 +1,7 @@
 package com.planetgallium.kitpvp;
 
+import com.github.retrooper.packetevents.PacketEvents;
+import com.github.retrooper.packetevents.event.PacketListenerPriority;
 import com.planetgallium.kitpvp.game.Infobase;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -84,6 +86,10 @@ public class Game extends JavaPlugin implements Listener {
 		if (Bukkit.getPluginManager().isPluginEnabled("WorldGuard")) {
 			Bukkit.getConsoleSender().sendMessage(Toolkit.translate("[&b&lKIT-PVP&7] &7Hooking into &bWorldGuard&7..."));
 			hasWorldGuard = true;
+		}
+
+		if (Bukkit.getPluginManager().isPluginEnabled("packetevents")) {
+			PacketEvents.getAPI().getEventManager().registerListener(new PacketListener(this), PacketListenerPriority.NORMAL);
 		}
 
 		populateUUIDCacheForOnlinePlayers();
