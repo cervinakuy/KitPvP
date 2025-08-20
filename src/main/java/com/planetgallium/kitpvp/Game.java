@@ -96,7 +96,7 @@ public class Game extends JavaPlugin implements Listener {
 		// to database and UUIDs
 		if (Bukkit.getOnlinePlayers().size() > 0) {
 			for (Player player : Bukkit.getOnlinePlayers()) {
-				CacheManager.getUUIDCache().put(player.getName(), player.getUniqueId().toString());
+				CacheManager.getUUIDCache().put(player.getName(), player.getUniqueId());
 			}
 		}
 	}

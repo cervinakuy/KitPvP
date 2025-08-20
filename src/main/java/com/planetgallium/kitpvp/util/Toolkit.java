@@ -3,6 +3,7 @@ package com.planetgallium.kitpvp.util;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import com.cryptomorin.xseries.XMaterial;
 import com.cryptomorin.xseries.XPotion;
@@ -43,28 +44,30 @@ public class Toolkit {
 	public static boolean inArena(Entity entity) {
 		return inArena(entity.getWorld());
 	}
+
+	public static Player getNearestPlayer(Player player, int maxY) {
+		return (Player) getNearestPlayerData(player, maxY)[0];
+	}
 	
- 	public static String[] getNearestPlayer(Player player, int maxY) {
-		String nearest = "player:100000.0";
+ 	public static Object[] getNearestPlayerData(Player player, int maxY) {
+		Player nearest = null;
+		double distance = 100000.0;
+
 
 		for (Player all : Bukkit.getWorld(player.getWorld().getName()).getPlayers()) {
-			String[] list = nearest.split(":");
 			double cal = player.getLocation().distance(all.getLocation());
 			
-			if (cal <= Double.parseDouble(list[1]) && all != player) {
+			if (cal <= distance && all != player) {
 				if (all.getLocation().getBlockY() < maxY) {
 					if (all.getGameMode() != GameMode.SPECTATOR) {
-						nearest = all.getName() + ":" + cal;
+						nearest = all;
+						distance = cal;
 					}
 				}
 			}
 		}
-		
-		if (nearest.equals("player:100000.0")) {
-			return null;
-		}
-		
-		return nearest.split(":");
+
+        return new Object[] { nearest, distance };
 	}
  	
  	public static double round(double value, int precision) {
@@ -191,9 +194,9 @@ public class Toolkit {
 		return null;
 	}
 
- 	public static Player getPlayer(World world, String name) {
+ 	public static Player getPlayer(World world, UUID uniqueId) {
 		for (Player player : world.getPlayers()) {
-			if (player.getName().equals(name)) {
+			if (player.getUniqueId().equals(uniqueId)) {
 				return player;
 			}
 		}

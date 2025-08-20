@@ -1,6 +1,7 @@
 package com.planetgallium.kitpvp.game;
 
 import java.util.HashMap;
+import java.util.UUID;
 
 import com.cryptomorin.xseries.messages.Titles;
 import com.planetgallium.kitpvp.util.*;
@@ -17,7 +18,7 @@ public class KillStreaks implements Listener {
 
 	private final Resources resources;
 	private final Resource killConfig;
-	private final HashMap<String, Integer> kills;
+	private final HashMap<UUID, Integer> kills;
 	
 	public KillStreaks(Resources resources) {
 		this.resources = resources;
@@ -31,14 +32,14 @@ public class KillStreaks implements Listener {
 			Player damager = e.getEntity().getKiller();
 			Player damagedPlayer = e.getEntity();
 
-			if (damager != null && !damager.getName().equals(damagedPlayer.getName())) {
-				kills.put(damager.getName(), getStreak(damager.getName()) + 1);
+			if (damager != null && !damager.getUniqueId().equals(damagedPlayer.getUniqueId())) {
+				kills.put(damager.getUniqueId(), getStreak(damager.getUniqueId()) + 1);
 				runStreakCase("KillStreaks", damager);
 				runStreakCase("EndStreaks", damagedPlayer);
-				kills.put(damagedPlayer.getName(), 0);
+				kills.put(damagedPlayer.getUniqueId(), 0);
 				
 			} else {
-				kills.put(damagedPlayer.getName(), 0);
+				kills.put(damagedPlayer.getUniqueId(), 0);
 				runStreakCase("EndStreaks", damagedPlayer);
 			}
 			
@@ -49,21 +50,21 @@ public class KillStreaks implements Listener {
 	public void createStreak(PlayerJoinEvent e) {
 		Player p = e.getPlayer();
 
-		if (!kills.containsKey(p.getName())) {
-			kills.put(e.getPlayer().getName(), 0);
+		if (!kills.containsKey(p.getUniqueId())) {
+			kills.put(e.getPlayer().getUniqueId(), 0);
 		}
 	}
 	
 	@EventHandler
 	public void removeStreak(PlayerQuitEvent e) {
 		if (resources.getConfig().getBoolean("Arena.ResetKillStreakOnLeave")) {
-			kills.put(e.getPlayer().getName(), 0);
+			kills.put(e.getPlayer().getUniqueId(), 0);
 		}
 	}
 	
 	public void runStreakCase(String streakType, Player p) {
 		String username = p.getName();
-		int streakNumber = getStreak(username);
+		int streakNumber = getStreak(p.getUniqueId());
 		World world = p.getWorld();
 
 		String pathPrefix = streakType + "." + streakNumber;
@@ -115,23 +116,23 @@ public class KillStreaks implements Listener {
 		
 	}
 	
-	public int getStreak(String username) {
-		if (!kills.containsKey(username)) {
-			kills.put(username, 0);
+	public int getStreak(UUID uniqueId) {
+		if (!kills.containsKey(uniqueId)) {
+			kills.put(uniqueId, 0);
 		}
 
-		return kills.get(username);
+		return kills.get(uniqueId);
 	}
 	
 	public void resetStreak(Player p) {
-		if (kills.containsKey(p.getName())) {
+		if (kills.containsKey(p.getUniqueId())) {
 			runStreakCase("EndStreaks", p);
-			kills.put(p.getName(), 0);
+			kills.put(p.getUniqueId(), 0);
 		}
 	}
 
 	public void setStreak(Player p, int streak) {
-		kills.put(p.getName(), streak);
+		kills.put(p.getUniqueId(), streak);
 	}
 
 }

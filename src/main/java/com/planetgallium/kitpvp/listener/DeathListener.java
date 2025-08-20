@@ -24,6 +24,7 @@ import com.planetgallium.kitpvp.Game;
 import com.planetgallium.kitpvp.game.Arena;
 
 import java.util.List;
+import java.util.UUID;
 
 public class DeathListener implements Listener {
 
@@ -51,13 +52,13 @@ public class DeathListener implements Listener {
 				e.getDrops().clear();
 			}
 
-			CacheManager.getPotionSwitcherUsers().remove(victim.getName());
+			CacheManager.getPotionSwitcherUsers().remove(victim.getUniqueId());
 
 			respawnPlayer(victim);
 			setDeathMessage(victim);
 
-			arena.getStats().addToStat("deaths", victim.getName(), 1);
-			arena.getStats().removeExperience(victim.getName(),
+			arena.getStats().addToStat("deaths", victim.getUniqueId(), 1);
+			arena.getStats().removeExperience(victim.getUniqueId(),
 					resources.getLevels().getInt("Levels.Options.Experience-Taken-On-Death"));
 
 			if (config.getBoolean("Arena.DeathParticle")) {
@@ -185,17 +186,17 @@ public class DeathListener implements Listener {
 			broadcast(victim.getWorld(), getDeathMessage(victim, killer, "Player"));
 			creditWithKill(victim, killer);
 
-		} else if (arena.getHitCache().get(victim.getName()) != null) {
-			String killerName = arena.getHitCache().get(victim.getName());
-			Player killer = Toolkit.getPlayer(victim.getWorld(), killerName);
+		} else if (arena.getHitCache().get(victim.getUniqueId()) != null) {
+			UUID killerId = arena.getHitCache().get(victim.getUniqueId());
+			Player killer = Toolkit.getPlayer(victim.getWorld(), killerId);
 
 			broadcast(victim.getWorld(), getDeathMessage(victim, killer, "Player"));
 			creditWithKill(victim, killer);
 
 		} else if ((cause == DamageCause.BLOCK_EXPLOSION || cause == DamageCause.ENTITY_EXPLOSION) &&
 				getExplodedEntity(victim.getLastDamageCause()).getType() == EntityType.PRIMED_TNT) {
-			String bomberName = getExplodedEntity(victim.getLastDamageCause()).getCustomName();
-			Player killer = Toolkit.getPlayer(victim.getWorld(), bomberName);
+			UUID bomberId = getExplodedEntity(victim.getLastDamageCause()).getUniqueId();
+			Player killer = Toolkit.getPlayer(victim.getWorld(), bomberId);
 
 			broadcast(victim.getWorld(), getDeathMessage(victim, killer, "Player"));
 			creditWithKill(victim, killer);
@@ -238,7 +239,7 @@ public class DeathListener implements Listener {
 	private void creditWithKill(Player victim, Player killer) {
 		if (victim != null && killer != null) {
 			if (!victim.getName().equals(killer.getName())) {
-				arena.getStats().addToStat("kills", killer.getName(), 1);
+				arena.getStats().addToStat("kills", killer.getUniqueId(), 1);
 				arena.getStats().addExperience(killer, resources.getLevels().getInt("Levels.Options.Experience-Given-On-Kill"));
 
 				List<String> killCommands = config.getStringList("Kill.Commands");

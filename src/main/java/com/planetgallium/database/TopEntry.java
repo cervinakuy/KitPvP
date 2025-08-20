@@ -2,11 +2,17 @@ package com.planetgallium.database;
 
 public class TopEntry implements Comparable<TopEntry> {
 
-    private final String identifier;
+    private static final TopEntry EMPTY = new TopEntry("NAN", -1);
+
+    public static TopEntry empty() {
+        return EMPTY;
+    }
+
+    private final String name;
     private int value;
 
-    public TopEntry(String identifier, int value) {
-        this.identifier = identifier;
+    public TopEntry(String name, int value) {
+        this.name = name;
         this.value = value;
     }
 
@@ -22,7 +28,7 @@ public class TopEntry implements Comparable<TopEntry> {
 
     public void setValue(int newValue) { this.value = newValue; }
 
-    public String getIdentifier() { return identifier; }
+    public String getName() { return name; }
 
     public int getValue() { return value; }
 

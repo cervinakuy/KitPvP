@@ -20,6 +20,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 public class MainCommand implements CommandExecutor {
 
@@ -283,9 +284,10 @@ public class MainCommand implements CommandExecutor {
 
     private void executeStatsCommandOther(CommandSender sender, String[] args) {
         String targetName = args[1];
+        final UUID uniqueId = plugin.getDatabase().usernameToUUID(targetName);
 
-        if (plugin.getDatabase().isPlayerRegistered(targetName)) {
-            sendStatsMessage(sender, targetName);
+        if (plugin.getDatabase().isPlayerRegistered(uniqueId)) {
+            sendStatsMessage(sender, uniqueId, targetName);
         } else {
             sender.sendMessage(messages.fetchString("Messages.Error.Offline"));
         }
@@ -321,15 +323,16 @@ public class MainCommand implements CommandExecutor {
                         .replace("%number%", possibleAmount));
             }
 
-            String playerUUID = plugin.getDatabase().usernameToUUID(playerName);
+            UUID playerUUID = plugin.getDatabase().usernameToUUID(playerName);
 
             if (playerUUID == null) {
                 sender.sendMessage(resources.getMessages().fetchString("Messages.Error.Offline"));
+                return;
             }
 
             int amount = Integer.parseInt(possibleAmount);
-            arena.getStats().setStat(statsIdentifier, playerName, amount);
-            arena.getStats().pushCachedStatsToDatabase(playerName, false);
+            arena.getStats().setStat(statsIdentifier, playerUUID, amount);
+            arena.getStats().pushCachedStatsToDatabase(playerUUID, false);
 
             sender.sendMessage(resources.getMessages().fetchString("Messages.Commands.SetStats")
                     .replace("%player%", playerName)
@@ -344,7 +347,7 @@ public class MainCommand implements CommandExecutor {
     }
 
     private void executeStatsCommandSelf(Player p) {
-        sendStatsMessage(p, p.getName());
+        sendStatsMessage(p, p.getUniqueId(), p.getName());
     }
 
     private void executeMenuCommand(Player p) {
@@ -445,7 +448,7 @@ public class MainCommand implements CommandExecutor {
         String arenaName = args[1];
 
         if (resources.getConfig().getBoolean("Arena.PreventArenaSignUseWithKit")) {
-            if (arena.getKits().playerHasKit(p.getName())) {
+            if (arena.getKits().playerHasKit(p.getUniqueId())) {
                 p.sendMessage(messages.fetchString("Messages.Error.KitInvalid"));
                 return;
             }
@@ -505,7 +508,7 @@ public class MainCommand implements CommandExecutor {
     }
 
     private void clearKit(Player p) {
-        CacheManager.getPotionSwitcherUsers().remove(p.getName());
+        CacheManager.getPotionSwitcherUsers().remove(p.getUniqueId());
 
         p.getInventory().setArmorContents(null);
         p.getInventory().clear();
@@ -521,12 +524,12 @@ public class MainCommand implements CommandExecutor {
             arena.giveArenaItems(p);
         }
 
-        arena.getKits().resetPlayerKit(p.getName());
+        arena.getKits().resetPlayerKit(p.getUniqueId());
     }
 
-    private void sendStatsMessage(CommandSender receiver, String username) {
+    private void sendStatsMessage(CommandSender receiver, UUID uniqueId, String username) {
         for (String line : messages.getStringList("Messages.Stats.Message")) {
-            receiver.sendMessage(arena.getUtilities().replaceBuiltInPlaceholdersIfPresent(line, username));
+            receiver.sendMessage(arena.getUtilities().replaceBuiltInPlaceholdersIfPresent(line, uniqueId, username));
         }
     }
 

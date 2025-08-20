@@ -26,7 +26,7 @@ public class Kits {
     private final Resources resources;
     private final Resource messages;
 
-    private final Map<String, String> playerKits;
+    private final Map<UUID, String> playerKits;
 
     public Kits(Game plugin, Arena arena) {
         this.arena = arena;
@@ -211,7 +211,7 @@ public class Kits {
         }
 
         if (!(Toolkit.getPermissionAmount(p, "kp.levelbypass.", 0) >= kit.getLevel() ||
-                arena.getStats().getStat("level", p.getName()) >= kit.getLevel())) {
+                arena.getStats().getStat("level", p.getUniqueId()) >= kit.getLevel())) {
             p.sendMessage(messages.fetchString("Messages.Other.Needed")
                     .replace("%level%", String.valueOf(kit.getLevel())));
             return;
@@ -224,7 +224,7 @@ public class Kits {
             return;
         }
 
-        if (playerHasKit(player.getName())) {
+        if (playerHasKit(player.getUniqueId())) {
             p.sendMessage(messages.fetchString("Messages.Error.Selected"));
             Toolkit.playSoundToPlayer(p, "ENTITY_ENDER_DRAGON_HURT", 1);
             return;
@@ -240,11 +240,11 @@ public class Kits {
         Toolkit.playSoundToPlayer(p, "ENTITY_HORSE_ARMOR", 1);
 
         Bukkit.getPluginManager().callEvent(new PlayerSelectKitEvent(player, kit));
-        setPlayerKit(p.getName(), kit.getName());
+        setPlayerKit(p.getUniqueId(), kit.getName());
 
         Cooldown kitCooldown = kit.getCooldown();
         if (kitCooldown != null && kitCooldown.toSeconds() > 0 && !p.hasPermission("kp.cooldownbypass")) {
-            arena.getCooldowns().setKitCooldown(p.getName(), kit.getName());
+            arena.getCooldowns().setKitCooldown(p.getUniqueId(), kit.getName());
         }
 
         Resource kitResource = resources.getKit(kit.getName());
@@ -275,8 +275,8 @@ public class Kits {
         return loadKitFromCacheOrCreate(kitName);
     }
 
-    public Kit getKitOfPlayer(String playerName) {
-        String kitName = playerKits.get(playerName);
+    public Kit getKitOfPlayer(UUID uniqueId) {
+        String kitName = playerKits.get(uniqueId);
         if (kitName == null) {
             return null;
         }
@@ -293,16 +293,16 @@ public class Kits {
         CacheManager.getKitCache().remove(kitName);
     }
 
-    public void setPlayerKit(String playerName, String kitName) {
-        playerKits.put(playerName, kitName);
+    public void setPlayerKit(UUID uniqueId, String kitName) {
+        playerKits.put(uniqueId, kitName);
     }
 
-    public boolean playerHasKit(String playerName) {
-        return playerKits.containsKey(playerName);
+    public boolean playerHasKit(UUID uniqueId) {
+        return playerKits.containsKey(uniqueId);
     }
 
-    public void resetPlayerKit(String playerName) {
-        playerKits.remove(playerName);
+    public void resetPlayerKit(UUID uniqueId) {
+        playerKits.remove(uniqueId);
     }
 
     private String trimName(String kitNameWithFileEnding) {

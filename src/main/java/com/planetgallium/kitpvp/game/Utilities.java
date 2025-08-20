@@ -7,6 +7,8 @@ import com.planetgallium.kitpvp.util.WorldGuardFlag;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.entity.Player;
 
+import java.util.UUID;
+
 public class Utilities {
 
     private final Game plugin;
@@ -19,8 +21,11 @@ public class Utilities {
         this.resources = plugin.getResources();
     }
 
-    public String getPlayerLevelPrefix(String username) {
-        String playerLevel = String.valueOf(arena.getStats().getStat("level", username));
+    public String getPlayerLevelPrefix(UUID uniqueId) {
+        String playerLevel = String.valueOf(arena.getStats().getStat("level", uniqueId));
+        if (playerLevel.equals("-1")) {
+            playerLevel = "0";
+        }
         return resources.getLevels().fetchString("Levels.Levels." + playerLevel + ".Prefix")
                 .replace("%level%", playerLevel);
     }
@@ -30,16 +35,16 @@ public class Utilities {
             text = PlaceholderAPI.setPlaceholders(p, text);
         }
 
-        return replaceBuiltInPlaceholdersIfPresent(text, p.getName());
+        return replaceBuiltInPlaceholdersIfPresent(text, p.getUniqueId(), p.getName());
     }
 
-    public String replaceBuiltInPlaceholdersIfPresent(String s, String username) {
+    public String replaceBuiltInPlaceholdersIfPresent(String s, UUID uniqueId, String username) {
         // The reason I'm doing all these if statements rather than a more concise code solution is to reduce
         // the amount of data that is unnecessarily fetched (ex by using .replace) to improve performance
         // no longer constantly fetching stats from database for EACH line of scoreboard on update and player join
 
         if (s.contains("%streak%")) {
-            s = s.replace("%streak%", String.valueOf(arena.getKillStreaks().getStreak(username)));
+            s = s.replace("%streak%", String.valueOf(arena.getKillStreaks().getStreak(uniqueId)));
         }
 
         if (s.contains("%player%")) {
@@ -47,20 +52,20 @@ public class Utilities {
         }
 
         if (s.contains("%xp%")) {
-            s = s.replace("%xp%", String.valueOf(arena.getStats().getStat("experience", username)));
+            s = s.replace("%xp%", String.valueOf(arena.getStats().getStat("experience", uniqueId)));
         }
 
         if (s.contains("%level%")) {
-            s = s.replace("%level%", String.valueOf(arena.getStats().getStat("level", username)));
+            s = s.replace("%level%", String.valueOf(arena.getStats().getStat("level", uniqueId)));
         }
 
         if (s.contains("%level_prefix%")) {
-            String levelPrefix = getPlayerLevelPrefix(username);
+            String levelPrefix = getPlayerLevelPrefix(uniqueId);
             s = s.replace("%level_prefix%", levelPrefix);
         }
 
         if (s.contains("%max_xp%")) {
-            s = s.replace("%max_xp%", String.valueOf(arena.getStats().getRegularOrRelativeNeededExperience(username)));
+            s = s.replace("%max_xp%", String.valueOf(arena.getStats().getRegularOrRelativeNeededExperience(uniqueId)));
         }
 
         if (s.contains("%max_level%")) {
@@ -69,20 +74,20 @@ public class Utilities {
         }
 
         if (s.contains("%kd%")) {
-            s = s.replace("%kd%", String.valueOf(arena.getStats().getKDRatio(username)));
+            s = s.replace("%kd%", String.valueOf(arena.getStats().getKDRatio(uniqueId)));
         }
 
         if (s.contains("%kills%")) {
-            s = s.replace("%kills%", String.valueOf(arena.getStats().getStat("kills", username)));
+            s = s.replace("%kills%", String.valueOf(arena.getStats().getStat("kills", uniqueId)));
         }
 
         if (s.contains("%deaths%")) {
-            s = s.replace("%deaths%", String.valueOf(arena.getStats().getStat("deaths", username)));
+            s = s.replace("%deaths%", String.valueOf(arena.getStats().getStat("deaths", uniqueId)));
         }
 
         if (s.contains("%kit%")) {
-            if (arena.getKits().getKitOfPlayer(username) != null) {
-                s = s.replace("%kit%", arena.getKits().getKitOfPlayer(username).getName());
+            if (arena.getKits().getKitOfPlayer(uniqueId) != null) {
+                s = s.replace("%kit%", arena.getKits().getKitOfPlayer(uniqueId).getName());
             } else {
                 s = s.replace("%kit%", "None");
             }

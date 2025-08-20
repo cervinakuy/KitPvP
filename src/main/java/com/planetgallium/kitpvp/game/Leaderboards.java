@@ -5,6 +5,7 @@ import com.planetgallium.kitpvp.Game;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class Leaderboards {
 
@@ -22,9 +23,9 @@ public class Leaderboards {
                 new Leaderboard("level", database.getTopNStats("level", 25), 25));
     }
 
-    public void updateRankings(String leaderboardName, TopEntry newEntry) {
+    public void updateRankings(String leaderboardName, UUID uniqueId, int data) {
         if (isValidLeaderboardName(leaderboardName)) {
-            leaderboards.get(leaderboardName).updateRankings(newEntry);
+            leaderboards.get(leaderboardName).updateRankings(uniqueId, data);
         }
     }
 
@@ -32,7 +33,7 @@ public class Leaderboards {
         if (isValidLeaderboardName(leaderboardName)) {
             return leaderboards.get(leaderboardName).getNRanking(rank);
         }
-        return new TopEntry("NAN", -1);
+        return TopEntry.empty();
     }
 
     private boolean isValidLeaderboardName(String leaderboardName) {

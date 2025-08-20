@@ -62,7 +62,7 @@ public class AbilityListener implements Listener {
 			ItemStack abilityItem = Toolkit.getHandItemForInteraction(e.getOriginalInteractionEvent());
 			abilityItem.setAmount(abilityItem.getAmount() - 1);
 		} else {
-			arena.getCooldowns().setAbilityCooldown(p.getName(), ability.getName());
+			arena.getCooldowns().setAbilityCooldown(p.getUniqueId(), ability.getName());
 		}
 	}
 

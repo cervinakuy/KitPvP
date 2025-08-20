@@ -31,7 +31,7 @@ public class EventListener implements Listener {
 				ItemStack currentItem = Toolkit.getHandItemForInteraction(e);
 
 				if (resources.getConfig().getBoolean("Arena.AbilitiesRequireKit") &&
-						!arena.getKits().playerHasKit(p.getName())) {
+						!arena.getKits().playerHasKit(p.getUniqueId())) {
 					return; // if "AbilitiesRequireKit" true, and player does not have kit, return
 				}
 
