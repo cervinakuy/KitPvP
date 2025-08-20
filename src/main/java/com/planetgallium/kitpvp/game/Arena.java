@@ -1,6 +1,7 @@
 package com.planetgallium.kitpvp.game;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import com.planetgallium.kitpvp.util.*;
 import org.bukkit.Bukkit;
@@ -23,6 +24,7 @@ public class Arena {
 	private final Resource config;
 
 	private final Map<String, String> hitCache;
+    private final Map<UUID, Map<String, ItemStack>> items;
 
 	private final Utilities utilties;
 	private final Leaderboards leaderboards;
@@ -41,6 +43,7 @@ public class Arena {
 		this.config = resources.getConfig();
 
 		this.hitCache = new HashMap<>();
+		this.items = new HashMap<>();
 
 		this.utilties = new Utilities(plugin, this);
 		this.leaderboards = new Leaderboards(plugin);
@@ -137,21 +140,24 @@ public class Arena {
 	public void giveArenaItems(Player p) {
 		ConfigurationSection items = config.getConfigurationSection("Items");
 
+		final Map<String, ItemStack> arenaItems = new HashMap<>();
 		for (String identifier : items.getKeys(false)) {
 			String itemPath = "Items." + identifier;
 
 			if (config.getBoolean(itemPath + ".Enabled")) {
-				ItemStack item = Toolkit.safeItemStack(config.fetchString(itemPath + ".Material"));
+				ItemStack item = Toolkit.safeItemStack(utilties.addPlaceholdersIfPossible(p, config.fetchString(itemPath + ".Material")));
 				ItemMeta meta = item.getItemMeta();
 
-				meta.setDisplayName(config.fetchString(itemPath + ".Name"));
-				meta.setLore(config.getStringList(itemPath + ".Lore"));
+				meta.setDisplayName(utilties.addPlaceholdersIfPossible(p, config.fetchString(itemPath + ".Name")));
+				meta.setLore(config.getStringList(itemPath + ".Lore").stream().map(s -> utilties.addPlaceholdersIfPossible(p, s)).collect(Collectors.toList()));
 
 				item.setItemMeta(meta);
 
+				arenaItems.put(identifier, item);
 				p.getInventory().setItem(config.getInt(itemPath + ".Slot"), item);
 			}
 		}
+		this.items.put(p.getUniqueId(), arenaItems);
 	}
 
 	public void toSpawn(Player p, String arenaName) {
@@ -189,6 +195,8 @@ public class Arena {
 	}
 
 	public Map<String, String> getHitCache() { return hitCache; }
+
+	public Map<UUID, Map<String, ItemStack>> getItems() { return items; }
 
 	public Stats getStats() { return stats; }
 

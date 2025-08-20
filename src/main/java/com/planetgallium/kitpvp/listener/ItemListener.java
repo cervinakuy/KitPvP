@@ -13,7 +13,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.*;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
@@ -34,6 +33,7 @@ import org.bukkit.potion.PotionType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
+import java.util.Map;
 import java.util.Random;
 
 public class ItemListener implements Listener {
@@ -99,37 +99,18 @@ public class ItemListener implements Listener {
 
 			/* Kit Item and custom Arena Items */
 
-			if (config.contains("Items.Kits") &&
-					Toolkit.hasMatchingMaterial(interactedItem, config.fetchString("Items.Kits.Material"))) {
+			final Map<String, ItemStack> items = arena.getItems().get(p.getUniqueId());
+			if (items != null) {
+				for (Map.Entry<String, ItemStack> entry : items.entrySet()) {
+					final ItemStack item = entry.getValue();
+					if (interactedItem.getType() == item.getType() && Toolkit.hasMatchingDisplayName(interactedItem, item)) {
+						Toolkit.runCommands(p, config.getStringList("Items." + entry.getKey() + ".Commands"), "none", "none");
 
-				if (Toolkit.hasMatchingDisplayName(interactedItem, config.fetchString("Items.Kits.Name"))) {
-					Toolkit.runCommands(p, config.getStringList("Items.Kits.Commands"),
-							"none", "none");
-
-					if (config.getBoolean("Items.Kits.Menu")) {
-						arena.getMenus().getKitMenu().open(p);
-					}
-
-					e.setCancelled(true);
-				}
-
-			} else if (interactedItem.hasItemMeta()) {
-				ConfigurationSection items = config.getConfigurationSection("Items");
-
-				for (String identifier : items.getKeys(false)) {
-					String itemPath = "Items." + identifier;
-
-					if (!config.getBoolean(itemPath + ".Enabled")) {
-						return;
-					}
-
-					String itemMaterialName = config.fetchString(itemPath + ".Material");
-					if (Toolkit.hasMatchingMaterial(interactedItem, itemMaterialName)) {
-						if (Toolkit.hasMatchingDisplayName(interactedItem, config.fetchString(itemPath + ".Name"))) {
-							Toolkit.runCommands(p, config.getStringList(itemPath + ".Commands"),
-									"none", "none");
-							e.setCancelled(true);
+						if (entry.getKey().equalsIgnoreCase("kits")) {
+							arena.getMenus().getKitMenu().open(p);
 						}
+
+						e.setCancelled(true);
 					}
 				}
 			}

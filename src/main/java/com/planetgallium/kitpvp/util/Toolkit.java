@@ -7,6 +7,8 @@ import java.util.Optional;
 import com.cryptomorin.xseries.XMaterial;
 import com.cryptomorin.xseries.XPotion;
 import com.cryptomorin.xseries.XSound;
+import com.cryptomorin.xseries.profiles.builder.XSkull;
+import com.cryptomorin.xseries.profiles.objects.Profileable;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
@@ -283,6 +285,12 @@ public class Toolkit {
 		return false;
 	}
 
+	public static boolean hasMatchingDisplayName(ItemStack item, ItemStack target) {
+		ItemMeta meta = item.getItemMeta();
+		ItemMeta targetMeta = target.getItemMeta();
+		return meta != null && targetMeta != null && meta.hasDisplayName() && targetMeta.hasDisplayName() && meta.getDisplayName().equals(targetMeta.getDisplayName());
+	}
+
 	public static boolean hasMatchingDisplayName(ItemStack item, String targetDisplayName) {
 		ItemMeta meta = item.getItemMeta();
 
@@ -359,6 +367,18 @@ public class Toolkit {
 	}
 
 	public static ItemStack safeItemStack(String materialName) {
+		if (materialName.startsWith("head:")) {
+			final ItemStack head = XMaterial.PLAYER_HEAD.parseItem();
+			try {
+				return XSkull.of(head).profile(Profileable.detect(materialName.substring(5))).apply();
+			} catch (Throwable t) {
+				return head;
+			}
+		}
+		Optional<XMaterial> materialOptional = XMaterial.matchXMaterial(materialName);
+		if (materialOptional.isPresent()) {
+			return materialOptional.get().parseItem();
+		}
 		return new ItemStack(Toolkit.safeMaterial(materialName));
 	}
 
